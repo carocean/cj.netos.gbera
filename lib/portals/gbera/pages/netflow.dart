@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:gbera/gbera/common.dart';
+import 'package:gbera/netos/common.dart';
 
-import 'parts/bottoms.dart';
-import 'parts/headers.dart';
+import '../parts/bottoms.dart';
+import '../parts/headers.dart';
 
 class Netflow extends StatefulWidget {
   PageContext context;
@@ -44,29 +44,9 @@ class _NetflowState extends State<Netflow> {
     } else if (selectTabIndex == 1) {
       _buildPlatTab(panel);
     }
-    return Scaffold(
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: panel,
-        ),
-      ),
-      bottomNavigationBar: GberaBottomNavigationBar(
-        selectedIndex: 0,
-        onSelected: (i) {
-          print('click:$i');
-          switch (i) {
-            case 0:
-              widget.context.forward('gbera://desktop');
-              break;
-            case 1:
-              widget.context.forward('gbera://netflow');
-              break;
-            case 2:
-              break;
-            case 3:
-              break;
-          }
-        },
+    return SafeArea(
+      child: CustomScrollView(
+        slivers: panel,
       ),
     );
   }

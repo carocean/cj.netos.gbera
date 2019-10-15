@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:gbera/gbera/common.dart';
+import 'package:gbera/netos/common.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key key, this.context}) : super(key: key);
@@ -161,7 +161,7 @@ class LoginAction {
 
   void forwardOK(rc) {
     print('ok:${rc['dataText']}');
-    context.forward("gbera://desktop");
+    context.forward("gbera://scaffold/withbottombar");
   }
 
   void forwardError(e) {

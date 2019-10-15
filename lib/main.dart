@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'gbera/framework.dart';
+import 'netos/framework.dart';
 
 void main() => runApp(MyApp());
 
@@ -27,5 +27,8 @@ class MyApp extends StatelessWidget {
       initialRoute: 'gbera://login',
     );
   }
-}
 
+  MyApp() {
+    initFramework();
+  }
+}

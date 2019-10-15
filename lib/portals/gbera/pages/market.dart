@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:gbera/gbera/common.dart';
+import 'package:gbera/netos/common.dart';
 
-class MarketDisplay extends StatefulWidget {
+class Market extends StatefulWidget {
   final PageContext context;
 
-  MarketDisplay({this.context});
+  Market({this.context});
 
   @override
-  _MarketDisplayState createState() => _MarketDisplayState();
+  _MarketState createState() => _MarketState();
 }
 
-class _MarketDisplayState extends State<MarketDisplay> {
+class _MarketState extends State<Market> {
   @override
   Widget build(BuildContext context) {
     createDivider() {

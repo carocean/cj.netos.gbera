@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import '../portals/portals.dart';
@@ -8,6 +11,17 @@ import 'common.dart';
 Map<String, Portal> _allPortals = Map(); //key是portalid
 Map<String, Page> _allPages = Map(); //key是全路径
 IServiceProvider _site = GberaServiceProvider();
+
+initFramework() {
+  if (Platform.isAndroid) {
+    SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.dark,
+    );
+    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+  }
+}
 
 Map<String, WidgetBuilder> buildRoutes() {
   _allPortals.clear();
@@ -41,6 +55,9 @@ Map<String, WidgetBuilder> buildRoutes() {
       }
       page.$__init(portal.id, qs);
       String fullurl = '${portal.id}:/${withoutQs}';
+      if(_allPages.containsKey(fullurl)){
+        throw FlutterErrorDetails(exception: Exception('已存在地址页:$fullurl'));
+      }
       _allPages[fullurl] = page;
     }
   }
@@ -78,7 +95,7 @@ Route onGenerateRoute(RouteSettings routeSettings) {
         site: _site,
         context: buildContext,
       );
-      return page.buildRoute(buildContext, pageContext);
+      return page.buildRoute(pageContext);
     },
   );
 }
@@ -95,7 +112,7 @@ var _dio = Dio(options); //使用base配置可以通
 class GberaServiceProvider implements IServiceProvider {
   @override
   getService(String name) {
-    if("@.http"==name){
+    if ("@.http" == name) {
       return _dio;
     }
     if ("@.portals" == name) {

@@ -127,6 +127,14 @@ class PageContext {
     Navigator.pushNamed(context, pagePath, arguments: arguments);
   }
 
+  Widget part(String pageUrl, PageContext pageContext) {
+    Map<String, Page> pages = site.getService("@.pages");
+    Page page = pages[pageUrl];
+    if (page == null) return null;
+    Widget widget = page.buildRoute(pageContext);
+    return widget;
+  }
+
   ports(
     ///请求头，格式，如：get http://localhost:8080/uc/p1.service?name=cj&age=33 http/1.1
     String headline, {
@@ -283,8 +291,7 @@ class PageContext {
   }
 }
 
-typedef BuildRoute = Widget Function(
-    BuildContext buildContext, PageContext pageContext);
+typedef BuildRoute = Widget Function(PageContext pageContext);
 typedef BuildPortal = Portal Function(IServiceProvider site);
 typedef BuildPages = List<Page> Function(Portal protal, IServiceProvider site);
 

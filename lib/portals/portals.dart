@@ -1,9 +1,12 @@
 import 'package:flutter/widgets.dart';
-import 'package:gbera/portals/gbera/desktop.dart';
+import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/gbera/pages/desktop.dart';
 import 'package:gbera/portals/gbera/errors/errors.dart';
-import 'package:gbera/portals/gbera/netflow.dart';
+import 'package:gbera/portals/gbera/pages/geosphere.dart';
+import 'package:gbera/portals/gbera/pages/market.dart';
+import 'package:gbera/portals/gbera/pages/netflow.dart';
+import 'package:gbera/portals/gbera/scaffolds.dart';
 
-import '../gbera/common.dart';
 import 'common/icons.dart';
 import 'gbera/login.dart';
 
@@ -19,9 +22,16 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               subtitle: '',
               icon: GalleryIcons.shrine,
               url: '/error',
-              buildRoute:
-                  (BuildContext buildContext, PageContext pageContext) =>
-                      GberaError(
+              buildRoute: (PageContext pageContext) => GberaError(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '金证时代',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/scaffold/withbottombar',
+              buildRoute: (PageContext pageContext) => WithBottomScaffold(
                 context: pageContext,
               ),
             ),
@@ -30,9 +40,7 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               subtitle: '',
               icon: GalleryIcons.shrine,
               url: '/login',
-              buildRoute:
-                  (BuildContext buildContext, PageContext pageContext) =>
-                      LoginPage(
+              buildRoute: (PageContext pageContext) => LoginPage(
                 context: pageContext,
               ),
             ),
@@ -41,9 +49,7 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               subtitle: '',
               icon: GalleryIcons.shrine,
               url: '/desktop',
-              buildRoute:
-                  (BuildContext buildContext, PageContext pageContext) =>
-                      Desktop(
+              buildRoute: (PageContext pageContext) => Desktop(
                 context: pageContext,
               ),
             ),
@@ -52,11 +58,27 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               subtitle: '',
               icon: GalleryIcons.shrine,
               url: '/netflow',
-              buildRoute:
-                  (BuildContext buildContext, PageContext pageContext) =>
-                  Netflow(
-                    context: pageContext,
-                  ),
+              buildRoute: (PageContext pageContext) => Netflow(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '市场',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/market',
+              buildRoute: (PageContext pageContext) => Market(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '地微',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/geosphere',
+              buildRoute: (PageContext pageContext) => Geosphere(
+                context: pageContext,
+              ),
             ),
           ],
         ),

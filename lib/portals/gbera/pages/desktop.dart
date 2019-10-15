@@ -1,11 +1,12 @@
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:gbera/gbera/common.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/util.dart';
-import 'parts/bottoms.dart';
-import 'parts/parts.dart';
 import 'package:intl/intl.dart';
+
+import '../parts/bottoms.dart';
+import '../parts/parts.dart';
 
 class Desktop extends StatefulWidget {
   PageContext context;
@@ -363,28 +364,7 @@ class _DesktopState extends State<Desktop> {
         ],
       ),
     );
-
-    return Scaffold(
-      body: myarea,
-      bottomNavigationBar: GberaBottomNavigationBar(
-        selectedIndex: 0,
-        onSelected: (i) {
-          print('click:$i');
-          switch (i) {
-            case 0:
-              widget.context.forward('gbera://desktop');
-              break;
-            case 1:
-              widget.context.forward('gbera://netflow');
-              break;
-            case 2:
-              break;
-            case 3:
-              break;
-          }
-        },
-      ),
-    );
+  return myarea;
   }
 
   _buildCards(BuildContext context) {}

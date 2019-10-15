@@ -1,15 +1,15 @@
 import 'package:flutter/widgets.dart';
-import 'package:gbera/gbera/common.dart';
+import 'package:gbera/netos/common.dart';
 
-class GeosphereDisplay extends StatefulWidget {
+class Geosphere extends StatefulWidget {
   final PageContext context;
 
-  GeosphereDisplay({this.context});
+  Geosphere({this.context});
   @override
-  _GeosphereDisplayState createState() => _GeosphereDisplayState();
+  _GeosphereState createState() => _GeosphereState();
 }
 
-class _GeosphereDisplayState extends State<GeosphereDisplay> {
+class _GeosphereState extends State<Geosphere> {
   @override
   Widget build(BuildContext context) {
     //SliverPersistentHeaderDelegate 滑动可折叠头
