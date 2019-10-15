@@ -3,16 +3,26 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import 'package:gbera/portals/portals.dart';
 
-import '../portals/portals.dart';
 import 'common.dart';
+import 'errors.dart';
 
 Map<String, Portal> _allPortals = Map(); //key是portalid
 Map<String, Page> _allPages = Map(); //key是全路径
+Map<String, ThemeStyle> _allThemes = Map(); //key是全路径
 IServiceProvider _site = GberaServiceProvider();
 
-initFramework() {
+//事件顺序
+//1。先执行onGenerateThemeStyle，如果已绑定的话；
+//2。次执行buildRoutes，如果已绑定的话；
+//3。再执行onGenerateRoute，如果已绑定的话；
+//因此加载顺序为：不论绑定与否，只要3个绑一个就响应框架的加载事件且一次性加载，如果已加载过了则不再加载
+//但要考虑到热调试，当重新过来时清空则加载
+var loadStep =
+    0; //1为执行了onGenerateThemeStyle方法；2为执行了buildRoutes法；3是执行了onGenerateRoute方法。后者检查前序方法是否被执行，否则报错。
+
+_initFramework() {
   if (Platform.isAndroid) {
     SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -21,11 +31,13 @@ initFramework() {
     );
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
+  _buildPortals();
 }
 
-Map<String, WidgetBuilder> buildRoutes() {
+_buildPortals() {
   _allPortals.clear();
   _allPages.clear();
+  _allThemes.clear();
   var _portals = buildPortals(_site);
   for (var item in _portals) {
     var portal = item(_site);
@@ -55,25 +67,80 @@ Map<String, WidgetBuilder> buildRoutes() {
       }
       page.$__init(portal.id, qs);
       String fullurl = '${portal.id}:/${withoutQs}';
-      if(_allPages.containsKey(fullurl)){
+      if (_allPages.containsKey(fullurl)) {
         throw FlutterErrorDetails(exception: Exception('已存在地址页:$fullurl'));
       }
       _allPages[fullurl] = page;
     }
+    var themes = portal.buildThemes(portal, _site);
+    for (ThemeStyle themeStyle in themes) {
+      if (themeStyle.url == null ||
+          !themeStyle.url.startsWith("/") ||
+          themeStyle.url.indexOf("://") > 0) {
+        throw FlutterErrorDetails(
+            exception: Exception(
+                '主题url错误:${themeStyle.title}=${themeStyle.url}。必须非空，必须以/开头，必须是相对于portal的路径'));
+      }
+      var url = themeStyle.url;
+      var pos = url.indexOf("?");
+      if (pos > -1) {
+        throw FlutterErrorDetails(exception: Exception('主题url不能带查询串:$url'));
+      }
+      String fullurl = '${portal.id}:/$url';
+      if (_allPages.containsKey(fullurl)) {
+        throw FlutterErrorDetails(exception: Exception('已存在地址页:$fullurl'));
+      }
+      _allThemes[fullurl] = themeStyle;
+    }
   }
-  return Map(); //仅仅将它当作初始化事件使用，所以直接返回空map，当然也可以为map添加一些初始化的全局页面，比如错误页面
+}
+
+//主题是第一个响应，次是初始化路由表
+ThemeData onGenerateThemeStyle(String url, BuildContext context) {
+  //由于主题是最先加载，因此铁定都要执行初始化。所以在调试时如添加了新的page或主题样式支持reload hot热调试
+  _initFramework();
+  loadStep = 1;
+  var fullUrl = url;
+  if (fullUrl.indexOf("://") < 0) {
+    throw FlutterErrorDetails(
+        exception: Exception('非法地址请求。正确格式为：portal://relativeUrl'));
+  }
+  ThemeStyle themeStyle = _allThemes[url];
+  if (themeStyle == null) return null;
+  return themeStyle.buildTheme(context);
+}
+
+Map<String, Widget Function(BuildContext)> buildRoutes() {
+  if (loadStep < 1) {
+    throw FlutterErrorDetails(
+        exception: Exception('主widget未绑定onGenerateThemeStyle方法'));
+  }
+  loadStep = 2;
+  return {}; //仅仅将它当作初始化事件使用，所以直接返回空map，当然也可以为map添加一些初始化的全局页面，比如错误页面
 }
 
 Route onGenerateRoute(RouteSettings routeSettings) {
+  if (loadStep < 2) {
+    throw FlutterErrorDetails(exception: Exception('主widget未绑定buildRoutes方法'));
+  }
+  loadStep = 3;
   var fullUrl = routeSettings.name;
+  if ("/" == fullUrl) {
+    return null;
+  }
   if (fullUrl.indexOf("://") < 0) {
     throw FlutterErrorDetails(
         exception: Exception(
-            '非法地址请求。正确格式为：portal://relativeUrl?key=value&key2=value2'));
+            '非法地址请求:$fullUrl。正确格式为：portal://relativeUrl?key=value&key2=value2'));
   }
   Page page = _allPages[fullUrl];
   if (page == null) {
-    return null;
+    return MaterialPageRoute(
+      settings: routeSettings,
+      builder: (BuildContext buildContext) {
+        return ErrorPage404();
+      },
+    );
   }
   Map<String, Object> args = Map();
   if (page.parameters.length > 0) {
@@ -101,7 +168,12 @@ Route onGenerateRoute(RouteSettings routeSettings) {
 }
 
 Route onUnknownRoute(RouteSettings settings) {
-  return null;
+  return MaterialPageRoute(
+    settings: settings,
+    builder: (BuildContext buildContext) {
+      return ErrorPage404();
+    },
+  );
 }
 
 BaseOptions options = BaseOptions(headers: {

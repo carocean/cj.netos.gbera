@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:gbera/netos/common.dart';
 
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key key, this.context}) : super(key: key);
 
@@ -58,6 +59,7 @@ class _LoginPageState extends State<LoginPage> {
               color: Colors.red,
               child: TextField(
                 controller: _passwordController,
+
                 decoration: const InputDecoration(
                   labelText: '密码',
                 ),

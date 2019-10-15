@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:gbera/netos/common.dart';
 
-import '../parts/bottoms.dart';
 import '../parts/headers.dart';
 
 class Netflow extends StatefulWidget {

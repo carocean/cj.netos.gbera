@@ -5,7 +5,6 @@ import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/util.dart';
 import 'package:intl/intl.dart';
 
-import '../parts/bottoms.dart';
 import '../parts/parts.dart';
 
 class Desktop extends StatefulWidget {

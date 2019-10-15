@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:gbera/netos/common.dart';
+
 ///显示程序的一般错误信息
 class GberaError extends StatefulWidget {
 

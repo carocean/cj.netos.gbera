@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class Portal {
@@ -9,8 +10,10 @@ class Portal {
     @required this.name,
     @required this.icon,
     @required this.buildPages,
+    @required this.buildThemes,
   });
 
+  final BuildThemes buildThemes;
   final BuildPages buildPages;
   final String id;
   final String name;
@@ -104,6 +107,24 @@ class Page {
       _parseParams(qs);
     }
   }
+}
+
+typedef BuildTheme = ThemeData Function(BuildContext context);
+
+class ThemeStyle {
+  final String url;
+  final String title;
+  final String desc;
+  final BuildTheme buildTheme;
+
+  const ThemeStyle({
+    @required this.title,
+    @required this.url,
+    this.desc,
+    @required this.buildTheme,
+  })  : assert(title != null),
+        assert(url != null),
+        assert(buildTheme != null);
 }
 
 mixin StringUtil {
@@ -294,6 +315,8 @@ class PageContext {
 typedef BuildRoute = Widget Function(PageContext pageContext);
 typedef BuildPortal = Portal Function(IServiceProvider site);
 typedef BuildPages = List<Page> Function(Portal protal, IServiceProvider site);
+typedef BuildThemes = List<ThemeStyle> Function(
+    Portal protal, IServiceProvider site);
 
 class OpenportsException implements Exception {
   String message;
