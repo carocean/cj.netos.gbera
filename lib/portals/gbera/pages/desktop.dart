@@ -79,8 +79,18 @@ class _DesktopState extends State<Desktop> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Text('12'),
-                                Text('零钱'),
+                                Text(
+                                  '6500.50',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                                Text(
+                                  '零钱',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -93,8 +103,18 @@ class _DesktopState extends State<Desktop> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Text('2383.0303883'),
-                                Text('帑银资产'),
+                                Text(
+                                  '5400.03',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                                Text(
+                                  '帑银资产',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -107,8 +127,18 @@ class _DesktopState extends State<Desktop> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Text('8892.884732'),
-                                Text('纹银资产'),
+                                Text(
+                                  '201.88',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                                Text(
+                                  '纹银资产',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -129,21 +159,45 @@ class _DesktopState extends State<Desktop> {
                 children: <Widget>[
                   Expanded(
                     flex: 1,
-                    child: Text('桌面'),
+                    child: Text(
+                      '桌面',
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
                   ),
                   Expanded(
                     flex: 1,
                     child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Text('总资产'),
-                          Padding(
-                            padding: EdgeInsets.only(left: 10),
-                            child: Text('82828.82812'),
-                          ),
-                        ],
+                      alignment: Alignment.bottomRight,
+                      child: GestureDetector(
+                        onTap: () {
+                          print('press key ..');
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '总资产:',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              '11000.82',
+                              style: TextStyle(
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -168,8 +222,8 @@ class _DesktopState extends State<Desktop> {
                           child: Row(
                             children: <Widget>[
                               Image(
-                                width: 30.0,
-                                height: 30.0,
+                                width: 20.0,
+                                height: 20.0,
                                 fit: BoxFit.cover,
                                 image: NetworkImage(
                                     'http://pic-bucket.ws.126.net/photo/0001/2019-08-13/EMENLA1600AN0001NOS.jpg'),
@@ -177,21 +231,14 @@ class _DesktopState extends State<Desktop> {
                               Padding(
                                 padding: EdgeInsets.only(left: 5),
                                 child: Align(
-                                  child: Stack(
-                                    overflow: Overflow.visible,
-                                    children: <Widget>[
-                                      Text(
-                                        '丰都集团·区级地商',
-                                      ),
-                                      Positioned(
-                                        top: 20,
-                                        left: 0,
-                                        child: Text('挥泪抛售,一降再降,卖完为止。'),
-                                      ),
-                                    ],
+                                  child: Text(
+                                    '丰都集团',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                    ),
                                   ),
                                   alignment: Alignment.topRight,
-                                  heightFactor: 2,
+                                  heightFactor: 1,
                                 ),
                               ),
                             ],
@@ -201,45 +248,56 @@ class _DesktopState extends State<Desktop> {
                           flex: 1,
                           child: Align(
                             alignment: Alignment.topRight,
-                            heightFactor: 2,
+                            heightFactor: 1,
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 Icon(
                                   Icons.directions_walk,
-                                  size: 14,
+                                  size: 12,
                                 ),
-                                Text('天河区'),
+                                Text(
+                                  '天河区·地商',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: 12,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                         ),
                       ],
                     ),
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          '指数：',
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                            left: 5,
-                            right: 10,
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: 10,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            '指数：',
                           ),
-                          child: Text('2393.02331239'),
-                        ),
-                        Text(
-                          '日成交：',
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                            left: 5,
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: 5,
+                              right: 10,
+                            ),
+                            child: Text('2393.02'),
                           ),
-                          child: Text('382.384742'),
-                        ),
-                      ],
+                          Text(
+                            '日成交：',
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: 5,
+                            ),
+                            child: Text('382.38'),
+                          ),
+                        ],
+                      ),
                     ),
                     Row(
                       mainAxisSize: MainAxisSize.max,
@@ -248,8 +306,8 @@ class _DesktopState extends State<Desktop> {
                       children: <Widget>[
                         ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: Adapt.screenW() - Adapt.px(46),
-                            maxHeight: 250,
+                            maxWidth: Adapt.screenW() - Adapt.px(100),
+                            maxHeight: 150,
                           ),
                           child: CustomAxisTickFormatters.withSampleData(),
                         ),
@@ -267,25 +325,30 @@ class _DesktopState extends State<Desktop> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Flex(
-                    direction: Axis.horizontal,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Expanded(
-                        flex: 1,
-                        child: Text('您的资产'),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Text('当前价/原价'),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Text('奖池/买单数'),
-                      ),
-                    ],
+                  Padding(
+                    padding: EdgeInsets.only(
+                      bottom: 10,
+                    ),
+                    child: Flex(
+                      direction: Axis.horizontal,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Expanded(
+                          flex: 1,
+                          child: Text('您的资产'),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Text('当前价/原价'),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Text('奖池/买单数'),
+                        ),
+                      ],
+                    ),
                   ),
                   ListView.separated(
                     physics: NeverScrollableScrollPhysics(),
@@ -300,7 +363,7 @@ class _DesktopState extends State<Desktop> {
                     itemBuilder: (context, index) {
                       return Container(
                         alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.only(top: 5, bottom: 5),
+                        padding: EdgeInsets.only(top: 10, bottom: 10),
                         child: Stack(
                           children: <Widget>[
                             Icon(
@@ -363,7 +426,7 @@ class _DesktopState extends State<Desktop> {
         ],
       ),
     );
-  return myarea;
+    return myarea;
   }
 
   _buildCards(BuildContext context) {}

@@ -41,7 +41,7 @@ class _MarketState extends State<Market> {
           ),
           leading: Icon(
             Icons.shop_two,
-            size: 35,
+            size: 25,
           ),
         ),
       ),
@@ -60,7 +60,7 @@ class _MarketState extends State<Market> {
           ),
           leading: Icon(
             Icons.shopping_cart,
-            size: 35,
+            size: 25,
           ),
         ),
       ),
@@ -79,7 +79,7 @@ class _MarketState extends State<Market> {
           ),
           leading: Icon(
             Icons.local_laundry_service,
-            size: 35,
+            size: 25,
           ),
         ),
       ),
@@ -100,7 +100,7 @@ class _MarketState extends State<Market> {
           ),
           leading: Icon(
             Icons.edit_location,
-            size: 35,
+            size: 25,
           ),
         ),
       ),
@@ -119,7 +119,7 @@ class _MarketState extends State<Market> {
           ),
           leading: Icon(
             Icons.markunread_mailbox,
-            size: 35,
+            size: 25,
           ),
         ),
       ),

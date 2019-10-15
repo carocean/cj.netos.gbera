@@ -54,7 +54,10 @@ class _NetflowState extends State<Netflow> {
 void _buildPipelineTab(List<Widget> panel) {
   panel.add(SliverToBoxAdapter(
     child: Container(
-      padding: EdgeInsets.only(left: 10),
+      padding: EdgeInsets.only(
+        left: 10,
+        bottom: 5,
+      ),
       child: Text(
         '管道',
         style: TextStyle(
@@ -72,10 +75,15 @@ void _buildPipelineTab(List<Widget> panel) {
         bottom: 10,
       ),
       child: ListTile(
-        leading: IconButton(
-          icon: Image(
-            image: NetworkImage(
-                'http://pic-bucket.ws.126.net/photo/0001/2019-08-24/ENBGPJEM00AO0001NOS.jpg'),
+        title: Text('公共'),
+        leading: SizedBox(
+          height: 60,
+          width: 60,
+          child: IconButton(
+            icon: Image(
+              image: NetworkImage(
+                  'http://pic-bucket.ws.126.net/photo/0001/2019-08-24/ENBGPJEM00AO0001NOS.jpg'),
+            ),
           ),
         ),
         trailing: Padding(
@@ -83,45 +91,54 @@ void _buildPipelineTab(List<Widget> panel) {
             top: 0,
             bottom: 20,
           ),
-          child: Text('10:40'),
+          child: Text(
+            '10:40',
+            style: TextStyle(
+              color: Colors.grey[400],
+            ),
+          ),
         ),
-        subtitle: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              '[29/243]',
-              style: TextStyle(fontSize: 12),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 5, right: 1),
-              child: Text(
-                '旺京酒店',
-                style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 1, right: 5),
-              child: Text(
-                '说:',
+        subtitle: Padding(
+          padding: EdgeInsets.only(
+            top: 6,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                '[29/243]',
                 style: TextStyle(fontSize: 12),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 5),
-              child: Text(
-                '招服务员2名',
-                style: TextStyle(
-                  fontSize: 12,
+              Padding(
+                padding: EdgeInsets.only(left: 5, right: 1),
+                child: Text(
+                  '旺京酒店',
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontSize: 12,
+                  ),
                 ),
-                overflow: TextOverflow.ellipsis,
               ),
-            ),
-          ],
+              Padding(
+                padding: EdgeInsets.only(left: 1, right: 5),
+                child: Text(
+                  '说:',
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 5),
+                child: Text(
+                  '招服务员2名',
+                  style: TextStyle(
+                    fontSize: 12,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
         ),
-        title: Text('公共'),
       ),
     ),
   ));
@@ -133,10 +150,15 @@ void _buildPipelineTab(List<Widget> panel) {
         bottom: 10,
       ),
       child: ListTile(
-        leading: IconButton(
-          icon: Image(
-            image: NetworkImage(
-                'http://pic-bucket.ws.126.net/photo/0003/2019-08-24/ENB1RG1000AJ0003NOS.jpg'),
+        title: Text('地圈动态'),
+        leading: SizedBox(
+          height: 60,
+          width: 60,
+          child: IconButton(
+            icon: Image(
+              image: NetworkImage(
+                  'http://pic-bucket.ws.126.net/photo/0003/2019-08-24/ENB1RG1000AJ0003NOS.jpg'),
+            ),
           ),
         ),
         trailing: Padding(
@@ -144,45 +166,54 @@ void _buildPipelineTab(List<Widget> panel) {
             top: 0,
             bottom: 20,
           ),
-          child: Text('23:22'),
+          child: Text(
+            '23:22',
+            style: TextStyle(
+              color: Colors.grey[400],
+            ),
+          ),
         ),
-        subtitle: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              '[93/43]',
-              style: TextStyle(fontSize: 12),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 5, right: 1),
-              child: Text(
-                '新华小学',
-                style: TextStyle(fontStyle: FontStyle.italic, fontSize: 12),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 1, right: 5),
-              child: Text(
-                '说:',
+        subtitle: Container(
+          padding: EdgeInsets.only(
+            top: 6,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                '[93/43]',
                 style: TextStyle(fontSize: 12),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 5),
-              child: Text(
-                '国庆放假10天',
-                style: TextStyle(fontSize: 12),
-                overflow: TextOverflow.ellipsis,
+              Padding(
+                padding: EdgeInsets.only(left: 5, right: 1),
+                child: Text(
+                  '新华小学',
+                  style: TextStyle(fontStyle: FontStyle.italic, fontSize: 12),
+                ),
               ),
-            ),
-          ],
+              Padding(
+                padding: EdgeInsets.only(left: 1, right: 5),
+                child: Text(
+                  '说:',
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 5),
+                child: Text(
+                  '国庆放假10天',
+                  style: TextStyle(fontSize: 12),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
         ),
-        title: Text('地圈动态'),
       ),
     ),
   ));
   panel.add(SliverFixedExtentList(
-    itemExtent: 80, // I'm forcing item heights
+    itemExtent: 75, // I'm forcing item heights
     delegate: SliverChildBuilderDelegate(
       _pipelineContentItemBuilder,
       childCount: 50,
@@ -191,76 +222,16 @@ void _buildPipelineTab(List<Widget> panel) {
 }
 
 void _buildPlatTab(List<Widget> panel) {
-//  panel.add(
-//    SliverToBoxAdapter(
-//      child: Center(
-//        child: Padding(
-//          padding: EdgeInsets.only(bottom: 10),
-//          child: Row(
-//            mainAxisAlignment: MainAxisAlignment.center,
-//            mainAxisSize: MainAxisSize.max,
-//            children: <Widget>[
-//              Padding(
-//                padding: EdgeInsets.only(left: 10, right: 10),
-//                child: GestureDetector(
-//                  onTap: () {},
-//                  child: Column(
-//                    mainAxisAlignment: MainAxisAlignment.center,
-//                    children: <Widget>[
-//                      Text('12'),
-//                      Text('所有'),
-//                    ],
-//                  ),
-//                ),
-//              ),
-//              VerticalDivider(
-//                width: 1,
-//                color: Colors.red,
-//              ),
-//              Padding(
-//                padding: EdgeInsets.only(left: 10, right: 10),
-//                child: GestureDetector(
-//                  onTap: () {},
-//                  child: Column(
-//                    mainAxisAlignment: MainAxisAlignment.center,
-//                    children: <Widget>[
-//                      Text('382'),
-//                      Text('公共'),
-//                    ],
-//                  ),
-//                ),
-//              ),
-//              VerticalDivider(
-//                color: Colors.red,
-//              ),
-//              Padding(
-//                padding: EdgeInsets.only(left: 10, right: 10),
-//                child: GestureDetector(
-//                  onTap: () {},
-//                  child: Column(
-//                    mainAxisAlignment: MainAxisAlignment.center,
-//                    children: <Widget>[
-//                      Text('210'),
-//                      Text('地圈'),
-//                    ],
-//                  ),
-//                ),
-//              ),
-//            ],
-//          ),
-//        ),
-//      ),
-//    ),
-//  );
-
   panel.add(SliverToBoxAdapter(
     child: Container(
       padding: EdgeInsets.only(
         left: 10,
         right: 10,
+        bottom: 5,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
             '动态',
@@ -276,7 +247,7 @@ void _buildPlatTab(List<Widget> panel) {
               padding: EdgeInsets.all(0),
               icon: Icon(
                 Icons.edit,
-                size: 20,
+                size: 16,
               ),
               onPressed: () {
                 print('object');
@@ -504,16 +475,23 @@ Widget _pipelineContentItemBuilder(BuildContext context, int index) {
       color: Colors.white,
     ),
     child: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         GestureDetector(
           onTap: () {
             print('xxxxxx');
           },
           child: ListTile(
-            leading: IconButton(
-              icon: Image(
-                image: NetworkImage(
-                    'http://pic-bucket.ws.126.net/photo/0003/2019-08-24/ENB27CUI00AJ0003NOS.jpg'),
+            title: Text('bill li $index'),
+            leading: SizedBox(
+              width: 60,
+              height: 60,
+              child: IconButton(
+                icon: Image(
+                  image: NetworkImage(
+                      'http://pic-bucket.ws.126.net/photo/0003/2019-08-24/ENB27CUI00AJ0003NOS.jpg'),
+                  fit: BoxFit.fill,
+                ),
               ),
             ),
             trailing: Padding(
@@ -521,40 +499,50 @@ Widget _pipelineContentItemBuilder(BuildContext context, int index) {
                 top: 0,
                 bottom: 20,
               ),
-              child: Text('23:55'),
+              child: Text(
+                '23:55',
+                style: TextStyle(
+                  color: Colors.grey[400],
+                ),
+              ),
             ),
-            subtitle: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  '[39/120]',
-                  style: TextStyle(fontSize: 12),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 5, right: 1),
-                  child: Text(
-                    '天空的鸟',
-                    style: TextStyle(fontStyle: FontStyle.italic, fontSize: 12),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 1, right: 5),
-                  child: Text(
-                    '说:',
+            subtitle: Padding(
+              padding: EdgeInsets.only(
+                top: 6,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    '[39/120]',
                     style: TextStyle(fontSize: 12),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 5),
-                  child: Text(
-                    '什么时候回来',
-                    style: TextStyle(fontSize: 12),
-                    overflow: TextOverflow.ellipsis,
+                  Padding(
+                    padding: EdgeInsets.only(left: 5, right: 1),
+                    child: Text(
+                      '天空的鸟',
+                      style:
+                          TextStyle(fontStyle: FontStyle.italic, fontSize: 12),
+                    ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: EdgeInsets.only(left: 1, right: 5),
+                    child: Text(
+                      '说:',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 5),
+                    child: Text(
+                      '什么时候回来',
+                      style: TextStyle(fontSize: 12),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            title: Text('bill li $index'),
           ),
         ),
         Divider(
