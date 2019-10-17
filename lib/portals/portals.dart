@@ -75,7 +75,7 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               ),
             ),
             Page(
-              title: '登录',
+              title: '登录2',
               subtitle: '',
               icon: GalleryIcons.shrine,
               url: '/login2',

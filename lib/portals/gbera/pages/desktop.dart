@@ -19,6 +19,9 @@ class Desktop extends StatefulWidget {
 class _DesktopState extends State<Desktop> {
   @override
   Widget build(BuildContext context) {
+    Map<String, Page> pages = widget.context.site.getService("@.pages");
+    var url = widget.context.page.parameters['From-Page-Url'];
+    var scaffold = pages['${widget.context.page.portal}:/$url'];
     var myarea = SafeArea(
       child: CustomScrollView(
         slivers: <Widget>[
@@ -26,7 +29,7 @@ class _DesktopState extends State<Desktop> {
             pinned: true,
             expandedHeight: 210,
             floating: false,
-            title: Text(widget?.context?.page?.title),
+            title: Text(scaffold?.title ?? ''),
             titleSpacing: 10,
             centerTitle: false,
             automaticallyImplyLeading: false,
@@ -357,18 +360,23 @@ class _DesktopState extends State<Desktop> {
                     separatorBuilder: (BuildContext context, int index) {
                       return new Divider(
                         height: 1.0,
-                        color: Colors.blue,
+                        color: Colors.grey[300],
                       );
                     },
                     itemBuilder: (context, index) {
                       return Container(
                         alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.only(top: 10, bottom: 10),
+                        padding: EdgeInsets.only(
+                          top: 10,
+                          bottom: 10,
+                        ),
                         child: Stack(
+                          alignment: Alignment.centerLeft,
                           children: <Widget>[
                             Icon(
                               Icons.account_balance,
                               size: 25,
+                              color: Colors.grey[400],
                             ),
                             Flex(
                               direction: Axis.horizontal,

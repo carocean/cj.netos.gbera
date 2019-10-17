@@ -152,7 +152,13 @@ class PageContext {
     Map<String, Page> pages = site.getService("@.pages");
     Page page = pages[pageUrl];
     if (page == null) return null;
-    Widget widget = page.buildRoute(pageContext);
+    page._parameters['From-Page-Url']=pageContext.page.url;
+    PageContext pageContext2 = PageContext(
+      page: page,
+      site: site,
+      context: pageContext.context,
+    );
+    Widget widget = page.buildRoute(pageContext2);
     return widget;
   }
 

@@ -75,3 +75,5 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
   assets:
     - lib/portals/gbera/images/gbera.png
+    - lib/portals/gbera/images/penquan.png
+    - lib/portals/gbera/images/yuanbao.png

@@ -18,6 +18,7 @@ class _CardHeaderBase extends StatelessWidget {
             child: Icon(
               Icons.business_center,
               size: 25,
+              color: Colors.grey[600],
             ),
           ),
           Padding(
@@ -38,6 +39,7 @@ class _CardHeaderBase extends StatelessWidget {
                 },
                 icon: Icon(
                   Icons.keyboard_arrow_down,
+                  color: Colors.grey[600],
                 ),
               ),
             ),
