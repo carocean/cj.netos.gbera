@@ -82,7 +82,8 @@ class _LoginPage2State extends State<LoginPage2> {
         r'^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))\d{8}$');
     if (value.isEmpty) {
       return '用户名不能为空!';
-    } /*else if (!exp.hasMatch(value)) {
+    }
+    /*else if (!exp.hasMatch(value)) {
       return '请输入正确手机号';
     }*/
     return null;
@@ -94,7 +95,8 @@ class _LoginPage2State extends State<LoginPage2> {
   String validatePassWord(value) {
     if (value.isEmpty) {
       return '密码不能为空';
-    } /*else if (value.trim().length < 6 || value.trim().length > 18) {
+    }
+    /*else if (value.trim().length < 6 || value.trim().length > 18) {
       return '密码长度不正确';
     }*/
     return null;
@@ -134,7 +136,7 @@ class _LoginPage2State extends State<LoginPage2> {
               controller: _userNameController,
               focusNode: _focusNodeUserName,
               //设置键盘类型
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.text,
               decoration: InputDecoration(
                 labelText: "用户名",
                 hintText: "请输入手机号/邮箱/用户号/账号",
@@ -209,7 +211,8 @@ class _LoginPage2State extends State<LoginPage2> {
             //只有输入通过验证，才会执行这里
             _formKey.currentState.save();
             //todo 登录操作
-            var login=LoginAction(context: widget.context,pwd: _password,user: _username);
+            var login = LoginAction(
+                context: widget.context, pwd: _password, user: _username);
             login.login();
           }
         },
@@ -301,7 +304,21 @@ class _LoginPage2State extends State<LoginPage2> {
         ],
       ),
     );
-
+    var appTitle = Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.all(10),
+          child: Text(
+            '金证时代',
+            style: widget.context.style(
+              '/login2/appTitle.text',
+            ),
+          ),
+        ),
+      ],
+    );
     return Scaffold(
       backgroundColor: Colors.white,
       // 外层添加一个手势，用于点击空白部分，回收键盘
@@ -318,6 +335,7 @@ class _LoginPage2State extends State<LoginPage2> {
               height: ScreenUtil().setHeight(80),
             ),
             logoImageArea,
+            appTitle,
             new SizedBox(
               height: ScreenUtil().setHeight(70),
             ),
@@ -340,6 +358,7 @@ class _LoginPage2State extends State<LoginPage2> {
     );
   }
 }
+
 class LoginAction {
   final String user;
   final String pwd;
@@ -381,7 +400,7 @@ class LoginAction {
 
   void forwardOK(rc) {
     print('ok:${rc['dataText']}');
-    context.forward("gbera://scaffold/withbottombar");
+    context.forward("gbera://scaffold/withbottombar",notManagerPreviousPage: true);
   }
 
   void forwardError(e) {

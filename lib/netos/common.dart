@@ -44,16 +44,22 @@ class Page {
     @required this.icon,
     this.subtitle,
     @required this.url,
+    @required this.buildPage,
     @required this.buildRoute,
   })  : assert(title != null),
         assert(url != null),
-        assert(buildRoute != null);
+        assert(buildPage != null || buildRoute != null);
   final String title;
   final IconData icon;
   final String subtitle;
 
   Map<String, Object> _parameters;
   String _portal;
+
+  ///构建页面。如果使用自定义动画则必须使用buildRoute，两个方法必有一个非空；当二者均有实现时则优先buildRoute
+  final BuildPage buildPage;
+
+  ///构建路由。如果使用自定义动画则必须使用buildRoute，两个方法必有一个非空；当二者均有实现时则优先buildRoute
   final BuildRoute buildRoute;
   final String url;
 
@@ -110,21 +116,40 @@ class Page {
 }
 
 typedef BuildTheme = ThemeData Function(BuildContext context);
+typedef BuildStyle = List<Style> Function(BuildContext context);
 
 class ThemeStyle {
   final String url;
   final String title;
   final String desc;
   final BuildTheme buildTheme;
+  final BuildStyle buildStyle;
 
   const ThemeStyle({
     @required this.title,
     @required this.url,
     this.desc,
     @required this.buildTheme,
+    @required this.buildStyle,
   })  : assert(title != null),
         assert(url != null),
-        assert(buildTheme != null);
+        assert(buildTheme != null),
+        assert(buildStyle != null);
+}
+
+typedef GetStyle = Function();
+
+class Style {
+  final String url;
+  final String desc;
+  final GetStyle get;
+
+  const Style({
+    @required this.url,
+    this.desc,
+    @required this.get,
+  })  : assert(url != null),
+        assert(get != null);
 }
 
 mixin StringUtil {
@@ -144,21 +169,64 @@ class PageContext {
 
   const PageContext({this.page, this.site, this.context});
 
-  void forward(String pagePath, {Map<String, Object> arguments}) {
-    Navigator.pushNamed(context, pagePath, arguments: arguments);
+  Future<T> forward<T extends Object>(
+    String pagePath, {
+    Map<String, Object> arguments,
+    bool notManagerPreviousPage,
+  }) {
+    if (pagePath.indexOf("://") < 0) {
+      if (!pagePath.startsWith("/")) {
+        pagePath = '/$pagePath';
+      }
+      pagePath = '${page.portal}:/$pagePath';
+    }
+    var ret = Navigator.pushNamed(context, pagePath, arguments: arguments);
+    if (notManagerPreviousPage!=null&&notManagerPreviousPage) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        pagePath,
+        (route) => route == null,
+      );
+    }
+    return ret;
   }
 
+  String themeUrl() {
+    return site.getService("@.current.theme");
+  }
+
+  ///url为样式定义路径，里面不含portalid也不含主题路径；即：样式永远使用的是当前上下文的portal和主题下的样式定义。
+  style(String url) {
+    if (!url.startsWith("/")) {
+      throw FlutterError('路径没有以/开头');
+    }
+    Map<String, Style> styles = site.getService("@.styles");
+    var themeurl = themeUrl();
+    if (themeurl.endsWith("/")) {
+      themeurl = themeurl.substring(0, themeurl.length - 1);
+    }
+    var fullurl = '${page.portal}:/${themeUrl()}${url}';
+    var style = styles[fullurl]?.get();
+    if (style == null) {
+      throw FlutterError('样式未被发现:$url，在主题:$themeurl');
+    }
+    return style;
+  }
+
+  ///部件作为页面的界面元素被嵌入，因此不支持页面跳转动画，因为它在调用时不被作为路由页。
   Widget part(String pageUrl, PageContext pageContext) {
     Map<String, Page> pages = site.getService("@.pages");
     Page page = pages[pageUrl];
     if (page == null) return null;
-    page._parameters['From-Page-Url']=pageContext.page.url;
+    if (page.buildPage == null) {
+      return null;
+    }
+    page._parameters['From-Page-Url'] = pageContext.page.url;
     PageContext pageContext2 = PageContext(
       page: page,
       site: site,
       context: pageContext.context,
     );
-    Widget widget = page.buildRoute(pageContext2);
+    Widget widget = page.buildPage(pageContext2);
     return widget;
   }
 
@@ -263,7 +331,7 @@ class PageContext {
             FlutterError.reportError(details);
             return;
           }
-          FlutterError(e.error);
+          throw FlutterError(e.error);
         }
         break;
       case 'POST':
@@ -309,7 +377,7 @@ class PageContext {
             FlutterError.reportError(details);
             return;
           }
-          FlutterError(e.error);
+          throw FlutterError(e.error);
         }
         break;
       default:
@@ -318,7 +386,9 @@ class PageContext {
   }
 }
 
-typedef BuildRoute = Widget Function(PageContext pageContext);
+typedef BuildPage = Widget Function(PageContext pageContext);
+typedef BuildRoute = ModalRoute Function(
+    RouteSettings settings, Page page, IServiceProvider site);
 typedef BuildPortal = Portal Function(IServiceProvider site);
 typedef BuildPages = List<Page> Function(Portal protal, IServiceProvider site);
 typedef BuildThemes = List<ThemeStyle> Function(

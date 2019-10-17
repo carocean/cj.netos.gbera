@@ -6,11 +6,13 @@ import 'package:gbera/portals/gbera/pages/desktop.dart';
 import 'package:gbera/portals/gbera/pages/geosphere.dart';
 import 'package:gbera/portals/gbera/pages/market.dart';
 import 'package:gbera/portals/gbera/pages/netflow.dart';
+import 'package:gbera/portals/gbera/pages/profile.dart';
 import 'package:gbera/portals/gbera/scaffolds.dart';
 
 import 'common/icons.dart';
 import 'gbera/login.dart';
 import 'gbera/login2.dart';
+import 'gbera/styles/grey-styles.dart';
 
 List<BuildPortal> buildPortals(IServiceProvider site) {
   return <BuildPortal>[
@@ -23,6 +25,7 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               title: '灰色',
               desc: '呈现淡灰色，接近白',
               url: '/gray',
+              buildStyle: buildGreyStyles,
               buildTheme: (BuildContext context) {
                 return ThemeData(
                   backgroundColor: Color(0xFFF5F5f5),
@@ -52,7 +55,7 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               subtitle: '',
               icon: GalleryIcons.shrine,
               url: '/error',
-              buildRoute: (PageContext pageContext) => GberaError(
+              buildPage: (PageContext pageContext) => GberaError(
                 context: pageContext,
               ),
             ),
@@ -61,7 +64,7 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               subtitle: '',
               icon: GalleryIcons.shrine,
               url: '/scaffold/withbottombar',
-              buildRoute: (PageContext pageContext) => WithBottomScaffold(
+              buildPage: (PageContext pageContext) => WithBottomScaffold(
                 context: pageContext,
               ),
             ),
@@ -70,7 +73,7 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               subtitle: '',
               icon: GalleryIcons.shrine,
               url: '/login',
-              buildRoute: (PageContext pageContext) => LoginPage(
+              buildPage: (PageContext pageContext) => LoginPage(
                 context: pageContext,
               ),
             ),
@@ -79,7 +82,7 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               subtitle: '',
               icon: GalleryIcons.shrine,
               url: '/login2',
-              buildRoute: (PageContext pageContext) => LoginPage2(
+              buildPage: (PageContext pageContext) => LoginPage2(
                 context: pageContext,
               ),
             ),
@@ -88,7 +91,7 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               subtitle: '',
               icon: GalleryIcons.shrine,
               url: '/desktop',
-              buildRoute: (PageContext pageContext) => Desktop(
+              buildPage: (PageContext pageContext) => Desktop(
                 context: pageContext,
               ),
             ),
@@ -97,7 +100,7 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               subtitle: '',
               icon: GalleryIcons.shrine,
               url: '/netflow',
-              buildRoute: (PageContext pageContext) => Netflow(
+              buildPage: (PageContext pageContext) => Netflow(
                 context: pageContext,
               ),
             ),
@@ -106,7 +109,7 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               subtitle: '',
               icon: GalleryIcons.shrine,
               url: '/market',
-              buildRoute: (PageContext pageContext) => Market(
+              buildPage: (PageContext pageContext) => Market(
                 context: pageContext,
               ),
             ),
@@ -115,9 +118,56 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               subtitle: '',
               icon: GalleryIcons.shrine,
               url: '/geosphere',
-              buildRoute: (PageContext pageContext) => Geosphere(
+              buildPage: (PageContext pageContext) => Geosphere(
                 context: pageContext,
               ),
+            ),
+            Page(
+              title: '偏好设置',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/profile',
+              buildPage: (PageContext pageContext) => Profile(
+                context: pageContext,
+              ),
+//              buildRoute:
+//                  (RouteSettings settings, Page page, IServiceProvider site) {
+//                SlideTransition createTransition(
+//                    Animation<double> animation, Widget child) {
+//                  return new SlideTransition(
+//                    position: new Tween<Offset>(
+//                      begin: const Offset(1.0, 0.0),
+//                      end: const Offset(0.0, 0.0),
+//                    ).animate(animation),
+//                    child: child,
+//                  );
+//                }
+//
+//                return PageRouteBuilder(
+//                  settings: settings,
+//                  pageBuilder: (BuildContext context,
+//                      Animation<double> animation,
+//                      Animation<double> secondaryAnimation) {
+//                    // 跳转的路由对象
+//                    PageContext pageContext = PageContext(
+//                      page: page,
+//                      site: site,
+//                      context: context,
+//                    );
+//                    return new Profile(
+//                      context: pageContext,
+//                    );
+//                  },
+//                  transitionsBuilder: (
+//                    BuildContext context,
+//                    Animation<double> animation,
+//                    Animation<double> secondaryAnimation,
+//                    Widget child,
+//                  ) {
+//                    return createTransition(animation, child);
+//                  },
+//                );
+//              },
             ),
           ],
         ),

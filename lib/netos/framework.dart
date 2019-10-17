@@ -11,6 +11,8 @@ import 'errors.dart';
 Map<String, Portal> _allPortals = Map(); //key是portalid
 Map<String, Page> _allPages = Map(); //key是全路径
 Map<String, ThemeStyle> _allThemes = Map(); //key是全路径
+Map<String, Style> _allStyles = Map(); //key是全路径
+var _currentThemeUrl = ''; //当前应用的主题路径，是相对于portal的路径
 IServiceProvider _site = GberaServiceProvider();
 
 //事件顺序
@@ -22,7 +24,7 @@ IServiceProvider _site = GberaServiceProvider();
 var loadStep =
     0; //1为执行了onGenerateThemeStyle方法；2为执行了buildRoutes法；3是执行了onGenerateRoute方法。后者检查前序方法是否被执行，否则报错。
 
-_initFramework() {
+_initFramework(BuildContext context) {
   if (Platform.isAndroid) {
     SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -31,13 +33,18 @@ _initFramework() {
     );
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
-  _buildPortals();
+  ErrorWidget.builder = (FlutterErrorDetails flutterErrorDetails) {
+    return RuntimeErrorPage(flutterErrorDetails);
+  };
+  _buildPortals(context);
 }
 
-_buildPortals() {
+_buildPortals(BuildContext context) {
   _allPortals.clear();
   _allPages.clear();
   _allThemes.clear();
+  _allStyles.clear();
+  _currentThemeUrl = '';
   var _portals = buildPortals(_site);
   for (var item in _portals) {
     var portal = item(_site);
@@ -86,11 +93,27 @@ _buildPortals() {
       if (pos > -1) {
         throw FlutterErrorDetails(exception: Exception('主题url不能带查询串:$url'));
       }
-      String fullurl = '${portal.id}:/$url';
-      if (_allPages.containsKey(fullurl)) {
-        throw FlutterErrorDetails(exception: Exception('已存在地址页:$fullurl'));
+      String themeurl = '${portal.id}:/$url';
+      if (_allThemes.containsKey(themeurl)) {
+        throw FlutterErrorDetails(exception: Exception('已存在主题地址:$themeurl'));
       }
-      _allThemes[fullurl] = themeStyle;
+      List<Style> styles = themeStyle.buildStyle(context);
+      for (Style style in styles) {
+        String themeurlSubEndSign = themeurl;
+        while (themeurl.endsWith('/')) {
+          themeurlSubEndSign = themeurl.substring(0, themeurl.length - 1);
+        }
+        if (!style.url.startsWith("/")) {
+          throw FlutterErrorDetails(
+              exception: Exception('非法地址：${style.url}，style的url必须以/开头。'));
+        }
+        String styleFullUrl = '${themeurlSubEndSign}${style.url}';
+        if (_allStyles.containsKey(styleFullUrl)) {
+          throw FlutterError('样式地址冲突:$styleFullUrl');
+        }
+        _allStyles[styleFullUrl] = style;
+      }
+      _allThemes[themeurl] = themeStyle;
     }
   }
 }
@@ -98,13 +121,16 @@ _buildPortals() {
 //主题是第一个响应，次是初始化路由表
 ThemeData onGenerateThemeStyle(String url, BuildContext context) {
   //由于主题是最先加载，因此铁定都要执行初始化。所以在调试时如添加了新的page或主题样式支持reload hot热调试
-  _initFramework();
+  _initFramework(context);
   loadStep = 1;
   var fullUrl = url;
-  if (fullUrl.indexOf("://") < 0) {
+  var pos = fullUrl.indexOf('://');
+  if (pos < 0) {
     throw FlutterErrorDetails(
         exception: Exception('非法地址请求。正确格式为：portal://relativeUrl'));
   }
+  _currentThemeUrl = fullUrl.substring(pos + 2, fullUrl.length);
+
   ThemeStyle themeStyle = _allThemes[url];
   if (themeStyle == null) return null;
   return themeStyle.buildTheme(context);
@@ -153,6 +179,16 @@ Route onGenerateRoute(RouteSettings routeSettings) {
       args[routeSettings.arguments.toString()] = routeSettings.arguments;
     }
   }
+  RouteSettings settings =
+      RouteSettings(name: fullUrl, isInitialRoute: false, arguments: args);
+  BuildRoute buildRoute = page?.buildRoute;
+  if(buildRoute!=null){
+    return buildRoute(settings, page, _site);
+  }
+  BuildPage buildPage = page?.buildPage;
+  if (buildPage == null) {
+    return null;
+  }
   return MaterialPageRoute(
     settings: routeSettings.copyWith(
         name: fullUrl, arguments: args, isInitialRoute: false),
@@ -162,7 +198,7 @@ Route onGenerateRoute(RouteSettings routeSettings) {
         site: _site,
         context: buildContext,
       );
-      return page.buildRoute(pageContext);
+      return buildPage(pageContext);
     },
   );
 }
@@ -192,6 +228,12 @@ class GberaServiceProvider implements IServiceProvider {
     }
     if ("@.pages" == name) {
       return _allPages;
+    }
+    if ("@.styles" == name) {
+      return _allStyles;
+    }
+    if ("@.current.theme" == name) {
+      return _currentThemeUrl;
     }
     return null;
   }

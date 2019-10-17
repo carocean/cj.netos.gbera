@@ -16,17 +16,9 @@ class Geosphere extends StatefulWidget {
 class _GeosphereState extends State<Geosphere> {
   @override
   Widget build(BuildContext context) {
-    var textStyle1_title = TextStyle(
-      fontSize: 12,
-    );
-    var textStyle1_red = TextStyle(
-      fontSize: 12,
-      color: Colors.red,
-    );
-    var textStyle1_grey = TextStyle(
-      fontSize: 12,
-      color: Colors.grey[600],
-    );
+    var textStyle1_title = widget.context.style('/geosphere/title.text');
+    var textStyle1_red = widget.context.style('/geosphere/title-red.text');
+    var textStyle1_grey = widget.context.style('/geosphere/title-grey.text');
 
     //SliverPersistentHeaderDelegate 滑动可折叠头
     List<Widget> panel = [
@@ -58,9 +50,7 @@ class _GeosphereState extends State<Geosphere> {
             color: Theme.of(context).backgroundColor,
             child: Text(
               '我的地圈',
-              style: TextStyle(
-                fontSize: 14,
-              ),
+              style: widget.context.style('/geosphere/mydq.text'),
             ),
           ),
           titlePadding: EdgeInsets.only(
@@ -792,11 +782,8 @@ class _GeosphereState extends State<Geosphere> {
                                       ),
                                       child: Text(
                                         '出租车王师傅[¥0.21]:',
-                                        style: TextStyle(
-                                          color: Colors.grey[700],
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 14,
-                                        ),
+                                        style: widget.context.style(
+                                            '/geosphere/listItemMsgTitle.text'),
                                       ),
                                     ),
                                     Padding(
@@ -1053,11 +1040,8 @@ class _GeosphereState extends State<Geosphere> {
                                   ),
                                   child: Text(
                                     '出租车王师傅[¥0.21]:',
-                                    style: TextStyle(
-                                      color: Colors.grey[700],
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 14,
-                                    ),
+                                    style: widget.context.style(
+                                        '/geosphere/listItemMsgTitle.text'),
                                   ),
                                 ),
                                 Padding(
@@ -1322,11 +1306,8 @@ class _GeosphereState extends State<Geosphere> {
                                   ),
                                   child: Text(
                                     '出租车王师傅[¥0.21]:',
-                                    style: TextStyle(
-                                      color: Colors.grey[700],
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 14,
-                                    ),
+                                    style: widget.context.style(
+                                        '/geosphere/listItemMsgTitle.text'),
                                   ),
                                 ),
                                 Padding(

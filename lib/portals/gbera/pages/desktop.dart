@@ -62,12 +62,17 @@ class _DesktopState extends State<Desktop> {
                       left: 0,
                       top: 50,
                     ),
-                    child: ListTile(
-                      title: Text('carocean'),
-                      subtitle: Text('我回家吃了饭'),
-                      leading: CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            'http://pic-bucket.ws.126.net/photo/0001/2019-08-13/EMENLA1600AN0001NOS.jpg'),
+                    child: GestureDetector(
+                      onTap: (){
+                        widget.context.forward('/profile');
+                      },
+                      child: ListTile(
+                        title: Text('carocean'),
+                        subtitle: Text('我回家吃了饭'),
+                        leading: CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              'http://pic-bucket.ws.126.net/photo/0001/2019-08-13/EMENLA1600AN0001NOS.jpg'),
+                        ),
                       ),
                     ),
                   ),
