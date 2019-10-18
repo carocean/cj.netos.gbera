@@ -1,10 +1,21 @@
 ///系统出错页
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-class NetosError implements Exception{
-  final int status;
-  final  String message;
-  const NetosError(this.status,this. message);
+class OpenportsException implements Exception {
+  String message;
+  int state;
+  String cause;
+
+  OpenportsException({
+    this.message,
+    this.state,
+    this.cause,
+  });
+
+  @override
+  String toString() {
+    return "Openports [$state]: " + (message ?? "") + '\r\n' + (cause ?? "");
+  }
 }
 class ErrorPage404 extends StatelessWidget {
   @override

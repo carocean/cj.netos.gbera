@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import 'errors.dart';
+
 class UserPrincipal {
   final String uid;
   final String accountid;
@@ -22,7 +24,8 @@ class UserPrincipal {
       this.tenantRoles,
       this.appRoles});
 }
-class Security{
+
+class Security {
   UserPrincipal _userPrincipal;
 
   UserPrincipal get userPrincipal => _userPrincipal;
@@ -30,8 +33,8 @@ class Security{
   set userPrincipal(UserPrincipal value) {
     _userPrincipal = value;
   }
-
 }
+
 class Portal {
   const Portal({
     @required this.id,
@@ -197,7 +200,13 @@ class PageContext {
 
   const PageContext({this.page, this.site, this.context});
 
-  UserPrincipal get userPrincipal => site.getService('@.security')?.userPrincipal;
+  UserPrincipal get userPrincipal =>
+      site.getService('@.security')?.userPrincipal;
+
+  ///真实传过来的参数
+  get parameters => ModalRoute.of(context).settings.arguments;
+  ///真实传入的地址
+  String get url => ModalRoute.of(context).settings.name;
 
   Future<T> forward<T extends Object>(
     String pagePath, {
@@ -428,20 +437,3 @@ typedef BuildPortal = Portal Function(IServiceProvider site);
 typedef BuildPages = List<Page> Function(Portal protal, IServiceProvider site);
 typedef BuildThemes = List<ThemeStyle> Function(
     Portal protal, IServiceProvider site);
-
-class OpenportsException implements Exception {
-  String message;
-  int state;
-  String cause;
-
-  OpenportsException({
-    this.message,
-    this.state,
-    this.cause,
-  });
-
-  @override
-  String toString() {
-    return "Openports [$state]: " + (message ?? "") + '\r\n' + (cause ?? "");
-  }
-}

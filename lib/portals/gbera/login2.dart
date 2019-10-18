@@ -434,7 +434,6 @@ class LoginAction {
   }
 
   void forwardError(e) {
-    print('error:${e.response.data}');
     context.forward(
       "gbera://error",
       arguments: {
