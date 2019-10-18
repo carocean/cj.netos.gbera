@@ -42,7 +42,7 @@ class _DesktopState extends State<Desktop> {
               IconButton(
                 // Use the FontAwesomeIcons class for the IconData
                 icon: new Icon(Icons.crop_free),
-                onPressed: () async{
+                onPressed: () async {
                   String cameraScanResult = await scanner.scan();
                   showDialog(
                     context: context,
@@ -50,28 +50,29 @@ class _DesktopState extends State<Desktop> {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: Text('扫好友、扫地物、支付、收款等'),
-                        content:Text(cameraScanResult),
-                        actions:<Widget>[
+                        content: Text(cameraScanResult),
+                        actions: <Widget>[
                           FlatButton(
                             child: Text('YES'),
-                            onPressed: (){
+                            onPressed: () {
                               print('yes...');
                               Navigator.of(context).pop();
                             },
                           ),
                           FlatButton(
                             child: Text('NO'),
-                            onPressed: (){
+                            onPressed: () {
                               print('no...');
                               Navigator.of(context).pop();
                             },
                           ),
                         ],
-                        backgroundColor:Colors.yellowAccent,
+                        backgroundColor: Colors.yellowAccent,
                         elevation: 20,
-                        semanticLabel:'哈哈哈哈',
+                        semanticLabel: '哈哈哈哈',
                         // 设置成 圆角
-                        shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
                       );
                     },
                   );
@@ -123,22 +124,27 @@ class _DesktopState extends State<Desktop> {
                         children: <Widget>[
                           Padding(
                             padding: EdgeInsets.only(left: 10, right: 10),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  '6500.50',
-                                  style: TextStyle(
-                                    color: Colors.red,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () =>
+                                  widget.context.forward('/wallet/change'),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    '6500.50',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  '零钱',
-                                  style: TextStyle(
-                                    color: Colors.grey[600],
+                                  Text(
+                                    '零钱',
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                           VerticalDivider(
@@ -147,22 +153,26 @@ class _DesktopState extends State<Desktop> {
                           ),
                           Padding(
                             padding: EdgeInsets.only(left: 10, right: 10),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  '5400.03',
-                                  style: TextStyle(
-                                    color: Colors.red,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () => widget.context.forward('/wallet/ty'),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    '5400.03',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  '帑银资产',
-                                  style: TextStyle(
-                                    color: Colors.grey[600],
+                                  Text(
+                                    '帑银资产',
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                           VerticalDivider(
@@ -171,22 +181,26 @@ class _DesktopState extends State<Desktop> {
                           ),
                           Padding(
                             padding: EdgeInsets.only(left: 10, right: 10),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  '201.88',
-                                  style: TextStyle(
-                                    color: Colors.red,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () => widget.context.forward('/wallet/wy'),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    '201.88',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  '纹银资产',
-                                  style: TextStyle(
-                                    color: Colors.grey[600],
+                                  Text(
+                                    '纹银资产',
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ],
