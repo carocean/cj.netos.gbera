@@ -185,7 +185,7 @@ class _GeosphereState extends State<Geosphere> {
                       children: <Widget>[
                         Padding(
                           child: Icon(
-                            FontAwesomeIcons.yenSign,
+                            FontAwesomeIcons.btc,
                             size: 16,
                             color: Colors.grey[400],
                           ),
@@ -201,12 +201,13 @@ class _GeosphereState extends State<Geosphere> {
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: <Widget>[
                                 Padding(
                                   child: Text(
                                     '帑指:',
-                                    style: textStyle1_title,
+                                    style: widget.context.style('/geosphere/sec-title.text'),
+
                                   ),
                                   padding: EdgeInsets.only(
                                     right: 5,
@@ -249,12 +250,12 @@ class _GeosphereState extends State<Geosphere> {
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: <Widget>[
                                 Padding(
                                   child: Text(
                                     '纹指:',
-                                    style: textStyle1_title,
+                                    style: widget.context.style('/geosphere/sec-title.text'),
                                   ),
                                   padding: EdgeInsets.only(
                                     right: 5,
@@ -497,7 +498,7 @@ class _GeosphereState extends State<Geosphere> {
                             ),
                             child: Wrap(
                               crossAxisAlignment: WrapCrossAlignment.start,
-                              alignment: WrapAlignment.spaceEvenly,
+                              alignment: WrapAlignment.start,
                               direction: Axis.horizontal,
                               runSpacing: 10,
                               children: <Widget>[
@@ -509,7 +510,8 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '行人',
-                                        style: textStyle1_grey,
+                                        style: this.widget.context.style('/geosphere/discovery/title.text'),
+
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 2,
@@ -518,7 +520,7 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '1.43万',
-                                        style: textStyle1_red,
+                                        style: this.widget.context.style('/geosphere/discovery/count.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 5,
@@ -544,7 +546,7 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '楼盘',
-                                        style: textStyle1_grey,
+                                        style: this.widget.context.style('/geosphere/discovery/title.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 2,
@@ -553,7 +555,7 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '100',
-                                        style: textStyle1_red,
+                                        style: this.widget.context.style('/geosphere/discovery/count.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 5,
@@ -579,7 +581,7 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '出租车',
-                                        style: textStyle1_grey,
+                                        style: this.widget.context.style('/geosphere/discovery/title.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 2,
@@ -588,7 +590,7 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '21',
-                                        style: textStyle1_red,
+                                        style: this.widget.context.style('/geosphere/discovery/count.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 5,
@@ -614,7 +616,7 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '餐馆',
-                                        style: textStyle1_grey,
+                                        style: this.widget.context.style('/geosphere/discovery/title.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 2,
@@ -623,7 +625,7 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '246',
-                                        style: textStyle1_red,
+                                        style: this.widget.context.style('/geosphere/discovery/count.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 5,
@@ -649,7 +651,7 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '酒店',
-                                        style: textStyle1_grey,
+                                        style: this.widget.context.style('/geosphere/discovery/title.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 2,
@@ -658,7 +660,7 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '246',
-                                        style: textStyle1_red,
+                                        style: this.widget.context.style('/geosphere/discovery/count.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 5,
@@ -684,7 +686,7 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '汽车4S店',
-                                        style: textStyle1_grey,
+                                        style: this.widget.context.style('/geosphere/discovery/title.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 2,
@@ -693,7 +695,7 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '246',
-                                        style: textStyle1_red,
+                                        style: this.widget.context.style('/geosphere/discovery/count.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 5,
@@ -719,7 +721,7 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '超市',
-                                        style: textStyle1_grey,
+                                        style: this.widget.context.style('/geosphere/discovery/title.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 2,
@@ -728,7 +730,7 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '83家',
-                                        style: textStyle1_red,
+                                        style: this.widget.context.style('/geosphere/discovery/count.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 5,

@@ -27,6 +27,7 @@ dependencies:
   charts_flutter: ^0.6.0
   flutter_screenutil: ^0.4.2
   font_awesome_flutter: ^8.2.0
+  qrscan: ^0.2.17
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -400,7 +402,35 @@ class LoginAction {
 
   void forwardOK(rc) {
     print('ok:${rc['dataText']}');
-    context.forward("gbera://scaffold/withbottombar",notManagerPreviousPage: true);
+    var map = jsonDecode(rc['dataText']);
+    Security security = context.site.getService('@.security');
+    List<Map> appRoles = [];
+    List<Map> tenantRoles = [];
+    List<Map> ucRoles = [];
+    List _appRoles = map['appRoles'];
+    _appRoles.forEach((value) {
+      appRoles.add(value);
+    });
+    List _tenantRoles = map['tenantRoles'];
+    _tenantRoles.forEach((value) {
+      tenantRoles.add(value);
+    });
+    List _ucRoles = map['ucRoles'];
+    _ucRoles.forEach((value) {
+      ucRoles.add(value);
+    });
+    UserPrincipal userPrincipal = UserPrincipal(
+      uid: map['uid'],
+      accountid: map['accountid'],
+      accountName: map['accountName'],
+      appid: map['appid'],
+      appRoles: appRoles,
+      tenantRoles: tenantRoles,
+      ucRoles: ucRoles,
+    );
+    security.userPrincipal = userPrincipal;
+    context.forward("gbera://scaffold/withbottombar",
+        notManagerPreviousPage: true);
   }
 
   void forwardError(e) {

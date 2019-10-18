@@ -4,6 +4,34 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+class UserPrincipal {
+  final String uid;
+  final String accountid;
+  final String accountName;
+  final String appid;
+  final List<Map> ucRoles;
+  final List<Map> tenantRoles;
+  final List<Map> appRoles;
+
+  const UserPrincipal(
+      {this.uid,
+      this.accountid,
+      this.accountName,
+      this.appid,
+      this.ucRoles,
+      this.tenantRoles,
+      this.appRoles});
+}
+class Security{
+  UserPrincipal _userPrincipal;
+
+  UserPrincipal get userPrincipal => _userPrincipal;
+
+  set userPrincipal(UserPrincipal value) {
+    _userPrincipal = value;
+  }
+
+}
 class Portal {
   const Portal({
     @required this.id,
@@ -169,6 +197,8 @@ class PageContext {
 
   const PageContext({this.page, this.site, this.context});
 
+  UserPrincipal get userPrincipal => site.getService('@.security')?.userPrincipal;
+
   Future<T> forward<T extends Object>(
     String pagePath, {
     Map<String, Object> arguments,
@@ -181,7 +211,7 @@ class PageContext {
       pagePath = '${page.portal}:/$pagePath';
     }
     var ret = Navigator.pushNamed(context, pagePath, arguments: arguments);
-    if (notManagerPreviousPage!=null&&notManagerPreviousPage) {
+    if (notManagerPreviousPage != null && notManagerPreviousPage) {
       Navigator.of(context).pushNamedAndRemoveUntil(
         pagePath,
         (route) => route == null,
@@ -383,6 +413,11 @@ class PageContext {
       default:
         throw FlutterErrorDetails(exception: Exception('不支持的命令:$cmd'));
     }
+  }
+
+  Page findPage(String fullUrl) {
+    Map<String, Page> pages = site.getService("@.pages");
+    return pages[fullUrl];
   }
 }
 

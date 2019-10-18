@@ -7,6 +7,12 @@ import 'package:gbera/portals/gbera/pages/geosphere.dart';
 import 'package:gbera/portals/gbera/pages/market.dart';
 import 'package:gbera/portals/gbera/pages/netflow.dart';
 import 'package:gbera/portals/gbera/pages/profile.dart';
+import 'package:gbera/portals/gbera/pages/wallet.dart';
+import 'package:gbera/portals/gbera/pages/wallet/card.dart';
+import 'package:gbera/portals/gbera/pages/wallet/change.dart';
+import 'package:gbera/portals/gbera/pages/wallet/pay_get.dart';
+import 'package:gbera/portals/gbera/pages/wallet/ty.dart';
+import 'package:gbera/portals/gbera/pages/wallet/wy.dart';
 import 'package:gbera/portals/gbera/scaffolds.dart';
 
 import 'common/icons.dart';
@@ -168,6 +174,60 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
 //                  },
 //                );
 //              },
+            ),
+            Page(
+              title: '钱包',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/wallet',
+              buildPage: (PageContext pageContext) => Wallet(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '银行卡',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/wallet/card',
+              buildPage: (PageContext pageContext) => BankCard(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '零钱',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/wallet/change',
+              buildPage: (PageContext pageContext) => Change(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '收付款',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/wallet/pay-get',
+              buildPage: (PageContext pageContext) => PayAndGet(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '帑银',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/wallet/ty',
+              buildPage: (PageContext pageContext) => TY(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '纹银',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/wallet/wy',
+              buildPage: (PageContext pageContext) => WY(
+                context: pageContext,
+              ),
             ),
           ],
         ),

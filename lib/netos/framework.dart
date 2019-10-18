@@ -13,6 +13,7 @@ Map<String, Page> _allPages = Map(); //key是全路径
 Map<String, ThemeStyle> _allThemes = Map(); //key是全路径
 Map<String, Style> _allStyles = Map(); //key是全路径
 var _currentThemeUrl = ''; //当前应用的主题路径，是相对于portal的路径
+var _security=Security();
 IServiceProvider _site = GberaServiceProvider();
 
 //事件顺序
@@ -234,6 +235,9 @@ class GberaServiceProvider implements IServiceProvider {
     }
     if ("@.current.theme" == name) {
       return _currentThemeUrl;
+    }
+    if('@.security'==name){
+      return _security;
     }
     return null;
   }

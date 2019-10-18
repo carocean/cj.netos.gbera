@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gbera/generated/i18n.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 
 List<Style> buildGreyStyles(BuildContext context) {
@@ -12,15 +12,28 @@ List<Style> buildGreyStyles(BuildContext context) {
         return TextStyle(
           fontSize: 14,
         );
-      },),
+      },
+    ),
     Style(
-        url: '/geosphere/title.text',
-        desc: '金证喷泉等标题',
-        get: () {
-          return TextStyle(
-            fontSize: 12,
-          );
-        },),
+      url: '/geosphere/title.text',
+      desc: '金证喷泉等标题',
+      get: () {
+        return TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+        );
+      },
+    ),
+    Style(
+      url: '/geosphere/sec-title.text',
+      desc: '二级标题,应用于帑指和纹指',
+      get: () {
+        return TextStyle(
+          fontSize: 12,
+          color: Colors.grey[600],
+        );
+      },
+    ),
     Style(
       url: '/geosphere/title-red.text',
       desc: '',
@@ -42,6 +55,27 @@ List<Style> buildGreyStyles(BuildContext context) {
       },
     ),
     Style(
+      url: '/geosphere/discovery/title.text',
+      desc: '实时栏中发现区域的类别',
+      get: () {
+        return TextStyle(
+          fontSize: 14,
+          color: Colors.grey[600],
+          fontWeight: FontWeight.w500,
+        );
+      },
+    ),
+    Style(
+      url: '/geosphere/discovery/count.text',
+      desc: '实时栏中发现区域的数量',
+      get: () {
+        return TextStyle(
+          fontSize: 14,
+          color: Colors.red,
+        );
+      },
+    ),
+    Style(
       url: '/geosphere/listItemMsgTitle.text',
       desc: '',
       get: () {
@@ -59,6 +93,94 @@ List<Style> buildGreyStyles(BuildContext context) {
         return TextStyle(
           fontSize: 16,
           color: Colors.grey[700],
+        );
+      },
+    ),
+    Style(
+      url: '/profile/header-right-qrcode.icon',
+      desc: '设置页头区域中的二维码位',
+      get: () {
+        return Icon(
+          FontAwesomeIcons.qrcode,
+          size: 16,
+          color: Colors.grey[400],
+        );
+      },
+    ),
+    Style(
+      url: '/profile/header-right-arrow.icon',
+      desc: '设置页头区域中的右箭头',
+      get: () {
+        return Icon(
+          Icons.arrow_forward_ios,
+          size: 16,
+          color: Colors.grey[400],
+        );
+      },
+    ),
+    Style(
+      url: '/profile/header-bg.color',
+      desc: '背景色',
+      get: () {
+        return Colors.white;
+      },
+    ),
+    Style(
+      url: '/profile/header-face-title.text',
+      desc: '头像旁边的个人名字',
+      get: () {
+        return TextStyle(
+          fontSize: 18,
+          color: Colors.grey[800],
+          fontWeight: FontWeight.w600,
+        );
+      },
+    ),
+    Style(
+      url: '/profile/header-face-no.text',
+      desc: 'app中的用户号，即用户统一id',
+      get: () {
+        return TextStyle(
+          fontSize: 14,
+          color: Colors.grey[500],
+        );
+      },
+    ),
+    Style(
+      url: '/profile/list/item-icon.color',
+      desc: '列表项图片的颜色',
+      get: () {
+        return Colors.grey[600];
+      },
+    ),
+    Style(
+      url: '/profile/list/item-title.text',
+      desc: '列表项标题样式',
+      get: () {
+        return TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+        );
+      },
+    ),
+    Style(
+      url: '/wallet/banner/total-value.text',
+      desc: '当前总资产值样式',
+      get: () {
+        return TextStyle(
+          color: Colors.red,
+          fontSize: 16,
+        );
+      },
+    ),
+    Style(
+      url: '/wallet/banner/total-label.text',
+      desc: '当前总资产标签样式',
+      get: () {
+        return TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: Colors.grey[500],
         );
       },
     ),

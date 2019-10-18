@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 
 class Market extends StatefulWidget {
@@ -93,13 +94,13 @@ class _MarketState extends State<Market> {
           bottom: 5,
         ),
         child: ListTile(
-          title: Text('地商'),
+          title: Text('金证银行'),
           trailing: Icon(
             Icons.arrow_forward_ios,
             size: 14,
           ),
           leading: Icon(
-            Icons.edit_location,
+            FontAwesomeIcons.piggyBank,
             size: 25,
           ),
         ),

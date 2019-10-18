@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/util.dart';
 import 'package:intl/intl.dart';
-
+import 'package:qrscan/qrscan.dart' as scanner;
 import '../parts/parts.dart';
 
 class Desktop extends StatefulWidget {
@@ -19,9 +19,13 @@ class Desktop extends StatefulWidget {
 class _DesktopState extends State<Desktop> {
   @override
   Widget build(BuildContext context) {
-    Map<String, Page> pages = widget.context.site.getService("@.pages");
+    var onProfileTap = () {
+      widget.context.forward('/profile');
+    };
+
     var url = widget.context.page.parameters['From-Page-Url'];
-    var scaffold = pages['${widget.context.page.portal}:/$url'];
+    var scaffold =
+        widget.context.findPage('${widget.context.page.portal}:/$url');
     var myarea = SafeArea(
       child: CustomScrollView(
         slivers: <Widget>[
@@ -38,8 +42,39 @@ class _DesktopState extends State<Desktop> {
               IconButton(
                 // Use the FontAwesomeIcons class for the IconData
                 icon: new Icon(Icons.crop_free),
-                onPressed: () {
-                  print("Pressed");
+                onPressed: () async{
+                  String cameraScanResult = await scanner.scan();
+                  showDialog(
+                    context: context,
+                    barrierDismissible: true, // user must tap button!
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('扫好友、扫地物、支付、收款等'),
+                        content:Text(cameraScanResult),
+                        actions:<Widget>[
+                          FlatButton(
+                            child: Text('YES'),
+                            onPressed: (){
+                              print('yes...');
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          FlatButton(
+                            child: Text('NO'),
+                            onPressed: (){
+                              print('no...');
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                        backgroundColor:Colors.yellowAccent,
+                        elevation: 20,
+                        semanticLabel:'哈哈哈哈',
+                        // 设置成 圆角
+                        shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      );
+                    },
+                  );
                 },
               ),
               IconButton(
@@ -62,17 +97,21 @@ class _DesktopState extends State<Desktop> {
                       left: 0,
                       top: 50,
                     ),
-                    child: GestureDetector(
-                      onTap: (){
-                        widget.context.forward('/profile');
-                      },
-                      child: ListTile(
-                        title: Text('carocean'),
-                        subtitle: Text('我回家吃了饭'),
-                        leading: CircleAvatar(
+                    child: ListTile(
+                      title: Text(
+                        '${widget.context.userPrincipal?.accountName}',
+                        softWrap: true,
+                      ),
+                      subtitle: Text(
+                        '我回家吃了饭',
+                        softWrap: true,
+                      ),
+                      leading: GestureDetector(
+                        child: CircleAvatar(
                           backgroundImage: NetworkImage(
                               'http://pic-bucket.ws.126.net/photo/0001/2019-08-13/EMENLA1600AN0001NOS.jpg'),
                         ),
+                        onTap: onProfileTap,
                       ),
                     ),
                   ),
