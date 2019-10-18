@@ -205,6 +205,7 @@ class PageContext {
 
   ///真实传过来的参数
   get parameters => ModalRoute.of(context).settings.arguments;
+
   ///真实传入的地址
   String get url => ModalRoute.of(context).settings.name;
 
@@ -427,6 +428,14 @@ class PageContext {
   Page findPage(String fullUrl) {
     Map<String, Page> pages = site.getService("@.pages");
     return pages[fullUrl];
+  }
+
+  void goBack() {
+    NavigatorState state = Navigator.of(context);
+    if (!state.canPop()) {
+      return;
+    }
+    state.pop();
   }
 }
 

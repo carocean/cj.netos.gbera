@@ -370,7 +370,7 @@ class Wallet extends StatelessWidget {
           this.context.page?.title,
         ),
         titleSpacing: 0,
-        elevation: 1.0,
+        elevation: 0.0,
         automaticallyImplyLeading: true,
       ),
       body: Container(

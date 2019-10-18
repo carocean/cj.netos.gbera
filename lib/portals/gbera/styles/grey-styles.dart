@@ -184,5 +184,78 @@ List<Style> buildGreyStyles(BuildContext context) {
         );
       },
     ),
+    Style(
+      url: '/wallet/change/mychange.text',
+      desc: '我的零钱字体标签样式',
+      get: () {
+        return TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: Colors.grey[800],
+        );
+      },
+    ),
+    Style(
+      url: '/wallet/change/money-sign.text',
+      desc: '我的零钱钱数样式',
+      get: () {
+        return TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        );
+      },
+    ),
+    Style(
+      url: '/wallet/change/money.text',
+      desc: '我的零钱钱数样式',
+      get: () {
+        return TextStyle(
+          fontSize: 40,
+          fontWeight: FontWeight.bold,
+        );
+      },
+    ),
+    Style(
+      url: '/wallet/change/deposit.textColor',
+      desc: '充值按钮文本样式',
+      get: () {
+        return  Colors.white;
+      },
+    ),
+    Style(
+      url: '/wallet/change/deposit.color',
+      desc: '充值按钮背景样式',
+      get: () {
+        return  Colors.green;
+      },
+    ),
+    Style(
+      url: '/wallet/change/deposit.highlightColor',
+      desc: '充值按钮背景高亮样式',
+      get: () {
+        return  Colors.green[600];
+      },
+    ),
+    Style(
+      url: '/wallet/change/cashout.textColor',
+      desc: '提现按钮文本样式',
+      get: () {
+        return  Colors.green;
+      },
+    ),
+    Style(
+      url: '/wallet/change/cashout.color',
+      desc: '提现按钮背景样式',
+      get: () {
+        return  Colors.grey[200];
+      },
+    ),
+    Style(
+      url: '/wallet/change/cashout.highlightColor',
+      desc: '提现按钮背景高亮样式',
+      get: () {
+        return   Colors.grey[300];
+      },
+    ),
   ];
 }

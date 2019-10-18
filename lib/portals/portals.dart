@@ -9,7 +9,10 @@ import 'package:gbera/portals/gbera/pages/netflow.dart';
 import 'package:gbera/portals/gbera/pages/profile.dart';
 import 'package:gbera/portals/gbera/pages/wallet.dart';
 import 'package:gbera/portals/gbera/pages/wallet/card.dart';
+import 'package:gbera/portals/gbera/pages/wallet/cashout.dart';
 import 'package:gbera/portals/gbera/pages/wallet/change.dart';
+import 'package:gbera/portals/gbera/pages/wallet/change_bill.dart';
+import 'package:gbera/portals/gbera/pages/wallet/deposit.dart';
 import 'package:gbera/portals/gbera/pages/wallet/pay_get.dart';
 import 'package:gbera/portals/gbera/pages/wallet/ty.dart';
 import 'package:gbera/portals/gbera/pages/wallet/wy.dart';
@@ -226,6 +229,33 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               icon: GalleryIcons.shrine,
               url: '/wallet/wy',
               buildPage: (PageContext pageContext) => WY(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '充值',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/wallet/change/deposit',
+              buildPage: (PageContext pageContext) => Deposit(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '提现',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/wallet/change/cashout',
+              buildPage: (PageContext pageContext) => Cashout(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '账单',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/wallet/change/bill',
+              buildPage: (PageContext pageContext) => ChangeBill(
                 context: pageContext,
               ),
             ),
