@@ -82,7 +82,7 @@ class _DesktopState extends State<Desktop> {
                 // Use the FontAwesomeIcons class for the IconData
                 icon: new Icon(Icons.apps),
                 onPressed: () {
-                  print("Pressed");
+                  widget.context.forward('/desktop/lets/settings');
                 },
               ),
             ],

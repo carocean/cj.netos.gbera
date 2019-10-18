@@ -219,42 +219,79 @@ List<Style> buildGreyStyles(BuildContext context) {
       url: '/wallet/change/deposit.textColor',
       desc: '充值按钮文本样式',
       get: () {
-        return  Colors.white;
+        return Colors.white;
       },
     ),
     Style(
       url: '/wallet/change/deposit.color',
       desc: '充值按钮背景样式',
       get: () {
-        return  Colors.green;
+        return Colors.green;
       },
     ),
     Style(
       url: '/wallet/change/deposit.highlightColor',
       desc: '充值按钮背景高亮样式',
       get: () {
-        return  Colors.green[600];
+        return Colors.green[600];
       },
     ),
     Style(
       url: '/wallet/change/cashout.textColor',
       desc: '提现按钮文本样式',
       get: () {
-        return  Colors.green;
+        return Colors.green;
       },
     ),
     Style(
       url: '/wallet/change/cashout.color',
       desc: '提现按钮背景样式',
       get: () {
-        return  Colors.grey[200];
+        return Colors.grey[200];
       },
     ),
     Style(
       url: '/wallet/change/cashout.highlightColor',
       desc: '提现按钮背景高亮样式',
       get: () {
-        return   Colors.grey[300];
+        return Colors.grey[300];
+      },
+    ),
+    Style(
+      url: '/wallet/change/deposit/method/title.text',
+      desc: '支付方式标题标签样式',
+      get: () {
+        return TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+        );
+      },
+    ),
+    Style(
+      url: '/wallet/change/deposit/method/subtitle.text',
+      desc: '支付方式子标题标签样式',
+      get: () {
+        return TextStyle(
+          fontSize: 13,
+          color: Colors.grey[600],
+        );
+      },
+    ),
+    Style(
+      url: '/wallet/change/deposit/method/arrow-label.text',
+      desc: '支付方式箭头说明标签样式',
+      get: () {
+        return TextStyle(
+          fontSize: 13,
+          color: Colors.grey[600],
+        );
+      },
+    ),
+    Style(
+      url: '/wallet/change/deposit/method/arrow.icon',
+      desc: '支付方式箭头样式',
+      get: () {
+        return Colors.grey[400];
       },
     ),
   ];

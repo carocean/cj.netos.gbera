@@ -95,7 +95,7 @@ class Profile extends StatelessWidget {
             ),
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: (){
+              onTap: () {
                 this.context.forward('/wallet');
               },
               child: Row(
@@ -324,7 +324,7 @@ class Profile extends StatelessWidget {
                       Text(
                         '用户与账号',
                         style:
-                        this.context.style('/profile/list/item-title.text'),
+                            this.context.style('/profile/list/item-title.text'),
                       ),
                       Icon(
                         Icons.keyboard_arrow_right,
@@ -353,48 +353,57 @@ class Profile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           //桌面设置
-          Container(
-            padding: EdgeInsets.only(
-              top: 15,
-              bottom: 15,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: 10,
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: (){
+              this.context.forward('/desktop/settings');
+            },
+            child: Container(
+              padding: EdgeInsets.only(
+                top: 15,
+                bottom: 15,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: 10,
+                    ),
+                    child: Icon(
+                      Icons.dashboard,
+                      size: 30,
+                      color:
+                          this.context.style('/profile/list/item-icon.color'),
+                    ),
                   ),
-                  child: Icon(
-                    Icons.dashboard,
-                    size: 30,
-                    color: this.context.style('/profile/list/item-icon.color'),
+                  Expanded(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          '桌面设置',
+                          style: this
+                              .context
+                              .style('/profile/list/item-title.text'),
+                        ),
+                        Icon(
+                          Icons.keyboard_arrow_right,
+                          size: 20,
+                          color: Colors.grey[400],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        '桌面设置',
-                        style:
-                            this.context.style('/profile/list/item-title.text'),
-                      ),
-                      Icon(
-                        Icons.keyboard_arrow_right,
-                        size: 20,
-                        color: Colors.grey[400],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
+
           Divider(
             height: 1,
             indent: 40,

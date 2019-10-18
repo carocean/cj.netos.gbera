@@ -37,7 +37,7 @@ class Change extends StatelessWidget {
                 ),
               ),
               Text(
-                '40232323.21',
+                '4023.21',
                 softWrap: true,
                 overflow: TextOverflow.visible,
                 style: this.context.style('/wallet/change/money.text'),

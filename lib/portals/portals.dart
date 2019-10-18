@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/errors/errors.dart';
 import 'package:gbera/portals/gbera/pages/desktop.dart';
+import 'package:gbera/portals/gbera/pages/desktop/desktop_lets.dart';
+import 'package:gbera/portals/gbera/pages/desktop/desktop_settings.dart';
 import 'package:gbera/portals/gbera/pages/geosphere.dart';
 import 'package:gbera/portals/gbera/pages/market.dart';
 import 'package:gbera/portals/gbera/pages/netflow.dart';
@@ -256,6 +258,24 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               icon: GalleryIcons.shrine,
               url: '/wallet/change/bill',
               buildPage: (PageContext pageContext) => ChangeBill(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '桌面设置',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/desktop/settings',
+              buildPage: (PageContext pageContext) => DesktopSettings(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '桌面栏目',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/desktop/lets/settings',
+              buildPage: (PageContext pageContext) => DesktopLetsSettings(
                 context: pageContext,
               ),
             ),
