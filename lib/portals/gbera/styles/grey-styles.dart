@@ -91,7 +91,7 @@ List<Style> buildGreyStyles(BuildContext context) {
       desc: '',
       get: () {
         return TextStyle(
-          fontSize: 16,
+          fontSize: 20,
           color: Colors.grey[700],
         );
       },
@@ -168,8 +168,8 @@ List<Style> buildGreyStyles(BuildContext context) {
       desc: '当前总资产值样式',
       get: () {
         return TextStyle(
-          color: Colors.red,
-          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          fontSize: 25,
         );
       },
     ),
@@ -292,6 +292,35 @@ List<Style> buildGreyStyles(BuildContext context) {
       desc: '支付方式箭头样式',
       get: () {
         return Colors.grey[400];
+      },
+    ),
+    Style(
+      url: '/wallet/change/detail/header/title.text',
+      desc: '零钱明细头部的提现字样样式',
+      get: () {
+        return TextStyle(
+          fontWeight: FontWeight.w500,
+        );
+      },
+    ),
+    Style(
+      url: '/wallet/change/detail/header/money.text',
+      desc: '提现的钱样式',
+      get: () {
+        return TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 25,
+        );
+      },
+    ),
+    Style(
+      url: '/wallet/change/detail/body/label.text',
+      desc: '明细的字段标签字样',
+      get: () {
+        return TextStyle(
+          fontWeight: FontWeight.w500,
+          color: Colors.grey[500],
+        );
       },
     ),
   ];

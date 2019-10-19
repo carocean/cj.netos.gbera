@@ -74,95 +74,109 @@ class _GeosphereState extends State<Geosphere> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        Padding(
-                          child: Image.asset(
-                            'lib/portals/gbera/images/penquan.png',
-                            color: Colors.grey[600],
-                            width: 20,
-                            height: 20,
-                          ),
-                          padding: EdgeInsets.only(
-                            right: 5,
-                          ),
-                        ),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Padding(
-                                  child: Text(
-                                    '金证喷泉',
-                                    style: textStyle1_title,
-                                  ),
-                                  padding: EdgeInsets.only(
-                                    right: 5,
-                                  ),
-                                ),
-                              ],
+                    GestureDetector(
+                      onTap: () {
+                        widget.context.forward('/geosphere/fountain');
+                      },
+                      behavior: HitTestBehavior.opaque,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            child: Image.asset(
+                              'lib/portals/gbera/images/penquan.png',
+                              color: Colors.grey[600],
+                              width: 20,
+                              height: 20,
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 2),
-                              child: Text(
-                                '50个',
-                                style: textStyle1_red,
+                            padding: EdgeInsets.only(
+                              right: 5,
+                            ),
+                          ),
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Padding(
+                                    child: Text(
+                                      '金证喷泉',
+                                      style: textStyle1_title,
+                                    ),
+                                    padding: EdgeInsets.only(
+                                      right: 5,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                              Padding(
+                                padding: EdgeInsets.only(top: 2),
+                                child: Text(
+                                  '50个',
+                                  style: textStyle1_red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                    Column(
-                      children: <Widget>[
-                        Padding(
-                          child: Image.asset(
-                            'lib/portals/gbera/images/yuanbao.png',
-                            width: 20,
-                            height: 20,
-                            color: Colors.grey[600],
-                          ),
-                          padding: EdgeInsets.only(
-                            right: 5,
-                          ),
-                        ),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Padding(
-                                  child: Text(
-                                    '元宝',
-                                    style: textStyle1_title,
-                                  ),
-                                  padding: EdgeInsets.only(
-                                    right: 5,
-                                  ),
-                                ),
-                              ],
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        widget.context.forward('/geosphere/yuanbao');
+                      },
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            child: Image.asset(
+                              'lib/portals/gbera/images/yuanbao.png',
+                              width: 20,
+                              height: 20,
+                              color: Colors.grey[600],
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 2),
-                              child: Text(
-                                '23个',
-                                style: textStyle1_red,
+                            padding: EdgeInsets.only(
+                              right: 5,
+                            ),
+                          ),
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Padding(
+                                    child: Text(
+                                      '元宝',
+                                      style: textStyle1_title,
+                                    ),
+                                    padding: EdgeInsets.only(
+                                      right: 5,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                              Padding(
+                                padding: EdgeInsets.only(top: 2),
+                                child: Text(
+                                  '23个',
+                                  style: textStyle1_red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -206,8 +220,8 @@ class _GeosphereState extends State<Geosphere> {
                                 Padding(
                                   child: Text(
                                     '帑指:',
-                                    style: widget.context.style('/geosphere/sec-title.text'),
-
+                                    style: widget.context
+                                        .style('/geosphere/sec-title.text'),
                                   ),
                                   padding: EdgeInsets.only(
                                     right: 5,
@@ -255,7 +269,8 @@ class _GeosphereState extends State<Geosphere> {
                                 Padding(
                                   child: Text(
                                     '纹指:',
-                                    style: widget.context.style('/geosphere/sec-title.text'),
+                                    style: widget.context
+                                        .style('/geosphere/sec-title.text'),
                                   ),
                                   padding: EdgeInsets.only(
                                     right: 5,
@@ -293,53 +308,59 @@ class _GeosphereState extends State<Geosphere> {
           padding: EdgeInsets.only(
             right: 10,
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(
-                  right: 1,
+          child: GestureDetector(
+            onTap: () {
+              widget.context.forward('/geosphere/settings');
+            },
+            behavior: HitTestBehavior.opaque,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: 1,
+                  ),
+                  child: Icon(
+                    Icons.edit_location,
+                    size: 12,
+                    color: Colors.grey[500],
+                  ),
                 ),
-                child: Icon(
-                  Icons.edit_location,
-                  size: 12,
-                  color: Colors.grey[500],
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: 4,
+                  ),
+                  child: Text(
+                    '半径:',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 12,
+                    ),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  right: 4,
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: 10,
+                  ),
+                  child: Text(
+                    '5公里',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 12,
+                    ),
+                  ),
                 ),
-                child: Text(
-                  '半径:',
+                Text(
+                  '天豪大酒店附近',
                   style: TextStyle(
                     color: Colors.grey[600],
                     fontSize: 12,
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  right: 10,
-                ),
-                child: Text(
-                  '5公里',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-              Text(
-                '天豪大酒店附近',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 12,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -374,91 +395,103 @@ class _GeosphereState extends State<Geosphere> {
                             right: 5,
                           ),
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(
-                                bottom: 2,
-                              ),
-                              child: Text(
-                                '实时',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.grey[500],
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            widget.context.forward('/geosphere/insite');
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  bottom: 2,
                                 ),
-                              ),
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    right: 2,
-                                  ),
-                                  child: Icon(
-                                    FontAwesomeIcons.levelDownAlt,
-                                    color: Colors.grey[400],
-                                    size: 12,
-                                  ),
-                                ),
-                                Text(
-                                  '624',
+                                child: Text(
+                                  '实时',
                                   style: TextStyle(
                                     fontSize: 10,
-                                    color: Colors.grey[600],
+                                    color: Colors.grey[500],
                                   ),
                                 ),
-                              ],
-                            ),
-                          ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      right: 2,
+                                    ),
+                                    child: Icon(
+                                      FontAwesomeIcons.levelDownAlt,
+                                      color: Colors.grey[400],
+                                      size: 12,
+                                    ),
+                                  ),
+                                  Text(
+                                    '624',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.only(
-                      right: 10,
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(
-                                bottom: 2,
-                              ),
-                              child: Text(
-                                '',
-                              ),
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    right: 2,
-                                  ),
-                                  child: Icon(
-                                    FontAwesomeIcons.share,
-                                    size: 10,
-                                    color: Colors.grey[400],
-                                  ),
+                  GestureDetector(
+                    onTap: () {
+                      widget.context.forward('/geosphere/outsite');
+                    },
+                    behavior: HitTestBehavior.opaque,
+                    child: Container(
+                      padding: EdgeInsets.only(
+                        right: 10,
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  bottom: 2,
                                 ),
-                                Text(''),
-                              ],
+                                child: Text(
+                                  '',
+                                ),
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      right: 2,
+                                    ),
+                                    child: Icon(
+                                      FontAwesomeIcons.share,
+                                      size: 10,
+                                      color: Colors.grey[400],
+                                    ),
+                                  ),
+                                  Text(''),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            child: Icon(
+                              FontAwesomeIcons.streetView,
+                              size: 14,
+                              color: Colors.grey[500],
                             ),
-                          ],
-                        ),
-                        Padding(
-                          child: Icon(
-                            FontAwesomeIcons.streetView,
-                            size: 14,
-                            color: Colors.grey[500],
+                            padding: EdgeInsets.only(
+                              left: 5,
+                            ),
                           ),
-                          padding: EdgeInsets.only(
-                            left: 5,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -510,8 +543,8 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '行人',
-                                        style: this.widget.context.style('/geosphere/discovery/title.text'),
-
+                                        style: this.widget.context.style(
+                                            '/geosphere/discovery/title.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 2,
@@ -520,7 +553,8 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '1.43万',
-                                        style: this.widget.context.style('/geosphere/discovery/count.text'),
+                                        style: this.widget.context.style(
+                                            '/geosphere/discovery/count.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 5,
@@ -546,7 +580,8 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '楼盘',
-                                        style: this.widget.context.style('/geosphere/discovery/title.text'),
+                                        style: this.widget.context.style(
+                                            '/geosphere/discovery/title.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 2,
@@ -555,7 +590,8 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '100',
-                                        style: this.widget.context.style('/geosphere/discovery/count.text'),
+                                        style: this.widget.context.style(
+                                            '/geosphere/discovery/count.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 5,
@@ -581,7 +617,8 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '出租车',
-                                        style: this.widget.context.style('/geosphere/discovery/title.text'),
+                                        style: this.widget.context.style(
+                                            '/geosphere/discovery/title.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 2,
@@ -590,7 +627,8 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '21',
-                                        style: this.widget.context.style('/geosphere/discovery/count.text'),
+                                        style: this.widget.context.style(
+                                            '/geosphere/discovery/count.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 5,
@@ -616,7 +654,8 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '餐馆',
-                                        style: this.widget.context.style('/geosphere/discovery/title.text'),
+                                        style: this.widget.context.style(
+                                            '/geosphere/discovery/title.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 2,
@@ -625,7 +664,8 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '246',
-                                        style: this.widget.context.style('/geosphere/discovery/count.text'),
+                                        style: this.widget.context.style(
+                                            '/geosphere/discovery/count.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 5,
@@ -651,7 +691,8 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '酒店',
-                                        style: this.widget.context.style('/geosphere/discovery/title.text'),
+                                        style: this.widget.context.style(
+                                            '/geosphere/discovery/title.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 2,
@@ -660,7 +701,8 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '246',
-                                        style: this.widget.context.style('/geosphere/discovery/count.text'),
+                                        style: this.widget.context.style(
+                                            '/geosphere/discovery/count.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 5,
@@ -686,7 +728,8 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '汽车4S店',
-                                        style: this.widget.context.style('/geosphere/discovery/title.text'),
+                                        style: this.widget.context.style(
+                                            '/geosphere/discovery/title.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 2,
@@ -695,7 +738,8 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '246',
-                                        style: this.widget.context.style('/geosphere/discovery/count.text'),
+                                        style: this.widget.context.style(
+                                            '/geosphere/discovery/count.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 5,
@@ -721,7 +765,8 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '超市',
-                                        style: this.widget.context.style('/geosphere/discovery/title.text'),
+                                        style: this.widget.context.style(
+                                            '/geosphere/discovery/title.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 2,
@@ -730,7 +775,8 @@ class _GeosphereState extends State<Geosphere> {
                                     Padding(
                                       child: Text(
                                         '83家',
-                                        style: this.widget.context.style('/geosphere/discovery/count.text'),
+                                        style: this.widget.context.style(
+                                            '/geosphere/discovery/count.text'),
                                       ),
                                       padding: EdgeInsets.only(
                                         right: 5,
@@ -861,139 +907,157 @@ class _GeosphereState extends State<Geosphere> {
                             right: 5,
                           ),
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(
-                                bottom: 2,
-                              ),
-                              child: Text(
-                                '地推',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.grey[500],
+                        GestureDetector(
+                          onTap: () {
+                            widget.context.forward('/geosphere/upstream');
+                          },
+                          behavior: HitTestBehavior.opaque,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  bottom: 2,
                                 ),
-                              ),
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    right: 2,
-                                  ),
-                                  child: Icon(
-                                    FontAwesomeIcons.levelDownAlt,
-                                    size: 12,
-                                    color: Colors.grey[400],
-                                  ),
-                                ),
-                                Text(
-                                  '624',
+                                child: Text(
+                                  '地推',
                                   style: TextStyle(
                                     fontSize: 10,
-                                    color: Colors.grey[700],
+                                    color: Colors.grey[500],
                                   ),
                                 ),
-                              ],
-                            ),
-                          ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      right: 2,
+                                    ),
+                                    child: Icon(
+                                      FontAwesomeIcons.levelDownAlt,
+                                      size: 12,
+                                      color: Colors.grey[400],
+                                    ),
+                                  ),
+                                  Text(
+                                    '624',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
                   Row(
                     children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(
-                          right: 10,
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    bottom: 2,
-                                  ),
-                                  child: Text(
-                                    '',
-                                  ),
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                        right: 2,
-                                      ),
-                                      child: Icon(
-                                        FontAwesomeIcons.share,
-                                        size: 10,
-                                        color: Colors.grey[400],
-                                      ),
+                      GestureDetector(
+                        onTap: () {
+                          widget.context.forward('/geosphere/downstream');
+                        },
+                        behavior: HitTestBehavior.opaque,
+                        child: Container(
+                          padding: EdgeInsets.only(
+                            right: 10,
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      bottom: 2,
                                     ),
-                                    Text(''),
-                                  ],
+                                    child: Text(
+                                      '',
+                                    ),
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          right: 2,
+                                        ),
+                                        child: Icon(
+                                          FontAwesomeIcons.share,
+                                          size: 10,
+                                          color: Colors.grey[400],
+                                        ),
+                                      ),
+                                      Text(''),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                child: Icon(
+                                  FontAwesomeIcons.addressBook,
+                                  size: 14,
+                                  color: Colors.grey[500],
                                 ),
-                              ],
-                            ),
-                            Padding(
-                              child: Icon(
-                                FontAwesomeIcons.addressBook,
-                                size: 14,
-                                color: Colors.grey[500],
+                                padding: EdgeInsets.only(
+                                  left: 5,
+                                ),
                               ),
-                              padding: EdgeInsets.only(
-                                left: 5,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                      Container(
-                        padding: EdgeInsets.only(
-                          right: 10,
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    bottom: 2,
-                                  ),
-                                  child: Text(
-                                    '',
-                                  ),
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                        right: 2,
-                                      ),
-                                      child: Icon(
-                                        FontAwesomeIcons.share,
-                                        size: 10,
-                                        color: Colors.grey[400],
-                                      ),
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          widget.context.forward('/geosphere/outsite');
+                        },
+                        child: Container(
+                          padding: EdgeInsets.only(
+                            right: 10,
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      bottom: 2,
                                     ),
-                                    Text(''),
-                                  ],
+                                    child: Text(
+                                      '',
+                                    ),
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          right: 2,
+                                        ),
+                                        child: Icon(
+                                          FontAwesomeIcons.share,
+                                          size: 10,
+                                          color: Colors.grey[400],
+                                        ),
+                                      ),
+                                      Text(''),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                child: Icon(
+                                  FontAwesomeIcons.streetView,
+                                  size: 14,
+                                  color: Colors.grey[500],
                                 ),
-                              ],
-                            ),
-                            Padding(
-                              child: Icon(
-                                FontAwesomeIcons.streetView,
-                                size: 14,
-                                color: Colors.grey[500],
+                                padding: EdgeInsets.only(
+                                  left: 5,
+                                ),
                               ),
-                              padding: EdgeInsets.only(
-                                left: 5,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -1117,149 +1181,110 @@ class _GeosphereState extends State<Geosphere> {
                             right: 5,
                           ),
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(
-                                bottom: 2,
-                              ),
-                              child: Text(
-                                '访客',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.grey[500],
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            widget.context.forward('/geosphere/visitorsEntry');
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  bottom: 2,
                                 ),
-                              ),
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    right: 2,
-                                  ),
-                                  child: Icon(
-                                    FontAwesomeIcons.reply,
-                                    color: Colors.grey[400],
-                                    size: 12,
-                                  ),
-                                ),
-                                Text(
-                                  '624',
+                                child: Text(
+                                  '访客',
                                   style: TextStyle(
                                     fontSize: 10,
-                                    color: Colors.grey[700],
+                                    color: Colors.grey[500],
                                   ),
                                 ),
-                              ],
-                            ),
-                          ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      right: 2,
+                                    ),
+                                    child: Icon(
+                                      FontAwesomeIcons.reply,
+                                      color: Colors.grey[400],
+                                      size: 12,
+                                    ),
+                                  ),
+                                  Text(
+                                    '624',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
                   Row(
                     children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(
-                          right: 10,
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    bottom: 2,
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          widget.context.forward('/geosphere/outlook');
+                        },
+                        child: Container(
+                          padding: EdgeInsets.only(
+                            right: 10,
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      bottom: 2,
+                                    ),
+                                    child: Text(
+                                      '',
+                                    ),
                                   ),
-                                  child: Text(
-                                    '',
-                                  ),
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                        right: 2,
-                                      ),
-                                      child: Transform(
-                                        alignment: Alignment.center,
-                                        transform: Matrix4.identity()
-                                          ..rotateZ(80.1),
-                                        child: Icon(
-                                          FontAwesomeIcons.reply,
-                                          size: 10,
-                                          color: Colors.grey[400],
+                                  Row(
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          right: 2,
+                                        ),
+                                        child: Transform(
+                                          alignment: Alignment.center,
+                                          transform: Matrix4.identity()
+                                            ..rotateZ(80.1),
+                                          child: Icon(
+                                            FontAwesomeIcons.reply,
+                                            size: 10,
+                                            color: Colors.grey[400],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    Text(''),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              child: Icon(
-                                FontAwesomeIcons.commentAlt,
-                                size: 14,
-                                color: Colors.grey[500],
-                              ),
-                              padding: EdgeInsets.only(
-                                left: 5,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(
-                          right: 10,
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    bottom: 2,
+                                      Text(''),
+                                    ],
                                   ),
-                                  child: Text(
-                                    '',
-                                  ),
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                        right: 2,
-                                      ),
-                                      child: Transform(
-                                        alignment: Alignment.center,
-                                        transform: Matrix4.identity()
-                                          ..rotateZ(80.1),
-                                        child: Icon(
-                                          FontAwesomeIcons.reply,
-                                          size: 10,
-                                          color: Colors.grey[400],
-                                        ),
-                                      ),
-                                    ),
-                                    Text(''),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              child: Icon(
-                                FontAwesomeIcons.streetView,
-                                size: 14,
-                                color: Colors.grey[500],
+                                ],
                               ),
-                              padding: EdgeInsets.only(
-                                left: 5,
+                              Padding(
+                                child: Icon(
+                                  FontAwesomeIcons.streetView,
+                                  size: 14,
+                                  color: Colors.grey[500],
+                                ),
+                                padding: EdgeInsets.only(
+                                  left: 5,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ],

@@ -74,6 +74,7 @@ class Page {
     @required this.title,
     @required this.icon,
     this.subtitle,
+    this.desc,
     @required this.url,
     @required this.buildPage,
     @required this.buildRoute,
@@ -83,7 +84,7 @@ class Page {
   final String title;
   final IconData icon;
   final String subtitle;
-
+  final String desc;
   Map<String, Object> _parameters;
   String _portal;
 

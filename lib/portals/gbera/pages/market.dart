@@ -27,6 +27,7 @@ class _MarketState extends State<Market> {
       );
       return divider;
     }
+
     var tiles_plus = [
       Container(
         decoration: BoxDecoration(color: Colors.white),
@@ -34,34 +35,21 @@ class _MarketState extends State<Market> {
           top: 5,
           bottom: 5,
         ),
-        child: ListTile(
-          title: Text('实体+'),
-          trailing: Icon(
-            Icons.arrow_forward_ios,
-            size: 14,
-          ),
-          leading: Icon(
-            Icons.shop_two,
-            size: 25,
-          ),
-        ),
-      ),
-      createDivider(),
-      Container(
-        decoration: BoxDecoration(color: Colors.white),
-        padding: EdgeInsets.only(
-          top: 5,
-          bottom: 5,
-        ),
-        child: ListTile(
-          title: Text('卖场+'),
-          trailing: Icon(
-            Icons.arrow_forward_ios,
-            size: 14,
-          ),
-          leading: Icon(
-            Icons.shopping_cart,
-            size: 25,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            widget.context.forward('/market/plus/entities');
+          },
+          child: ListTile(
+            title: Text('实体+'),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 14,
+            ),
+            leading: Icon(
+              Icons.shop_two,
+              size: 25,
+            ),
           ),
         ),
       ),
@@ -72,15 +60,46 @@ class _MarketState extends State<Market> {
           top: 5,
           bottom: 5,
         ),
-        child: ListTile(
-          title: Text('服务大厅+'),
-          trailing: Icon(
-            Icons.arrow_forward_ios,
-            size: 14,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            widget.context.forward('/market/plus/stores');
+          },
+          child: ListTile(
+            title: Text('卖场+'),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 14,
+            ),
+            leading: Icon(
+              Icons.shopping_cart,
+              size: 25,
+            ),
           ),
-          leading: Icon(
-            Icons.local_laundry_service,
-            size: 25,
+        ),
+      ),
+      createDivider(),
+      Container(
+        decoration: BoxDecoration(color: Colors.white),
+        padding: EdgeInsets.only(
+          top: 5,
+          bottom: 5,
+        ),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            widget.context.forward('/market/plus/services');
+          },
+          child: ListTile(
+            title: Text('服务+'),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 14,
+            ),
+            leading: Icon(
+              Icons.local_laundry_service,
+              size: 25,
+            ),
           ),
         ),
       ),
@@ -93,15 +112,21 @@ class _MarketState extends State<Market> {
           top: 5,
           bottom: 5,
         ),
-        child: ListTile(
-          title: Text('金证银行'),
-          trailing: Icon(
-            Icons.arrow_forward_ios,
-            size: 14,
-          ),
-          leading: Icon(
-            FontAwesomeIcons.piggyBank,
-            size: 25,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            widget.context.forward('/market/jzbanks');
+          },
+          child: ListTile(
+            title: Text('金证银行'),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 14,
+            ),
+            leading: Icon(
+              FontAwesomeIcons.piggyBank,
+              size: 25,
+            ),
           ),
         ),
       ),
@@ -112,15 +137,21 @@ class _MarketState extends State<Market> {
           top: 5,
           bottom: 5,
         ),
-        child: ListTile(
-          title: Text('帑银交易市场'),
-          trailing: Icon(
-            Icons.arrow_forward_ios,
-            size: 14,
-          ),
-          leading: Icon(
-            Icons.markunread_mailbox,
-            size: 25,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            widget.context.forward('/market/tydealmarket');
+          },
+          child: ListTile(
+            title: Text('帑银交易所'),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 14,
+            ),
+            leading: Icon(
+              Icons.markunread_mailbox,
+              size: 25,
+            ),
           ),
         ),
       ),

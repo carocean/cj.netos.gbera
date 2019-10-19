@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
 
-class PayAndGet extends StatelessWidget {
+class Geofountain extends StatelessWidget {
   PageContext context;
-  PayAndGet({this.context});
+
+
+  Geofountain({this.context});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,8 +14,17 @@ class PayAndGet extends StatelessWidget {
           this.context.page?.title,
         ),
         titleSpacing: 0,
-        elevation: 1.0,
-        automaticallyImplyLeading: true,
+        elevation: 0.0,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          onPressed: () {
+            this.context.goBack();
+          },
+          icon: Icon(
+            Icons.clear,
+            size: 18,
+          ),
+        ),
       ),
       body: Container(),
     );

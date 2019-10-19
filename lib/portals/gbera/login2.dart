@@ -111,14 +111,23 @@ class _LoginPage2State extends State<LoginPage2> {
 
     // logo 图片区域
     Widget logoImageArea = new Container(
-      alignment: Alignment.topCenter,
+      alignment: Alignment.center,
       // 设置图片为圆形
-      child: ClipOval(
-        child: Image.asset(
-          'lib/portals/gbera/images/gbera.png',
-          height: 100,
-          width: 100,
-          fit: BoxFit.cover,
+//      child: ClipOval(
+//        child: Image.asset(
+//          'lib/portals/gbera/images/splash.png',
+//          height: 100,
+//          width: 100,
+//          fit: BoxFit.cover,
+//        ),
+//      ),
+      child: SizedBox(
+        width: 100,
+        height: 80,
+        child: Icon(
+          FontAwesomeIcons.skyatlas,
+          color: Colors.indigo,
+          size: 80,
         ),
       ),
     );

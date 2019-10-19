@@ -102,7 +102,7 @@ class Change extends StatelessWidget {
             onPressed: () {
               this.context.forward('/wallet/change/bill');
             },
-            child: Text('账单'),
+            child: Text('明细'),
           ),
         ],
       ),

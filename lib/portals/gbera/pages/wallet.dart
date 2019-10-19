@@ -21,9 +21,13 @@ class Wallet extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(
               bottom: 2,
+              left: 20,
+              right: 20,
             ),
             child: Text(
-              '¥968.00',
+              '¥968000.00',
+              overflow: TextOverflow.visible,
+              softWrap: true,
               style: this.context.style('/wallet/banner/total-value.text'),
             ),
           ),
@@ -115,7 +119,7 @@ class Wallet extends StatelessWidget {
             ),
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: () => this.context.forward('/wallet/pay-get'),
+              onTap: () => this.context.forward('/wallet/receivables'),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -139,7 +143,69 @@ class Wallet extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          '收付款',
+                          '收款',
+                          style: this
+                              .context
+                              .style('/profile/list/item-title.text'),
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(''),
+                            ),
+                            Icon(
+                              Icons.keyboard_arrow_right,
+                              size: 20,
+                              color: Colors.grey[400],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Divider(
+            height: 1,
+            indent: 40,
+          ),
+          Container(
+            padding: EdgeInsets.only(
+              top: 15,
+              bottom: 15,
+            ),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => this.context.forward('/wallet/payables'),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: 10,
+                    ),
+                    child: Icon(
+                      FontAwesomeIcons.sprayCan,
+                      size: 30,
+                      color:
+                      this.context.style('/profile/list/item-icon.color'),
+                    ),
+                  ),
+                  Expanded(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          '付款',
                           style: this
                               .context
                               .style('/profile/list/item-title.text'),

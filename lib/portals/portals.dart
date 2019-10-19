@@ -6,7 +6,21 @@ import 'package:gbera/portals/gbera/pages/desktop.dart';
 import 'package:gbera/portals/gbera/pages/desktop/desktop_lets.dart';
 import 'package:gbera/portals/gbera/pages/desktop/desktop_settings.dart';
 import 'package:gbera/portals/gbera/pages/geosphere.dart';
+import 'package:gbera/portals/gbera/pages/geosphere/geo_fountain.dart';
+import 'package:gbera/portals/gbera/pages/geosphere/geo_insite.dart';
+import 'package:gbera/portals/gbera/pages/geosphere/geo_outlook.dart';
+import 'package:gbera/portals/gbera/pages/geosphere/geo_outsite.dart';
+import 'package:gbera/portals/gbera/pages/geosphere/geo_upstream.dart';
+import 'package:gbera/portals/gbera/pages/geosphere/geo_downstream.dart';
+import 'package:gbera/portals/gbera/pages/geosphere/geo_settings.dart';
+import 'package:gbera/portals/gbera/pages/geosphere/geo_visitors_entry.dart';
+import 'package:gbera/portals/gbera/pages/geosphere/geo_yuanbao.dart';
 import 'package:gbera/portals/gbera/pages/market.dart';
+import 'package:gbera/portals/gbera/pages/market/tydeal_market.dart';
+import 'package:gbera/portals/gbera/pages/market/entities_plus.dart';
+import 'package:gbera/portals/gbera/pages/market/jzbanks.dart';
+import 'package:gbera/portals/gbera/pages/market/services_plus.dart';
+import 'package:gbera/portals/gbera/pages/market/stores_plus.dart';
 import 'package:gbera/portals/gbera/pages/netflow.dart';
 import 'package:gbera/portals/gbera/pages/profile.dart';
 import 'package:gbera/portals/gbera/pages/wallet.dart';
@@ -15,7 +29,9 @@ import 'package:gbera/portals/gbera/pages/wallet/cashout.dart';
 import 'package:gbera/portals/gbera/pages/wallet/change.dart';
 import 'package:gbera/portals/gbera/pages/wallet/change_bill.dart';
 import 'package:gbera/portals/gbera/pages/wallet/deposit.dart';
-import 'package:gbera/portals/gbera/pages/wallet/pay_get.dart';
+import 'package:gbera/portals/gbera/pages/wallet/details.dart';
+import 'package:gbera/portals/gbera/pages/wallet/payables.dart';
+import 'package:gbera/portals/gbera/pages/wallet/receivables.dart';
 import 'package:gbera/portals/gbera/pages/wallet/ty.dart';
 import 'package:gbera/portals/gbera/pages/wallet/wy.dart';
 import 'package:gbera/portals/gbera/scaffolds.dart';
@@ -208,11 +224,20 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               ),
             ),
             Page(
-              title: '收付款',
+              title: '收款',
               subtitle: '',
               icon: GalleryIcons.shrine,
-              url: '/wallet/pay-get',
-              buildPage: (PageContext pageContext) => PayAndGet(
+              url: '/wallet/receivables',
+              buildPage: (PageContext pageContext) => Receivables(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '付款',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/wallet/payables',
+              buildPage: (PageContext pageContext) => Payables(
                 context: pageContext,
               ),
             ),
@@ -253,11 +278,21 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               ),
             ),
             Page(
-              title: '账单',
+              title: '零钱明细',
               subtitle: '',
               icon: GalleryIcons.shrine,
               url: '/wallet/change/bill',
               buildPage: (PageContext pageContext) => ChangeBill(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '',
+              subtitle: '',
+              desc: '零钱明细项的详细页',
+              icon: GalleryIcons.shrine,
+              url: '/wallet/change/bill/details',
+              buildPage: (PageContext pageContext) => Details(
                 context: pageContext,
               ),
             ),
@@ -276,6 +311,132 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               icon: GalleryIcons.shrine,
               url: '/desktop/lets/settings',
               buildPage: (PageContext pageContext) => DesktopLetsSettings(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '实体+',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/market/plus/entities',
+              buildPage: (PageContext pageContext) => EntitiesPlus(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '卖场+',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/market/plus/stores',
+              buildPage: (PageContext pageContext) => StoresPlus(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '服务+',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/market/plus/services',
+              buildPage: (PageContext pageContext) => ServicesPlus(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '金证银行',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/market/jzbanks',
+              buildPage: (PageContext pageContext) => JZBanks(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '帑银交易所',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/market/tydealmarket',
+              buildPage: (PageContext pageContext) => TYDealMarket(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '金证喷泉',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/geosphere/fountain',
+              buildPage: (PageContext pageContext) => Geofountain(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '元宝',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/geosphere/yuanbao',
+              buildPage: (PageContext pageContext) => GeoYuanbao(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '地圈设置',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/geosphere/settings',
+              buildPage: (PageContext pageContext) => GeoSettings(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '自地圈',
+              subtitle: '我的地圈动态进入我的地微',
+              icon: GalleryIcons.shrine,
+              url: '/geosphere/insite',
+              buildPage: (PageContext pageContext) => GeoInsite(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '到地圈',
+              subtitle: '我的地微推送到我的地圈',
+              icon: GalleryIcons.shrine,
+              url: '/geosphere/outsite',
+              buildPage: (PageContext pageContext) => GeoOutsite(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '自上游',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/geosphere/upstream',
+              buildPage: (PageContext pageContext) => GeoUpstream(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '到下游',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/geosphere/downstream',
+              buildPage: (PageContext pageContext) => GeoDownstream(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '到访客',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/geosphere/visitorsEntry',
+              buildPage: (PageContext pageContext) => GeoVisitorsEntry(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '自地圈',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/geosphere/outlook',
+              buildPage: (PageContext pageContext) => GeoOutlook(
                 context: pageContext,
               ),
             ),
