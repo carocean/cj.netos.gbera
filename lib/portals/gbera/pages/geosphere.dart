@@ -1233,6 +1233,63 @@ class _GeosphereState extends State<Geosphere> {
                       GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
+                          widget.context.forward('/geosphere/myspace');
+                        },
+                        child: Container(
+                          padding: EdgeInsets.only(
+                            right: 10,
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      bottom: 2,
+                                    ),
+                                    child: Text(
+                                      '',
+                                    ),
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          right: 2,
+                                        ),
+                                        child: Transform(
+                                          alignment: Alignment.center,
+                                          transform: Matrix4.identity()
+                                            ..rotateZ(80.1),
+                                          child: Icon(
+                                            FontAwesomeIcons.reply,
+                                            size: 10,
+                                            color: Colors.grey[400],
+                                          ),
+                                        ),
+                                      ),
+                                      Text(''),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                child: Icon(
+                                  FontAwesomeIcons.commentAlt,
+                                  size: 14,
+                                  color: Colors.grey[500],
+                                ),
+                                padding: EdgeInsets.only(
+                                  left: 5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
                           widget.context.forward('/geosphere/outlook');
                         },
                         child: Container(

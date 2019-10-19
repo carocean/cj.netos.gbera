@@ -10,6 +10,7 @@ import 'package:gbera/portals/gbera/pages/geosphere/geo_fountain.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_insite.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_outlook.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_outsite.dart';
+import 'package:gbera/portals/gbera/pages/geosphere/geo_myspace.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_upstream.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_downstream.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_settings.dart';
@@ -437,6 +438,16 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               icon: GalleryIcons.shrine,
               url: '/geosphere/outlook',
               buildPage: (PageContext pageContext) => GeoOutlook(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '自地微',
+              subtitle: '',
+              desc: '个人的地理信息门户，里面有其发出的文章等，访客可申请访问，默认为公开',
+              icon: GalleryIcons.shrine,
+              url: '/geosphere/myspace',
+              buildPage: (PageContext pageContext) => GeoMySpace(
                 context: pageContext,
               ),
             ),
