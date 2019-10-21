@@ -50,6 +50,7 @@ import 'common/icons.dart';
 import 'gbera/login.dart';
 import 'gbera/login2.dart';
 import 'gbera/pages/contact/contacts_viewer.dart';
+import 'gbera/pages/desktop/wallpappers.dart';
 import 'gbera/pages/system/gbera_settings.dart';
 import 'gbera/pages/wallet/ReceivablesRecord.dart';
 import 'gbera/pages/wallet/receivables_details.dart';
@@ -109,7 +110,6 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
                         fontSize: 20,
                         fontWeight: FontWeight.w500,
                       ),
-
                     ),
                     actionsIconTheme: IconThemeData(
                       color: Colors.green,
@@ -141,6 +141,17 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
                   ),
                 );
               },
+            ),
+          ],
+          buildDesklets: (portal, site) => [
+            Desklet(
+              title: '金证银行指数',
+              url: '/zjbank/chart',
+              icon: Icons.forward,
+              desc: '显示您关注的金证银行',
+              buildDesklet: (context){
+                return Container();
+              }
             ),
           ],
           buildPages: (Portal portal, IServiceProvider site) => [
@@ -402,11 +413,20 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               ),
             ),
             Page(
-              title: '桌面栏目',
+              title: '栏目',
               subtitle: '',
               icon: Icons.apps,
               url: '/desktop/lets/settings',
-              buildPage: (PageContext pageContext) => DesktopLetsSettings(
+              buildPage: (PageContext pageContext) => DeskletsSettings(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '墙纸',
+              subtitle: '',
+              icon: Icons.wallpaper,
+              url: '/desktop/wallpappers/settings',
+              buildPage: (PageContext pageContext) => Wallpappers(
                 context: pageContext,
               ),
             ),

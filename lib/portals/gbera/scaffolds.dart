@@ -32,6 +32,7 @@ class _WithBottomScaffoldState extends State<WithBottomScaffold> {
 //      appBar: headers[selectedIndex],
       body: parts[selectedIndex],
       bottomNavigationBar: GberaBottomNavigationBar(
+        pageContext: widget.context,
         selectedIndex: selectedIndex,
         onSelected: (index) {
           setState(() {

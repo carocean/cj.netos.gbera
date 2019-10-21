@@ -17,27 +17,74 @@ class Desktop extends StatefulWidget {
 }
 
 class _DesktopState extends State<Desktop> {
+  var _controller;
+  var _backgroud_transparent = true;
+  var use_wallpapper = true; //是否使用墙纸的开关
+  @override
+  void dispose() {
+    super.dispose();
+    _controller?.dispose();
+  }
+
+  _listener() {
+    if (!use_wallpapper) {
+      return;
+    }
+    if (_backgroud_transparent && _controller.offset >= 210 - 40) {//40是appbar的高度，210是appbar展开发的总高
+      setState(() {
+        _backgroud_transparent = false;
+      });
+      return;
+    }
+    if (!_backgroud_transparent && _controller.offset < 210 - 40) {
+      setState(() {
+        _backgroud_transparent = true;
+      });
+      return;
+    }
+  }
+
+  _DesktopState() {
+    _controller = ScrollController(initialScrollOffset: 0.0);
+    _controller.addListener(_listener);
+  }
+
   @override
   Widget build(BuildContext context) {
     var onProfileTap = () {
       widget.context.forward('/profile');
     };
-
     var url = widget.context.page.parameters['From-Page-Url'];
     var scaffold =
         widget.context.findPage('${widget.context.page.portal}:/$url');
-    var myarea = SafeArea(
+    var myarea = Container(
+      constraints: BoxConstraints.expand(),
+      decoration: BoxDecoration(
+        image: use_wallpapper
+            ? DecorationImage(
+                image: NetworkImage(
+                    'http://ku.90sjimg.com/back_pic/05/39/03/755a5213bd7e696.jpg%21/fwfh/804x1206/quality/90/unsharp/true/compress/true/watermark/text/OTDorr7orqE=/font/simkai/align/southeast/opacity/20/size/50'),
+                fit: BoxFit.cover,
+              )
+            : null,
+      ),
       child: CustomScrollView(
+        controller: _controller,
         slivers: <Widget>[
           SliverAppBar(
             pinned: true,
             expandedHeight: 210,
             floating: false,
-            title: Text(scaffold?.title ?? ''),
+            title: Text(
+              scaffold?.title ?? '',
+            ),
             titleSpacing: 10,
             centerTitle: false,
             automaticallyImplyLeading: false,
             elevation: 0,
+            backgroundColor: use_wallpapper && _backgroud_transparent
+                ? Colors.transparent
+                : null,
             actions: <Widget>[
               IconButton(
                 // Use the FontAwesomeIcons class for the IconData
@@ -80,9 +127,16 @@ class _DesktopState extends State<Desktop> {
               ),
               IconButton(
                 // Use the FontAwesomeIcons class for the IconData
-                icon: new Icon(widget.context.findPage('/desktop/lets/settings')?.icon,),
+                icon: new Icon(
+                  widget.context.findPage('/desktop/lets/settings')?.icon,
+                ),
                 onPressed: () {
-                  widget.context.forward('/desktop/lets/settings');
+                  widget.context.forward(
+                    '/desktop/lets/settings',
+                    arguments: {
+                      'back_button': true,
+                    },
+                  );
                 },
               ),
             ],
@@ -96,7 +150,7 @@ class _DesktopState extends State<Desktop> {
                   Padding(
                     padding: EdgeInsets.only(
                       left: 0,
-                      top: 50,
+                      top: 80,
                     ),
                     child: ListTile(
                       title: Text(

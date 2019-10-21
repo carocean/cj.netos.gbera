@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gbera/netos/common.dart';
 
 class GberaBottomNavigationBar extends StatefulWidget {
   int selectedIndex;
   void Function(int) onSelected;
-
-  GberaBottomNavigationBar({this.selectedIndex, this.onSelected});
+  PageContext pageContext;
+  GberaBottomNavigationBar({this.selectedIndex, this.onSelected,this.pageContext});
 
   @override
   State createState() {
@@ -41,8 +42,8 @@ class _GberaBottomNavigationBarState extends State<GberaBottomNavigationBar> {
       ],
       currentIndex: widget.selectedIndex,
       type: BottomNavigationBarType.fixed,
-      unselectedItemColor: Colors.black26,
-      selectedItemColor: Colors.red,
+      unselectedItemColor: widget.pageContext?.style('/bottom.unselectedItemColor'),
+      selectedItemColor: widget.pageContext?.style('/bottom.selectedItemColor'),
       showUnselectedLabels: true,
       showSelectedLabels: true,
       iconSize: 24,

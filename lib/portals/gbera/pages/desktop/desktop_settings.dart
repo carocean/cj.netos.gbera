@@ -19,7 +19,6 @@ class DesktopSettings extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          //钱包
           Container(
             padding: EdgeInsets.only(
               top: 15,
@@ -43,7 +42,7 @@ class DesktopSettings extends StatelessWidget {
                       this.context.findPage('/desktop/lets/settings')?.icon,
                       size: 30,
                       color:
-                      this.context.style('/profile/list/item-icon.color'),
+                          this.context.style('/profile/list/item-icon.color'),
                     ),
                   ),
                   Expanded(
@@ -53,7 +52,10 @@ class DesktopSettings extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          '桌面栏目',
+                          this
+                              .context
+                              .findPage('/desktop/lets/settings')
+                              ?.title,
                           style: this
                               .context
                               .style('/profile/list/item-title.text'),
@@ -70,7 +72,57 @@ class DesktopSettings extends StatelessWidget {
               ),
             ),
           ),
-
+          Divider(height: 1,indent: 40,),
+          Container(
+            padding: EdgeInsets.only(
+              top: 15,
+              bottom: 15,
+            ),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                this.context.forward('/desktop/wallpappers/settings');
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: 10,
+                    ),
+                    child: Icon(
+                      this.context.findPage('/desktop/wallpappers/settings')?.icon,
+                      size: 30,
+                      color:
+                          this.context.style('/profile/list/item-icon.color'),
+                    ),
+                  ),
+                  Expanded(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          this.context.findPage('/desktop/wallpappers/settings')?.title,
+                          style: this
+                              .context
+                              .style('/profile/list/item-title.text'),
+                        ),
+                        Icon(
+                          Icons.keyboard_arrow_right,
+                          size: 20,
+                          color: Colors.grey[400],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -95,12 +147,9 @@ class DesktopSettings extends StatelessWidget {
               ),
               child: card_1,
             ),
-          ]
-          ,
-        )
-        ,
-      )
-      ,
+          ],
+        ),
+      ),
     );
   }
 }

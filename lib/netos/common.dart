@@ -6,7 +6,8 @@ import 'package:flutter/widgets.dart';
 
 import 'errors.dart';
 
-typedef OnFrameworkRefresh=Function(Map<String,Object> props);
+typedef OnFrameworkRefresh = Function(Map<String, Object> props);
+
 class UserPrincipal {
   final String uid;
   final String accountid;
@@ -41,10 +42,12 @@ class Portal {
     @required this.id,
     @required this.name,
     @required this.icon,
+    @required this.buildDesklets,
     @required this.buildPages,
     @required this.buildThemes,
   });
 
+  final BuildDesklets buildDesklets;
   final BuildThemes buildThemes;
   final BuildPages buildPages;
   final String id;
@@ -68,6 +71,34 @@ class Portal {
   String toString() {
     return '$runtimeType($id)';
   }
+}
+
+typedef BuildDesklet=Widget Function(BuildContext context);
+//桌面栏
+class Desklet {
+  final String title;
+  final IconData icon;
+  final String subtitle;
+  final String desc;
+  final String url;
+  final BuildDesklet buildDesklet;
+
+  @override
+  String toString() {
+    return '$runtimeType($title $url)';
+  }
+
+  Desklet({
+    @required this.title,
+    @required this.icon,
+    this.subtitle,
+    this.desc,
+    @required this.url,
+    @required this.buildDesklet,
+  })  : assert(title != null),
+        assert(url != null),
+        assert(icon != null),
+        assert(buildDesklet != null);
 }
 
 class Page {
@@ -433,9 +464,9 @@ class PageContext {
 
   Page findPage(String url) {
     Map<String, Page> pages = site.getService("@.pages");
-    String fullurl=url;
-    if(fullurl.indexOf("://")<0){
-      fullurl='${this.page.portal}:/$url';
+    String fullurl = url;
+    if (fullurl.indexOf("://") < 0) {
+      fullurl = '${this.page.portal}:/$url';
     }
     return pages[fullurl];
   }
@@ -449,21 +480,20 @@ class PageContext {
   }
 
   bool switchTheme(String url) {
-    String fullurl=url;
-    if(fullurl.indexOf("://")<0){
-      fullurl='${this.page.portal}:/$url';
+    String fullurl = url;
+    if (fullurl.indexOf("://") < 0) {
+      fullurl = '${this.page.portal}:/$url';
     }
     Map<String, ThemeStyle> themes = site.getService("@.themes");
-    var theme=themes[fullurl];
-    if(themes==null){
+    var theme = themes[fullurl];
+    if (themes == null) {
       return false;
     }
-   OnFrameworkRefresh refresh= site.getService('@.framework.refresh');
-    if(refresh==null)return false;
-    refresh({'selectedTheme':theme});
+    OnFrameworkRefresh refresh = site.getService('@.framework.refresh');
+    if (refresh == null) return false;
+    refresh({'selectedTheme': theme});
     return true;
   }
-
 }
 
 typedef BuildPage = Widget Function(PageContext pageContext);
@@ -472,4 +502,6 @@ typedef BuildRoute = ModalRoute Function(
 typedef BuildPortal = Portal Function(IServiceProvider site);
 typedef BuildPages = List<Page> Function(Portal protal, IServiceProvider site);
 typedef BuildThemes = List<ThemeStyle> Function(
+    Portal protal, IServiceProvider site);
+typedef BuildDesklets = List<Desklet> Function(
     Portal protal, IServiceProvider site);

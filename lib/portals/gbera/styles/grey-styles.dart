@@ -6,6 +6,20 @@ import 'package:gbera/netos/common.dart';
 List<Style> buildGreyStyles(BuildContext context) {
   return <Style>[
     Style(
+        url: '/bottom.unselectedItemColor',
+        desc: '低部导航未选中时颜色',
+        get: () {
+          return Colors.black26;
+        }
+    ),
+    Style(
+        url: '/bottom.selectedItemColor',
+        desc: '低部导航选中时颜色',
+        get: () {
+          return Colors.grey[700];
+        }
+    ),
+    Style(
       url: '/geosphere/mydq.text',
       desc: '我的地圈中间的主标题',
       get: () {
