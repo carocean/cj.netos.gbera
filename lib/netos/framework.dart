@@ -8,6 +8,7 @@ import 'package:gbera/portals/portals.dart';
 import 'common.dart';
 import 'errors.dart';
 
+OnFrameworkRefresh onFrameworkRefresh;//用于内核刷新整个UI
 Map<String, Portal> _allPortals = Map(); //key是portalid
 Map<String, Page> _allPages = Map(); //key是全路径
 Map<String, ThemeStyle> _allThemes = Map(); //key是全路径
@@ -37,6 +38,9 @@ _initFramework(BuildContext context) {
   ErrorWidget.builder = (FlutterErrorDetails flutterErrorDetails) {
     return RuntimeErrorPage(flutterErrorDetails);
   };
+  if(onFrameworkRefresh==null){
+    throw FlutterError('客户程序必须实现onFrameworkRefresh事件');
+  }
   _buildPortals(context);
 }
 
@@ -230,6 +234,9 @@ class GberaServiceProvider implements IServiceProvider {
     if ("@.pages" == name) {
       return _allPages;
     }
+    if ("@.themes" == name) {
+      return _allThemes;
+    }
     if ("@.styles" == name) {
       return _allStyles;
     }
@@ -238,6 +245,9 @@ class GberaServiceProvider implements IServiceProvider {
     }
     if('@.security'==name){
       return _security;
+    }
+    if('@.framework.refresh'==name){
+      return onFrameworkRefresh;
     }
     return null;
   }

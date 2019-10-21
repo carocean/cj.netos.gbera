@@ -6,6 +6,8 @@ class WY extends StatelessWidget {
   WY({this.context});
   @override
   Widget build(BuildContext context) {
+
+    var bb = this.context.parameters['back_button'];
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -13,9 +15,23 @@ class WY extends StatelessWidget {
         ),
         titleSpacing: 0,
         elevation: 1.0,
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: bb == null ? true : false,
+        leading: getLeading(bb),
       ),
       body: Container(),
+    );
+  }
+
+  getLeading(bb) {
+    if (bb == null) return null;
+    return IconButton(
+      onPressed: () {
+        this.context.goBack();
+      },
+      icon: Icon(
+        Icons.clear,
+        size: 18,
+      ),
     );
   }
 }

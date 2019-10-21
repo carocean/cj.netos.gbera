@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
 
-class TY extends StatelessWidget {
+class UserAndAccountViewer extends StatelessWidget {
   PageContext context;
-  TY({this.context});
+  UserAndAccountViewer({this.context});
   @override
   Widget build(BuildContext context) {
-
 
     var bb = this.context.parameters['back_button'];
     return Scaffold(

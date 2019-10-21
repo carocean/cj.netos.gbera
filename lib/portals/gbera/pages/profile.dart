@@ -108,7 +108,7 @@ class Profile extends StatelessWidget {
                       right: 10,
                     ),
                     child: Icon(
-                      Icons.account_balance_wallet,
+                      this.context.findPage('/wallet').icon,
                       size: 30,
                       color:
                           this.context.style('/profile/list/item-icon.color'),
@@ -121,7 +121,7 @@ class Profile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          '钱包',
+                          this.context.findPage('/wallet').title,
                           style: this
                               .context
                               .style('/profile/list/item-title.text'),
@@ -206,41 +206,49 @@ class Profile extends StatelessWidget {
               top: 15,
               bottom: 15,
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: 10,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                this.context.forward('/contact/list');
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: 10,
+                    ),
+                    child: Icon(
+                      this.context.findPage('/contact/list').icon,
+                      size: 30,
+                      color:
+                          this.context.style('/profile/list/item-icon.color'),
+                    ),
                   ),
-                  child: Icon(
-                    FontAwesomeIcons.addressBook,
-                    size: 30,
-                    color: this.context.style('/profile/list/item-icon.color'),
+                  Expanded(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          this.context.findPage('/contact/list').title,
+                          style: this
+                              .context
+                              .style('/profile/list/item-title.text'),
+                        ),
+                        Icon(
+                          Icons.keyboard_arrow_right,
+                          size: 20,
+                          color: Colors.grey[400],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        '联系人',
-                        style:
-                            this.context.style('/profile/list/item-title.text'),
-                      ),
-                      Icon(
-                        Icons.keyboard_arrow_right,
-                        size: 20,
-                        color: Colors.grey[400],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Divider(
@@ -300,41 +308,49 @@ class Profile extends StatelessWidget {
               top: 15,
               bottom: 15,
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: 10,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                this.context.forward('/users/list');
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: 10,
+                    ),
+                    child: Icon(
+                      this.context.findPage('/users/list')?.icon,
+                      size: 30,
+                      color:
+                          this.context.style('/profile/list/item-icon.color'),
+                    ),
                   ),
-                  child: Icon(
-                    Icons.person_outline,
-                    size: 30,
-                    color: this.context.style('/profile/list/item-icon.color'),
+                  Expanded(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          this.context.findPage('/users/list')?.title,
+                          style: this
+                              .context
+                              .style('/profile/list/item-title.text'),
+                        ),
+                        Icon(
+                          Icons.keyboard_arrow_right,
+                          size: 20,
+                          color: Colors.grey[400],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        '用户与账号',
-                        style:
-                            this.context.style('/profile/list/item-title.text'),
-                      ),
-                      Icon(
-                        Icons.keyboard_arrow_right,
-                        size: 20,
-                        color: Colors.grey[400],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
@@ -355,7 +371,7 @@ class Profile extends StatelessWidget {
           //桌面设置
           GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTap: (){
+            onTap: () {
               this.context.forward('/desktop/settings');
             },
             child: Container(
@@ -373,7 +389,7 @@ class Profile extends StatelessWidget {
                       right: 10,
                     ),
                     child: Icon(
-                      Icons.dashboard,
+                      this.context.findPage('/desktop/settings')?.icon,
                       size: 30,
                       color:
                           this.context.style('/profile/list/item-icon.color'),
@@ -386,7 +402,7 @@ class Profile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          '桌面设置',
+                          this.context.findPage('/desktop/settings')?.title,
                           style: this
                               .context
                               .style('/profile/list/item-title.text'),
@@ -414,41 +430,49 @@ class Profile extends StatelessWidget {
               top: 15,
               bottom: 15,
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: 10,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                this.context.forward('/system/settings');
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: 10,
+                    ),
+                    child: Icon(
+                      this.context.findPage('/system/settings').icon,
+                      size: 30,
+                      color:
+                          this.context.style('/profile/list/item-icon.color'),
+                    ),
                   ),
-                  child: Icon(
-                    Icons.settings,
-                    size: 30,
-                    color: this.context.style('/profile/list/item-icon.color'),
+                  Expanded(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          '系统设置',
+                          style: this
+                              .context
+                              .style('/profile/list/item-title.text'),
+                        ),
+                        Icon(
+                          Icons.keyboard_arrow_right,
+                          size: 20,
+                          color: Colors.grey[400],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        '系统设置',
-                        style:
-                            this.context.style('/profile/list/item-title.text'),
-                      ),
-                      Icon(
-                        Icons.keyboard_arrow_right,
-                        size: 20,
-                        color: Colors.grey[400],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],

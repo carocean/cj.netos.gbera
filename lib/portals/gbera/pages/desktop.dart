@@ -80,7 +80,7 @@ class _DesktopState extends State<Desktop> {
               ),
               IconButton(
                 // Use the FontAwesomeIcons class for the IconData
-                icon: new Icon(Icons.apps),
+                icon: new Icon(widget.context.findPage('/desktop/lets/settings')?.icon,),
                 onPressed: () {
                   widget.context.forward('/desktop/lets/settings');
                 },
@@ -126,8 +126,12 @@ class _DesktopState extends State<Desktop> {
                             padding: EdgeInsets.only(left: 10, right: 10),
                             child: GestureDetector(
                               behavior: HitTestBehavior.opaque,
-                              onTap: () =>
-                                  widget.context.forward('/wallet/change'),
+                              onTap: () => widget.context.forward(
+                                '/wallet/change',
+                                arguments: {
+                                  'back_button': true,
+                                },
+                              ),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
@@ -155,7 +159,12 @@ class _DesktopState extends State<Desktop> {
                             padding: EdgeInsets.only(left: 10, right: 10),
                             child: GestureDetector(
                               behavior: HitTestBehavior.opaque,
-                              onTap: () => widget.context.forward('/wallet/ty'),
+                              onTap: () => widget.context.forward(
+                                '/wallet/ty',
+                                arguments: {
+                                  'back_button': true,
+                                },
+                              ),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
@@ -183,7 +192,12 @@ class _DesktopState extends State<Desktop> {
                             padding: EdgeInsets.only(left: 10, right: 10),
                             child: GestureDetector(
                               behavior: HitTestBehavior.opaque,
-                              onTap: () => widget.context.forward('/wallet/wy'),
+                              onTap: () => widget.context.forward(
+                                '/wallet/wy',
+                                arguments: {
+                                  'back_button': true,
+                                },
+                              ),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[

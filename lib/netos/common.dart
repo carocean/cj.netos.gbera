@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 
 import 'errors.dart';
 
+typedef OnFrameworkRefresh=Function(Map<String,Object> props);
 class UserPrincipal {
   final String uid;
   final String accountid;
@@ -74,6 +75,7 @@ class Page {
     @required this.title,
     @required this.icon,
     this.subtitle,
+    this.previousTitle,
     this.desc,
     @required this.url,
     @required this.buildPage,
@@ -84,6 +86,7 @@ class Page {
   final String title;
   final IconData icon;
   final String subtitle;
+  final String previousTitle;
   final String desc;
   Map<String, Object> _parameters;
   String _portal;
@@ -154,6 +157,7 @@ class ThemeStyle {
   final String url;
   final String title;
   final String desc;
+  final Color iconColor;
   final BuildTheme buildTheme;
   final BuildStyle buildStyle;
 
@@ -161,6 +165,7 @@ class ThemeStyle {
     @required this.title,
     @required this.url,
     this.desc,
+    this.iconColor,
     @required this.buildTheme,
     @required this.buildStyle,
   })  : assert(title != null),
@@ -426,18 +431,39 @@ class PageContext {
     }
   }
 
-  Page findPage(String fullUrl) {
+  Page findPage(String url) {
     Map<String, Page> pages = site.getService("@.pages");
-    return pages[fullUrl];
+    String fullurl=url;
+    if(fullurl.indexOf("://")<0){
+      fullurl='${this.page.portal}:/$url';
+    }
+    return pages[fullurl];
   }
 
-  void goBack() {
+  bool goBack([result]) {
     NavigatorState state = Navigator.of(context);
     if (!state.canPop()) {
-      return;
+      return false;
     }
-    state.pop();
+    return state.pop(result);
   }
+
+  bool switchTheme(String url) {
+    String fullurl=url;
+    if(fullurl.indexOf("://")<0){
+      fullurl='${this.page.portal}:/$url';
+    }
+    Map<String, ThemeStyle> themes = site.getService("@.themes");
+    var theme=themes[fullurl];
+    if(themes==null){
+      return false;
+    }
+   OnFrameworkRefresh refresh= site.getService('@.framework.refresh');
+    if(refresh==null)return false;
+    refresh({'selectedTheme':theme});
+    return true;
+  }
+
 }
 
 typedef BuildPage = Widget Function(PageContext pageContext);

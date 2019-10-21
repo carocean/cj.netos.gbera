@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
 
-class Details extends StatefulWidget {
+class ReceivablesDetails extends StatefulWidget {
   PageContext context;
 
-  Details({this.context});
+  ReceivablesDetails({this.context});
 
   @override
-  _DetailsState createState() => _DetailsState();
+  _ReceivablesDetailsState createState() => _ReceivablesDetailsState();
 }
 
-class _DetailsState extends State<Details> {
+class _ReceivablesDetailsState extends State<ReceivablesDetails> {
   @override
   Widget build(BuildContext context) {
     var card_money = Container(
@@ -26,14 +26,25 @@ class _DetailsState extends State<Details> {
             padding: EdgeInsets.only(
               bottom: 10,
             ),
-            child: Text(
-              '提现',
-              style: widget.context
-                  .style('/wallet/change/detail/header/title.text'),
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 5,
+                  ),
+                  child: Image.network(
+                    'https://c-ssl.duitang.com/uploads/item/201802/25/20180225233117_yicii.thumb.700_0.jpg',
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                Text('赵向彬'),
+              ],
             ),
           ),
           Text(
-            '-10000.00',
+            '¥10000.00',
             style:
                 widget.context.style('/wallet/change/detail/header/money.text'),
             softWrap: true,
@@ -63,13 +74,13 @@ class _DetailsState extends State<Details> {
                     right: 10,
                   ),
                   child: Text(
-                    '类型',
+                    '当前状态',
                     style: widget.context
                         .style('/wallet/change/detail/body/label.text'),
                   ),
                 ),
                 Expanded(
-                  child: Text('提现'),
+                  child: Text('已收款'),
                 ),
               ],
             ),
@@ -86,7 +97,7 @@ class _DetailsState extends State<Details> {
                     right: 10,
                   ),
                   child: Text(
-                    '时间',
+                    '收款时间',
                     style: widget.context
                         .style('/wallet/change/detail/body/label.text'),
                   ),
@@ -109,7 +120,30 @@ class _DetailsState extends State<Details> {
                     right: 10,
                   ),
                   child: Text(
-                    '交易单号',
+                    '订单金额',
+                    style: widget.context
+                        .style('/wallet/change/detail/body/label.text'),
+                  ),
+                ),
+                Expanded(
+                  child: Text('¥3720.00'),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              bottom: 10,
+            ),
+            child: Row(
+              children: <Widget>[
+                Container(
+                  width: 80,
+                  padding: EdgeInsets.only(
+                    right: 10,
+                  ),
+                  child: Text(
+                    '收款单号',
                     style: widget.context
                         .style('/wallet/change/detail/body/label.text'),
                   ),
@@ -136,14 +170,14 @@ class _DetailsState extends State<Details> {
                     right: 10,
                   ),
                   child: Text(
-                    '剩余零钱',
+                    '商家订单号',
                     style: widget.context
                         .style('/wallet/change/detail/body/label.text'),
                   ),
                 ),
                 Expanded(
                   child: Text(
-                    '¥60.00',
+                    '1000039204058383382727740100291283929',
                     softWrap: true,
                     overflow: TextOverflow.visible,
                   ),
@@ -158,19 +192,19 @@ class _DetailsState extends State<Details> {
             child: Row(
               children: <Widget>[
                 Container(
+                  width: 80,
                   padding: EdgeInsets.only(
                     right: 10,
                   ),
                   child: Text(
-                    '备注',
+                    '交易说明',
                     style: widget.context
                         .style('/wallet/change/detail/body/label.text'),
                   ),
-                  width: 80,
                 ),
                 Expanded(
                   child: Text(
-                    '金证提现',
+                    '商品',
                     softWrap: true,
                     overflow: TextOverflow.visible,
                   ),
@@ -183,7 +217,7 @@ class _DetailsState extends State<Details> {
     );
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
+        centerTitle: false,
         title: Text(
           widget.context.page?.title,
         ),

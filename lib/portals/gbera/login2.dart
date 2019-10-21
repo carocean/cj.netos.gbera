@@ -122,12 +122,11 @@ class _LoginPage2State extends State<LoginPage2> {
 //        ),
 //      ),
       child: SizedBox(
-        width: 100,
+        width: 80,
         height: 80,
-        child: Icon(
-          FontAwesomeIcons.skyatlas,
-          color: Colors.indigo,
-          size: 80,
+        child: Image.asset(
+          'lib/portals/gbera/images/gbera.png',
+          fit: BoxFit.contain,
         ),
       ),
     );
@@ -322,7 +321,7 @@ class _LoginPage2State extends State<LoginPage2> {
         Padding(
           padding: EdgeInsets.all(10),
           child: Text(
-            '金证时代',
+            '小信猪',
             style: widget.context.style(
               '/login2/appTitle.text',
             ),

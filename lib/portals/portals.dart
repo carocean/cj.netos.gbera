@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/errors/errors.dart';
+import 'package:gbera/portals/gbera/pages/contact/contact_list.dart';
 import 'package:gbera/portals/gbera/pages/desktop.dart';
 import 'package:gbera/portals/gbera/pages/desktop/desktop_lets.dart';
 import 'package:gbera/portals/gbera/pages/desktop/desktop_settings.dart';
@@ -24,13 +26,20 @@ import 'package:gbera/portals/gbera/pages/market/services_plus.dart';
 import 'package:gbera/portals/gbera/pages/market/stores_plus.dart';
 import 'package:gbera/portals/gbera/pages/netflow.dart';
 import 'package:gbera/portals/gbera/pages/profile.dart';
+import 'package:gbera/portals/gbera/pages/system/about.dart';
+import 'package:gbera/portals/gbera/pages/system/contract.dart';
+import 'package:gbera/portals/gbera/pages/system/themes.dart';
+import 'package:gbera/portals/gbera/pages/users/user_list.dart';
+import 'package:gbera/portals/gbera/pages/users/viewer.dart';
 import 'package:gbera/portals/gbera/pages/wallet.dart';
-import 'package:gbera/portals/gbera/pages/wallet/card.dart';
+import 'package:gbera/portals/gbera/pages/wallet/amount_settings.dart';
+import 'package:gbera/portals/gbera/pages/wallet/card_details.dart';
+import 'package:gbera/portals/gbera/pages/wallet/cards.dart';
 import 'package:gbera/portals/gbera/pages/wallet/cashout.dart';
 import 'package:gbera/portals/gbera/pages/wallet/change.dart';
 import 'package:gbera/portals/gbera/pages/wallet/change_bill.dart';
 import 'package:gbera/portals/gbera/pages/wallet/deposit.dart';
-import 'package:gbera/portals/gbera/pages/wallet/details.dart';
+import 'package:gbera/portals/gbera/pages/wallet/change_details.dart';
 import 'package:gbera/portals/gbera/pages/wallet/payables.dart';
 import 'package:gbera/portals/gbera/pages/wallet/receivables.dart';
 import 'package:gbera/portals/gbera/pages/wallet/ty.dart';
@@ -40,7 +49,12 @@ import 'package:gbera/portals/gbera/scaffolds.dart';
 import 'common/icons.dart';
 import 'gbera/login.dart';
 import 'gbera/login2.dart';
+import 'gbera/pages/contact/contacts_viewer.dart';
+import 'gbera/pages/system/gbera_settings.dart';
+import 'gbera/pages/wallet/ReceivablesRecord.dart';
+import 'gbera/pages/wallet/receivables_details.dart';
 import 'gbera/styles/grey-styles.dart';
+import 'gbera/styles/green-styles.dart';
 
 List<BuildPortal> buildPortals(IServiceProvider site) {
   return <BuildPortal>[
@@ -52,7 +66,8 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
             ThemeStyle(
               title: '灰色',
               desc: '呈现淡灰色，接近白',
-              url: '/gray',
+              url: '/grey',
+              iconColor: Colors.grey[500],
               buildStyle: buildGreyStyles,
               buildTheme: (BuildContext context) {
                 return ThemeData(
@@ -60,6 +75,57 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
                   scaffoldBackgroundColor: Color(0xFFF5F5f5),
                   primarySwatch: MaterialColor(
                     0xFFF5F5f5,
+                    {
+                      50: Color(0xFFE8F5E9),
+                      100: Color(0xFFC8E6C9),
+                      200: Color(0xFFA5D6A7),
+                      300: Color(0xFF81C784),
+                      400: Color(0xFF66BB6A),
+                      500: Color(0xFF4CAF50),
+                      600: Color(0xFF43A047),
+                      700: Color(0xFF388E3C),
+                      800: Color(0xFF2E7D32),
+                      900: Color(0xFF1B5E20),
+                    },
+                  ),
+                );
+              },
+            ),
+            ThemeStyle(
+              title: '绿色',
+              desc: '呈现淡绿',
+              url: '/green',
+              iconColor: Colors.green[500],
+              buildStyle: buildGreenStyles,
+              buildTheme: (BuildContext context) {
+                return ThemeData(
+                  backgroundColor: Color(0xFFE8F5E9),
+                  scaffoldBackgroundColor: Color(0xFFE8F5E9),
+                  appBarTheme: AppBarTheme.of(context).copyWith(
+                    color: Color(0xFFE8F5E9),
+                    textTheme: TextTheme(
+                      title: TextStyle(
+                        color: Colors.green,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                      ),
+
+                    ),
+                    actionsIconTheme: IconThemeData(
+                      color: Colors.green,
+                      opacity: 1,
+                      size: 20,
+                    ),
+                    brightness: Brightness.light,
+                    iconTheme: IconThemeData(
+                      color: Colors.green,
+                      opacity: 1,
+                      size: 20,
+                    ),
+                    elevation: 1.0,
+                  ),
+                  primarySwatch: MaterialColor(
+                    0xFF4CAF50,
                     {
                       50: Color(0xFFE8F5E9),
                       100: Color(0xFFC8E6C9),
@@ -88,7 +154,7 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               ),
             ),
             Page(
-              title: '金证时代',
+              title: '小信猪',
               subtitle: '',
               icon: GalleryIcons.shrine,
               url: '/scaffold/withbottombar',
@@ -200,7 +266,7 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
             Page(
               title: '钱包',
               subtitle: '',
-              icon: GalleryIcons.shrine,
+              icon: Icons.account_balance_wallet,
               url: '/wallet',
               buildPage: (PageContext pageContext) => Wallet(
                 context: pageContext,
@@ -211,7 +277,7 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               subtitle: '',
               icon: GalleryIcons.shrine,
               url: '/wallet/card',
-              buildPage: (PageContext pageContext) => BankCard(
+              buildPage: (PageContext pageContext) => BankCards(
                 context: pageContext,
               ),
             ),
@@ -239,6 +305,35 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               icon: GalleryIcons.shrine,
               url: '/wallet/payables',
               buildPage: (PageContext pageContext) => Payables(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '设置金额',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/wallet/receivables/settings',
+              buildPage: (PageContext pageContext) => AmountSettings(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '收款记录',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/wallet/receivables/record',
+              buildPage: (PageContext pageContext) => ReceivablesRecord(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '收款单',
+              subtitle: '',
+              previousTitle: '收款记录',
+              desc: '收款记录详情',
+              icon: GalleryIcons.shrine,
+              url: '/wallet/receivables/details',
+              buildPage: (PageContext pageContext) => ReceivablesDetails(
                 context: pageContext,
               ),
             ),
@@ -293,14 +388,14 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               desc: '零钱明细项的详细页',
               icon: GalleryIcons.shrine,
               url: '/wallet/change/bill/details',
-              buildPage: (PageContext pageContext) => Details(
+              buildPage: (PageContext pageContext) => ChangeDetails(
                 context: pageContext,
               ),
             ),
             Page(
               title: '桌面设置',
               subtitle: '',
-              icon: GalleryIcons.shrine,
+              icon: Icons.dashboard,
               url: '/desktop/settings',
               buildPage: (PageContext pageContext) => DesktopSettings(
                 context: pageContext,
@@ -309,9 +404,63 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
             Page(
               title: '桌面栏目',
               subtitle: '',
-              icon: GalleryIcons.shrine,
+              icon: Icons.apps,
               url: '/desktop/lets/settings',
               buildPage: (PageContext pageContext) => DesktopLetsSettings(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '系统设置',
+              subtitle: '',
+              icon: Icons.settings,
+              url: '/system/settings',
+              buildPage: (PageContext pageContext) => GberaSettings(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '主题',
+              subtitle: '',
+              icon: FontAwesomeIcons.themeisle,
+              url: '/system/themes',
+              buildPage: (PageContext pageContext) => Themes(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '用户协议',
+              subtitle: '',
+              icon: FontAwesomeIcons.fileContract,
+              url: '/system/user/contract',
+              buildPage: (PageContext pageContext) => UserContract(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '关于',
+              subtitle: '',
+              icon: Icons.info_outline,
+              url: '/system/about',
+              buildPage: (PageContext pageContext) => About(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '用户与账号',
+              subtitle: '',
+              icon: Icons.person_outline,
+              url: '/users/list',
+              buildPage: (PageContext pageContext) => UserAndAccountList(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '用户号',
+              subtitle: '',
+              icon: Icons.person_outline,
+              url: '/users/viewer',
+              buildPage: (PageContext pageContext) => UserAndAccountViewer(
                 context: pageContext,
               ),
             ),
@@ -448,6 +597,33 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               icon: GalleryIcons.shrine,
               url: '/geosphere/myspace',
               buildPage: (PageContext pageContext) => GeoMySpace(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '银行卡',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/wallet/card/details',
+              buildPage: (PageContext pageContext) => BankCardDetails(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '联系人',
+              subtitle: '',
+              icon: FontAwesomeIcons.addressBook,
+              url: '/contact/list',
+              buildPage: (PageContext pageContext) => ContactList(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '联系人信息',
+              subtitle: '',
+              icon: GalleryIcons.shrine,
+              url: '/contact/viewer',
+              buildPage: (PageContext pageContext) => ContactsViewer(
                 context: pageContext,
               ),
             ),

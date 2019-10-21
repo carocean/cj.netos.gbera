@@ -63,7 +63,8 @@ class Change extends StatelessWidget {
               },
               textColor: this.context.style('/wallet/change/deposit.textColor'),
               color: this.context.style('/wallet/change/deposit.color'),
-              highlightColor: this.context.style('/wallet/change/deposit.highlightColor'),
+              highlightColor:
+                  this.context.style('/wallet/change/deposit.highlightColor'),
               child: Text('充值'),
             ),
           ),
@@ -80,15 +81,19 @@ class Change extends StatelessWidget {
                 debugPrint('提现');
                 this.context.forward('/wallet/change/cashout');
               },
-              textColor:  this.context.style('/wallet/change/cashout.textColor'),
+              textColor: this.context.style('/wallet/change/cashout.textColor'),
               color: this.context.style('/wallet/change/cashout.color'),
-              highlightColor: this.context.style('/wallet/change/cashout.highlightColor'),
+              highlightColor:
+                  this.context.style('/wallet/change/cashout.highlightColor'),
               child: Text('提现'),
             ),
           ),
         ),
       ],
     );
+
+    var bb = this.context.parameters['back_button'];
+
     return Scaffold(
       appBar: AppBar(
 //        title: Text(
@@ -96,7 +101,8 @@ class Change extends StatelessWidget {
 //        ),
         titleSpacing: 0,
         elevation: 0,
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: bb == null ? true : false,
+        leading: getLeading(bb),
         actions: <Widget>[
           FlatButton(
             onPressed: () {
@@ -120,6 +126,19 @@ class Change extends StatelessWidget {
             card_actions,
           ],
         ),
+      ),
+    );
+  }
+
+  getLeading(bb) {
+    if (bb == null) return null;
+    return IconButton(
+      onPressed: () {
+        this.context.goBack();
+      },
+      icon: Icon(
+        Icons.clear,
+        size: 18,
       ),
     );
   }

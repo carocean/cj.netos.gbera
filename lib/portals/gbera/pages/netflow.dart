@@ -67,8 +67,17 @@ void _buildPipelineTab(List<Widget> panel) {
       ),
     ),
   ));
+  var subItem=<Widget>[];
   panel.add(SliverToBoxAdapter(
-    child: Card(
+    child: Container(
+      margin: EdgeInsets.only(bottom: 15,),
+      color: Colors.white,
+      child: Column(
+        children: subItem,
+      ),
+    ),
+  ));
+  subItem.add(Card(
       shape: Border(),
       elevation: 0.0,
       margin: EdgeInsets.only(
@@ -129,7 +138,7 @@ void _buildPipelineTab(List<Widget> panel) {
               Padding(
                 padding: EdgeInsets.only(left: 5),
                 child: Text(
-                  '招服务员2名',
+                  '由系统创建',
                   style: TextStyle(
                     fontSize: 12,
                   ),
@@ -141,16 +150,16 @@ void _buildPipelineTab(List<Widget> panel) {
         ),
       ),
     ),
-  ));
-  panel.add(SliverToBoxAdapter(
-    child: Card(
+  );
+  subItem.add(Divider(height: 1,indent: 80,),);
+  subItem.add( Card(
       shape: Border(),
       elevation: 0.0,
       margin: EdgeInsets.only(
         bottom: 10,
       ),
       child: ListTile(
-        title: Text('地圈动态'),
+        title: Text('朋友圈'),
         leading: SizedBox(
           height: 60,
           width: 60,
@@ -201,7 +210,7 @@ void _buildPipelineTab(List<Widget> panel) {
               Padding(
                 padding: EdgeInsets.only(left: 5),
                 child: Text(
-                  '国庆放假10天',
+                  '由联系人形成',
                   style: TextStyle(fontSize: 12),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -211,7 +220,77 @@ void _buildPipelineTab(List<Widget> panel) {
         ),
       ),
     ),
-  ));
+  );
+  subItem.add(Divider(height: 1,indent: 80,),);
+  subItem.add( Card(
+      shape: Border(),
+      elevation: 0.0,
+      margin: EdgeInsets.only(
+        bottom: 10,
+      ),
+      child: ListTile(
+        title: Text('地理微博'),
+        leading: SizedBox(
+          height: 60,
+          width: 60,
+          child: IconButton(
+            icon: Image(
+              image: NetworkImage(
+                  'http://pic-bucket.ws.126.net/photo/0003/2019-08-24/ENB1RG1000AJ0003NOS.jpg'),
+            ),
+          ),
+        ),
+        trailing: Padding(
+          padding: EdgeInsets.only(
+            top: 0,
+            bottom: 20,
+          ),
+          child: Text(
+            '23:22',
+            style: TextStyle(
+              color: Colors.grey[400],
+            ),
+          ),
+        ),
+        subtitle: Container(
+          padding: EdgeInsets.only(
+            top: 6,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                '[93/43]',
+                style: TextStyle(fontSize: 12),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 5, right: 1),
+                child: Text(
+                  '新华小学',
+                  style: TextStyle(fontStyle: FontStyle.italic, fontSize: 12),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 1, right: 5),
+                child: Text(
+                  '说:',
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 5),
+                child: Text(
+                  '有到地圈出口',
+                  style: TextStyle(fontSize: 12),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
   panel.add(SliverFixedExtentList(
     itemExtent: 75, // I'm forcing item heights
     delegate: SliverChildBuilderDelegate(

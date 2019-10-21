@@ -31,7 +31,7 @@ dependencies:
   #生成二维码
   qr_flutter: ^3.0.1
   path_provider: ^1.2.0
-
+  lpinyin: ^1.0.7
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -79,6 +79,9 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
   assets:
     - lib/portals/gbera/images/gbera.png
+    - lib/portals/gbera/images/gbera_bk.png
     - lib/portals/gbera/images/penquan.png
     - lib/portals/gbera/images/yuanbao.png
-    - lib/portals/gbera/images/splash.png
+    - lib/portals/gbera/data/contacts.json
+    - lib/portals/gbera/images/avatar.png
+    - lib/portals/gbera/data/user_constract
