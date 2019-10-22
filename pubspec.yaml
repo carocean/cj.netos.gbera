@@ -85,3 +85,4 @@ flutter:
     - lib/portals/gbera/data/contacts.json
     - lib/portals/gbera/images/avatar.png
     - lib/portals/gbera/data/user_constract
+    - lib/portals/gbera/data/portlets.json

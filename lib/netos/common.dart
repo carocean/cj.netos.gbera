@@ -559,4 +559,4 @@ typedef BuildThemes = List<ThemeStyle> Function(
     Portal protal, IServiceProvider site);
 typedef BuildDesklets = List<Desklet> Function(
     Portal protal, IServiceProvider site);
-typedef BuildDesklet = Widget Function(Portlet portlet,Desklet desklet,PageContext context);
+typedef BuildDesklet = Widget Function(Portlet portlet,Desklet desklet,PageContext desktopContext);

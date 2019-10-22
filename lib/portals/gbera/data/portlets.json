@@ -1,0 +1,23 @@
+[
+  {
+    "title": "丰都国际",
+    "desc": "服务范围：提供xxx等等",
+    "deskletUrl": "/zjbank/chart",
+    "imgSrc": "http://img0.bdstatic.com/static/searchresult/img/logo-2X_32a8193.png",
+    "renderMethod": "renderByPortletConfig"
+  },
+  {
+    "title": "美年达",
+    "desc": "桶装手等服务",
+    "deskletUrl": "/zjbank/chart",
+    "imgSrc": "http://crawl.ws.126.net/35ee2c9b97be8bdea29e48fb6986487d.jpg",
+    "renderMethod": "nope"
+  },
+  {
+    "title": "京东卖场",
+    "desc": "电子商务知名企业",
+    "deskletUrl": "/store",
+    "imgSrc": "http://pic-bucket.ws.126.net/photo/0001/2019-10-22/ES4E491700AO0001NOS.jpg",
+    "renderMethod": "renderByDeskletConfig"
+  }
+]

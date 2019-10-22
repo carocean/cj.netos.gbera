@@ -7,6 +7,7 @@ import 'package:gbera/portals/gbera/pages/contact/contact_list.dart';
 import 'package:gbera/portals/gbera/pages/desktop.dart';
 import 'package:gbera/portals/gbera/pages/desktop/desklets_settings.dart';
 import 'package:gbera/portals/gbera/pages/desktop/desktop_settings.dart';
+import 'package:gbera/portals/gbera/pages/desktop/portlet_list.dart';
 import 'package:gbera/portals/gbera/pages/geosphere.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_fountain.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_insite.dart';
@@ -635,6 +636,16 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               icon: GalleryIcons.shrine,
               url: '/contact/viewer',
               buildPage: (PageContext pageContext) => ContactsViewer(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '栏目列表',
+              subtitle: '',
+              desc: '列出门户栏目',
+              icon: GalleryIcons.shrine,
+              url: '/desktop/portlets',
+              buildPage: (PageContext pageContext) => PortletList(
                 context: pageContext,
               ),
             ),

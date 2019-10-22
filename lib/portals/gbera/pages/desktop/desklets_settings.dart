@@ -11,8 +11,23 @@ class DeskletsSettings extends StatefulWidget {
 }
 
 class _DeskletsSettingsState extends State<DeskletsSettings> {
+  List<Desklet> desklets = [];
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    desklets.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
+    desklets.clear();
+    Map<String, Desklet> _desklets_map =
+        widget.context.site.getService('@.desklets');
+    _desklets_map.forEach((k, v) {
+      desklets.add(v);
+    });
     var bb = widget.context.parameters['back_button'];
     return Scaffold(
       appBar: AppBar(
@@ -28,7 +43,7 @@ class _DeskletsSettingsState extends State<DeskletsSettings> {
         child: ListView.separated(
           itemBuilder: _itemBuilder,
           separatorBuilder: _separatorBuilder,
-          itemCount: 10,
+          itemCount: desklets.length,
           shrinkWrap: true,
         ),
       ),
@@ -49,11 +64,12 @@ class _DeskletsSettingsState extends State<DeskletsSettings> {
   }
 
   Widget _itemBuilder(BuildContext context, int index) {
+    var desklet = desklets[index];
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        setState(() {
-//          widget.context.switchTheme(selected.url);
+        widget.context.forward('/desktop/portlets', arguments: {
+          'desklet': desklet,
         });
       },
       child: Container(
@@ -75,9 +91,10 @@ class _DeskletsSettingsState extends State<DeskletsSettings> {
                       right: 10,
                     ),
                     child: Icon(
-                      widget.context.findPage('/system/themes').icon,
+                      desklet.icon,
                       size: 30,
-                      color: Colors.green,
+                      color: widget.context
+                          .style('/desktop/desklets/settings.icon'),
                     ),
                   ),
                   Column(
@@ -88,7 +105,7 @@ class _DeskletsSettingsState extends State<DeskletsSettings> {
                           bottom: 5,
                         ),
                         child: Text(
-                          '我',
+                          desklet.title,
                           style: TextStyle(
                             color: Colors.grey[800],
                             fontWeight: FontWeight.w500,
@@ -96,7 +113,7 @@ class _DeskletsSettingsState extends State<DeskletsSettings> {
                         ),
                       ),
                       Text(
-                        '说明',
+                        desklet.desc,
                         style: TextStyle(
                           color: Colors.grey[600],
                         ),

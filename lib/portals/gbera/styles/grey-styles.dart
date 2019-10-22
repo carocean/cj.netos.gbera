@@ -6,6 +6,20 @@ import 'package:gbera/netos/common.dart';
 List<Style> buildGreyStyles(BuildContext context) {
   return <Style>[
     Style(
+        url: '/desktop/settings/portlet.activeColor',
+        desc: '栏目列表siwtch组件激活色',
+        get: () {
+          return Colors.grey[800];
+        }
+    ),
+    Style(
+        url: '/desktop/desklets/settings.icon',
+        desc: '桌面栏目设置列表',
+        get: () {
+          return Colors.grey[500];
+        }
+    ),
+    Style(
         url: '/bottom.unselectedItemColor',
         desc: '低部导航未选中时颜色',
         get: () {

@@ -9,9 +9,9 @@ List<Desklet> buildDesklets(portal, site) {
     Desklet(
       title: '金证银行指数',
       url: '/zjbank/chart',
-      icon: Icons.forward,
+      icon: Icons.pie_chart,
       desc: '显示您关注的金证银行',
-      buildDesklet: (portlet,desklet,context) {
+      buildDesklet: (portlet,desklet,desktopContext) {
         return SliverToBoxAdapter(
           child: Card(
             margin: EdgeInsets.only(left: 0, right: 0, top: 5, bottom: 5),
@@ -129,9 +129,9 @@ List<Desklet> buildDesklets(portal, site) {
     Desklet(
       title: '卖场',
       url: '/store',
-      icon: Icons.forward,
+      icon: Icons.store_mall_directory,
       desc: '用于卖场',
-      buildDesklet: (portlet,desklet,context) {
+      buildDesklet: (portlet,desklet,desktopContext) {
         return SliverToBoxAdapter(
           child: CardStore(
             content: Column(
