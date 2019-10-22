@@ -73,7 +73,6 @@ class Portal {
   }
 }
 
-typedef BuildDesklet=Widget Function(BuildContext context);
 //桌面栏
 class Desklet {
   final String title;
@@ -289,10 +288,23 @@ class PageContext {
     return style;
   }
 
+  Desklet desklet(String deskletUrl) {
+    String fullurl = deskletUrl;
+    if (fullurl.indexOf("://") < 0) {
+      fullurl = '${this.page.portal}:/$deskletUrl';
+    }
+    Map<String, Desklet> desklets = site.getService("@.desklets");
+    return desklets[fullurl];
+  }
+
   ///部件作为页面的界面元素被嵌入，因此不支持页面跳转动画，因为它在调用时不被作为路由页。
   Widget part(String pageUrl, PageContext pageContext) {
     Map<String, Page> pages = site.getService("@.pages");
-    Page page = pages[pageUrl];
+    String fullurl = pageUrl;
+    if (fullurl.indexOf("://") < 0) {
+      fullurl = '${this.page.portal}:/$pageUrl';
+    }
+    Page page = pages[fullurl];
     if (page == null) return null;
     if (page.buildPage == null) {
       return null;
@@ -496,6 +508,48 @@ class PageContext {
   }
 }
 
+class Portlet {
+  final String title;
+  final String imgSrc;
+  final String subtitle;
+  final String desc;
+  ///渲染方式，true为使用桌面栏目配置演染，否则采用门户栏目配置
+   RenderMethod renderMethod;
+
+  ///渲染门户栏目由桌面栏目渲染
+  final String deskletUrl;
+  final Map<String, String> props = {};
+
+  Portlet({
+    @required this.title,
+    this.imgSrc,
+    this.subtitle,
+    this.desc,
+    this.renderMethod = RenderMethod.renderByDeskletConfig,
+    @required this.deskletUrl,
+  })  : assert(title != null),
+        assert(deskletUrl != null);
+
+  Widget build({ @required PageContext context, }) {
+    if(context==null){
+      throw FlutterError('缺少必选参数');
+    }
+    var desklet = context.desklet(deskletUrl);
+    if (desklet == null) {
+      debugPrint('桌面栏目未定义:' + deskletUrl);
+      return null;
+    }
+    return desklet.buildDesklet(this,desklet,context);
+  }
+}
+
+enum RenderMethod {
+  renderByDeskletConfig,
+  renderByPortletConfig,
+  ///不渲染也就是不显示，用户启停栏目靠此属性
+  nope,
+}
+
 typedef BuildPage = Widget Function(PageContext pageContext);
 typedef BuildRoute = ModalRoute Function(
     RouteSettings settings, Page page, IServiceProvider site);
@@ -505,3 +559,4 @@ typedef BuildThemes = List<ThemeStyle> Function(
     Portal protal, IServiceProvider site);
 typedef BuildDesklets = List<Desklet> Function(
     Portal protal, IServiceProvider site);
+typedef BuildDesklet = Widget Function(Portlet portlet,Desklet desklet,PageContext context);

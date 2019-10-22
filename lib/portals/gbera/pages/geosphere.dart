@@ -14,8 +14,42 @@ class Geosphere extends StatefulWidget {
 }
 
 class _GeosphereState extends State<Geosphere> {
+  var _controller;
+  var _backgroud_transparent = true;
+  bool use_wallpapper=false;
+
+
+  _GeosphereState(){
+    _controller = ScrollController(initialScrollOffset: 0.0);
+    _controller.addListener(_listener);
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    _controller?.dispose();
+  }
+  _listener() {
+    if (!use_wallpapper) {
+      return;
+    }
+    if (_backgroud_transparent && _controller.offset >= 250 - 48) {
+      //48是appbar的高度，210是appbar展开发的总高
+      setState(() {
+        _backgroud_transparent = false;
+      });
+      return;
+    }
+    if (!_backgroud_transparent && _controller.offset < 250 - 48) {
+      setState(() {
+        _backgroud_transparent = true;
+      });
+      return;
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    use_wallpapper=widget.context.parameters['use_wallpapper'];
+
     var textStyle1_title = widget.context.style('/geosphere/title.text');
     var textStyle1_red = widget.context.style('/geosphere/title-red.text');
     var textStyle1_grey = widget.context.style('/geosphere/title-grey.text');
@@ -27,6 +61,9 @@ class _GeosphereState extends State<Geosphere> {
         expandedHeight: 250,
         floating: false,
         titleSpacing: 10,
+        backgroundColor: use_wallpapper && _backgroud_transparent
+            ? Colors.transparent
+            : null,
         title: Text(
           '广州市·天河区',
           style: TextStyle(
@@ -47,7 +84,7 @@ class _GeosphereState extends State<Geosphere> {
             constraints: BoxConstraints.tightForFinite(
               width: double.maxFinite,
             ),
-            color: Theme.of(context).backgroundColor,
+            color: Colors.transparent,
             child: Text(
               '我的地圈',
               style: widget.context.style('/geosphere/mydq.text'),
@@ -64,7 +101,7 @@ class _GeosphereState extends State<Geosphere> {
               ///金证喷泉展示区
               Container(
                 padding: EdgeInsets.only(
-                  top: 70,
+                  top: 100,
                   left: 20,
                   right: 20,
                   bottom: 5,
@@ -1435,10 +1472,9 @@ class _GeosphereState extends State<Geosphere> {
         ),
       ),
     ];
-    return SafeArea(
-      child: CustomScrollView(
-        slivers: panel,
-      ),
+    return CustomScrollView(
+      controller: use_wallpapper?_controller:null,
+      slivers: panel,
     );
   }
 }

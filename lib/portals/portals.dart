@@ -5,7 +5,7 @@ import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/errors/errors.dart';
 import 'package:gbera/portals/gbera/pages/contact/contact_list.dart';
 import 'package:gbera/portals/gbera/pages/desktop.dart';
-import 'package:gbera/portals/gbera/pages/desktop/desktop_lets.dart';
+import 'package:gbera/portals/gbera/pages/desktop/desklets_settings.dart';
 import 'package:gbera/portals/gbera/pages/desktop/desktop_settings.dart';
 import 'package:gbera/portals/gbera/pages/geosphere.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_fountain.dart';
@@ -47,6 +47,7 @@ import 'package:gbera/portals/gbera/pages/wallet/wy.dart';
 import 'package:gbera/portals/gbera/scaffolds.dart';
 
 import 'common/icons.dart';
+import 'gbera/desklets/desklets.dart';
 import 'gbera/login.dart';
 import 'gbera/login2.dart';
 import 'gbera/pages/contact/contacts_viewer.dart';
@@ -143,17 +144,7 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               },
             ),
           ],
-          buildDesklets: (portal, site) => [
-            Desklet(
-              title: '金证银行指数',
-              url: '/zjbank/chart',
-              icon: Icons.forward,
-              desc: '显示您关注的金证银行',
-              buildDesklet: (context){
-                return Container();
-              }
-            ),
-          ],
+          buildDesklets: buildDesklets,
           buildPages: (Portal portal, IServiceProvider site) => [
             Page(
               title: '出错啦',

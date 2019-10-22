@@ -162,6 +162,7 @@ class _MarketState extends State<Market> {
         title: Text('市场'),
         centerTitle: true,
         automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
       ),
       SliverList(
         delegate: SliverChildListDelegate(

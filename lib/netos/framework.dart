@@ -13,8 +13,12 @@ Map<String, Portal> _allPortals = Map(); //key是portalid
 Map<String, Page> _allPages = Map(); //key是全路径
 Map<String, ThemeStyle> _allThemes = Map(); //key是全路径
 Map<String, Style> _allStyles = Map(); //key是全路径
-var _currentThemeUrl = ''; //当前应用的主题路径，是相对于portal的路径
+Map<String,Desklet> _allDesklets=Map();//桌面栏目,key是全路径
+
+var _currentPortal='';//当前使用的框架
+var _currentThemeUrl = ''; //当前应用的主题路径，是相对于当前portal的路径
 var _security=Security();
+
 IServiceProvider _site = GberaServiceProvider();
 
 //事件顺序
@@ -49,6 +53,7 @@ _buildPortals(BuildContext context) {
   _allPages.clear();
   _allThemes.clear();
   _allStyles.clear();
+  _allDesklets.clear();
   _currentThemeUrl = '';
   var _portals = buildPortals(_site);
   for (var item in _portals) {
@@ -120,6 +125,26 @@ _buildPortals(BuildContext context) {
       }
       _allThemes[themeurl] = themeStyle;
     }
+    var desklets=portal.buildDesklets(portal, _site);
+    for(var desklet in desklets){
+      if (desklet.url == null ||
+          !desklet.url.startsWith("/") ||
+          desklet.url.indexOf("://") > 0) {
+        throw FlutterErrorDetails(
+            exception: Exception(
+                '桌面栏目的url错误:${desklet.title}=${desklet.url}。必须非空，必须以/开头，必须是相对于portal的路径'));
+      }
+      var url = desklet.url;
+      var pos = url.indexOf("?");
+      if (pos > -1) {
+        throw FlutterErrorDetails(exception: Exception('主题url不能带查询串:$url'));
+      }
+      String deskleturl = '${portal.id}:/$url';
+      if (_allDesklets.containsKey(deskleturl)) {
+        throw FlutterErrorDetails(exception: Exception('已存在桌面栏目地址:$deskleturl'));
+      }
+      _allDesklets[deskleturl]=desklet;
+    }
   }
 }
 
@@ -134,6 +159,7 @@ ThemeData onGenerateThemeStyle(String url, BuildContext context) {
     throw FlutterErrorDetails(
         exception: Exception('非法地址请求。正确格式为：portal://relativeUrl'));
   }
+  _currentPortal=fullUrl.substring(0,pos);
   _currentThemeUrl = fullUrl.substring(pos + 2, fullUrl.length);
 
   ThemeStyle themeStyle = _allThemes[url];
@@ -239,6 +265,9 @@ class GberaServiceProvider implements IServiceProvider {
     }
     if ("@.styles" == name) {
       return _allStyles;
+    }
+    if ("@.desklets" == name) {
+      return _allDesklets;
     }
     if ("@.current.theme" == name) {
       return _currentThemeUrl;

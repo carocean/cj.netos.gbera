@@ -15,13 +15,41 @@ class Netflow extends StatefulWidget {
 
 class _NetflowState extends State<Netflow> {
   int selectTabIndex;
-
+  var _controller;
+  var _backgroud_transparent = true;
+  bool use_wallpapper=false;
   _NetflowState() {
     selectTabIndex = 0;
+    _controller = ScrollController(initialScrollOffset: 0.0);
+    _controller.addListener(_listener);
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _controller?.dispose();
+  }
+  _listener() {
+    if (!use_wallpapper) {
+      return;
+    }
+    if (_backgroud_transparent && _controller.offset >= 60 - 48) {
+      //48是appbar的高度，210是appbar展开发的总高
+      setState(() {
+        _backgroud_transparent = false;
+      });
+      return;
+    }
+    if (!_backgroud_transparent && _controller.offset < 60 - 48) {
+      setState(() {
+        _backgroud_transparent = true;
+      });
+      return;
+    }
+  }
+  @override
   Widget build(BuildContext context) {
+    use_wallpapper=widget.context.parameters['use_wallpapper'];
     List<Widget> panel = [
       SliverAppBar(
         pinned: true,
@@ -29,6 +57,9 @@ class _NetflowState extends State<Netflow> {
         floating: false,
         automaticallyImplyLeading: false,
         elevation: 0,
+        backgroundColor: use_wallpapper && _backgroud_transparent
+            ? Colors.transparent
+            : null,
         title: getNetflowHeader(
             selectTabIndex: selectTabIndex,
             onTap: (index) {
@@ -43,10 +74,9 @@ class _NetflowState extends State<Netflow> {
     } else if (selectTabIndex == 1) {
       _buildPlatTab(panel);
     }
-    return SafeArea(
-      child: CustomScrollView(
-        slivers: panel,
-      ),
+    return CustomScrollView(
+      controller: use_wallpapper?_controller:null,
+      slivers: panel,
     );
   }
 }
