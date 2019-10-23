@@ -6,8 +6,8 @@ import 'parts/bottoms.dart';
 
 class WithBottomScaffold extends StatefulWidget {
   PageContext context;
-  var use_wallpapper; //是否使用墙纸的开关
-  WithBottomScaffold({this.context, this.use_wallpapper = true});
+
+  WithBottomScaffold({this.context});
 
   @override
   _WithBottomScaffoldState createState() => _WithBottomScaffoldState();
@@ -16,11 +16,16 @@ class WithBottomScaffold extends StatefulWidget {
 class _WithBottomScaffoldState extends State<WithBottomScaffold> {
   int selectedIndex = 0;
   var parts = [];
+  bool use_wallpapper=false;
+  var wallpaper;
 
   @override
   void initState() {
     super.initState();
-    widget.context.parameters['use_wallpapper']=widget.use_wallpapper;
+    wallpaper = widget.context.sharedPreferences().getString('@.wallpaper');
+    use_wallpapper = StringUtil.isEmpty(wallpaper) ? false : true;
+    widget.context.parameters['use_wallpapper'] = use_wallpapper;
+
     parts.add(widget.context.part('/desktop', widget.context));
     parts.add(widget.context.part('/netflow', widget.context));
     parts.add(widget.context.part('/geosphere', widget.context));
@@ -29,15 +34,16 @@ class _WithBottomScaffoldState extends State<WithBottomScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    wallpaper = widget.context.sharedPreferences().getString('@.wallpaper');
+    use_wallpapper = StringUtil.isEmpty(wallpaper) ? false : true;
     return Scaffold(
 //      appBar: headers[selectedIndex],
       body: Container(
         constraints: BoxConstraints.expand(),
         decoration: BoxDecoration(
-          image: widget.use_wallpapper
+          image: use_wallpapper
               ? DecorationImage(
-                  image: NetworkImage(
-                      'http://ku.90sjimg.com/back_pic/05/39/03/755a5213bd7e696.jpg%21/fwfh/804x1206/quality/90/unsharp/true/compress/true/watermark/text/OTDorr7orqE=/font/simkai/align/southeast/opacity/20/size/50'),
+                  image: AssetImage(wallpaper),
                   fit: BoxFit.cover,
                 )
               : null,

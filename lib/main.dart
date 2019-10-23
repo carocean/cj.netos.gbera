@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/netos/framework.dart' as framework;
 
-import 'netos/framework.dart';
 
-void main() {
-  runApp(MyApp(
+void main(){
+  framework.run(MyApp(
     portal: 'gbera',
     title: 'gbera',
     themeUrl: '/grey',
     welcomeUrl: '/login2',
   ));
+
 }
 
 class MyApp extends StatefulWidget {
@@ -46,10 +46,10 @@ class _MyAppState extends State<MyApp> {
   _MyAppState() {
     framework.onFrameworkRefresh =(props){
       setState(() {
-        ThemeStyle selectedTheme=props['selectedTheme'];
-        if(selectedTheme!=null){
-          widget.themeUrl=selectedTheme.url;
-        }
+//        ThemeStyle selectedTheme=props['selectedTheme'];
+//        if(selectedTheme!=null){
+//          widget.themeUrl=selectedTheme.url;
+//        }
       });
     };
   }

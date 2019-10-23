@@ -14,7 +14,7 @@ class Themes extends StatefulWidget {
 class _ThemesState extends State<Themes> {
   List<ThemeStyle> themes;
   String selectedTheme = '';
-
+  static final KEY='@.set.theme';
   _ThemesState({this.selectedTheme});
 
   @override
@@ -69,6 +69,7 @@ class _ThemesState extends State<Themes> {
           var selected = theme;
           this.selectedTheme = selected.url;
           widget.context.switchTheme(selected.url);
+          widget.context.sharedPreferences().setString(KEY, selected.url);
         });
       },
       child: Container(

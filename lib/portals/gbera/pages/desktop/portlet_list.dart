@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/common/portlet_market.dart';
 
 class PortletList extends StatefulWidget {
   PageContext context;
@@ -18,12 +19,26 @@ class _PortletListState extends State<PortletList> {
   Widget build(BuildContext context) {
     Desklet desklet = widget.context.parameters['desklet'];
     debugPrint('-----${desklet?.title}');
-    var bb = widget.context.parameters['back_button'];
+    widget.context.sharedPreferences().setString('test', '我很好');
+    debugPrint('------${widget.context.sharedPreferences().getString('test')}');
 
+    _getPortlets() async {
+      var alllets =
+          await market.fetchPortletsByDeskletUrl(desklet.url, widget.context);
+      var installlets =
+          await desktopManager.getInstalledPortlets(widget.context);
+      var ids = [];
+      for (var let in installlets) {
+        ids.add(let.id);
+      }
+      return {'portlets': alllets, 'ids': ids};
+    }
+
+    var bb = widget.context.parameters['back_button'];
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.context.page?.title,
+          desklet?.title,
         ),
         titleSpacing: 0,
         elevation: 1.0,
@@ -31,9 +46,11 @@ class _PortletListState extends State<PortletList> {
         leading: getLeading(bb),
       ),
       body: FutureBuilder(
-        future: DefaultAssetBundle.of(context)
-            .loadString('lib/portals/gbera/data/portlets.json'),
+        future: _getPortlets(),
         builder: (context, snapshot) {
+          if(snapshot.hasError){
+            throw FlutterError(snapshot.error.toString());
+          }
           switch (snapshot.connectionState) {
             case ConnectionState.none:
             case ConnectionState.active:
@@ -69,20 +86,27 @@ class _PortletListState extends State<PortletList> {
   }
 
   Widget _getPortletListView(AsyncSnapshot snapshot, Desklet desklet) {
-    var data = snapshot.data;
-    var list = jsonDecode(data);
-    var portlets = [];
-    for (var item in list) {
-      if (desklet.url == item['deskletUrl']) {
-        portlets.add(item);
-      }
-    }
+    List<Portlet> portlets = snapshot.data['portlets'];
+    List ids = snapshot.data['ids'];
     return ListView.separated(
         itemBuilder: (context, index) {
-          var let = portlets[index];
+          Portlet let = portlets[index];
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTap: () {},
+            onTap: () async {
+
+              if (await desktopManager.isInstalledPortlet(
+                  let.id, widget.context)) {
+                if(await desktopManager.isDefaultPortlet(let.id, widget.context)){
+                  Scaffold.of(context).showSnackBar(SnackBar(content: Text('为系统栏目，不可取消'),));
+                  return;
+                }
+                await desktopManager.unInstalledPortlet(let.id, widget.context);
+              } else {
+                await desktopManager.installPortlet(let, widget.context);
+              }
+              setState(() {});
+            },
             child: Container(
               padding: EdgeInsets.only(
                 top: 15,
@@ -102,7 +126,7 @@ class _PortletListState extends State<PortletList> {
                             right: 10,
                           ),
                           child: Image.network(
-                            let['imgSrc'],
+                            let?.imgSrc,
                             fit: BoxFit.contain,
                             width: 30,
                             height: 30,
@@ -118,7 +142,7 @@ class _PortletListState extends State<PortletList> {
                                 bottom: 5,
                               ),
                               child: Text(
-                                let['title'],
+                                let?.title,
                                 style: TextStyle(
                                   color: Colors.grey[800],
                                   fontWeight: FontWeight.w500,
@@ -126,7 +150,7 @@ class _PortletListState extends State<PortletList> {
                               ),
                             ),
                             Text(
-                              let['desc'],
+                              let?.desc,
                               style: TextStyle(
                                 color: Colors.grey[600],
                               ),
@@ -136,19 +160,16 @@ class _PortletListState extends State<PortletList> {
                       ],
                     ),
                   ),
-                  Switch(
-                    value: let['renderMethod'] != 'nope',
-                    activeColor: widget.context.style('/desktop/settings/portlet.activeColor'),
-                    onChanged: (v) {
-                      setState(() {
-                        //刷新
-                        if(v)
-                        let['renderMethod']='nope';
-                        else
-                          let['renderMethod']='renderByPortletConfig';
-                      });
-                    },
-                  ),
+                  ids.contains(let.id)
+                      ? Icon(
+                          Icons.check,
+                          size: 20,
+                          color: Colors.red,
+                        )
+                      : Container(
+                          width: 0,
+                          height: 0,
+                        ),
                 ],
               ),
             ),

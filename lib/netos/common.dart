@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'errors.dart';
 
@@ -244,6 +245,11 @@ class PageContext {
 
   ///真实传入的地址
   String get url => ModalRoute.of(context).settings.name;
+
+  ///存储器
+  SharedPreferences sharedPreferences() {
+    return site.getService('@.sharedPreferences');
+  }
 
   Future<T> forward<T extends Object>(
     String pagePath, {
@@ -509,29 +515,29 @@ class PageContext {
 }
 
 class Portlet {
+  final String id;
   final String title;
   final String imgSrc;
   final String subtitle;
   final String desc;
-  ///渲染方式，true为使用桌面栏目配置演染，否则采用门户栏目配置
-   RenderMethod renderMethod;
-
   ///渲染门户栏目由桌面栏目渲染
   final String deskletUrl;
   final Map<String, String> props = {};
 
   Portlet({
+    @required this.id,
     @required this.title,
     this.imgSrc,
     this.subtitle,
     this.desc,
-    this.renderMethod = RenderMethod.renderByDeskletConfig,
     @required this.deskletUrl,
-  })  : assert(title != null),
+  })  : assert(id != null),
+        assert(title != null),
         assert(deskletUrl != null);
-
-  Widget build({ @required PageContext context, }) {
-    if(context==null){
+  Widget build({
+    @required PageContext context,
+  }) {
+    if (context == null) {
       throw FlutterError('缺少必选参数');
     }
     var desklet = context.desklet(deskletUrl);
@@ -539,16 +545,21 @@ class Portlet {
       debugPrint('桌面栏目未定义:' + deskletUrl);
       return null;
     }
-    return desklet.buildDesklet(this,desklet,context);
+    return desklet.buildDesklet(this, desklet, context);
+  }
+  toMap(){
+    var map={};
+    map['id']=id;
+    map['title']=title;
+    map['imgSrc']=imgSrc;
+    map['subtitle']=subtitle;
+    map['desc']=desc;
+    map['deskletUrl']=deskletUrl;
+//    map['props']=this.props;
+    return map;
   }
 }
 
-enum RenderMethod {
-  renderByDeskletConfig,
-  renderByPortletConfig,
-  ///不渲染也就是不显示，用户启停栏目靠此属性
-  nope,
-}
 
 typedef BuildPage = Widget Function(PageContext pageContext);
 typedef BuildRoute = ModalRoute Function(
@@ -559,4 +570,5 @@ typedef BuildThemes = List<ThemeStyle> Function(
     Portal protal, IServiceProvider site);
 typedef BuildDesklets = List<Desklet> Function(
     Portal protal, IServiceProvider site);
-typedef BuildDesklet = Widget Function(Portlet portlet,Desklet desklet,PageContext desktopContext);
+typedef BuildDesklet = Widget Function(
+    Portlet portlet, Desklet desklet, PageContext desktopContext);

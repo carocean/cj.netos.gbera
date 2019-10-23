@@ -4,20 +4,21 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gbera/portals/portals.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'common.dart';
 import 'errors.dart';
 
-OnFrameworkRefresh onFrameworkRefresh;//用于内核刷新整个UI
+OnFrameworkRefresh onFrameworkRefresh; //用于内核刷新整个UI
 Map<String, Portal> _allPortals = Map(); //key是portalid
 Map<String, Page> _allPages = Map(); //key是全路径
 Map<String, ThemeStyle> _allThemes = Map(); //key是全路径
 Map<String, Style> _allStyles = Map(); //key是全路径
-Map<String,Desklet> _allDesklets=Map();//桌面栏目,key是全路径
-
-var _currentPortal='';//当前使用的框架
+Map<String, Desklet> _allDesklets = Map(); //桌面栏目,key是全路径
+SharedPreferences _sharedPreferences = null; //本地存储
+var _currentPortal = ''; //当前使用的框架
 var _currentThemeUrl = ''; //当前应用的主题路径，是相对于当前portal的路径
-var _security=Security();
+var _security = Security();
 
 IServiceProvider _site = GberaServiceProvider();
 
@@ -30,7 +31,7 @@ IServiceProvider _site = GberaServiceProvider();
 var loadStep =
     0; //1为执行了onGenerateThemeStyle方法；2为执行了buildRoutes法；3是执行了onGenerateRoute方法。后者检查前序方法是否被执行，否则报错。
 
-_initFramework(BuildContext context) {
+run(Widget app) async{
   if (Platform.isAndroid) {
     SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -39,13 +40,17 @@ _initFramework(BuildContext context) {
     );
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
+
+  _sharedPreferences = await SharedPreferences.getInstance();
   ErrorWidget.builder = (FlutterErrorDetails flutterErrorDetails) {
     return RuntimeErrorPage(flutterErrorDetails);
   };
-  if(onFrameworkRefresh==null){
+
+  runApp(app);
+
+  if (onFrameworkRefresh == null) {
     throw FlutterError('客户程序必须实现onFrameworkRefresh事件');
   }
-  _buildPortals(context);
 }
 
 _buildPortals(BuildContext context) {
@@ -125,8 +130,8 @@ _buildPortals(BuildContext context) {
       }
       _allThemes[themeurl] = themeStyle;
     }
-    var desklets=portal.buildDesklets(portal, _site);
-    for(var desklet in desklets){
+    var desklets = portal.buildDesklets(portal, _site);
+    for (var desklet in desklets) {
       if (desklet.url == null ||
           !desklet.url.startsWith("/") ||
           desklet.url.indexOf("://") > 0) {
@@ -141,9 +146,10 @@ _buildPortals(BuildContext context) {
       }
       String deskleturl = '${portal.id}:/$url';
       if (_allDesklets.containsKey(deskleturl)) {
-        throw FlutterErrorDetails(exception: Exception('已存在桌面栏目地址:$deskleturl'));
+        throw FlutterErrorDetails(
+            exception: Exception('已存在桌面栏目地址:$deskleturl'));
       }
-      _allDesklets[deskleturl]=desklet;
+      _allDesklets[deskleturl] = desklet;
     }
   }
 }
@@ -151,7 +157,7 @@ _buildPortals(BuildContext context) {
 //主题是第一个响应，次是初始化路由表
 ThemeData onGenerateThemeStyle(String url, BuildContext context) {
   //由于主题是最先加载，因此铁定都要执行初始化。所以在调试时如添加了新的page或主题样式支持reload hot热调试
-  _initFramework(context);
+  _buildPortals(context);
   loadStep = 1;
   var fullUrl = url;
   var pos = fullUrl.indexOf('://');
@@ -159,9 +165,14 @@ ThemeData onGenerateThemeStyle(String url, BuildContext context) {
     throw FlutterErrorDetails(
         exception: Exception('非法地址请求。正确格式为：portal://relativeUrl'));
   }
-  _currentPortal=fullUrl.substring(0,pos);
-  _currentThemeUrl = fullUrl.substring(pos + 2, fullUrl.length);
-
+  _currentPortal = fullUrl.substring(0, pos);
+  var _storedThemeUrl=_sharedPreferences.getString('@.set.theme');
+  if(!StringUtil.isEmpty(_storedThemeUrl)){
+    _currentThemeUrl=_storedThemeUrl;
+    url='$_currentPortal:/$_currentThemeUrl';
+  }else {
+    _currentThemeUrl = fullUrl.substring(pos + 2, fullUrl.length);
+  }
   ThemeStyle themeStyle = _allThemes[url];
   if (themeStyle == null) return null;
   return themeStyle.buildTheme(context);
@@ -213,7 +224,7 @@ Route onGenerateRoute(RouteSettings routeSettings) {
   RouteSettings settings =
       RouteSettings(name: fullUrl, isInitialRoute: false, arguments: args);
   BuildRoute buildRoute = page?.buildRoute;
-  if(buildRoute!=null){
+  if (buildRoute != null) {
     return buildRoute(settings, page, _site);
   }
   BuildPage buildPage = page?.buildPage;
@@ -272,11 +283,14 @@ class GberaServiceProvider implements IServiceProvider {
     if ("@.current.theme" == name) {
       return _currentThemeUrl;
     }
-    if('@.security'==name){
+    if ('@.security' == name) {
       return _security;
     }
-    if('@.framework.refresh'==name){
+    if ('@.framework.refresh' == name) {
       return onFrameworkRefresh;
+    }
+    if('@.sharedPreferences'==name){
+      return _sharedPreferences;
     }
     return null;
   }

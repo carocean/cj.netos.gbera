@@ -25,7 +25,7 @@ class UserContract extends StatelessWidget {
             .loadString('lib/portals/gbera/data/user_constract'),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator(),);
           }
           return CustomScrollView(
             shrinkWrap: true,

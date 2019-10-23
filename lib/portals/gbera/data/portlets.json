@@ -1,5 +1,6 @@
 [
   {
+    "id": "028383883833",
     "title": "丰都国际",
     "desc": "服务范围：提供xxx等等",
     "deskletUrl": "/zjbank/chart",
@@ -7,6 +8,7 @@
     "renderMethod": "renderByPortletConfig"
   },
   {
+    "id": "8837377927333",
     "title": "美年达",
     "desc": "桶装手等服务",
     "deskletUrl": "/zjbank/chart",
@@ -14,6 +16,7 @@
     "renderMethod": "nope"
   },
   {
+    "id": "77363637889944",
     "title": "京东卖场",
     "desc": "电子商务知名企业",
     "deskletUrl": "/store",

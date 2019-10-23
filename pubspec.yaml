@@ -32,6 +32,9 @@ dependencies:
   qr_flutter: ^3.0.1
   path_provider: ^1.2.0
   lpinyin: ^1.0.7
+  #数据持久化
+  shared_preferences: ^0.5.4
+  yaml: ^2.2.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -86,3 +89,11 @@ flutter:
     - lib/portals/gbera/images/avatar.png
     - lib/portals/gbera/data/user_constract
     - lib/portals/gbera/data/portlets.json
+    - lib/portals/gbera/data/portlet_defaults.json
+    - lib/portals/wallpapers/wallpapper.yaml
+    - lib/portals/wallpapers/1.jpeg
+    - lib/portals/wallpapers/2.jpeg
+    - lib/portals/wallpapers/3.jpeg
+    - lib/portals/wallpapers/4.jpeg
+    - lib/portals/wallpapers/5.jpeg
+    - lib/portals/wallpapers/6.png
