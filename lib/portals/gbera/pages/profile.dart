@@ -492,32 +492,38 @@ class Profile extends StatelessWidget {
           automaticallyImplyLeading: true,
         ),
       ),
-      body: Container(
-        margin: EdgeInsets.only(
-          top: 10,
-        ),
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(
-                bottom: 10,
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverToBoxAdapter(
+            child: Container(
+              margin: EdgeInsets.only(
+                top: 10,
               ),
-              child: card_1,
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                bottom: 10,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(
+                      bottom: 10,
+                    ),
+                    child: card_1,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      bottom: 10,
+                    ),
+                    child: card_2,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      bottom: 10,
+                    ),
+                    child: card_3,
+                  ),
+                ],
               ),
-              child: card_2,
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                bottom: 10,
-              ),
-              child: card_3,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

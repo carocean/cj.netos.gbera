@@ -76,6 +76,29 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
                 return ThemeData(
                   backgroundColor: Color(0xFFF5F5f5),
                   scaffoldBackgroundColor: Color(0xFFF5F5f5),
+                  brightness: Brightness.light,
+                  appBarTheme: AppBarTheme.of(context).copyWith(
+                    color: Color(0xFFF5F5f5),
+                    textTheme: TextTheme(
+                      title: TextStyle(
+                        color: Colors.grey[800],
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    actionsIconTheme: IconThemeData(
+                      color: Colors.grey[700],
+                      opacity: 1,
+                      size: 20,
+                    ),
+                    brightness: Brightness.light,
+                    iconTheme: IconThemeData(
+                      color: Colors.grey[700],
+                      opacity: 1,
+                      size: 20,
+                    ),
+                    elevation: 1.0,
+                  ),
                   primarySwatch: MaterialColor(
                     0xFFF5F5f5,
                     {

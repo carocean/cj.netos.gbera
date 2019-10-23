@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'common.dart';
 import 'errors.dart';
 
+final String KEY_THEME_SET = '@.set.theme';
 OnFrameworkRefresh onFrameworkRefresh; //用于内核刷新整个UI
 Map<String, Portal> _allPortals = Map(); //key是portalid
 Map<String, Page> _allPages = Map(); //key是全路径
@@ -166,15 +167,16 @@ ThemeData onGenerateThemeStyle(String url, BuildContext context) {
         exception: Exception('非法地址请求。正确格式为：portal://relativeUrl'));
   }
   _currentPortal = fullUrl.substring(0, pos);
-  var _storedThemeUrl=_sharedPreferences.getString('@.set.theme');
+  var _storedThemeUrl=_sharedPreferences.getString(KEY_THEME_SET);
   if(!StringUtil.isEmpty(_storedThemeUrl)){
     _currentThemeUrl=_storedThemeUrl;
-    url='$_currentPortal:/$_currentThemeUrl';
+    fullUrl='$_currentPortal:/$_currentThemeUrl';
   }else {
     _currentThemeUrl = fullUrl.substring(pos + 2, fullUrl.length);
   }
-  ThemeStyle themeStyle = _allThemes[url];
+  ThemeStyle themeStyle = _allThemes[fullUrl];
   if (themeStyle == null) return null;
+
   return themeStyle.buildTheme(context);
 }
 
