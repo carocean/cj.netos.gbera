@@ -324,7 +324,7 @@ class PageContext {
   String get url => ModalRoute.of(context).settings.name;
 
   ///存储器
-  SharedPreferences sharedPreferences() {
+  NetosSharedPreferences sharedPreferences() {
     return site.getService('@.sharedPreferences');
   }
 
