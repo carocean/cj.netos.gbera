@@ -16,7 +16,7 @@ Map<String, Page> _allPages = Map(); //key是全路径
 Map<String, ThemeStyle> _allThemes = Map(); //key是全路径
 Map<String, Style> _allStyles = Map(); //key是全路径
 Map<String, Desklet> _allDesklets = Map(); //桌面栏目,key是全路径
-SharedPreferences _sharedPreferences = null; //本地存储
+NetosSharedPreferences _sharedPreferences = null; //本地存储
 var _currentPortal = ''; //当前使用的框架
 var _currentThemeUrl = ''; //当前应用的主题路径，是相对于当前portal的路径
 var _security = Security();
@@ -42,7 +42,7 @@ run(Widget app) async{
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
 
-  _sharedPreferences = await SharedPreferences.getInstance();
+  _sharedPreferences = await NetosSharedPreferences().init();
   ErrorWidget.builder = (FlutterErrorDetails flutterErrorDetails) {
     return RuntimeErrorPage(flutterErrorDetails);
   };

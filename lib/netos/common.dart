@@ -8,6 +8,83 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'errors.dart';
 
 typedef OnFrameworkRefresh = Function(Map<String, Object> props);
+//当多用户切换时以当前用户/app/cj/作为key持久化前缀，如: /netos/gbera/cj/，用于持久用户私有信息，而以/netos/shared/ 作为多用户的共享目录
+class NetosSharedPreferences {
+  SharedPreferences _sharedPreferences;
+
+  Future<NetosSharedPreferences> init() async {
+    _sharedPreferences = await SharedPreferences.getInstance();
+    return this;
+  }
+
+  Future<bool> setStringList(String key, List<String> value) {
+    return _sharedPreferences.setStringList(key, value);
+  }
+
+  Future<bool> setInt(String key, int value) {
+    return _sharedPreferences.setInt(key, value);
+  }
+
+  Future<bool> setDouble(String key, double value) {
+    return _sharedPreferences.setDouble(key, value);
+  }
+
+  Future<bool> setBool(String key, bool value) {
+    return _sharedPreferences.setBool(key, value);
+  }
+
+  Future<void> reload() {
+    return _sharedPreferences.reload();
+  }
+
+  List<String> getStringList(String key) {
+    return _sharedPreferences.getStringList(key);
+  }
+
+  Set<String> getKeys() {
+    return _sharedPreferences.getKeys();
+  }
+
+  int getInt(String key) {
+    return _sharedPreferences.getInt(key);
+  }
+
+  double getDouble(String key) {
+    return _sharedPreferences.getDouble(key);
+  }
+
+  bool getBool(String key) {
+    return _sharedPreferences.getBool(key);
+  }
+
+  bool containsKey(String key) {
+    return _sharedPreferences.containsKey(key);
+  }
+
+  String toString() {
+    return _sharedPreferences.toString();
+  }
+
+  String getString(String key) {
+    return _sharedPreferences.getString(key);
+  }
+
+  Future<bool> clear() {
+    return _sharedPreferences.clear();
+  }
+
+  dynamic get(String key) {
+    _sharedPreferences.get(key);
+  }
+
+  Future<bool> remove(String key) {
+    return _sharedPreferences.remove(key);
+  }
+
+  Future<bool> setString(String key, String value) {
+    return _sharedPreferences.setString(key, value);
+  }
+}
 
 class UserPrincipal {
   final String uid;
@@ -520,6 +597,7 @@ class Portlet {
   final String imgSrc;
   final String subtitle;
   final String desc;
+
   ///渲染门户栏目由桌面栏目渲染
   final String deskletUrl;
   final Map<String, String> props = {};
@@ -534,6 +612,7 @@ class Portlet {
   })  : assert(id != null),
         assert(title != null),
         assert(deskletUrl != null);
+
   Widget build({
     @required PageContext context,
   }) {
@@ -547,19 +626,19 @@ class Portlet {
     }
     return desklet.buildDesklet(this, desklet, context);
   }
-  toMap(){
-    var map={};
-    map['id']=id;
-    map['title']=title;
-    map['imgSrc']=imgSrc;
-    map['subtitle']=subtitle;
-    map['desc']=desc;
-    map['deskletUrl']=deskletUrl;
+
+  toMap() {
+    var map = {};
+    map['id'] = id;
+    map['title'] = title;
+    map['imgSrc'] = imgSrc;
+    map['subtitle'] = subtitle;
+    map['desc'] = desc;
+    map['deskletUrl'] = deskletUrl;
 //    map['props']=this.props;
     return map;
   }
 }
-
 
 typedef BuildPage = Widget Function(PageContext pageContext);
 typedef BuildRoute = ModalRoute Function(
