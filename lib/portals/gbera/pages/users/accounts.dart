@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
 
-class UserAndAccountViewer extends StatelessWidget {
+class Accounts extends StatelessWidget {
   PageContext context;
-  UserAndAccountViewer({this.context});
+  Accounts({this.context});
   @override
   Widget build(BuildContext context) {
 

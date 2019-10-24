@@ -48,7 +48,7 @@ class _PortletListState extends State<PortletList> {
       body: FutureBuilder(
         future: _getPortlets(),
         builder: (context, snapshot) {
-          if(snapshot.hasError){
+          if (snapshot.hasError) {
             throw FlutterError(snapshot.error.toString());
           }
           switch (snapshot.connectionState) {
@@ -88,22 +88,49 @@ class _PortletListState extends State<PortletList> {
   Widget _getPortletListView(AsyncSnapshot snapshot, Desklet desklet) {
     List<Portlet> portlets = snapshot.data['portlets'];
     List ids = snapshot.data['ids'];
+    return MyListView(
+      portlets: portlets,
+      ids: ids,
+      context: widget.context,
+    );
+  }
+}
+
+class MyListView extends StatefulWidget {
+  List<Portlet> portlets;
+  List ids;
+  PageContext context;
+  MyListView({this.portlets, this.ids,this.context});
+
+  @override
+  _MyListViewState createState() => _MyListViewState();
+}
+
+class _MyListViewState extends State<MyListView> {
+  @override
+  Widget build(BuildContext context) {
+    List<Portlet> portlets = widget.portlets;
+    List ids = widget.ids;
     return ListView.separated(
         itemBuilder: (context, index) {
           Portlet let = portlets[index];
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () async {
-
               if (await desktopManager.isInstalledPortlet(
                   let.id, widget.context)) {
-                if(await desktopManager.isDefaultPortlet(let.id, widget.context)){
-                  Scaffold.of(context).showSnackBar(SnackBar(content: Text('为系统栏目，不可取消'),));
+                if (await desktopManager.isDefaultPortlet(
+                    let.id, widget.context)) {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    content: Text('为系统栏目，不可取消'),
+                  ));
                   return;
                 }
                 await desktopManager.unInstalledPortlet(let.id, widget.context);
+                ids.remove(let.id);
               } else {
                 await desktopManager.installPortlet(let, widget.context);
+                ids.add(let.id);
               }
               setState(() {});
             },

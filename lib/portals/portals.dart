@@ -30,8 +30,9 @@ import 'package:gbera/portals/gbera/pages/profile.dart';
 import 'package:gbera/portals/gbera/pages/system/about.dart';
 import 'package:gbera/portals/gbera/pages/system/contract.dart';
 import 'package:gbera/portals/gbera/pages/system/themes.dart';
+import 'package:gbera/portals/gbera/pages/users/accounts.dart';
 import 'package:gbera/portals/gbera/pages/users/user_list.dart';
-import 'package:gbera/portals/gbera/pages/users/viewer.dart';
+import 'package:gbera/portals/gbera/pages/users/roles.dart';
 import 'package:gbera/portals/gbera/pages/wallet.dart';
 import 'package:gbera/portals/gbera/pages/wallet/amount_settings.dart';
 import 'package:gbera/portals/gbera/pages/wallet/card_details.dart';
@@ -491,11 +492,20 @@ List<BuildPortal> buildPortals(IServiceProvider site) {
               ),
             ),
             Page(
-              title: '用户号',
+              title: '我的角色',
               subtitle: '',
-              icon: Icons.person_outline,
-              url: '/users/viewer',
-              buildPage: (PageContext pageContext) => UserAndAccountViewer(
+              icon: Icons.recent_actors,
+              url: '/users/roles',
+              buildPage: (PageContext pageContext) => Roles(
+                context: pageContext,
+              ),
+            ),
+            Page(
+              title: '登录账号',
+              subtitle: '',
+              icon:Icons.account_box,
+              url: '/users/accounts',
+              buildPage: (PageContext pageContext) => Accounts(
                 context: pageContext,
               ),
             ),
