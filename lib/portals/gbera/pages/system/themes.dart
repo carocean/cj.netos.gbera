@@ -9,7 +9,7 @@ class Themes extends StatefulWidget {
   Themes({this.context});
 
   @override
-  _ThemesState createState() => _ThemesState(selectedTheme: context.themeUrl());
+  _ThemesState createState() => _ThemesState(selectedTheme: context.currentTheme());
 }
 
 class _ThemesState extends State<Themes> {
@@ -70,7 +70,7 @@ class _ThemesState extends State<Themes> {
           var selected = theme;
           this.selectedTheme = selected.url;
           widget.context.switchTheme(selected.url);
-          widget.context.sharedPreferences().setString(KEY_THEME_SET, selected.url);
+
         });
       },
       child: Container(

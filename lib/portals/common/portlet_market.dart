@@ -89,6 +89,7 @@ class _DesktopManagerForAssets implements IDesktopManager {
     if (portlets.length==0) {
       //装载应用默认插件
       await _installDefaultPortlets(context);
+      portlets = _getInstalledPortlets(context);
     }
     return portlets;
   }

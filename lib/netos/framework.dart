@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'common.dart';
 import 'errors.dart';
 
-final String KEY_THEME_SET = '@.set.theme';
+
 OnFrameworkRefresh onFrameworkRefresh; //用于内核刷新整个UI
 Map<String, Portal> _allPortals = Map(); //key是portalid
 Map<String, Page> _allPages = Map(); //key是全路径
@@ -42,7 +42,7 @@ run(Widget app) async{
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
 
-  _sharedPreferences = await NetosSharedPreferences().init();
+  _sharedPreferences = await NetosSharedPreferences().init(_site);
   ErrorWidget.builder = (FlutterErrorDetails flutterErrorDetails) {
     return RuntimeErrorPage(flutterErrorDetails);
   };

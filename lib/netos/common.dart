@@ -7,82 +7,107 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'errors.dart';
 
-typedef OnFrameworkRefresh = Function(Map<String, Object> props);
-//当多用户切换时以当前用户/app/cj/作为key持久化前缀，如: /netos/gbera/cj/，用于持久用户私有信息，而以/netos/shared/ 作为多用户的共享目录
+final String KEY_THEME_SET = '@.set.theme';
+typedef OnFrameworkRefresh = Function(OnFrameworkRefreshEvent event);
+class OnFrameworkRefreshEvent{
+  String cmd;
+  Map<String, Object> parameters=Map();
+
+  OnFrameworkRefreshEvent({this.cmd, this.parameters});
+
+}
 class NetosSharedPreferences {
   SharedPreferences _sharedPreferences;
-
-  Future<NetosSharedPreferences> init() async {
+  IServiceProvider _site;
+  Future<NetosSharedPreferences> init(IServiceProvider site) async {
     _sharedPreferences = await SharedPreferences.getInstance();
+    this._site=site;
     return this;
   }
 
-  Future<bool> setStringList(String key, List<String> value) {
-    return _sharedPreferences.setStringList(key, value);
+//当多用户切换时以/用户号/当前登录账号作为key持久化前缀，如: /00200202002/cj/，用于持久账号私有信息，而以/Shared/ 作为多用户的共享目录
+  String _getStoreKey(String key, [bool shared]) {
+    UserPrincipal _principal= _site.getService('@.security')?.userPrincipal;
+    if ((shared!=null&&shared) || _principal == null) {
+      return '/Shared/';
+    }
+    return '/${_principal.uid}/${_principal.accountName}/${StringUtil.isEmpty(key) ? '' : key}';
   }
 
-  Future<bool> setInt(String key, int value) {
-    return _sharedPreferences.setInt(key, value);
+  Future<bool> setStringList(String key, List<String> value, {bool shared}) {
+    return _sharedPreferences.setStringList(_getStoreKey(key, shared), value);
   }
 
-  Future<bool> setDouble(String key, double value) {
-    return _sharedPreferences.setDouble(key, value);
+  Future<bool> setInt(String key, int value, {bool shared}) {
+    return _sharedPreferences.setInt(_getStoreKey(key, shared), value);
   }
 
-  Future<bool> setBool(String key, bool value) {
-    return _sharedPreferences.setBool(key, value);
+  Future<bool> setDouble(String key, double value, {bool shared}) {
+    return _sharedPreferences.setDouble(_getStoreKey(key, shared), value);
   }
 
-  Future<void> reload() {
-    return _sharedPreferences.reload();
+  Future<bool> setBool(String key, bool value, {bool shared}) {
+    return _sharedPreferences.setBool(_getStoreKey(key, shared), value);
   }
 
-  List<String> getStringList(String key) {
-    return _sharedPreferences.getStringList(key);
+  Future<bool> setString(String key, String value, {bool shared}) {
+    return _sharedPreferences.setString(_getStoreKey(key, shared), value);
   }
 
-  Set<String> getKeys() {
-    return _sharedPreferences.getKeys();
+  List<String> getStringList(String key, {bool shared}) {
+    return _sharedPreferences.getStringList(_getStoreKey(key, shared));
   }
 
-  int getInt(String key) {
-    return _sharedPreferences.getInt(key);
+  int getInt(String key, {bool shared}) {
+    return _sharedPreferences.getInt(_getStoreKey(key, shared));
   }
 
-  double getDouble(String key) {
-    return _sharedPreferences.getDouble(key);
+  double getDouble(String key, {bool shared}) {
+    return _sharedPreferences.getDouble(_getStoreKey(key, shared));
   }
 
-  bool getBool(String key) {
-    return _sharedPreferences.getBool(key);
+  bool getBool(String key, {bool shared}) {
+    return _sharedPreferences.getBool(_getStoreKey(key, shared));
   }
 
-  bool containsKey(String key) {
-    return _sharedPreferences.containsKey(key);
+  bool containsKey(String key, {bool shared}) {
+    return _sharedPreferences.containsKey(_getStoreKey(key, shared));
   }
 
-  String toString() {
-    return _sharedPreferences.toString();
+  String getString(String key, {bool shared}) {
+    return _sharedPreferences.getString(_getStoreKey(key, shared));
   }
 
-  String getString(String key) {
-    return _sharedPreferences.getString(key);
+  dynamic get(String key, {bool shared}) {
+    _sharedPreferences.get(_getStoreKey(key, shared));
+  }
+
+  Future<bool> remove(String key, {bool shared}) {
+    return _sharedPreferences.remove(_getStoreKey(key, shared));
   }
 
   Future<bool> clear() {
     return _sharedPreferences.clear();
   }
 
-  dynamic get(String key) {
-    _sharedPreferences.get(key);
+  String toString() {
+    return _sharedPreferences.toString();
   }
 
-  Future<bool> remove(String key) {
-    return _sharedPreferences.remove(key);
+  Future<void> reload() {
+    return _sharedPreferences.reload();
   }
 
-  Future<bool> setString(String key, String value) {
-    return _sharedPreferences.setString(key, value);
+  Set<String> getKeys({bool shared}) {
+    String prefix = _getStoreKey(null, shared);
+    Set<String> keys = _sharedPreferences.getKeys();
+    Set<String> set = Set();
+    for (String k in keys) {
+      if (k.startsWith(prefix)) {
+        set.add(k);
+      }
+    }
+    return set;
   }
 }
 
@@ -91,18 +116,21 @@ class UserPrincipal {
   final String accountid;
   final String accountName;
   final String appid;
+  final String tenantid;
   final List<Map> ucRoles;
   final List<Map> tenantRoles;
   final List<Map> appRoles;
 
-  const UserPrincipal(
-      {this.uid,
-      this.accountid,
-      this.accountName,
-      this.appid,
-      this.ucRoles,
-      this.tenantRoles,
-      this.appRoles});
+  const UserPrincipal({
+    this.uid,
+    this.accountid,
+    this.accountName,
+    this.appid,
+    this.tenantid,
+    this.ucRoles,
+    this.tenantRoles,
+    this.appRoles,
+  });
 }
 
 class Security {
@@ -348,8 +376,8 @@ class PageContext {
     }
     return ret;
   }
-
-  String themeUrl() {
+  ///当前主题url
+  String currentTheme() {
     return site.getService("@.current.theme");
   }
 
@@ -359,11 +387,11 @@ class PageContext {
       throw FlutterError('路径没有以/开头');
     }
     Map<String, Style> styles = site.getService("@.styles");
-    var themeurl = themeUrl();
+    var themeurl = currentTheme();
     if (themeurl.endsWith("/")) {
       themeurl = themeurl.substring(0, themeurl.length - 1);
     }
-    var fullurl = '${page.portal}:/${themeUrl()}${url}';
+    var fullurl = '${page.portal}:/${currentTheme()}${url}';
     var style = styles[fullurl]?.get();
     if (style == null) {
       throw FlutterError('样式未被发现:$url，在主题:$themeurl');
@@ -573,7 +601,12 @@ class PageContext {
     }
     return state.pop(result);
   }
-
+  bool refreshRoot({OnFrameworkRefreshEvent event}){
+    OnFrameworkRefresh refresh = site.getService('@.framework.refresh');
+    if (refresh == null) return false;
+    refresh(event);
+    return true;
+  }
   bool switchTheme(String url) {
     String fullurl = url;
     if (fullurl.indexOf("://") < 0) {
@@ -584,11 +617,17 @@ class PageContext {
     if (themes == null) {
       return false;
     }
-    OnFrameworkRefresh refresh = site.getService('@.framework.refresh');
-    if (refresh == null) return false;
-    refresh({'selectedTheme': theme});
+    sharedPreferences().setString(KEY_THEME_SET, theme.url);
+    refreshRoot(event: OnFrameworkRefreshEvent(cmd: 'switchTheme',parameters:{'selectedTheme': theme},));//主要就是这句，让主界面刷新触发框架重新执行加载主题的方法
     return true;
   }
+
+  void setLogin(UserPrincipal userPrincipal) {
+    Security security = site.getService('@.security');
+    security.userPrincipal = userPrincipal;
+    refreshRoot(event: OnFrameworkRefreshEvent(cmd: 'switchTheme'));
+  }
+
 }
 
 class Portlet {

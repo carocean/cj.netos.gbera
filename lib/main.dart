@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   _MyAppState() {
-    framework.onFrameworkRefresh =(props){
+    framework.onFrameworkRefresh =(event){
       setState(() {
 //        ThemeStyle selectedTheme=props['selectedTheme'];
 //        if(selectedTheme!=null){

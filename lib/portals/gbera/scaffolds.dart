@@ -16,15 +16,13 @@ class WithBottomScaffold extends StatefulWidget {
 class _WithBottomScaffoldState extends State<WithBottomScaffold> {
   int selectedIndex = 0;
   var parts = [];
-  bool use_wallpapper=false;
   var wallpaper;
 
   @override
   void initState() {
     super.initState();
     wallpaper = widget.context.sharedPreferences().getString('@.wallpaper');
-    use_wallpapper = StringUtil.isEmpty(wallpaper) ? false : true;
-    widget.context.parameters['use_wallpapper'] = use_wallpapper;
+    widget.context.parameters['use_wallpapper'] = StringUtil.isEmpty(wallpaper) ? false : true;
 
     parts.add(widget.context.part('/desktop', widget.context));
     parts.add(widget.context.part('/netflow', widget.context));
@@ -35,7 +33,7 @@ class _WithBottomScaffoldState extends State<WithBottomScaffold> {
   @override
   Widget build(BuildContext context) {
     wallpaper = widget.context.sharedPreferences().getString('@.wallpaper');
-    use_wallpapper = StringUtil.isEmpty(wallpaper) ? false : true;
+    var use_wallpapper=widget.context.parameters['use_wallpapper'] = StringUtil.isEmpty(wallpaper) ? false : true;
     return Scaffold(
 //      appBar: headers[selectedIndex],
       body: Container(

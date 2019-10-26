@@ -409,9 +409,8 @@ class LoginAction {
   }
 
   void forwardOK(rc) {
-    print('ok:${rc['dataText']}');
     var map = jsonDecode(rc['dataText']);
-    Security security = context.site.getService('@.security');
+
     List<Map> appRoles = [];
     List<Map> tenantRoles = [];
     List<Map> ucRoles = [];
@@ -432,11 +431,13 @@ class LoginAction {
       accountid: map['accountid'],
       accountName: map['accountName'],
       appid: map['appid'],
+      tenantid: map['tenantid'],
       appRoles: appRoles,
       tenantRoles: tenantRoles,
       ucRoles: ucRoles,
     );
-    security.userPrincipal = userPrincipal;
+
+    context.setLogin(userPrincipal);
     context.forward("gbera://scaffold/withbottombar",
         notManagerPreviousPage: true);
   }
