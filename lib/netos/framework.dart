@@ -316,9 +316,7 @@ class FrameworkNavigatorObserver extends NavigatorObserver {
       return;
     }
     String prevFullUrl = previousRoute.settings.name;
-    if(prevFullUrl==null){
-      return;
-    }
+
     var portal = prevFullUrl.substring(0, prevFullUrl.indexOf('://'));
     if (fullUrl.startsWith(portal)) {
       //同一框架则不切换
@@ -360,9 +358,7 @@ class FrameworkNavigatorObserver extends NavigatorObserver {
       return;
     }
     String prevFullUrl = previousRoute.settings.name;
-    if(prevFullUrl==null){
-      return;
-    }
+
     var portal = fullUrl.substring(0, fullUrl.indexOf('://'));
     if (prevFullUrl.startsWith(portal)) {
       //同一框架则不切换
@@ -378,7 +374,12 @@ class FrameworkNavigatorObserver extends NavigatorObserver {
     if(StringUtil.isEmpty(themeUrl)){
       themeUrl=_sharedPreferences.getString(KEY_THEME_SET,portal:portal );
       if(StringUtil.isEmpty(themeUrl)) {
-        return;
+        if(_environment.previousPortal==portal){
+          themeUrl=_environment.previousThemeUrl;
+        }
+        if(StringUtil.isEmpty(themeUrl)) {
+          return;
+        }
       }
     }
     //如果不是当前的框架则切换框架,而且在跳转后再切换

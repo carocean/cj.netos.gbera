@@ -54,7 +54,6 @@ class _DesktopState extends State<Desktop> {
 
   @override
   Widget build(BuildContext context) {
-
     return FutureBuilder(
       future: desktopManager.getInstalledPortlets(widget.context),
       builder: (context, snapshot) {
@@ -73,7 +72,7 @@ class _DesktopState extends State<Desktop> {
         };
         var url = widget.context.page.parameters['From-Page-Url'];
         var scaffold =
-        widget.context.findPage('${widget.context.page.portal}:/$url');
+            widget.context.findPage('${widget.context.page.portal}:/$url');
 
         var _slivers = <Widget>[
           SliverAppBar(
@@ -154,25 +153,49 @@ class _DesktopState extends State<Desktop> {
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.only(
-                      left: 0,
-                      top: 80,
+                      left: 10,
+                      right: 10,
+                      top: 100,
+                      bottom: 20,
                     ),
-                    child: ListTile(
-                      title: Text(
-                        '${widget.context.userPrincipal?.accountName}',
-                        softWrap: true,
-                      ),
-                      subtitle: Text(
-                        '我回家吃了饭',
-                        softWrap: true,
-                      ),
-                      leading: GestureDetector(
-                        child: CircleAvatar(
-                          backgroundImage: NetworkImage(
-                              'http://pic-bucket.ws.126.net/photo/0001/2019-08-13/EMENLA1600AN0001NOS.jpg'),
+                    child: Row(
+                      children: <Widget>[
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: onProfileTap,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              right: 10,
+                            ),
+                            child: CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                  'http://pic-bucket.ws.126.net/photo/0001/2019-08-13/EMENLA1600AN0001NOS.jpg'),
+                            ),
+                          ),
                         ),
-                        onTap: onProfileTap,
-                      ),
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: onProfileTap,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  bottom: 2,
+                                ),
+                                child: Text(
+                                  '${widget.context.userPrincipal?.accountName}',
+                                  softWrap: true,
+                                ),
+                              ),
+                              Text(
+                                '我回家吃了饭',
+                                softWrap: true,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Center(
