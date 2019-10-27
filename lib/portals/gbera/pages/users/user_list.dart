@@ -186,6 +186,33 @@ class UserAndAccountList extends StatelessWidget {
         ],
       ),
     );
+    var card_exitapp = Container(
+      padding: EdgeInsets.only(
+        left: 10,
+        right: 10,
+        top: 15,
+        bottom: 15,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(
+              left: 10,
+            ),
+            child: Text(
+              '退出系统',
+              style: TextStyle(
+                color: Colors.blueGrey,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -200,12 +227,42 @@ class UserAndAccountList extends StatelessWidget {
           top: 10,
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(
-                bottom: 10,
-              ),
-              child: card_1,
+            Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 10,
+                  ),
+                  child: card_1,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 10,
+                  ),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    child: card_account,
+                    onTap: () {
+                      this.context.forward('/users/accounts');
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 10,
+                  ),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    child: card_role,
+                    onTap: () {
+                      this.context.forward('/users/roles');
+                    },
+                  ),
+                ),
+              ],
             ),
             Padding(
               padding: EdgeInsets.only(
@@ -213,21 +270,9 @@ class UserAndAccountList extends StatelessWidget {
               ),
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                child: card_account,
+                child: card_exitapp,
                 onTap: () {
-                  this.context.forward('/users/accounts');
-                },
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                bottom: 10,
-              ),
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                child: card_role,
-                onTap: () {
-                  this.context.forward('/users/roles');
+
                 },
               ),
             ),
