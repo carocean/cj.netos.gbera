@@ -42,153 +42,165 @@ class Accounts extends StatelessWidget {
             ),
             child: Column(
               children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                    bottom: 15,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                              right: 5,
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    this.context.forward('/users/accounts/viewer');
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      bottom: 15,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Icon(
+                                FontAwesomeIcons.font,
+                                size: 30,
+                                color: Colors.grey[600],
+                              ),
                             ),
-                            child: Icon(
-                              FontAwesomeIcons.font,
-                              size: 30,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: 5,
-                                ),
-                                child: Text(
-                                  'cj',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: 5,
+                                  ),
+                                  child: Text(
+                                    'cj',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      right: 5,
-                                    ),
-                                    child: Text(
-                                      '应用: gbera',
-                                      style: TextStyle(
-                                        color: Colors.grey[500],
+                                Row(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        right: 5,
+                                      ),
+                                      child: Text(
+                                        '应用: gbera',
+                                        style: TextStyle(
+                                          color: Colors.grey[500],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      right: 5,
-                                    ),
-                                    child: Text(
-                                      '租户: netos',
-                                      style: TextStyle(
-                                        color: Colors.grey[500],
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        right: 5,
+                                      ),
+                                      child: Text(
+                                        '租户: netos',
+                                        style: TextStyle(
+                                          color: Colors.grey[500],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Icon(
-                        Icons.check,
-                        size: 16,
-                        color: Colors.red[400],
-                      ),
-                    ],
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Icon(
+                          Icons.check,
+                          size: 16,
+                          color: Colors.red[400],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Divider(
                   height: 1,
                   indent: 35,
                 ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: 15,
-                    bottom: 15,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                              right: 5,
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    this.context.forward('/users/accounts/viewer');
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: 15,
+                      bottom: 15,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Icon(
+                                Icons.phone_android,
+                                size: 30,
+                                color: Colors.grey[600],
+                              ),
                             ),
-                            child: Icon(
-                              Icons.phone_android,
-                              size: 30,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: 5,
-                                ),
-                                child: Text(
-                                  '18023457655',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: 5,
+                                  ),
+                                  child: Text(
+                                    '18023457655',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      right: 5,
-                                    ),
-                                    child: Text(
-                                      '应用: gbera',
-                                      style: TextStyle(
-                                        color: Colors.grey[500],
+                                Row(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        right: 5,
+                                      ),
+                                      child: Text(
+                                        '应用: gbera',
+                                        style: TextStyle(
+                                          color: Colors.grey[500],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      right: 5,
-                                    ),
-                                    child: Text(
-                                      '租户: netos',
-                                      style: TextStyle(
-                                        color: Colors.grey[500],
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        right: 5,
+                                      ),
+                                      child: Text(
+                                        '租户: netos',
+                                        style: TextStyle(
+                                          color: Colors.grey[500],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        size: 16,
-                        color: Colors.grey[400],
-                      ),
-                    ],
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 16,
+                          color: Colors.grey[400],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Divider(
@@ -268,7 +280,9 @@ class Accounts extends StatelessWidget {
                     ],
                   ),
                 ),
-                Padding(
+                GestureDetector(behavior: HitTestBehavior.opaque,onTap: (){
+                  this.context.forward('/users/accounts/addAccount');
+                },child: Padding(
                   padding: EdgeInsets.only(
                     top: 15,
                   ),
@@ -288,7 +302,12 @@ class Accounts extends StatelessWidget {
                               color: Colors.grey[600],
                             ),
                           ),
-                          Text('添加新账号',style: TextStyle(fontWeight: FontWeight.w500,),),
+                          Text(
+                            '添加新账号',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ],
                       ),
                       Icon(
@@ -298,7 +317,8 @@ class Accounts extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
+                ),),
+
               ],
             ),
           ),
@@ -379,7 +399,7 @@ class Accounts extends StatelessWidget {
                                       right: 5,
                                     ),
                                     child: Text(
-                                      '应用: mybusiness',
+                                      '应用: 古树轩湘菜馆',
                                       style: TextStyle(
                                         color: Colors.grey[500],
                                       ),
