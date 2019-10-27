@@ -312,7 +312,13 @@ class FrameworkNavigatorObserver extends NavigatorObserver {
 //    print('.......$route.....$previousRoute......');
     super.didPop(route, previousRoute);
     String fullUrl = route.settings.name;
+    if(fullUrl==null){
+      return;
+    }
     String prevFullUrl = previousRoute.settings.name;
+    if(prevFullUrl==null){
+      return;
+    }
     var portal = prevFullUrl.substring(0, prevFullUrl.indexOf('://'));
     if (fullUrl.startsWith(portal)) {
       //同一框架则不切换
@@ -350,7 +356,13 @@ class FrameworkNavigatorObserver extends NavigatorObserver {
       return;
     }
     String fullUrl = route.settings.name;
+    if(fullUrl==null){
+      return;
+    }
     String prevFullUrl = previousRoute.settings.name;
+    if(prevFullUrl==null){
+      return;
+    }
     var portal = fullUrl.substring(0, fullUrl.indexOf('://'));
     if (prevFullUrl.startsWith(portal)) {
       //同一框架则不切换

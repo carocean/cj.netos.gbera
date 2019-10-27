@@ -183,7 +183,7 @@ var buildPortal = (IServiceProvider site) => Portal(
           ),
         ),
         Page(
-          title: '小信猪',
+          title: '小信',
           subtitle: '',
           icon: GalleryIcons.shrine,
           url: '/scaffold/withbottombar',

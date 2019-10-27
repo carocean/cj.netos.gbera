@@ -321,7 +321,7 @@ class _LoginPage2State extends State<LoginPage2> {
         Padding(
           padding: EdgeInsets.all(10),
           child: Text(
-            '小信猪',
+            '小信',
             style: widget.context.style(
               '/login2/appTitle.text',
             ),

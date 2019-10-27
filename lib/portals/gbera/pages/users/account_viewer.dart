@@ -110,7 +110,7 @@ class AccountViewer extends StatelessWidget {
           this.context.page?.title,
         ),
         titleSpacing: 0,
-        elevation: 1.0,
+        elevation: 0,
         automaticallyImplyLeading: bb == null ? true : false,
         leading: getLeading(bb),
       ),

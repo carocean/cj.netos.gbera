@@ -23,8 +23,19 @@ class Accounts extends StatelessWidget {
               left: 10,
               right: 10,
             ),
-            child: Text(
-              '当前应用账号',
+            child: Text.rich(
+              TextSpan(
+                text: '当前应用:',
+                children: [
+                  TextSpan(
+                    text: 'gbera',
+                    style: TextStyle(
+                      color: Colors.blueGrey,
+                    ),
+                  ),
+                  TextSpan(text: '下的账号'),
+                ],
+              ),
               style: TextStyle(
                 color: Colors.grey[500],
                 fontSize: 16,
@@ -83,17 +94,6 @@ class Accounts extends StatelessWidget {
                                 ),
                                 Row(
                                   children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                        right: 5,
-                                      ),
-                                      child: Text(
-                                        '应用: gbera',
-                                        style: TextStyle(
-                                          color: Colors.grey[500],
-                                        ),
-                                      ),
-                                    ),
                                     Padding(
                                       padding: EdgeInsets.only(
                                         right: 5,
@@ -171,17 +171,6 @@ class Accounts extends StatelessWidget {
                                         right: 5,
                                       ),
                                       child: Text(
-                                        '应用: gbera',
-                                        style: TextStyle(
-                                          color: Colors.grey[500],
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                        right: 5,
-                                      ),
-                                      child: Text(
                                         '租户: netos',
                                         style: TextStyle(
                                           color: Colors.grey[500],
@@ -249,17 +238,6 @@ class Accounts extends StatelessWidget {
                                       right: 5,
                                     ),
                                     child: Text(
-                                      '应用: gbera',
-                                      style: TextStyle(
-                                        color: Colors.grey[500],
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      right: 5,
-                                    ),
-                                    child: Text(
                                       '租户: netos',
                                       style: TextStyle(
                                         color: Colors.grey[500],
@@ -280,45 +258,48 @@ class Accounts extends StatelessWidget {
                     ],
                   ),
                 ),
-                GestureDetector(behavior: HitTestBehavior.opaque,onTap: (){
-                  this.context.forward('/users/accounts/addAccount');
-                },child: Padding(
-                  padding: EdgeInsets.only(
-                    top: 15,
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    this.context.forward('/users/accounts/addAccount');
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: 15,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Icon(
+                                Icons.add,
+                                size: 30,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            Text(
+                              '添加新账号',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 16,
+                          color: Colors.grey[400],
+                        ),
+                      ],
+                    ),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                              right: 5,
-                            ),
-                            child: Icon(
-                              Icons.add,
-                              size: 30,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          Text(
-                            '添加新账号',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        size: 16,
-                        color: Colors.grey[400],
-                      ),
-                    ],
-                  ),
-                ),),
-
+                ),
               ],
             ),
           ),
@@ -519,7 +500,7 @@ class Accounts extends StatelessWidget {
           this.context.page?.title,
         ),
         titleSpacing: 0,
-        elevation: 1.0,
+        elevation: 0,
         automaticallyImplyLeading: bb == null ? true : false,
         leading: getLeading(bb),
       ),
