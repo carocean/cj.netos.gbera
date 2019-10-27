@@ -148,42 +148,50 @@ class Profile extends StatelessWidget {
               top: 15,
               bottom: 15,
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: 10,
+            child: GestureDetector(
+              onTap: () {
+                this.context.forward('mybusiness://scaffolds/mybusiness',themeUrl: '/blue');
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: 10,
+                    ),
+                    child: Icon(
+                      Icons.business,
+                      size: 30,
+                      color:
+                          this.context.style('/profile/list/item-icon.color'),
+                    ),
                   ),
-                  child: Icon(
-                    Icons.business,
-                    size: 30,
-                    color: this.context.style('/profile/list/item-icon.color'),
+                  Expanded(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        ///是用户的经营管理后台，如我有店铺就经营店铺，我有xx
+                        Text(
+                          '我的生意',
+                          style: this
+                              .context
+                              .style('/profile/list/item-title.text'),
+                        ),
+                        Icon(
+                          Icons.keyboard_arrow_right,
+                          size: 20,
+                          color: Colors.grey[400],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      ///是用户的经营管理后台，如我有店铺就经营店铺，我有xx
-                      Text(
-                        '我的生意',
-                        style:
-                            this.context.style('/profile/list/item-title.text'),
-                      ),
-                      Icon(
-                        Icons.keyboard_arrow_right,
-                        size: 20,
-                        color: Colors.grey[400],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],

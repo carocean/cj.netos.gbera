@@ -8,82 +8,125 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'errors.dart';
 
 final String KEY_THEME_SET = '@.set.theme';
-typedef OnFrameworkRefresh = Function(OnFrameworkRefreshEvent event);
-class OnFrameworkRefreshEvent{
-  String cmd;
-  Map<String, Object> parameters=Map();
 
-  OnFrameworkRefreshEvent({this.cmd, this.parameters});
+typedef OnFrameworkEvents = Function(OnFrameworkEvent event);
 
+class Environment {
+  String currentPortal = ''; //当前使用的框架
+  String currentThemeUrl = ''; //当前应用的主题路径，是相对于当前portal的路径
+  String previousPortal = '';
+  String previousThemeUrl = '';
+  UserPrincipal userPrincipal;
+
+  Environment({
+    this.currentPortal,
+    this.currentThemeUrl,
+    this.userPrincipal,
+    this.previousPortal,
+    this.previousThemeUrl,
+  });
 }
+
+class OnFrameworkEvent {
+  String cmd;
+  Map<String, Object> parameters = Map();
+
+  OnFrameworkEvent({this.cmd, this.parameters});
+}
+
 class NetosSharedPreferences {
   SharedPreferences _sharedPreferences;
   IServiceProvider _site;
+
   Future<NetosSharedPreferences> init(IServiceProvider site) async {
     _sharedPreferences = await SharedPreferences.getInstance();
-    this._site=site;
+    this._site = site;
     return this;
   }
 
-//当多用户切换时以/用户号/当前登录账号作为key持久化前缀，如: /00200202002/cj/，用于持久账号私有信息，而以/Shared/ 作为多用户的共享目录
-  String _getStoreKey(String key, [bool shared]) {
-    UserPrincipal _principal= _site.getService('@.security')?.userPrincipal;
-    if ((shared!=null&&shared) || _principal == null) {
-      return '/Shared/';
+//当多用户切换时以/框架/用户号/当前登录账号/作为key持久化前缀，如: /gbera/00200202002/cj/，用于持久账号私有信息，而以/Shared/ 作为多用户的共享目录
+  String _getStoreKey(String key, {String portal, bool sharedDir,bool portalDir}) {
+    Environment environment = _site.getService('@.environment');
+    UserPrincipal _principal = environment?.userPrincipal;
+    if ((sharedDir != null && sharedDir) || _principal == null) {
+      return '/Shared/$key';
     }
-    return '/${_principal.uid}/${_principal.accountName}/${StringUtil.isEmpty(key) ? '' : key}';
+
+    String theportal =
+        StringUtil.isEmpty(portal) ? environment?.currentPortal : portal;
+    if(portalDir!=null&&portalDir){
+      return "/$theportal/${StringUtil.isEmpty(key) ? '' : key}";
+    }
+    String thekey =
+        "/$theportal/${_principal.uid}/${_principal.accountName}/${StringUtil.isEmpty(key) ? '' : key}";
+    return thekey;
   }
 
-  Future<bool> setStringList(String key, List<String> value, {bool shared}) {
-    return _sharedPreferences.setStringList(_getStoreKey(key, shared), value);
+  Future<bool> setStringList(String key, List<String> value,
+      {String portal, bool sharedDir,bool portalDir}) {
+    return _sharedPreferences.setStringList(
+        _getStoreKey(key, sharedDir: sharedDir,portalDir: portalDir, portal: portal), value);
   }
 
-  Future<bool> setInt(String key, int value, {bool shared}) {
-    return _sharedPreferences.setInt(_getStoreKey(key, shared), value);
+  Future<bool> setInt(String key, int value, {String portal, bool sharedDir,bool portalDir}) {
+    return _sharedPreferences.setInt(
+        _getStoreKey(key, sharedDir: sharedDir,portalDir: portalDir, portal: portal), value);
   }
 
-  Future<bool> setDouble(String key, double value, {bool shared}) {
-    return _sharedPreferences.setDouble(_getStoreKey(key, shared), value);
+  Future<bool> setDouble(String key, double value,
+      {String portal, bool sharedDir,bool portalDir}) {
+    return _sharedPreferences.setDouble(
+        _getStoreKey(key, sharedDir: sharedDir,portalDir: portalDir, portal: portal), value);
   }
 
-  Future<bool> setBool(String key, bool value, {bool shared}) {
-    return _sharedPreferences.setBool(_getStoreKey(key, shared), value);
+  Future<bool> setBool(String key, bool value, {String portal, bool sharedDir,bool portalDir}) {
+    return _sharedPreferences.setBool(
+        _getStoreKey(key, sharedDir: sharedDir,portalDir: portalDir, portal: portal), value);
   }
 
-  Future<bool> setString(String key, String value, {bool shared}) {
-    return _sharedPreferences.setString(_getStoreKey(key, shared), value);
+  Future<bool> setString(String key, String value,
+      {String portal, bool sharedDir,bool portalDir}) {
+    return _sharedPreferences.setString(
+        _getStoreKey(key, sharedDir: sharedDir,portalDir: portalDir, portal: portal), value);
   }
 
-  List<String> getStringList(String key, {bool shared}) {
-    return _sharedPreferences.getStringList(_getStoreKey(key, shared));
+  List<String> getStringList(String key, {String portal, bool sharedDir,bool portalDir}) {
+    return _sharedPreferences
+        .getStringList(_getStoreKey(key, sharedDir: sharedDir,portalDir: portalDir, portal: portal));
   }
 
-  int getInt(String key, {bool shared}) {
-    return _sharedPreferences.getInt(_getStoreKey(key, shared));
+  int getInt(String key, {String portal, bool sharedDir,bool portalDir}) {
+    return _sharedPreferences
+        .getInt(_getStoreKey(key, sharedDir: sharedDir,portalDir: portalDir, portal: portal));
   }
 
-  double getDouble(String key, {bool shared}) {
-    return _sharedPreferences.getDouble(_getStoreKey(key, shared));
+  double getDouble(String key, {String portal, bool sharedDir,bool portalDir}) {
+    return _sharedPreferences
+        .getDouble(_getStoreKey(key, sharedDir: sharedDir,portalDir: portalDir, portal: portal));
   }
 
-  bool getBool(String key, {bool shared}) {
-    return _sharedPreferences.getBool(_getStoreKey(key, shared));
+  bool getBool(String key, {String portal, bool sharedDir,bool portalDir}) {
+    return _sharedPreferences
+        .getBool(_getStoreKey(key, sharedDir: sharedDir,portalDir: portalDir, portal: portal));
   }
 
-  bool containsKey(String key, {bool shared}) {
-    return _sharedPreferences.containsKey(_getStoreKey(key, shared));
+  bool containsKey(String key, {String portal, bool sharedDir,bool portalDir}) {
+    return _sharedPreferences
+        .containsKey(_getStoreKey(key, sharedDir: sharedDir,portalDir: portalDir, portal: portal));
   }
 
-  String getString(String key, {bool shared}) {
-    return _sharedPreferences.getString(_getStoreKey(key, shared));
+  String getString(String key, {String portal, bool sharedDir,bool portalDir}) {
+    return _sharedPreferences
+        .getString(_getStoreKey(key, sharedDir: sharedDir,portalDir: portalDir, portal: portal));
   }
 
-  dynamic get(String key, {bool shared}) {
-    _sharedPreferences.get(_getStoreKey(key, shared));
+  dynamic get(String key, {String portal, bool sharedDir,bool portalDir}) {
+    _sharedPreferences.get(_getStoreKey(key, sharedDir: sharedDir,portalDir: portalDir, portal: portal));
   }
 
-  Future<bool> remove(String key, {bool shared}) {
-    return _sharedPreferences.remove(_getStoreKey(key, shared));
+  Future<bool> remove(String key, {String portal, bool sharedDir,bool portalDir}) {
+    return _sharedPreferences
+        .remove(_getStoreKey(key, sharedDir: sharedDir,portalDir: portalDir, portal: portal));
   }
 
   Future<bool> clear() {
@@ -98,8 +141,8 @@ class NetosSharedPreferences {
     return _sharedPreferences.reload();
   }
 
-  Set<String> getKeys({bool shared}) {
-    String prefix = _getStoreKey(null, shared);
+  Set<String> getKeys({String portal, bool sharedDir,bool portalDir}) {
+    String prefix = _getStoreKey(null, sharedDir: sharedDir,portalDir: portalDir, portal: portal);
     Set<String> keys = _sharedPreferences.getKeys();
     Set<String> set = Set();
     for (String k in keys) {
@@ -343,7 +386,7 @@ class PageContext {
   const PageContext({this.page, this.site, this.context});
 
   UserPrincipal get userPrincipal =>
-      site.getService('@.security')?.userPrincipal;
+      site.getService('@.environment')?.userPrincipal;
 
   ///真实传过来的参数
   get parameters => ModalRoute.of(context).settings.arguments;
@@ -356,29 +399,14 @@ class PageContext {
     return site.getService('@.sharedPreferences');
   }
 
-  Future<T> forward<T extends Object>(
-    String pagePath, {
-    Map<String, Object> arguments,
-    bool notManagerPreviousPage,
-  }) {
-    if (pagePath.indexOf("://") < 0) {
-      if (!pagePath.startsWith("/")) {
-        pagePath = '/$pagePath';
-      }
-      pagePath = '${page.portal}:/$pagePath';
-    }
-    var ret = Navigator.pushNamed(context, pagePath, arguments: arguments);
-    if (notManagerPreviousPage != null && notManagerPreviousPage) {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        pagePath,
-        (route) => route == null,
-      );
-    }
-    return ret;
+  ///当前框架id
+  String currentPortal() {
+    return site.getService("@.environment")?.currentPortal;
   }
-  ///当前主题url
+
+  ///当前主题url，为相对于框架的地址
   String currentTheme() {
-    return site.getService("@.current.theme");
+    return site.getService("@.environment")?.currentThemeUrl;
   }
 
   ///url为样式定义路径，里面不含portalid也不含主题路径；即：样式永远使用的是当前上下文的portal和主题下的样式定义。
@@ -601,12 +629,49 @@ class PageContext {
     }
     return state.pop(result);
   }
-  bool refreshRoot({OnFrameworkRefreshEvent event}){
-    OnFrameworkRefresh refresh = site.getService('@.framework.refresh');
+
+  bool refreshRoot({OnFrameworkEvent event}) {
+    OnFrameworkEvents refresh = site.getService('@.framework.events');
     if (refresh == null) return false;
     refresh(event);
     return true;
   }
+
+  Future<T> forward<T extends Object>(
+    String pagePath, {
+
+    ///使用此主题pagePath必须是指定了框架的全路径，主题路径是相对于该框架的路径
+    String themeUrl,
+    Map<String, Object> arguments,
+    bool notManagerPreviousPage,
+  }) {
+    if (pagePath.indexOf("://") < 0) {
+      if (!pagePath.startsWith("/")) {
+        pagePath = '/$pagePath';
+      }
+      pagePath = '${page.portal}:/$pagePath';
+    }
+//如果不是当前的框架则切换框架,而且在跳转后再切换
+    if (!pagePath.startsWith(currentPortal())) {
+      if(arguments==null){
+        arguments=Map();
+      }
+      arguments['themeUrl']=themeUrl;
+      //一定设为true，在其后清除上一个框架的历史页，否则会导致上一个框架页刷新而找样式，而此时已启用下一个框架页的样式，导致在下一框架页中找上一个框架样的样式
+      //所以框架的切换不能使用历史回退，如果新框架要返回，必须使用forward
+      notManagerPreviousPage=true;
+    }
+    var ret = Navigator.pushNamed(context, pagePath, arguments: arguments);
+    if (notManagerPreviousPage != null && notManagerPreviousPage) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        pagePath,
+        (route) => route == null,
+      );
+    }
+
+    return ret;
+  }
+
   bool switchTheme(String url) {
     String fullurl = url;
     if (fullurl.indexOf("://") < 0) {
@@ -617,17 +682,30 @@ class PageContext {
     if (themes == null) {
       return false;
     }
-    sharedPreferences().setString(KEY_THEME_SET, theme.url);
-    refreshRoot(event: OnFrameworkRefreshEvent(cmd: 'switchTheme',parameters:{'selectedTheme': theme},));//主要就是这句，让主界面刷新触发框架重新执行加载主题的方法
+    Environment environment = site.getService('@.environment');
+    sharedPreferences()
+        .setString(KEY_THEME_SET, theme.url, portal: environment.currentPortal);
+    //立即刷新界面呈现效果，如果不在此刷新就要等到页面跳转时才生效
+    refreshRoot(
+        event: OnFrameworkEvent(
+      cmd: 'switchTheme',
+      parameters: {'themeUrl': theme.url, 'portal': environment.currentPortal},
+    ));
     return true;
   }
-
+  //设置登录，方法将根据当前登录用户加载个性化配置
   void setLogin(UserPrincipal userPrincipal) {
-    Security security = site.getService('@.security');
-    security.userPrincipal = userPrincipal;
-    refreshRoot(event: OnFrameworkRefreshEvent(cmd: 'switchTheme'));
+    Environment environment = site.getService('@.environment');
+    environment.userPrincipal = userPrincipal;
+    OnFrameworkEvents events = site.getService('@.framework.events');
+    events(OnFrameworkEvent(
+      cmd: 'switchTheme',
+      parameters: {
+        'portal': environment.currentPortal,
+        'themeUrl': environment.currentThemeUrl,
+      },
+    ));
   }
-
 }
 
 class Portlet {

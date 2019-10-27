@@ -148,7 +148,7 @@ class _WallpappersState extends State<Wallpappers> {
 
   Future _getWallpappers(context) async {
     var yaml = await DefaultAssetBundle.of(context)
-        .loadString('lib/portals/wallpapers/wallpapper.yaml');
+        .loadString('lib/portals/gbera/wallpapers/wallpapper.yaml');
     var map = loadYaml(yaml);
     var wallpapers = map['wallpapers'];
     return wallpapers;

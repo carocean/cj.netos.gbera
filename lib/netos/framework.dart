@@ -9,19 +9,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'common.dart';
 import 'errors.dart';
 
-
-OnFrameworkRefresh onFrameworkRefresh; //用于内核刷新整个UI
+OnFrameworkEvents onFrameworkEvents; //用于内核刷新整个UI
 Map<String, Portal> _allPortals = Map(); //key是portalid
 Map<String, Page> _allPages = Map(); //key是全路径
 Map<String, ThemeStyle> _allThemes = Map(); //key是全路径
 Map<String, Style> _allStyles = Map(); //key是全路径
 Map<String, Desklet> _allDesklets = Map(); //桌面栏目,key是全路径
 NetosSharedPreferences _sharedPreferences = null; //本地存储
-var _currentPortal = ''; //当前使用的框架
-var _currentThemeUrl = ''; //当前应用的主题路径，是相对于当前portal的路径
-var _security = Security();
-
 IServiceProvider _site = GberaServiceProvider();
+
+///上下文环境
+Environment _environment = Environment();
 
 //事件顺序
 //1。先执行onGenerateThemeStyle，如果已绑定的话；
@@ -32,7 +30,7 @@ IServiceProvider _site = GberaServiceProvider();
 var loadStep =
     0; //1为执行了onGenerateThemeStyle方法；2为执行了buildRoutes法；3是执行了onGenerateRoute方法。后者检查前序方法是否被执行，否则报错。
 
-run(Widget app) async{
+run(Widget app) async {
   if (Platform.isAndroid) {
     SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -49,7 +47,7 @@ run(Widget app) async{
 
   runApp(app);
 
-  if (onFrameworkRefresh == null) {
+  if (onFrameworkEvents == null) {
     throw FlutterError('客户程序必须实现onFrameworkRefresh事件');
   }
 }
@@ -60,7 +58,6 @@ _buildPortals(BuildContext context) {
   _allThemes.clear();
   _allStyles.clear();
   _allDesklets.clear();
-  _currentThemeUrl = '';
   var _portals = buildPortals(_site);
   for (var item in _portals) {
     var portal = item(_site);
@@ -156,27 +153,34 @@ _buildPortals(BuildContext context) {
 }
 
 //主题是第一个响应，次是初始化路由表
-ThemeData onGenerateThemeStyle(String url, BuildContext context) {
+///themeUrl必须是带框架名的全路径
+ThemeData onGenerateThemeStyle(String themeUrl, BuildContext context) {
   //由于主题是最先加载，因此铁定都要执行初始化。所以在调试时如添加了新的page或主题样式支持reload hot热调试
   _buildPortals(context);
   loadStep = 1;
-  var fullUrl = url;
+  var fullUrl = themeUrl;
   var pos = fullUrl.indexOf('://');
   if (pos < 0) {
     throw FlutterErrorDetails(
-        exception: Exception('非法地址请求。正确格式为：portal://relativeUrl'));
+        exception: Exception('非法地址请求:$fullUrl。正确格式为：portal://relativeUrl'));
   }
-  _currentPortal = fullUrl.substring(0, pos);
-  var _storedThemeUrl=_sharedPreferences.getString(KEY_THEME_SET);
-  if(!StringUtil.isEmpty(_storedThemeUrl)){
-    _currentThemeUrl=_storedThemeUrl;
-    fullUrl='$_currentPortal:/$_currentThemeUrl';
-  }else {
-    _currentThemeUrl = fullUrl.substring(pos + 2, fullUrl.length);
+  var portal = fullUrl.substring(0, pos);
+  if (_environment.userPrincipal != null) {
+    //加载用户个性化主题
+    var _storedThemeUrl =
+        _sharedPreferences.getString(KEY_THEME_SET, portal: portal);
+    if (!StringUtil.isEmpty(_storedThemeUrl)) {
+      fullUrl = '$portal:/$_storedThemeUrl';
+    }
   }
   ThemeStyle themeStyle = _allThemes[fullUrl];
-  if (themeStyle == null) return null;
-
+  if (themeStyle == null) {
+    throw FlutterError('未发现主题: $fullUrl');
+  }
+  _environment.previousPortal = _environment.currentPortal;
+  _environment.previousThemeUrl = _environment.currentThemeUrl;
+  _environment.currentThemeUrl = themeStyle.url;
+  _environment.currentPortal = fullUrl.substring(0, pos);
   return themeStyle.buildTheme(context);
 }
 
@@ -194,14 +198,16 @@ Route onGenerateRoute(RouteSettings routeSettings) {
     throw FlutterErrorDetails(exception: Exception('主widget未绑定buildRoutes方法'));
   }
   loadStep = 3;
-  var fullUrl = routeSettings.name;
-  if ("/" == fullUrl) {
-    return null;
+  var url = routeSettings.name;
+  if ("/" == url) {
+    //在指定初始化路由时如果在路由表中未指定，则flutter会采用默认/来搜索路由,因此要求在指定初始化路由时一定保证路由表中有，由于路由为空（buildRoutes方法），所以出现/这种情况
+    throw FlutterError('初始化路由（initialRoute）必须是全路径。');
   }
-  if (fullUrl.indexOf("://") < 0) {
-    throw FlutterErrorDetails(
-        exception: Exception(
-            '非法地址请求:$fullUrl。正确格式为：portal://relativeUrl?key=value&key2=value2'));
+  String fullUrl;
+  if (url.indexOf("://") < 0) {
+    fullUrl = '${_environment.currentPortal}:/$url';
+  } else {
+    fullUrl = url;
   }
   Page page = _allPages[fullUrl];
   if (page == null) {
@@ -256,6 +262,10 @@ Route onUnknownRoute(RouteSettings settings) {
   );
 }
 
+NavigatorObserver navigatorObserver() {
+  return FrameworkNavigatorObserver();
+}
+
 BaseOptions options = BaseOptions(headers: {
   'Content-Type': "text/html; charset=utf-8",
 });
@@ -282,18 +292,88 @@ class GberaServiceProvider implements IServiceProvider {
     if ("@.desklets" == name) {
       return _allDesklets;
     }
-    if ("@.current.theme" == name) {
-      return _currentThemeUrl;
+    if ('@.environment' == name) {
+      return _environment;
     }
-    if ('@.security' == name) {
-      return _security;
+    if ('@.framework.events' == name) {
+      return onFrameworkEvents;
     }
-    if ('@.framework.refresh' == name) {
-      return onFrameworkRefresh;
-    }
-    if('@.sharedPreferences'==name){
+    if ('@.sharedPreferences' == name) {
       return _sharedPreferences;
     }
     return null;
+  }
+}
+
+class FrameworkNavigatorObserver extends NavigatorObserver {
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
+    //检查在页面返回时是否需要切换框架
+//    print('.......$route.....$previousRoute......');
+    super.didPop(route, previousRoute);
+    String fullUrl = route.settings.name;
+    String prevFullUrl = previousRoute.settings.name;
+    var portal = prevFullUrl.substring(0, prevFullUrl.indexOf('://'));
+    if (fullUrl.startsWith(portal)) {
+      //同一框架则不切换
+      return;
+    }
+    if(onFrameworkEvents==null){
+      return;
+    }
+    //跳转总是前后页间跳，由于每次都在跳入之前记录了前次所以返回时下次的portal一定与previousPortal相同
+    var _storeThemeUrl=_sharedPreferences.getString(KEY_THEME_SET,portal: portal);
+    if(StringUtil.isEmpty(_storeThemeUrl)) {
+      onFrameworkEvents(OnFrameworkEvent(
+        cmd: 'switchTheme',
+        parameters: {
+          'portal': _environment.previousPortal,
+          'themeUrl': _environment.previousThemeUrl,
+        },
+      ));
+    }else{
+      onFrameworkEvents(OnFrameworkEvent(
+        cmd: 'switchTheme',
+        parameters: {
+          'portal': portal,
+          'themeUrl': _storeThemeUrl,
+        },
+      ));
+    }
+  }
+
+  @override
+  void didPush(Route route, Route previousRoute) {
+    // TODO: implement didPush
+    super.didPush(route, previousRoute);
+    if(previousRoute==null){
+      return;
+    }
+    String fullUrl = route.settings.name;
+    String prevFullUrl = previousRoute.settings.name;
+    var portal = fullUrl.substring(0, fullUrl.indexOf('://'));
+    if (prevFullUrl.startsWith(portal)) {
+      //同一框架则不切换
+      return;
+    }
+    if(onFrameworkEvents==null){
+      return;
+    }
+    if(route.settings.arguments==null){
+      return;
+    }
+    var themeUrl=(route.settings.arguments as Map)['themeUrl'];
+    if(StringUtil.isEmpty(themeUrl)){
+      themeUrl=_sharedPreferences.getString(KEY_THEME_SET,portal:portal );
+      if(StringUtil.isEmpty(themeUrl)) {
+        return;
+      }
+    }
+    //如果不是当前的框架则切换框架,而且在跳转后再切换
+    onFrameworkEvents(
+        OnFrameworkEvent(
+      cmd: 'switchTheme',
+      parameters: {'themeUrl': themeUrl, 'portal': portal},
+    ));
   }
 }

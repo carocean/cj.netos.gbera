@@ -23,6 +23,9 @@ class _ThemesState extends State<Themes> {
     Map allthemes = widget.context.site.getService("@.themes");
     themes = [];
     allthemes.forEach((k, v) {
+      if(!k.startsWith(widget.context.currentPortal())){
+        return;
+      }
       themes.add(v);
     });
     var bb = widget.context.parameters['back_button'];
