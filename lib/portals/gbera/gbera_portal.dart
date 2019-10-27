@@ -28,6 +28,8 @@ import 'package:gbera/portals/gbera/pages/market/stores_plus.dart';
 import 'package:gbera/portals/gbera/pages/market/tydeal_market.dart';
 import 'package:gbera/portals/gbera/pages/netflow.dart';
 import 'package:gbera/portals/gbera/pages/profile.dart';
+import 'package:gbera/portals/gbera/pages/profile/editor.dart';
+import 'package:gbera/portals/gbera/pages/profile/qrcode.dart';
 import 'package:gbera/portals/gbera/pages/system/about.dart';
 import 'package:gbera/portals/gbera/pages/system/contract.dart';
 import 'package:gbera/portals/gbera/pages/system/themes.dart';
@@ -291,6 +293,24 @@ var buildPortal = (IServiceProvider site) => Portal(
 //                  },
 //                );
 //              },
+        ),
+        Page(
+          title: '我的二维码',
+          subtitle: '',
+          icon: FontAwesomeIcons.qrcode,
+          url: '/profile/qrcode',
+          buildPage: (PageContext pageContext) => Qrcode(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '个人信息',
+          subtitle: '',
+          icon: FontAwesomeIcons.edit,
+          url: '/profile/editor',
+          buildPage: (PageContext pageContext) => ProfileEditor(
+            context: pageContext,
+          ),
         ),
         Page(
           title: '钱包',

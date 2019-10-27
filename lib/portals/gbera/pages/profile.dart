@@ -25,34 +25,46 @@ class Profile extends StatelessWidget {
               Container(
                 child: Row(
                   children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(4),
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            'http://pic-bucket.ws.126.net/photo/0001/2019-08-13/EMENLA1600AN0001NOS.jpg'),
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        this.context.forward('/profile/editor');
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.all(4),
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              'http://pic-bucket.ws.126.net/photo/0001/2019-08-13/EMENLA1600AN0001NOS.jpg'),
+                        ),
                       ),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(
-                            bottom: 5,
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        this.context.forward('/profile/editor');
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                              bottom: 5,
+                            ),
+                            child: Text(
+                              '${this.context.userPrincipal?.accountName}',
+                              style: this
+                                  .context
+                                  .style('/profile/header-face-title.text'),
+                            ),
                           ),
-                          child: Text(
-                            '${this.context.userPrincipal?.accountName}',
+                          Text(
+                            '用户号: ${this.context.userPrincipal?.uid}',
                             style: this
                                 .context
-                                .style('/profile/header-face-title.text'),
+                                .style('/profile/header-face-no.text'),
                           ),
-                        ),
-                        Text(
-                          '用户号: ${this.context.userPrincipal?.uid}',
-                          style: this
-                              .context
-                              .style('/profile/header-face-no.text'),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -64,11 +76,18 @@ class Profile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(
-                  right: 8,
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  this.context.forward('/profile/qrcode');
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    right: 8,
+                  ),
+                  child:
+                      this.context.style('/profile/header-right-qrcode.icon'),
                 ),
-                child: this.context.style('/profile/header-right-qrcode.icon'),
               ),
               this.context.style('/profile/header-right-arrow.icon'),
             ],
@@ -150,7 +169,8 @@ class Profile extends StatelessWidget {
             ),
             child: GestureDetector(
               onTap: () {
-                this.context.forward('mybusiness://scaffolds/mybusiness',themeUrl: '/blue');
+                this.context.forward('mybusiness://scaffolds/mybusiness',
+                    themeUrl: '/blue');
               },
               behavior: HitTestBehavior.opaque,
               child: Row(
