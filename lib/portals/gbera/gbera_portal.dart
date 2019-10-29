@@ -28,7 +28,11 @@ import 'package:gbera/portals/gbera/pages/market/stores_plus.dart';
 import 'package:gbera/portals/gbera/pages/market/tydeal_market.dart';
 import 'package:gbera/portals/gbera/pages/netflow.dart';
 import 'package:gbera/portals/gbera/pages/profile.dart';
+import 'package:gbera/portals/gbera/pages/profile/edit_sex.dart';
+import 'package:gbera/portals/gbera/pages/profile/edit_username.dart';
 import 'package:gbera/portals/gbera/pages/profile/editor.dart';
+import 'package:gbera/portals/gbera/pages/profile/face.dart';
+import 'package:gbera/portals/gbera/pages/profile/more.dart';
 import 'package:gbera/portals/gbera/pages/profile/qrcode.dart';
 import 'package:gbera/portals/gbera/pages/system/about.dart';
 import 'package:gbera/portals/gbera/pages/system/contract.dart';
@@ -309,6 +313,42 @@ var buildPortal = (IServiceProvider site) => Portal(
           icon: FontAwesomeIcons.edit,
           url: '/profile/editor',
           buildPage: (PageContext pageContext) => ProfileEditor(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '个人头像',
+          subtitle: '',
+          icon: FontAwesomeIcons.edit,
+          url: '/profile/editor/face',
+          buildPage: (PageContext pageContext) => ProfileFace(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '修改姓名',
+          subtitle: '',
+          icon: FontAwesomeIcons.edit,
+          url: '/profile/editor/username',
+          buildPage: (PageContext pageContext) => EditUserName(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '修改性别',
+          subtitle: '',
+          icon: FontAwesomeIcons.edit,
+          url: '/profile/editor/sex',
+          buildPage: (PageContext pageContext) => EditSex(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '其它属性',
+          subtitle: '',
+          icon: FontAwesomeIcons.edit,
+          url: '/profile/editor/more',
+          buildPage: (PageContext pageContext) => ProfileMore(
             context: pageContext,
           ),
         ),

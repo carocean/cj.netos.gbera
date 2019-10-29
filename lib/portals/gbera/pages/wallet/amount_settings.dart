@@ -103,7 +103,7 @@ class _AmountSettingsState extends State<AmountSettings> {
             //只有输入通过验证，才会执行这里
             _formKey.currentState.save();
           }
-          widget.context.goBack({
+          widget.context.backward({
             'amount': _amount_value,
             'memo': _memo_value,
           });
@@ -120,7 +120,7 @@ class _AmountSettingsState extends State<AmountSettings> {
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: () {
-            widget.context.goBack();
+            widget.context.backward();
           },
           icon: Icon(
             Icons.clear,

@@ -65,7 +65,7 @@ class UserContract extends StatelessWidget {
     if (bb == null) return null;
     return IconButton(
       onPressed: () {
-        this.context.goBack();
+        this.context.backward();
       },
       icon: Icon(
         Icons.clear,

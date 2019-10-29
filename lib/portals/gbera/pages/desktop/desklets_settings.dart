@@ -54,7 +54,7 @@ class _DeskletsSettingsState extends State<DeskletsSettings> {
     if (bb == null) return null;
     return IconButton(
       onPressed: () {
-        widget.context.goBack();
+        widget.context.backward();
       },
       icon: Icon(
         Icons.clear,

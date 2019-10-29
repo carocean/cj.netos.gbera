@@ -55,7 +55,7 @@ class ErrorPage404 extends StatelessWidget {
 class RuntimeErrorPage extends StatelessWidget {
   FlutterErrorDetails flutterErrorDetails;
 
-  RuntimeErrorPage(this.flutterErrorDetails);
+  RuntimeErrorPage({this.flutterErrorDetails});
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +84,7 @@ class RuntimeErrorPage extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
-                flutterErrorDetails?.exceptionAsString(),
+                flutterErrorDetails?.exceptionAsString()==null?'':flutterErrorDetails?.exceptionAsString(),
                 style: TextStyle(
                   color: Colors.red,
                 ),

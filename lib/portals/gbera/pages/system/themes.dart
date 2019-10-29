@@ -54,7 +54,7 @@ class _ThemesState extends State<Themes> {
     if (bb == null) return null;
     return IconButton(
       onPressed: () {
-        widget.context.goBack();
+        widget.context.backward();
       },
       icon: Icon(
         Icons.clear,

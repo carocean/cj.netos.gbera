@@ -73,7 +73,7 @@ class ReceivablesRecord extends StatelessWidget {
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: () {
-            this.context.goBack();
+            this.context.backward();
           },
           icon: Icon(
             Icons.clear,

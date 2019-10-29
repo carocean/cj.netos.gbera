@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
 
-class WY extends StatelessWidget {
+class ProfileMore extends StatefulWidget {
   PageContext context;
-  WY({this.context});
+
+  ProfileMore({this.context});
+
+  @override
+  _ProfileMoreState createState() => _ProfileMoreState();
+}
+
+class _ProfileMoreState extends State<ProfileMore> {
   @override
   Widget build(BuildContext context) {
-
-    var bb = this.context.parameters['back_button'];
+    var bb = widget.context.page.parameters['back_button'];
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          this.context.page?.title,
+          widget.context.page?.title,
         ),
         titleSpacing: 0,
-        elevation: 1.0,
+        elevation: 0,
         automaticallyImplyLeading: bb == null ? true : false,
         leading: getLeading(bb),
       ),
@@ -26,7 +32,7 @@ class WY extends StatelessWidget {
     if (bb == null) return null;
     return IconButton(
       onPressed: () {
-        this.context.backward();
+        widget.context.backward();
       },
       icon: Icon(
         Icons.clear,
