@@ -259,7 +259,7 @@ void _buildPipelineTab(List<Widget> panel) {
         bottom: 10,
       ),
       child: ListTile(
-        title: Text('地理微博'),
+        title: Text('地推'),
         leading: SizedBox(
           height: 60,
           width: 60,
