@@ -27,6 +27,7 @@ import 'package:gbera/portals/gbera/pages/market/services_plus.dart';
 import 'package:gbera/portals/gbera/pages/market/stores_plus.dart';
 import 'package:gbera/portals/gbera/pages/market/tydeal_market.dart';
 import 'package:gbera/portals/gbera/pages/netflow.dart';
+import 'package:gbera/portals/gbera/pages/netflow2.dart';
 import 'package:gbera/portals/gbera/pages/profile.dart';
 import 'package:gbera/portals/gbera/pages/profile/edit_sex.dart';
 import 'package:gbera/portals/gbera/pages/profile/edit_username.dart';
@@ -228,8 +229,8 @@ var buildPortal = (IServiceProvider site) => Portal(
           title: '网流',
           subtitle: '',
           icon: GalleryIcons.shrine,
-          url: '/netflow',
-          buildPage: (PageContext pageContext) => Netflow(
+          url: '/netflow2',
+          buildPage: (PageContext pageContext) => Netflow2(
             context: pageContext,
           ),
         ),

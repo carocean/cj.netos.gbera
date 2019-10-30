@@ -25,7 +25,7 @@ class _WithBottomScaffoldState extends State<WithBottomScaffold> {
     widget.context.parameters['use_wallpapper'] = StringUtil.isEmpty(wallpaper) ? false : true;
 
     parts.add(widget.context.part('/desktop', context,arguments:{'From-Page-Url': widget.context.page.url}));
-    parts.add(widget.context.part('/netflow', context,arguments:{'From-Page-Url': widget.context.page.url}));
+    parts.add(widget.context.part('/netflow2', context,arguments:{'From-Page-Url': widget.context.page.url}));
     parts.add(widget.context.part('/geosphere', context,arguments:{'From-Page-Url': widget.context.page.url}));
     parts.add(widget.context.part('/market', context,arguments:{'From-Page-Url': widget.context.page.url}));
   }
