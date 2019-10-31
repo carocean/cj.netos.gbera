@@ -27,7 +27,8 @@ import 'package:gbera/portals/gbera/pages/market/services_plus.dart';
 import 'package:gbera/portals/gbera/pages/market/stores_plus.dart';
 import 'package:gbera/portals/gbera/pages/market/tydeal_market.dart';
 import 'package:gbera/portals/gbera/pages/netflow.dart';
-import 'package:gbera/portals/gbera/pages/netflow2.dart';
+import 'package:gbera/portals/gbera/pages/netflow/avatar.dart';
+import 'package:gbera/portals/gbera/pages/netflow/channel.dart';
 import 'package:gbera/portals/gbera/pages/profile.dart';
 import 'package:gbera/portals/gbera/pages/profile/edit_sex.dart';
 import 'package:gbera/portals/gbera/pages/profile/edit_username.dart';
@@ -229,8 +230,26 @@ var buildPortal = (IServiceProvider site) => Portal(
           title: '网流',
           subtitle: '',
           icon: GalleryIcons.shrine,
-          url: '/netflow2',
-          buildPage: (PageContext pageContext) => Netflow2(
+          url: '/netflow',
+          buildPage: (PageContext pageContext) => Netflow(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '管道',
+          subtitle: '',
+          icon: GalleryIcons.shrine,
+          url: '/netflow/channel',
+          buildPage: (PageContext pageContext) => Channel(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '标记管道',
+          subtitle: '',
+          icon: GalleryIcons.shrine,
+          url: '/netflow/channel/avatar',
+          buildPage: (PageContext pageContext) => Avatar(
             context: pageContext,
           ),
         ),
