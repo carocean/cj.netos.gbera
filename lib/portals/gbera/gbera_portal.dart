@@ -29,6 +29,12 @@ import 'package:gbera/portals/gbera/pages/market/tydeal_market.dart';
 import 'package:gbera/portals/gbera/pages/netflow.dart';
 import 'package:gbera/portals/gbera/pages/netflow/avatar.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel.dart';
+import 'package:gbera/portals/gbera/pages/netflow/channel_gateway.dart';
+import 'package:gbera/portals/gbera/pages/netflow/create_channel.dart';
+import 'package:gbera/portals/gbera/pages/netflow/publish_article.dart';
+import 'package:gbera/portals/gbera/pages/netflow/scan_channel.dart';
+import 'package:gbera/portals/gbera/pages/netflow/search_channel.dart';
+import 'package:gbera/portals/gbera/pages/netflow/service_menu.dart';
 import 'package:gbera/portals/gbera/pages/profile.dart';
 import 'package:gbera/portals/gbera/pages/profile/edit_sex.dart';
 import 'package:gbera/portals/gbera/pages/profile/edit_username.dart';
@@ -36,6 +42,8 @@ import 'package:gbera/portals/gbera/pages/profile/editor.dart';
 import 'package:gbera/portals/gbera/pages/profile/face.dart';
 import 'package:gbera/portals/gbera/pages/profile/more.dart';
 import 'package:gbera/portals/gbera/pages/profile/qrcode.dart';
+import 'package:gbera/portals/gbera/pages/site/marchant_site.dart';
+import 'package:gbera/portals/gbera/pages/site/personal_site.dart';
 import 'package:gbera/portals/gbera/pages/system/about.dart';
 import 'package:gbera/portals/gbera/pages/system/contract.dart';
 import 'package:gbera/portals/gbera/pages/system/themes.dart';
@@ -45,6 +53,7 @@ import 'package:gbera/portals/gbera/pages/users/add_account.dart';
 import 'package:gbera/portals/gbera/pages/users/edit_password.dart';
 import 'package:gbera/portals/gbera/pages/users/roles.dart';
 import 'package:gbera/portals/gbera/pages/users/user_list.dart';
+import 'package:gbera/portals/gbera/pages/viewers/image_viewer.dart';
 import 'package:gbera/portals/gbera/pages/wallet.dart';
 import 'package:gbera/portals/gbera/pages/wallet/amount_settings.dart';
 import 'package:gbera/portals/gbera/pages/wallet/card_details.dart';
@@ -252,6 +261,105 @@ var buildPortal = (IServiceProvider site) => Portal(
           buildPage: (PageContext pageContext) => Avatar(
             context: pageContext,
           ),
+        ),
+        Page(
+          title: '新建管道',
+          subtitle: '',
+          icon: Icons.add,
+          url: '/netflow/manager/create_channel',
+          buildPage: (PageContext pageContext) => CreateChannel(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '扫码管道',
+          subtitle: '',
+          icon: FontAwesomeIcons.qrcode,
+          url: '/netflow/manager/scan_channel',
+          buildPage: (PageContext pageContext) => ScanChannel(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '搜索管道',
+          subtitle: '',
+          icon: FontAwesomeIcons.search,
+          url: '/netflow/manager/search_channel',
+          buildPage: (PageContext pageContext) => SearchChannel(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '管道网关',
+          subtitle: '',
+          icon: Icons.settings_input_composite,
+          url: '/netflow/manager/channel_gateway',
+          buildPage: (PageContext pageContext) => ChannelGateway(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '发布文章',
+          subtitle: '',
+          icon: Icons.art_track,
+          url: '/netflow/channel/publish_article',
+          buildPage: (PageContext pageContext) => PublishArticle(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '服务清单',
+          subtitle: '',
+          desc: '为个人站点或商户站点提供的服务列表',
+          icon: Icons.art_track,
+          url: '/network/channel/serviceMenu',
+          buildPage: (PageContext pageContext) => ServiceMenu(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '商户站点',
+          subtitle: '',
+          desc: '',
+          icon: Icons.art_track,
+          url: '/site/marchant',
+          buildPage: (PageContext pageContext) => MarchantSite(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '个人站点',
+          subtitle: '',
+          desc: '',
+          icon: Icons.art_track,
+          url: '/site/personal',
+          buildPage: (PageContext pageContext) => PersonalSite(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '图片查看器',
+          subtitle: '',
+          desc: '',
+          icon: Icons.image,
+          url: '/images/viewer',
+          buildRoute:
+              (RouteSettings settings, Page page, IServiceProvider site) {
+            return MaterialPageRoute(
+              settings: settings,
+              builder: (context){
+                PageContext pageContext = PageContext(
+                  page: page,
+                  site: site,
+                  context: context,
+                );
+                return new ImageViewer(
+                  context: pageContext,
+                );
+              },
+              fullscreenDialog: true,
+            );
+          },
         ),
         Page(
           title: '市场',

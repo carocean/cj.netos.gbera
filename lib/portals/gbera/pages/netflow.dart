@@ -62,11 +62,90 @@ class _NetflowState extends State<Netflow> {
         title: Text('网流'),
         centerTitle: true,
         actions: <Widget>[
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.add,
+          PopupMenuButton<String>(
+            offset: Offset(
+              0,
+              50,
             ),
+            onSelected: (value) {
+              print(value);
+              widget.context.forward(value);
+            },
+            itemBuilder: (context) => <PopupMenuEntry<String>>[
+              PopupMenuItem(
+                value: '/netflow/manager/create_channel',
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(
+                        right: 10,
+                      ),
+                      child: Icon(
+                        widget.context
+                            .findPage('/netflow/manager/create_channel')
+                            ?.icon,
+                        color: Colors.grey[500],
+                        size: 15,
+                      ),
+                    ),
+                    Text('新建管道',style: TextStyle(
+                      fontSize: 14,
+                    ),),
+                  ],
+                ),
+              ),
+              PopupMenuDivider(),
+              PopupMenuItem(
+                value: '/netflow/manager/scan_channel',
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(
+                        right: 10,
+                      ),
+                      child: Icon(
+                        widget.context
+                            .findPage('/netflow/manager/scan_channel')
+                            ?.icon,
+                        color: Colors.grey[500],
+                        size: 15,
+                      ),
+                    ),
+                    Text('扫码以连接管道',style: TextStyle(
+                      fontSize: 14,
+                    ),),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: '/netflow/manager/search_channel',
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(
+                        right: 10,
+                      ),
+                      child: Icon(
+                        widget.context
+                            .findPage('/netflow/manager/search_channel')
+                            ?.icon,
+                        color: Colors.grey[500],
+                        size: 15,
+                      ),
+                    ),
+                    Text(
+                      '搜索以连接管道',
+                      style: TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
         backgroundColor: use_wallpapper && _backgroud_transparent
@@ -134,7 +213,9 @@ void _buildPipelineTab(List<Widget> panel, _NetflowState state) {
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {
-                state.widget.context.forward('/netflow/channel/avatar',);
+                state.widget.context.forward(
+                  '/netflow/channel/avatar',
+                );
               },
               child: SizedBox(
                 width: 40,
@@ -151,7 +232,10 @@ void _buildPipelineTab(List<Widget> panel, _NetflowState state) {
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {
-                state.widget.context.forward('/netflow/channel',arguments: {'channel-name':'公共'},);
+                state.widget.context.forward(
+                  '/netflow/channel',
+                  arguments: {'channel-name': '公共'},
+                );
               },
               child: Column(
                 children: <Widget>[

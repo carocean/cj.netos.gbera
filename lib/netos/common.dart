@@ -545,9 +545,7 @@ class PageContext {
     }
     int pos = hl.indexOf(" ");
     if (pos < 0) {
-      throw FlutterErrorDetails(
-          exception: Exception(
-              '请求行格式错误，缺少uri和protocol，错误请求行为：$hl,合法格式应为：get|post uri http/1.1'));
+      throw FlutterError('请求行格式错误，缺少uri和protocol，错误请求行为：$hl,合法格式应为：get|post uri http/1.1');
     }
     cmd = hl.substring(0, pos);
     hl = hl.substring(pos + 1, hl.length);
@@ -556,15 +554,11 @@ class PageContext {
     }
     pos = hl.indexOf(" ");
     if (pos < 0) {
-      throw FlutterErrorDetails(
-          exception: Exception(
-              '请求行格式错误，缺少protocol，错误请求行为：$hl,合法格式应为：get|post uri http/1.1'));
+      throw FlutterError( '请求行格式错误，缺少protocol，错误请求行为：$hl,合法格式应为：get|post uri http/1.1');
     }
     uri = hl.substring(0, pos);
     if (uri.indexOf("://") < 0) {
-      throw FlutterErrorDetails(
-          exception:
-              Exception('不是正确的请求地址：${hl},合法格式应为：https://sss/ss/ss?ss=ss'));
+      throw FlutterError('不是正确的请求地址：${hl},合法格式应为：https://sss/ss/ss?ss=ss');
     }
     hl = hl.substring(pos + 1, hl.length);
     while (hl.startsWith(" ")) {
@@ -574,7 +568,7 @@ class PageContext {
       hl = hl.substring(0, hl.length - 1);
     }
     if (StringUtil.isEmpty(hl)) {
-      throw FlutterErrorDetails(exception: Exception('请求行缺少协议:$hl'));
+      throw FlutterError('请求行缺少协议:$hl');
     }
     protocol = hl;
 

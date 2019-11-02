@@ -42,7 +42,7 @@ run(Widget app) async {
 
   _sharedPreferences = await NetosSharedPreferences().init(_site);
   ErrorWidget.builder = (FlutterErrorDetails flutterErrorDetails) {
-    return RuntimeErrorPage(flutterErrorDetails: flutterErrorDetails);
+    return RuntimeErrorWidget(flutterErrorDetails: flutterErrorDetails);
   };
 
   runApp(app);
