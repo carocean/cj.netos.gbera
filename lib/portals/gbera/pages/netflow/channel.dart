@@ -14,6 +14,7 @@ class Channel extends StatefulWidget {
 }
 
 class _ChannelState extends State<Channel> {
+
   @override
   Widget build(BuildContext context) {
     var _scaffoldKey = GlobalKey<ScaffoldState>();
