@@ -13,7 +13,7 @@ class Channel extends StatefulWidget {
   _ChannelState createState() => _ChannelState();
 }
 
-class _ChannelState extends State<Channel> {
+class _ChannelState extends State<Channel> with AutomaticKeepAliveClientMixin{
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +92,11 @@ class _ChannelState extends State<Channel> {
         slivers: panel,
       ),
     );
+  }
+
+  @override
+  bool get wantKeepAlive {
+    return true;
   }
 }
 
