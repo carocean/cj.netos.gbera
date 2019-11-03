@@ -458,7 +458,7 @@ class PageContext {
 
   ///部件作为页面的界面元素被嵌入，因此不支持页面跳转动画，因为它在调用时不被作为路由页。
   Widget part(String pageUrl, BuildContext context,
-      { Map<String, Object> arguments}) {
+      {Map<String, Object> arguments}) {
     Map<String, Page> pages = site.getService("@.pages");
     String fullurl = pageUrl;
     if (fullurl.indexOf("://") < 0) {
@@ -501,8 +501,8 @@ class PageContext {
     String kv = '';
     if (pos < 0) {
       kv = qs;
-      qs='';
-    }else {
+      qs = '';
+    } else {
       kv = qs.substring(0, pos);
       qs = qs.substring(pos + 1, qs.length);
     }
@@ -545,7 +545,8 @@ class PageContext {
     }
     int pos = hl.indexOf(" ");
     if (pos < 0) {
-      throw FlutterError('请求行格式错误，缺少uri和protocol，错误请求行为：$hl,合法格式应为：get|post uri http/1.1');
+      throw FlutterError(
+          '请求行格式错误，缺少uri和protocol，错误请求行为：$hl,合法格式应为：get|post uri http/1.1');
     }
     cmd = hl.substring(0, pos);
     hl = hl.substring(pos + 1, hl.length);
@@ -554,7 +555,8 @@ class PageContext {
     }
     pos = hl.indexOf(" ");
     if (pos < 0) {
-      throw FlutterError( '请求行格式错误，缺少protocol，错误请求行为：$hl,合法格式应为：get|post uri http/1.1');
+      throw FlutterError(
+          '请求行格式错误，缺少protocol，错误请求行为：$hl,合法格式应为：get|post uri http/1.1');
     }
     uri = hl.substring(0, pos);
     if (uri.indexOf("://") < 0) {
@@ -680,12 +682,22 @@ class PageContext {
     return pages[fullurl];
   }
 
-  bool backward([result]) {
+  ///@clearHistoryPageUrl 清除历史路由页，按路径前缀来匹配，如果是/表示清除所有历史
+  ///                     注意：如果该参数非空将不能传递result参数给前页
+  ///@result 放入返回给前页的结果
+  bool backward({
+    String clearHistoryPageUrl,
+    result,
+  }) {
     NavigatorState state = Navigator.of(context);
     if (!state.canPop()) {
       return false;
     }
-    return state.pop(result);
+    if (StringUtil.isEmpty(clearHistoryPageUrl)) {
+      return state.pop(result);
+    }
+    state.popUntil(_checkHistoryRoute(clearHistoryPageUrl));
+    return true;
   }
 
   bool refreshRoot({OnFrameworkEvent event}) {
@@ -695,13 +707,13 @@ class PageContext {
     return true;
   }
 
+  ///@pagePath 使用此主题pagePath必须是指定了框架的全路径，主题路径是相对于该框架的路径
+  ///@clearHistoryPageUrl 清除历史路由页，按路径前缀来匹配，如果是/表示清除所有历史
   Future<T> forward<T extends Object>(
     String pagePath, {
-
-    ///使用此主题pagePath必须是指定了框架的全路径，主题路径是相对于该框架的路径
     String themeUrl,
     Map<String, Object> arguments,
-    bool notManagerPreviousPage,
+    String clearHistoryPageUrl,
   }) {
     if (pagePath.indexOf("://") < 0) {
       if (!pagePath.startsWith("/")) {
@@ -717,17 +729,46 @@ class PageContext {
       arguments['themeUrl'] = themeUrl;
       //一定设为true，在其后清除上一个框架的历史页，否则会导致上一个框架页刷新而找样式，而此时已启用下一个框架页的样式，导致在下一框架页中找上一个框架样的样式
       //所以框架的切换不能使用历史回退，如果新框架要返回，必须使用forward
-      notManagerPreviousPage = true;
+      clearHistoryPageUrl = '/';
     }
-    var ret = Navigator.pushNamed(context, pagePath, arguments: arguments);
-    if (notManagerPreviousPage != null && notManagerPreviousPage) {
-      Navigator.of(context).pushNamedAndRemoveUntil(
+    dynamic ret;
+    if (!StringUtil.isEmpty(clearHistoryPageUrl)) {
+      ret = Navigator.of(context).pushNamedAndRemoveUntil(
         pagePath,
-        (route) => route == null,
+//        (route) => route == null,
+        _checkHistoryRoute(clearHistoryPageUrl),
+        arguments: arguments,
+      );
+    } else {
+      ret = Navigator.pushNamed(
+        context,
+        pagePath,
+        arguments: arguments,
       );
     }
 
     return ret;
+  }
+
+  RoutePredicate _checkHistoryRoute(String url) {
+    return (Route<dynamic> route) {
+      return !route.willHandlePopInternally &&
+          route is ModalRoute &&
+          _checkUrl(route, url);
+    };
+  }
+
+  bool _checkUrl(ModalRoute route, String url) {
+    String name = route.settings.name;
+    if (StringUtil.isEmpty(name)) {
+      return false;
+    }
+    int pos = name.indexOf('://');
+    if (pos < 0) {
+      return false;
+    }
+    String reurl = name.substring(pos + 2, name.length);
+    return !reurl.startsWith(url);
   }
 
   bool switchTheme(String url) {

@@ -439,7 +439,7 @@ class LoginAction {
 
     context.setLogin(userPrincipal);
     context.forward("gbera://scaffold/withbottombar",
-        notManagerPreviousPage: true);
+        clearHistoryPageUrl: '/');
   }
 
   void forwardError(e) {

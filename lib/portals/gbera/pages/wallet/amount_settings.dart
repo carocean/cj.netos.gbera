@@ -103,7 +103,7 @@ class _AmountSettingsState extends State<AmountSettings> {
             //只有输入通过验证，才会执行这里
             _formKey.currentState.save();
           }
-          widget.context.backward({
+          widget.context.backward(result:{
             'amount': _amount_value,
             'memo': _memo_value,
           });

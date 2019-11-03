@@ -42,6 +42,7 @@ import 'package:gbera/portals/gbera/pages/profile/editor.dart';
 import 'package:gbera/portals/gbera/pages/profile/face.dart';
 import 'package:gbera/portals/gbera/pages/profile/more.dart';
 import 'package:gbera/portals/gbera/pages/profile/qrcode.dart';
+import 'package:gbera/portals/gbera/pages/site/insite_request.dart';
 import 'package:gbera/portals/gbera/pages/site/marchant_site.dart';
 import 'package:gbera/portals/gbera/pages/site/personal_site.dart';
 import 'package:gbera/portals/gbera/pages/system/about.dart';
@@ -53,6 +54,7 @@ import 'package:gbera/portals/gbera/pages/users/add_account.dart';
 import 'package:gbera/portals/gbera/pages/users/edit_password.dart';
 import 'package:gbera/portals/gbera/pages/users/roles.dart';
 import 'package:gbera/portals/gbera/pages/users/user_list.dart';
+import 'package:gbera/portals/gbera/pages/viewers/channel_viewer.dart';
 import 'package:gbera/portals/gbera/pages/viewers/image_viewer.dart';
 import 'package:gbera/portals/gbera/pages/wallet.dart';
 import 'package:gbera/portals/gbera/pages/wallet/amount_settings.dart';
@@ -81,7 +83,9 @@ import 'pages/wallet/receivables_details.dart';
 import 'styles/green-styles.dart';
 import 'styles/grey-styles.dart';
 
-var buildPortal = (IServiceProvider site) => Portal(
+class GberaPortal {
+  Portal buildPortal(IServiceProvider site) {
+    return Portal(
       id: 'gbera',
       icon: GalleryIcons.shrine,
       name: '金证时代官方框架',
@@ -290,7 +294,7 @@ var buildPortal = (IServiceProvider site) => Portal(
           ),
         ),
         Page(
-          title: '管道网关',
+          title: '网关管道',
           subtitle: '',
           icon: Icons.settings_input_composite,
           url: '/netflow/manager/channel_gateway',
@@ -338,6 +342,16 @@ var buildPortal = (IServiceProvider site) => Portal(
           ),
         ),
         Page(
+          title: '入站申请',
+          subtitle: '',
+          desc: '',
+          icon: Icons.art_track,
+          url: '/site/insite/request',
+          buildPage: (PageContext pageContext) => InSiteRequest(
+            context: pageContext,
+          ),
+        ),
+        Page(
           title: '图片查看器',
           subtitle: '',
           desc: '',
@@ -347,7 +361,7 @@ var buildPortal = (IServiceProvider site) => Portal(
               (RouteSettings settings, Page page, IServiceProvider site) {
             return MaterialPageRoute(
               settings: settings,
-              builder: (context){
+              builder: (context) {
                 PageContext pageContext = PageContext(
                   page: page,
                   site: site,
@@ -360,6 +374,16 @@ var buildPortal = (IServiceProvider site) => Portal(
               fullscreenDialog: true,
             );
           },
+        ),
+        Page(
+          title: '管道看版',
+          subtitle: '',
+          desc: '',
+          icon: Icons.art_track,
+          url: '/channel/viewer',
+          buildPage: (PageContext pageContext) => ChannelViewer(
+            context: pageContext,
+          ),
         ),
         Page(
           title: '市场',
@@ -910,3 +934,5 @@ var buildPortal = (IServiceProvider site) => Portal(
         ),
       ],
     );
+  }
+}

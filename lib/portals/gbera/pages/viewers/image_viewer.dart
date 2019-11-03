@@ -122,8 +122,9 @@ class _ImageViewerState extends State<ImageViewer> {
                 right: 0,
                 child: IconButton(
                   onPressed: () {
-                    widget.context.forward('/netflow/channel',
-                        arguments: {'channel-name': '公共'});
+                    widget.context.backward(
+                      clearHistoryPageUrl: '/images/viewer',
+                    );
                   },
                   color: Colors.red,
                   iconSize: 20,

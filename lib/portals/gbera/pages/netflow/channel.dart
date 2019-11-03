@@ -53,7 +53,7 @@ class _ChannelState extends State<Channel> {
                         icon: Icons.font_download,
                         color: Colors.grey[500],
                         onPressed: () {
-                          widget.context.backward({'type': 'text'});
+                          widget.context.backward(result:{'type': 'text'});
                         },
                       ),
                       DialogItem(
@@ -61,7 +61,7 @@ class _ChannelState extends State<Channel> {
                         icon: Icons.photo_camera,
                         color: Colors.grey[500],
                         onPressed: () {
-                          widget.context.backward({'type': 'take'});
+                          widget.context.backward(result:{'type': 'take'});
                         },
                       ),
                       DialogItem(
@@ -69,7 +69,7 @@ class _ChannelState extends State<Channel> {
                         icon: Icons.image,
                         color: Colors.grey[500],
                         onPressed: () {
-                          widget.context.backward({'type': 'select'});
+                          widget.context.backward(result:{'type': 'select'});
                         },
                       ),
                     ],
@@ -113,7 +113,8 @@ void _buildPlatTab(List<Widget> panel, Channel widget, BuildContext context,
           GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              widget.context.forward('/netflow/manager/channel_gateway');
+              widget.context.forward('/netflow/manager/channel_gateway',
+                  arguments: {'title': '公共'});
             },
             child: Padding(
               padding: EdgeInsets.only(
@@ -129,6 +130,76 @@ void _buildPlatTab(List<Widget> panel, Channel widget, BuildContext context,
             ),
           ),
         ],
+      ),
+    ),
+  );
+  var nopass = SliverToBoxAdapter(
+    child: Card(
+      shape: Border(),
+      elevation: 0,
+      margin: EdgeInsets.only(bottom: 15),
+      color: Colors.transparent,
+      child: Container(
+        margin: EdgeInsets.all(10),
+        child: Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text: '云台花园[¥6.25]:',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.blueGrey,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return widget.context
+                              .part('/site/insite/request', context);
+                        });
+                  },
+                children: [
+                  TextSpan(
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      color: Colors.black,
+                    ),
+                    text:
+                        '日前，世界文化遗产、日本冲绳县那霸市首里城发生大火，主要建筑物付之一炬。目前，冲绳县警方已基本确定起火点位于首里城正殿一层.',
+                  ),
+                ],
+              ),
+              TextSpan(text: '\r\n'),
+              TextSpan(
+                text: '东山学校[¥12.30]:',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.blueGrey,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return widget.context
+                              .part('/site/insite/request', context);
+                        });
+                  },
+                children: [
+                  TextSpan(
+                      style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        color: Colors.black,
+                      ),
+                      text: '7万亿市值没了！中石油A股又创历史新低，暴跌90%，跌去了5个茅台！'),
+                ],
+              ),
+            ],
+          ),
+          maxLines: 4,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
     ),
   );
@@ -323,10 +394,54 @@ void _buildPlatTab(List<Widget> panel, Channel widget, BuildContext context,
                   Row(
                     //内容坠
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Text(
-                        '1小时前 ¥0.24元',
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      Expanded(
+                        child: Text.rich(
+                          TextSpan(
+                            text: '1小时前',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[400],
+                            ),
+                            children: [
+                              TextSpan(text: '  '),
+                              TextSpan(text: '¥0.24'),
+                              TextSpan(text: '\r\n'),
+                              TextSpan(
+                                text: '来自',
+                                children: [
+                                  TextSpan(
+                                    text: '大飞果果',
+                                    style: TextStyle(
+                                      color: Colors.blueGrey,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        widget.context
+                                            .forward("/site/personal");
+                                      },
+                                  ),
+                                  TextSpan(text: '的管道'),
+                                  TextSpan(
+                                    text: '水葫芦凉茶店',
+                                    style: TextStyle(
+                                      color: Colors.blueGrey,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        widget.context
+                                            .forward("/channel/viewer");
+                                      },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          softWrap: true,
+                        ),
                       ),
                       PopupMenuButton<String>(
                         icon: Icon(
@@ -581,6 +696,7 @@ void _buildPlatTab(List<Widget> panel, Channel widget, BuildContext context,
     ),
   );
   panel.add(header);
+  panel.add(nopass);
   panel.add(item);
   panel.add(item);
 }
