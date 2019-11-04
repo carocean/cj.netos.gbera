@@ -21,10 +21,10 @@ class _ReceivablesState extends State<Receivables> {
   bool has_result = false; //控制显示返回结果
   bool has_clear = true; //返回结果被清除
   Map result = {};
-
+  var qrcodeKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    var qrcodeKey = GlobalKey();
+
     var card_head = Container(
       padding: EdgeInsets.only(
         left: 20,

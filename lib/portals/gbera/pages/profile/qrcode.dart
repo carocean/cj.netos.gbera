@@ -4,12 +4,12 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 class Qrcode extends StatelessWidget {
   PageContext context;
+  var qrcodeKey = GlobalKey();
 
   Qrcode({this.context});
-
   @override
   Widget build(BuildContext context) {
-    var qrcodeKey = GlobalKey();
+
     var bb = this.context.parameters['back_button'];
     return Scaffold(
       appBar: AppBar(

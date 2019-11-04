@@ -43,6 +43,10 @@ class _ChannelViewerState extends State<ChannelViewer> {
                   title: '动态',
                   tipsText: '983条',
                 ),
+                _CardItem(
+                  title: '关连门户',
+                  tipsText: '百味果园;万达集团',
+                ),
               ],
             ),
           ),

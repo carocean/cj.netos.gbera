@@ -19,10 +19,10 @@ class _AvatarState extends State<Avatar> {
   File _image;
   var _background;
   File _crop_image;
-
+  var _cropKey = GlobalKey<CropState>();
   @override
   Widget build(BuildContext context) {
-    var _cropKey = GlobalKey<CropState>();
+
     var bb = widget.context.parameters['back_button'];
     return Scaffold(
       appBar: AppBar(

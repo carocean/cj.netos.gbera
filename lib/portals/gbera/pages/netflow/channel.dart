@@ -13,11 +13,12 @@ class Channel extends StatefulWidget {
   _ChannelState createState() => _ChannelState();
 }
 
-class _ChannelState extends State<Channel> with AutomaticKeepAliveClientMixin{
-
+class _ChannelState extends State<Channel> {
+  //一定不能放在build中，因为build每次页面跳入跳出均会执行，而flutter就是靠key来保持状态的，如果放到build中则页面无状态
+  var _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    var _scaffoldKey = GlobalKey<ScaffoldState>();
+
     var panel = <Widget>[];
     _buildPlatTab(panel, widget, context, _scaffoldKey);
     return Scaffold(
@@ -54,7 +55,7 @@ class _ChannelState extends State<Channel> with AutomaticKeepAliveClientMixin{
                         icon: Icons.font_download,
                         color: Colors.grey[500],
                         onPressed: () {
-                          widget.context.backward(result:{'type': 'text'});
+                          widget.context.backward(result: {'type': 'text'});
                         },
                       ),
                       DialogItem(
@@ -62,7 +63,7 @@ class _ChannelState extends State<Channel> with AutomaticKeepAliveClientMixin{
                         icon: Icons.photo_camera,
                         color: Colors.grey[500],
                         onPressed: () {
-                          widget.context.backward(result:{'type': 'take'});
+                          widget.context.backward(result: {'type': 'take'});
                         },
                       ),
                       DialogItem(
@@ -70,7 +71,7 @@ class _ChannelState extends State<Channel> with AutomaticKeepAliveClientMixin{
                         icon: Icons.image,
                         color: Colors.grey[500],
                         onPressed: () {
-                          widget.context.backward(result:{'type': 'select'});
+                          widget.context.backward(result: {'type': 'select'});
                         },
                       ),
                     ],
@@ -89,14 +90,10 @@ class _ChannelState extends State<Channel> with AutomaticKeepAliveClientMixin{
       ),
       body: CustomScrollView(
         shrinkWrap: true,
+//        controller: ScrollController(keepScrollOffset: true),
         slivers: panel,
       ),
     );
-  }
-
-  @override
-  bool get wantKeepAlive {
-    return true;
   }
 }
 
@@ -334,7 +331,7 @@ void _buildPlatTab(List<Widget> panel, Channel widget, BuildContext context,
                                   '/images/viewer',
                                   arguments: {
                                     'imgSrc':
-                                        'http://img1.huaihai.tv/material/news/img/2016/10/621c4edb69dcbdf755b0c46e1b09fa45.jpg',
+                                        'http://dingyue.nosdn.127.net/vvRjNcu9VBGgAevyEl5kQ0PO4ndOa4p3KJcED=yrAyXUP1529905129060compressflag.jpg',
                                     'text':
                                         '据英国天空新闻报道，埃塞克斯警方发表声明称，早些时候集装箱货车内发现的39具遗体应全为越南公民。声明称，警方正与越南政府联系，并“直接联系”一些越南遇难者家属。另据越通社11月1日报道，越南中部河静省公安部门已拘捕两名涉嫌组织介绍他人非法出境或在境外非法滞留的人员。',
                                   },
@@ -344,7 +341,7 @@ void _buildPlatTab(List<Widget> panel, Channel widget, BuildContext context,
                                 padding: EdgeInsets.all(5),
                                 child: Image(
                                   image: NetworkImage(
-                                      'http://img1.huaihai.tv/material/news/img/2016/10/621c4edb69dcbdf755b0c46e1b09fa45.jpg'),
+                                      'http://dingyue.nosdn.127.net/vvRjNcu9VBGgAevyEl5kQ0PO4ndOa4p3KJcED=yrAyXUP1529905129060compressflag.jpg'),
                                   width: (constraint.biggest.width / 2) - 20,
                                   fit: BoxFit.fitWidth,
                                 ),

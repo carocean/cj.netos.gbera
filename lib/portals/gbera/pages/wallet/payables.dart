@@ -13,9 +13,10 @@ class Payables extends StatefulWidget {
 }
 
 class _PayablesState extends State<Payables> {
+  var qrcodeKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    var qrcodeKey = GlobalKey();
+
 
     var pay_method = Container(
       padding: EdgeInsets.all(10),

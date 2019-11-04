@@ -53,6 +53,10 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                     title: '二维码',
                     tipsIconData: FontAwesomeIcons.qrcode,
                   ),
+                  _CardItem(
+                    title: '关连门户',
+                    tipsText: '百味湘菜馆',
+                  ),
                 ],
               ),
             ),
