@@ -96,7 +96,6 @@ Widget _listBuilder(BuildContext context, int index) {
               color: Colors.grey[500],
               fontSize: 12,
             ),
-
           ),
         ),
         Container(
@@ -243,108 +242,144 @@ class __HeaderState extends State<_Header> {
         right: 20,
       ),
       color: Colors.white,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
         children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(
-              right: 10,
-            ),
-            child: Image.network(
-              widget.face,
-              width: 50,
-              height: 50,
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(
-                    bottom: 10,
-                  ),
-                  child: Text(
-                    widget.title,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 20,
-                    ),
-                  ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(
+                  right: 10,
                 ),
-                Flexible(
-                  flex: 1,
-                  fit: FlexFit.loose,
-                  child: Text.rich(
-                    TextSpan(
-                      text: widget.introText,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
+                child: Image.network(
+                  widget.face,
+                  width: 50,
+                  height: 50,
                 ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+              ),
+              Expanded(
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Padding(
+                    Container(
                       padding: EdgeInsets.only(
-                        left: 5,
+                        bottom: 10,
                       ),
-                      child: FlatButton(
-                        onPressed: () {
-                          setState(() {
-                            widget.eyes = widget.eyes ? false : true;
-                          });
-                        },
-                        child: Text(
-                          widget.eyes ? '不再关注' : '关注',
-                          style: TextStyle(
-                            color: Colors.blueGrey,
-                          ),
+                      child: Text(
+                        widget.title,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20,
                         ),
                       ),
                     ),
-                    Container(
-                      alignment: Alignment.center,
-                      height: 16,
-                      padding: EdgeInsets.only(
-                        top: 2,
-                        bottom: 2,
-                      ),
-                      child: VerticalDivider(
-                        color: Colors.grey[400],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 5,
-                      ),
-                      child: FlatButton(
-                        onPressed: () {
-                          showModalBottomSheet(
-                              context: context,
-                              builder: (context) {
-                                return widget.context.part(
-                                    '/network/channel/serviceMenu', context);
-                              });
-                        },
-                        child: Text(
-                          '微应用',
+                    Flexible(
+                      flex: 1,
+                      fit: FlexFit.loose,
+                      child: Text.rich(
+                        TextSpan(
+                          text: widget.introText,
                           style: TextStyle(
-                            color: Colors.blueGrey,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(
+                  left: 5,
+                ),
+                child: FlatButton(
+                  onPressed: () {
+                    setState(() {
+                      widget.eyes = widget.eyes ? false : true;
+                    });
+                  },
+                  child: Text(
+                    widget.eyes ? '不再关注' : '关注',
+                    style: TextStyle(
+                      color: Colors.blueGrey,
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                alignment: Alignment.center,
+                height: 16,
+                padding: EdgeInsets.only(
+                  top: 2,
+                  bottom: 2,
+                ),
+                child: VerticalDivider(
+                  color: Colors.grey[400],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: 5,
+                ),
+                child: FlatButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return widget.context
+                              .part('/network/channel/serviceMenu', context);
+                        });
+                  },
+                  child: Text(
+                    '微应用',
+                    style: TextStyle(
+                      color: Colors.blueGrey,
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                alignment: Alignment.center,
+                height: 16,
+                padding: EdgeInsets.only(
+                  top: 2,
+                  bottom: 2,
+                ),
+                child: VerticalDivider(
+                  color: Colors.grey[400],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: 5,
+                ),
+                child: FlatButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return widget.context
+                              .part('/network/channel/serviceMenu', context);
+                        });
+                  },
+                  child: Text(
+                    '网流',
+                    style: TextStyle(
+                      color: Colors.blueGrey,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
