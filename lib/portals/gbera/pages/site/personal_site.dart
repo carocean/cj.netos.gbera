@@ -61,25 +61,6 @@ class _PersonalSiteState extends State<PersonalSite> {
             ),
           ),
           SliverToBoxAdapter(
-            child: _OperatorCard(
-              operators: [
-                _Operator(
-                  text: '发消息',
-                  iconData: Icons.chat,
-                ),
-                _Operator(
-                  text: '音视频通话',
-                  iconData: Icons.camera_enhance,
-                ),
-              ],
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              height: 10,
-            ),
-          ),
-          SliverToBoxAdapter(
             child: _Body(
               channelItems: [
                 _ChannelItemInfo(
@@ -117,6 +98,29 @@ class _PersonalSiteState extends State<PersonalSite> {
                     'http://b-ssl.duitang.com/uploads/item/201610/10/20161010221028_3Xzwi.jpeg',
                     'http://cdn.duitang.com/uploads/item/201606/14/20160614002619_WfLXj.jpeg',
                   ],
+                ),
+              ],
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              height: 10,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: _OperatorCard(
+              operators: [
+                _Operator(
+                  text: '发消息',
+                  iconData: Icons.chat,
+                ),
+                _Operator(
+                  text: '发拍照',
+                  iconData: Icons.camera_enhance,
+                ),
+                _Operator(
+                  text: '发图片',
+                  iconData: Icons.picture_in_picture,
                 ),
               ],
             ),
