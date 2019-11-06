@@ -89,9 +89,12 @@ class _NetflowState extends State<Netflow> {
                         size: 15,
                       ),
                     ),
-                    Text('新建管道',style: TextStyle(
-                      fontSize: 14,
-                    ),),
+                    Text(
+                      '新建管道',
+                      style: TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -113,9 +116,12 @@ class _NetflowState extends State<Netflow> {
                         size: 15,
                       ),
                     ),
-                    Text('扫码以连接管道',style: TextStyle(
-                      fontSize: 14,
-                    ),),
+                    Text(
+                      '扫码以连接管道',
+                      style: TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -152,8 +158,120 @@ class _NetflowState extends State<Netflow> {
             ? Colors.transparent
             : null,
       ),
+      SliverToBoxAdapter(
+        child: Container(
+          padding: EdgeInsets.only(
+            left: 10,
+            bottom: 5,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                '管道',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      SliverToBoxAdapter(
+        child: Container(
+          margin: EdgeInsets.only(
+            bottom: 15,
+          ),
+          color: Colors.white,
+          child: Column(
+            children: [
+              _ChannelItem(
+                subtitle: '这程序写的真不错啊，好爽这程序写的真不错啊，好爽',
+                title: '公共',
+                imgSrc: Icon(
+                  FontAwesomeIcons.ad,
+                  color: Colors.grey[500],
+                  size: 40,
+                ),
+                time: '22:14',
+                who: 'carocean: ',
+                openAvatar: () {
+                  widget.context.forward(
+                    '/netflow/channel/avatar',
+                  );
+                },
+                openChannel: () {
+                  widget.context.forward(
+                    '/netflow/channel',
+                    arguments: {'channel-name': '公共'},
+                  );
+                },
+              ),
+              Divider(
+                height: 1,
+                indent: 60,
+              ),
+              _ChannelItem(
+                title: '朋友圈',
+                subtitle: '当你学会 如何使用 后，你可以用 <i> 标签把 Font Awesome 图标放在任意位置。',
+                imgSrc: Icon(
+                  FontAwesomeIcons.addressBook,
+                  color: Colors.grey[500],
+                  size: 40,
+                ),
+                time: '6:27',
+                who: 'bill: ',
+                openAvatar: () {
+                  widget.context.forward(
+                    '/netflow/channel/avatar',
+                  );
+                },
+                openChannel: () {
+                  widget.context.forward(
+                    '/netflow/channel',
+                    arguments: {'channel-name': '朋友圈'},
+                  );
+                },
+              ),
+              Divider(
+                height: 1,
+                indent: 60,
+              ),
+              _ChannelItem(
+                title: '地推',
+                subtitle: '问TextField一个问题【flutter吧】_百度贴吧',
+                imgSrc: Icon(
+                  FontAwesomeIcons.random,
+                  color: Colors.grey[500],
+                  size: 40,
+                ),
+                time: '6:27',
+                who: '会飞的鸟: ',
+                openAvatar: () {
+                  widget.context.forward(
+                    '/netflow/channel/avatar',
+                  );
+                },
+                openChannel: () {
+                  widget.context.forward(
+                    '/netflow/channel',
+                    arguments: {'channel-name': '地推'},
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      SliverList(
+        delegate: SliverChildListDelegate.fixed(
+          _pipelineContentItemBuilder(widget),
+        ),
+      ),
     ];
-    _buildPipelineTab(panel, this);
+//    _buildPipelineTab(panel, this);
     return CustomScrollView(
       controller: use_wallpapper ? _controller : null,
       slivers: panel,
@@ -161,42 +279,99 @@ class _NetflowState extends State<Netflow> {
   }
 }
 
-void _buildPipelineTab(List<Widget> panel, _NetflowState state) {
-  panel.add(SliverToBoxAdapter(
-    child: Container(
-      padding: EdgeInsets.only(
-        left: 10,
-        bottom: 5,
+List<Widget> _pipelineContentItemBuilder(widget) {
+  return [
+    _ChannelItem2(
+      title: '欣欣',
+      subtitle: '明天你能过来吗？我们谈谈',
+      imgSrc: Image.network(
+        'http://img.go007.com/2017/01/10/3b02d2dbdc8c4882_0.jpg',
+        width: 40,
+        height: 40,
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(
-            '管道',
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.black,
-            ),
-          ),
-        ],
-      ),
+      time: '7:57',
+      who: '她说: ',
+      openAvatar: () {
+        widget.context.forward(
+          '/netflow/channel/avatar',
+        );
+      },
+      openChannel: () {
+        widget.context.forward(
+          '/netflow/channel',
+          arguments: {'channel-name': '欣欣'},
+        );
+      },
     ),
-  ));
-  var subItem = <Widget>[];
-  panel.add(SliverToBoxAdapter(
-    child: Container(
-      margin: EdgeInsets.only(
-        bottom: 15,
+    _ChannelItem2(
+      title: '东峻广场',
+      subtitle: '十九届四中全会：递补马正武、马伟明为中央委员',
+      imgSrc: Icon(
+        Icons.image,
+        color: Colors.grey[500],
+        size: 40,
       ),
-      color: Colors.white,
-      child: Column(
-        children: subItem,
-      ),
+      time: '12:32',
+      who: 'wangx: ',
+      openAvatar: () {
+        widget.context.forward(
+          '/netflow/channel/avatar',
+        );
+      },
+      openChannel: () {
+        widget.context.forward(
+          '/netflow/channel',
+          arguments: {'channel-name': '东峻广场'},
+        );
+      },
     ),
-  ));
-  subItem.add(
-    Container(
+    _ChannelItem2(
+      title: '青年高中',
+      subtitle: '明年高校毕业生预计达874万人 同比增40万',
+      imgSrc: Icon(
+        Icons.image,
+        color: Colors.grey[500],
+        size: 40,
+      ),
+      time: '14:22',
+      who: '教育部: ',
+      openAvatar: () {
+        widget.context.forward(
+          '/netflow/channel/avatar',
+        );
+      },
+      openChannel: () {
+        widget.context.forward(
+          '/netflow/channel',
+          arguments: {'channel-name': '青年高中'},
+        );
+      },
+    ),
+  ];
+}
+
+class _ChannelItem extends StatelessWidget {
+  Widget imgSrc;
+  String title;
+  String who;
+  String subtitle;
+  String time;
+  var openAvatar;
+  var openChannel;
+
+  _ChannelItem({
+    this.imgSrc,
+    this.title,
+    this.who,
+    this.subtitle,
+    this.time,
+    this.openAvatar,
+    this.openChannel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
       margin: EdgeInsets.only(
         bottom: 15,
         left: 10,
@@ -212,31 +387,18 @@ void _buildPipelineTab(List<Widget> panel, _NetflowState state) {
             ),
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: () {
-                state.widget.context.forward(
-                  '/netflow/channel/avatar',
-                );
-              },
+              onTap: openAvatar,
               child: SizedBox(
                 width: 40,
                 height: 40,
-                child: Icon(
-                  FontAwesomeIcons.ad,
-                  color: Colors.grey[500],
-                  size: 40,
-                ),
+                child: imgSrc,
               ),
             ),
           ),
           Expanded(
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: () {
-                state.widget.context.forward(
-                  '/netflow/channel',
-                  arguments: {'channel-name': '公共'},
-                );
-              },
+              onTap: openChannel,
               child: Column(
                 children: <Widget>[
                   Padding(
@@ -248,14 +410,14 @@ void _buildPipelineTab(List<Widget> panel, _NetflowState state) {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
-                          '公共',
+                          title,
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
                             fontSize: 16,
                           ),
                         ),
                         Text(
-                          '22:14',
+                          time,
                           style: TextStyle(
                             color: Colors.grey[400],
                           ),
@@ -271,7 +433,7 @@ void _buildPipelineTab(List<Widget> panel, _NetflowState state) {
                           right: 5,
                         ),
                         child: Text(
-                          'cj:',
+                          who,
                           style: TextStyle(
                             color: Colors.blueGrey,
                           ),
@@ -279,7 +441,7 @@ void _buildPipelineTab(List<Widget> panel, _NetflowState state) {
                       ),
                       Expanded(
                         child: Text(
-                          '这程序写的真不错啊，好爽这程序写的真不错啊，好爽',
+                          this.subtitle,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                           softWrap: true,
@@ -296,219 +458,32 @@ void _buildPipelineTab(List<Widget> panel, _NetflowState state) {
           ),
         ],
       ),
-    ),
-  );
-  subItem.add(
-    Divider(
-      height: 1,
-      indent: 60,
-    ),
-  );
-  subItem.add(
-    Container(
-      margin: EdgeInsets.only(
-        bottom: 15,
-        left: 10,
-        right: 10,
-        top: 15,
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(
-              right: 10,
-            ),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {},
-              child: SizedBox(
-                width: 40,
-                height: 40,
-                child: Icon(
-                  FontAwesomeIcons.addressBook,
-                  color: Colors.grey[500],
-                  size: 40,
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                    bottom: 5,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        '老友',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16,
-                        ),
-                      ),
-                      Text(
-                        '2:56',
-                        style: TextStyle(
-                          color: Colors.grey[400],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(
-                        right: 5,
-                      ),
-                      child: Text(
-                        'bill:',
-                        style: TextStyle(
-                          color: Colors.blueGrey,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        '当你学会 如何使用 后，你可以用 <i> 标签把 Font Awesome 图标放在任意位置。',
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        softWrap: true,
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-  subItem.add(
-    Divider(
-      height: 1,
-      indent: 60,
-    ),
-  );
-  subItem.add(
-    Card(
-      shape: Border(),
-      elevation: 0.0,
-      margin: EdgeInsets.only(
-        bottom: 15,
-        left: 10,
-        right: 10,
-        top: 15,
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(
-              right: 10,
-            ),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {},
-              child: SizedBox(
-                child: Icon(
-                  FontAwesomeIcons.random,
-                  color: Colors.grey[500],
-                  size: 30,
-                ),
-                width: 40,
-                height: 40,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                    bottom: 5,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        '地推',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16,
-                        ),
-                      ),
-                      Text(
-                        '2:56',
-                        style: TextStyle(
-                          color: Colors.grey[400],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(
-                        right: 5,
-                      ),
-                      child: Text(
-                        '会飞的鸟:',
-                        style: TextStyle(
-                          color: Colors.blueGrey,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        '问TextField一个问题【flutter吧】_百度贴吧',
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        softWrap: true,
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-  panel.add(
-    SliverList(
-      delegate: SliverChildListDelegate.fixed(
-        _pipelineContentItemBuilder(),
-      ),
-    ),
-  );
+    );
+  }
 }
 
-List<Widget> _pipelineContentItemBuilder() {
-  return [
-    Container(
+class _ChannelItem2 extends StatelessWidget {
+  Widget imgSrc;
+  String title;
+  String who;
+  String subtitle;
+  String time;
+  var openAvatar;
+  var openChannel;
+
+  _ChannelItem2({
+    this.imgSrc,
+    this.title,
+    this.who,
+    this.subtitle,
+    this.time,
+    this.openAvatar,
+    this.openChannel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
       decoration: new BoxDecoration(
         color: Colors.white,
       ),
@@ -533,177 +508,73 @@ List<Widget> _pipelineContentItemBuilder() {
                   ),
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
-                    onTap: () {},
+                    onTap: this.openAvatar,
                     child: SizedBox(
                       width: 40,
                       height: 40,
-                      child: Icon(
-                        Icons.image,
-                        color: Colors.grey[500],
-                        size: 40,
-                      ),
+                      child: imgSrc,
                     ),
                   ),
                 ),
                 Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                          bottom: 5,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              '东峻广场',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                              ),
-                            ),
-                            Text(
-                              '2:56',
-                              style: TextStyle(
-                                color: Colors.grey[400],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                              right: 5,
-                            ),
-                            child: Text(
-                              'wangx:',
-                              style: TextStyle(
-                                color: Colors.blueGrey,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              '十九届四中全会：递补马正武、马伟明为中央委员。',
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              softWrap: true,
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Divider(
-            height: 1,
-            indent: 60,
-          ),
-        ],
-      ),
-    ),
-    Container(
-      decoration: new BoxDecoration(
-        color: Colors.white,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(
-              bottom: 15,
-              left: 10,
-              right: 10,
-              top: 15,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: 10,
-                  ),
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
-                    onTap: () {},
-                    child: SizedBox(
-                      width: 40,
-                      height: 40,
-                      child: Icon(
-                        Icons.image,
-                        color: Colors.grey[500],
-                        size: 40,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                          bottom: 5,
+                    onTap: openChannel,
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 5,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                this.title,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Text(
+                                this.time,
+                                style: TextStyle(
+                                  color: Colors.grey[400],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: <Widget>[
-                            Text(
-                              '广东省政府',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                this.who,
+                                style: TextStyle(
+                                  color: Colors.blueGrey,
+                                ),
                               ),
                             ),
-                            Text(
-                              '2:56',
-                              style: TextStyle(
-                                color: Colors.grey[400],
+                            Expanded(
+                              child: Text(
+                                this.subtitle,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                softWrap: true,
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                ),
                               ),
                             ),
                           ],
                         ),
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                              right: 5,
-                            ),
-                            child: Text(
-                              '青年团:',
-                              style: TextStyle(
-                                color: Colors.blueGrey,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              '中国学者遭申根26国禁入境 曾拒与美情报部门合作',
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              softWrap: true,
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -715,214 +586,6 @@ List<Widget> _pipelineContentItemBuilder() {
           ),
         ],
       ),
-    ),
-    Container(
-      decoration: new BoxDecoration(
-        color: Colors.white,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(
-              bottom: 15,
-              left: 10,
-              right: 10,
-              top: 15,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: 10,
-                  ),
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {},
-                    child: SizedBox(
-                      width: 40,
-                      height: 40,
-                      child: Icon(
-                        Icons.image,
-                        color: Colors.grey[500],
-                        size: 40,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                          bottom: 5,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              '青年高中',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                              ),
-                            ),
-                            Text(
-                              '2:56',
-                              style: TextStyle(
-                                color: Colors.grey[400],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                              right: 5,
-                            ),
-                            child: Text(
-                              '教育部：',
-                              style: TextStyle(
-                                color: Colors.blueGrey,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              '明年高校毕业生预计达874万人 同比增40万',
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              softWrap: true,
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Divider(
-            height: 1,
-            indent: 60,
-          ),
-        ],
-      ),
-    ),
-    Container(
-      decoration: new BoxDecoration(
-        color: Colors.white,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(
-              bottom: 15,
-              left: 10,
-              right: 10,
-              top: 15,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: 10,
-                  ),
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {},
-                    child: SizedBox(
-                      width: 40,
-                      height: 40,
-                      child: Image.network(
-                        'http://img.go007.com/2017/01/10/3b02d2dbdc8c4882_0.jpg',
-                        width: 40,
-                        height: 40,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                          bottom: 5,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              '欣欣',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                              ),
-                            ),
-                            Text(
-                              '2:56',
-                              style: TextStyle(
-                                color: Colors.grey[400],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                              right: 5,
-                            ),
-                            child: Text(
-                              '她说：',
-                              style: TextStyle(
-                                color: Colors.blueGrey,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              '明天你能过来吗？我们谈谈',
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              softWrap: true,
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Divider(
-            height: 1,
-            indent: 60,
-          ),
-        ],
-      ),
-    ),
-  ];
+    );
+  }
 }
