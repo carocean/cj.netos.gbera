@@ -1,8 +1,8 @@
 import 'dart:ui' as ui;
 
-///系统出错页
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
+///系统出错页
 
 class OpenportsException implements Exception {
   String message;
@@ -89,12 +89,15 @@ class RenderErrorBox extends RenderBox {
         // see the paragraph.dart file and the RenderParagraph class.
         final ui.ParagraphBuilder builder = ui.ParagraphBuilder(paragraphStyle);
         builder.pushStyle(textStyle);
-        String _kLine = '\n\n────────────────────\n\n';
-        var arr = message.split('\r\n');
-        builder.addText('NetOS系统错误：$_kLine');
-        for (var msg in arr) {
-          builder.addText('$msg$_kLine');
-        }
+//        String _kLine = '\n\n────────────────────\n\n';
+//        var arr = message.split('\r\n');
+        builder.addText('NetOS系统错误：\r\n');
+//        for (var msg in arr) {
+//          var text='$msg$_kLine';
+//          builder.addText(text);
+//        }
+        builder.addText(message);
+
         _paragraph = builder.build();
       }
     } catch (e) {
@@ -143,7 +146,7 @@ class RenderErrorBox extends RenderBox {
   static ui.ParagraphStyle paragraphStyle = ui.ParagraphStyle(
     height: 1.0,
     ellipsis: '...',
-    maxLines: 4,
+    maxLines: 8,
   );
 
   @override

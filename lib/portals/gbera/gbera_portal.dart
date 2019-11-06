@@ -45,6 +45,7 @@ import 'package:gbera/portals/gbera/pages/profile/qrcode.dart';
 import 'package:gbera/portals/gbera/pages/site/insite_request.dart';
 import 'package:gbera/portals/gbera/pages/site/marchant_site.dart';
 import 'package:gbera/portals/gbera/pages/site/personal_site.dart';
+import 'package:gbera/portals/gbera/pages/site/site_channelsite.dart';
 import 'package:gbera/portals/gbera/pages/system/about.dart';
 import 'package:gbera/portals/gbera/pages/system/contract.dart';
 import 'package:gbera/portals/gbera/pages/system/themes.dart';
@@ -318,6 +319,17 @@ class GberaPortal {
           icon: Icons.art_track,
           url: '/network/channel/serviceMenu',
           buildPage: (PageContext pageContext) => ServiceMenu(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '微站的绑定管道',
+          subtitle: '',
+          desc: '',
+          icon: Icons.art_track,
+          url: '/network/channel/site/output',
+          buildPage: (PageContext pageContext) =>
+              SiteChannelBinder(
             context: pageContext,
           ),
         ),

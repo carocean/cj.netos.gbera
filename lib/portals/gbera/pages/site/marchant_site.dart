@@ -15,6 +15,28 @@ class MarchantSite extends StatefulWidget {
 }
 
 class _MarchantSiteState extends State<MarchantSite> {
+  _MarchantSiteState()
+      : _controller = ScrollController(initialScrollOffset: 0.0),
+        showOnAppbar = false {
+    _controller.addListener(() {
+      if (_controller.offset >= 40) {
+        setState(() {
+          showOnAppbar = true;
+        });
+        return;
+      }
+      if (_controller.offset < 40) {
+        setState(() {
+          showOnAppbar = false;
+        });
+        return;
+      }
+    });
+  }
+
+  bool showOnAppbar;
+  var _controller;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,6 +44,8 @@ class _MarchantSiteState extends State<MarchantSite> {
         elevation: 0,
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
+        centerTitle: true,
+        title: showOnAppbar ? Text('广东邮政局') : Text(''),
         leading: IconButton(
           onPressed: () {
             widget.context.backward();
@@ -47,6 +71,7 @@ class _MarchantSiteState extends State<MarchantSite> {
         ],
       ),
       body: CustomScrollView(
+        controller: _controller,
         shrinkWrap: true,
         slivers: <Widget>[
           SliverToBoxAdapter(
@@ -368,8 +393,10 @@ class __HeaderState extends State<_Header> {
                         context: context,
                         builder: (context) {
                           return widget.context
-                              .part('/network/channel/serviceMenu', context);
-                        });
+                              .part('/network/channel/site/output', context);
+                        }).then((value) {
+                          widget.context.forward('/channel/viewer');
+                    });
                   },
                   child: Text(
                     '网流',

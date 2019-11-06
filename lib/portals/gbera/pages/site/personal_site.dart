@@ -61,6 +61,29 @@ class _PersonalSiteState extends State<PersonalSite> {
             ),
           ),
           SliverToBoxAdapter(
+            child: _OperatorCard(
+              operators: [
+                _Operator(
+                  text: '发消息',
+                  iconData: Icons.chat,
+                ),
+                _Operator(
+                  text: '发拍照',
+                  iconData: Icons.camera_enhance,
+                ),
+                _Operator(
+                  text: '发图片',
+                  iconData: Icons.picture_in_picture,
+                ),
+              ],
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              height: 10,
+            ),
+          ),
+          SliverToBoxAdapter(
             child: _Body(
               channelItems: [
                 _ChannelItemInfo(
@@ -102,29 +125,6 @@ class _PersonalSiteState extends State<PersonalSite> {
               ],
             ),
           ),
-          SliverToBoxAdapter(
-            child: Container(
-              height: 10,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: _OperatorCard(
-              operators: [
-                _Operator(
-                  text: '发消息',
-                  iconData: Icons.chat,
-                ),
-                _Operator(
-                  text: '发拍照',
-                  iconData: Icons.camera_enhance,
-                ),
-                _Operator(
-                  text: '发图片',
-                  iconData: Icons.picture_in_picture,
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
@@ -155,7 +155,9 @@ class __OperatorCardState extends State<_OperatorCard> {
     return Container(
       padding: EdgeInsets.only(),
       color: Colors.white,
-      child: Column(
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: widget.operators.map((value) {
           var orignal = Container(
             padding: EdgeInsets.only(
