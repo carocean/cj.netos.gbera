@@ -261,6 +261,32 @@ class _NetflowState extends State<Netflow> {
                   );
                 },
               ),
+              Divider(
+                height: 1,
+                indent: 60,
+              ),
+              _ChannelItem(
+                title: '微站',
+                subtitle: 'found in the LICENSE file.',
+                imgSrc: Icon(
+                  FontAwesomeIcons.box,
+                  color: Colors.grey[500],
+                  size: 40,
+                ),
+                time: '6:27',
+                who: '中国邮政: ',
+                openAvatar: () {
+                  widget.context.forward(
+                    '/netflow/channel/avatar',
+                  );
+                },
+                openChannel: () {
+                  widget.context.forward(
+                    '/netflow/channel',
+                    arguments: {'channel-name': '微站'},
+                  );
+                },
+              ),
             ],
           ),
         ),

@@ -44,6 +44,7 @@ import 'package:gbera/portals/gbera/pages/profile/more.dart';
 import 'package:gbera/portals/gbera/pages/profile/qrcode.dart';
 import 'package:gbera/portals/gbera/pages/site/insite_request.dart';
 import 'package:gbera/portals/gbera/pages/site/marchant_site.dart';
+import 'package:gbera/portals/gbera/pages/site/micro_app.dart';
 import 'package:gbera/portals/gbera/pages/site/personal_site.dart';
 import 'package:gbera/portals/gbera/pages/site/site_channelsite.dart';
 import 'package:gbera/portals/gbera/pages/system/about.dart';
@@ -332,6 +333,17 @@ class GberaPortal {
               SiteChannelBinder(
             context: pageContext,
           ),
+        ),
+        Page(
+          title: '微应用',
+          subtitle: '',
+          desc: '',
+          icon: Icons.art_track,
+          url: '/micro/app',
+          buildPage: (PageContext pageContext) =>
+              MicroApp(
+                context: pageContext,
+              ),
         ),
         Page(
           title: '商户站点',

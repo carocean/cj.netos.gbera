@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Channel extends StatefulWidget {
   PageContext context;
@@ -44,7 +45,7 @@ class _ChannelState extends State<Channel> {
                 size: 20,
               ),
               onPressed: () {
-                showDialog<Map<String, String>>(
+                showDialog<Map<String, Object>>(
                   context: context,
                   builder: (BuildContext context) => SimpleDialog(
                     title: Text('请选择'),
@@ -62,25 +63,29 @@ class _ChannelState extends State<Channel> {
                         text: '拍摄',
                         icon: Icons.photo_camera,
                         color: Colors.grey[500],
-                        onPressed: () {
-                          widget.context.backward(result: {'type': 'take'});
+                        onPressed: () async {
+                          var image = await ImagePicker.pickImage(
+                              source: ImageSource.camera);
+                          widget.context.backward(result: {'type': 'take','image':image});
                         },
                       ),
                       DialogItem(
                         text: '从相册选择',
                         icon: Icons.image,
                         color: Colors.grey[500],
-                        onPressed: () {
-                          widget.context.backward(result: {'type': 'select'});
+                        onPressed: () async {
+                          var image = await ImagePicker.pickImage(
+                              source: ImageSource.gallery);
+                          widget.context.backward(result: {'type': 'select','image':image});
                         },
                       ),
                     ],
                   ),
-                ).then<void>((Map<String, String> value) {
+                ).then<void>((value) {
                   // The value passed to Navigator.pop() or null.
                   if (value != null) {
                     widget.context.forward('/netflow/channel/publish_article',
-                        arguments: {'type': value['type']});
+                        arguments: value);
                   }
                 });
               },
@@ -273,7 +278,10 @@ void _buildPlatTab(List<Widget> panel, Channel widget, BuildContext context,
                                 builder: (context) {
                                   return widget.context.part(
                                       '/network/channel/serviceMenu', context);
-                                });
+                                }).then((value){
+                              print('-----$value');
+                              widget.context.forward('/micro/app',arguments: value);
+                            });
                           },
                           icon: Icon(
                             Icons.art_track,

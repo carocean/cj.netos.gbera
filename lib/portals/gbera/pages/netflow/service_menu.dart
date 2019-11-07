@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 ///服务清单
 class ServiceMenu extends StatelessWidget {
@@ -15,16 +16,25 @@ class ServiceMenu extends StatelessWidget {
       iconUrl:
           'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1410704196,754504588&fm=26&gp=0.jpg',
       title: '费用｜积分',
+      onTap: (){
+        this.context.backward(result: {'selected':'费用'});
+      },
     ));
     services_page1.add(ThirdPartyService(
       iconUrl:
           'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3461514539,795423572&fm=26&gp=0.jpg',
       title: '在用产品',
+      onTap: (){
+        this.context.backward(result: {'selected':'在用产品'});
+      },
     ));
     services_page1.add(ThirdPartyService(
       iconUrl:
           'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3399756601,3876810634&fm=26&gp=0.jpg',
       title: '流量｜通话',
+      onTap: (){
+        this.context.backward(result: {'selected':'流量｜通话'});
+      },
     ));
     services_page1.add(ThirdPartyService(
       iconUrl:
@@ -49,17 +59,17 @@ class ServiceMenu extends StatelessWidget {
     var services_page2 = <ThirdPartyService>[];
     services_page2.add(ThirdPartyService(
       iconUrl:
-      'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=144715234,836389000&fm=26&gp=0.jpg',
+          'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=144715234,836389000&fm=26&gp=0.jpg',
       title: '服务大厅',
     ));
     services_page2.add(ThirdPartyService(
       iconUrl:
-      'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=108446868,1406702903&fm=26&gp=0.jpg',
+          'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=108446868,1406702903&fm=26&gp=0.jpg',
       title: '优惠活动',
     ));
     services_page2.add(ThirdPartyService(
       iconUrl:
-      'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=4035533329,1566894074&fm=26&gp=0.jpg',
+          'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=4035533329,1566894074&fm=26&gp=0.jpg',
       title: '在线客服',
     ));
     var pageViews = <_PageView>[
@@ -131,8 +141,8 @@ class ServiceMenu extends StatelessWidget {
 class ThirdPartyService {
   String iconUrl;
   String title;
-
-  ThirdPartyService({this.iconUrl, this.title});
+  Function() onTap;
+  ThirdPartyService({this.iconUrl, this.title,this.onTap});
 }
 
 class _ServiceWidget extends StatelessWidget {
@@ -142,33 +152,37 @@ class _ServiceWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var item = Container(
-      padding: EdgeInsets.all(20),
-      width: 100,
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: 5,
+    var item = GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: service.onTap,
+      child: Container(
+        padding: EdgeInsets.all(20),
+        width: 100,
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(
+                bottom: 5,
+              ),
+              child: Image.network(
+                service.iconUrl,
+                height: 40,
+                width: 40,
+                fit: BoxFit.cover,
+              ),
             ),
-            child: Image.network(
-              service.iconUrl,
-              height: 40,
-              width: 40,
-              fit: BoxFit.cover,
+            Text(
+              service.title,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+              ),
+              softWrap: true,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-          ),
-          Text(
-            service.title,
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-            ),
-            softWrap: true,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+          ],
+        ),
       ),
     );
     return item;
@@ -232,3 +246,4 @@ class _PageSelector extends StatelessWidget {
     );
   }
 }
+

@@ -362,7 +362,10 @@ class __HeaderState extends State<_Header> {
                         builder: (context) {
                           return widget.context
                               .part('/network/channel/serviceMenu', context);
-                        });
+                        }).then((value){
+                          print('-----$value');
+                          widget.context.forward('/micro/app',arguments: value);
+                    });
                   },
                   child: Text(
                     '微应用',
