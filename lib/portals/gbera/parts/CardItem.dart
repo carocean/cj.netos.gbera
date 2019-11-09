@@ -65,21 +65,27 @@ class CardItemState extends State<CardItem> {
                     ),
                     child: widget.leading,
                   ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  right: 10,
-                ),
-                child: widget.subtitle == null
-                    ? Text(
-                        widget.title,
-                        style: TextStyle(
-                          color: widget.titleColor,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 15,
-                        ),
-                      )
-                    : Column(
+            widget.subtitle == null
+                ? Container(
+                    padding: EdgeInsets.only(
+                      right: 10,
+                    ),
+                    child: Text(
+                      widget.title,
+                      style: TextStyle(
+                        color: widget.titleColor,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                      ),
+                    ),
+                  )
+                : Flexible(
+                    fit: FlexFit.tight,
+                    child: Container(
+                      padding: EdgeInsets.only(
+                        right: 10,
+                      ),
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
@@ -102,9 +108,10 @@ class CardItemState extends State<CardItem> {
                           ),
                         ],
                       ),
-              ),
-            ),
-            Expanded(
+                    ),
+                  ),
+            Flexible(
+              fit: FlexFit.loose,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[

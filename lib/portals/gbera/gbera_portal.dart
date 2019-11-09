@@ -25,6 +25,9 @@ import 'package:gbera/portals/gbera/pages/netflow.dart';
 import 'package:gbera/portals/gbera/pages/netflow/avatar.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_gateway.dart';
+import 'package:gbera/portals/gbera/pages/netflow/channel_popularize.dart';
+import 'package:gbera/portals/gbera/pages/netflow/channel_qrcode.dart';
+import 'package:gbera/portals/gbera/pages/netflow/channel_rename.dart';
 import 'package:gbera/portals/gbera/pages/netflow/create_channel.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publish_article.dart';
 import 'package:gbera/portals/gbera/pages/netflow/scan_channel.dart';
@@ -264,6 +267,33 @@ class GberaPortal {
           ),
         ),
         Page(
+          title: '重命名',
+          subtitle: '',
+          icon: GalleryIcons.shrine,
+          url: '/netflow/channel/rename',
+          buildPage: (PageContext pageContext) => RenameChannel(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '二维码',
+          subtitle: '',
+          icon: GalleryIcons.shrine,
+          url: '/netflow/channel/qrcode',
+          buildPage: (PageContext pageContext) => QrcodeChannel(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '推广',
+          subtitle: '',
+          icon: GalleryIcons.shrine,
+          url: '/netflow/channel/popularize',
+          buildPage: (PageContext pageContext) => PopularizeChannel(
+            context: pageContext,
+          ),
+        ),
+        Page(
           title: '新建管道',
           subtitle: '',
           icon: Icons.add,
@@ -432,7 +462,7 @@ class GberaPortal {
           ),
         ),
         Page(
-          title: '发现',
+          title: '实时发现',
           subtitle: '',
           icon: GalleryIcons.shrine,
           url: '/geosphere/discovery',

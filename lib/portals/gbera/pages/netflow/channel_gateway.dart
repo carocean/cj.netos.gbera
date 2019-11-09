@@ -48,14 +48,23 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                   _CardItem(
                     title: '名称',
                     tipsText: '${widget.title}',
+                    onItemTap: () {
+                      widget.context.forward('/netflow/channel/rename');
+                    },
                   ),
                   _CardItem(
                     title: '二维码',
                     tipsIconData: FontAwesomeIcons.qrcode,
+                    onItemTap: () {
+                      widget.context.forward('/netflow/channel/qrcode');
+                    },
                   ),
                   _CardItem(
                     title: '微站',
                     tipsText: '百味湘菜馆',
+                    onItemTap: () {
+                      widget.context.forward('/site/marchant');
+                    },
                   ),
                 ],
               ),
@@ -72,10 +81,16 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                   _CardItem(
                     title: '推广',
                     tipsText: '让别人帮您推广本管道，请充钱',
+                    onItemTap: () {
+                      widget.context.forward('/netflow/channel/popularize');
+                    },
                   ),
                   _CardItem(
                     title: '访客',
                     tipsText: '2910.324万人',
+                    onItemTap: () {
+                      widget.context.forward('/netflow/channel/visitors');
+                    },
                   ),
                 ],
               ),
@@ -92,9 +107,15 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                   _CardItem(
                     title: '管道',
                     tipsText: '未审批135个|共1210个',
+                    onItemTap: () {
+                      widget.context.forward('/netflow/channel/insite');
+                    },
                   ),
                   _CardItem(
                     title: '网关',
+                    onItemTap: () {
+                      widget.context.forward('/netflow/channel/insite/gateway');
+                    },
                   ),
                 ],
               ),
@@ -112,13 +133,21 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                     title: '地圈',
                     tipsText: '是否充许本管道的信息推送到我的地圈',
                     operator: _MySwitch(),
+                    onItemTap: () {
+                    },
                   ),
                   _CardItem(
                     title: '管道',
                     tipsText: '未审批86个|共283万个',
+                    onItemTap: () {
+                      widget.context.forward('/netflow/channel/insite');
+                    },
                   ),
                   _CardItem(
                     title: '网关',
+                    onItemTap: () {
+                      widget.context.forward('/netflow/channel/outsite/gateway');
+                    },
                   ),
                 ],
               ),
@@ -161,12 +190,14 @@ class _CardItem extends StatefulWidget {
   IconData tipsIconData;
   String tipsText;
   Widget operator;
+  Function() onItemTap;
 
   _CardItem({
     this.title,
     this.tipsText = '',
     this.tipsIconData,
     this.operator,
+    this.onItemTap,
   }) {
     if (operator == null) {
       this.operator = Icon(
@@ -184,73 +215,77 @@ class _CardItem extends StatefulWidget {
 class _CardItemState extends State<_CardItem> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-        top: 15,
-        bottom: 15,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(
-              right: 10,
-            ),
-            child: Text(
-              widget.title,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 15,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: this.widget.onItemTap,
+      child: Container(
+        padding: EdgeInsets.only(
+          top: 15,
+          bottom: 15,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(
+                right: 10,
+              ),
+              child: Text(
+                widget.title,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: StringUtil.isEmpty(widget.tipsText)
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: StringUtil.isEmpty(widget.tipsText)
+                        ? Container(
+                            width: 0,
+                            height: 0,
+                          )
+                        : Container(
+                            alignment: Alignment.centerRight,
+                            padding: EdgeInsets.only(left: 5),
+                            child: Text(
+                              widget.tipsText,
+                              softWrap: true,
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 12,
+                              ),
+                              textDirection: TextDirection.rtl,
+                            ),
+                          ),
+                  ),
+                  widget.tipsIconData == null
                       ? Container(
                           width: 0,
                           height: 0,
                         )
-                      : Container(
-                          alignment: Alignment.centerRight,
+                      : Padding(
                           padding: EdgeInsets.only(left: 5),
-                          child: Text(
-                            widget.tipsText,
-                            softWrap: true,
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 12,
-                            ),
-                            textDirection: TextDirection.rtl,
+                          child: Icon(
+                            widget.tipsIconData,
+                            size: 12,
+                            color: Colors.grey[500],
                           ),
                         ),
-                ),
-                widget.tipsIconData == null
-                    ? Container(
-                        width: 0,
-                        height: 0,
-                      )
-                    : Padding(
-                        padding: EdgeInsets.only(left: 5),
-                        child: Icon(
-                          widget.tipsIconData,
-                          size: 12,
-                          color: Colors.grey[500],
-                        ),
-                      ),
-                Padding(
-                  padding: EdgeInsets.only(left: 5),
-                  child: widget.operator,
-                ),
-              ],
+                  Padding(
+                    padding: EdgeInsets.only(left: 5),
+                    child: widget.operator,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

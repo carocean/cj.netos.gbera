@@ -72,31 +72,38 @@ class _GeosphereState extends State<Geosphere> {
           ],
         ),
         SliverToBoxAdapter(
-          child: _GeoRegion(widget.context),
+          child: _GeoRegion(
+            context: widget.context,
+            onTapFountain: () {
+              widget.context.forward('/geosphere/fountain');
+            },
+            onTapYuanbao: () {
+              widget.context.forward('/geosphere/yuanbao');
+            },
+          ),
         ),
-//        SliverToBoxAdapter(
-//          child: _Header(),
-//        ),
         SliverToBoxAdapter(
           child: _Content(
             context: widget.context,
-            onTapMarchant: (value){
+            onTapMarchant: (value) {
               widget.context.forward('/site/marchant');
             },
-            onTapDiscovery: (){
-              showModalBottomSheet(context: context, builder: (context){
-                return widget.context.part('/geosphere/discovery', context);
-              }).then((v){
+            onTapDiscovery: () {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return widget.context.part('/geosphere/discovery', context);
+                  }).then((v) {
                 print('----$v');
-
               });
             },
-            onTapGeoCircle: (){
-              showModalBottomSheet(context: context, builder: (context){
-                return widget.context.part('/geosphere/settings', context);
-              }).then((v){
+            onTapGeoCircle: () {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return widget.context.part('/geosphere/settings', context);
+                  }).then((v) {
                 print('----$v');
-
               });
             },
           ),
@@ -180,8 +187,10 @@ class _PopupMenu extends StatelessWidget {
 
 class _GeoRegion extends StatelessWidget {
   PageContext context;
+  Function() onTapFountain;
+  Function() onTapYuanbao;
 
-  _GeoRegion(this.context);
+  _GeoRegion({this.context, this.onTapYuanbao, this.onTapFountain});
 
   @override
   Widget build(BuildContext context) {
@@ -235,7 +244,9 @@ class _GeoRegion extends StatelessWidget {
               children: <Widget>[
                 GestureDetector(
                   onTap: () {
-//                    widget.context.forward('/geosphere/fountain');
+                    if (this.onTapFountain != null) {
+                      this.onTapFountain();
+                    }
                   },
                   behavior: HitTestBehavior.opaque,
                   child: Column(
@@ -284,7 +295,10 @@ class _GeoRegion extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-//                    widget.context.forward('/geosphere/fountain');
+                    if (onTapYuanbao == null) {
+                      return;
+                    }
+                    onTapYuanbao();
                   },
                   behavior: HitTestBehavior.opaque,
                   child: Column(
@@ -395,7 +409,12 @@ class _Content extends StatefulWidget {
   Function() onTapDiscovery;
   Function() onTapGeoCircle;
   Function(Object args) onTapMarchant;
-  _Content({this.context,this.onTapDiscovery,this.onTapMarchant,this.onTapGeoCircle});
+
+  _Content(
+      {this.context,
+      this.onTapDiscovery,
+      this.onTapMarchant,
+      this.onTapGeoCircle});
 
   @override
   __ContentState createState() => __ContentState();
@@ -427,7 +446,7 @@ class __ContentState extends State<_Content> {
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: () {
-                      if(widget.onTapGeoCircle!=null){
+                      if (widget.onTapGeoCircle != null) {
                         widget.onTapGeoCircle();
                       }
                     },
@@ -488,7 +507,7 @@ class __ContentState extends State<_Content> {
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
-                    if(widget.onTapDiscovery!=null){
+                    if (widget.onTapDiscovery != null) {
                       widget.onTapDiscovery();
                     }
                   },
@@ -549,8 +568,8 @@ class __ContentState extends State<_Content> {
                     text: '出租车王师傅',
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        if(widget.onTapMarchant!=null){
-                          widget.onTapMarchant({"uid":'出租车王师傅'});
+                        if (widget.onTapMarchant != null) {
+                          widget.onTapMarchant({"uid": '出租车王师傅'});
                         }
                       },
                     style: TextStyle(

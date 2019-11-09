@@ -104,6 +104,9 @@ flutter:
     - lib/portals/gbera/wallpapers/6.png
 
   fonts:
-    - family: GberaIconFont
+    - family: geo_discovery
       fonts:
         - asset: lib/portals/gbera/fonts/geo_discovery.ttf
+    - family: geo_navigation
+      fonts:
+        - asset: lib/portals/gbera/fonts/geo_navigation.ttf

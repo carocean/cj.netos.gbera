@@ -17,9 +17,9 @@ class Channel extends StatefulWidget {
 class _ChannelState extends State<Channel> {
   //一定不能放在build中，因为build每次页面跳入跳出均会执行，而flutter就是靠key来保持状态的，如果放到build中则页面无状态
   var _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
-
     var panel = <Widget>[];
     _buildPlatTab(panel, widget, context, _scaffoldKey);
     return Scaffold(
@@ -66,7 +66,8 @@ class _ChannelState extends State<Channel> {
                         onPressed: () async {
                           var image = await ImagePicker.pickImage(
                               source: ImageSource.camera);
-                          widget.context.backward(result: {'type': 'take','image':image});
+                          widget.context.backward(
+                              result: {'type': 'take', 'image': image});
                         },
                       ),
                       DialogItem(
@@ -76,7 +77,8 @@ class _ChannelState extends State<Channel> {
                         onPressed: () async {
                           var image = await ImagePicker.pickImage(
                               source: ImageSource.gallery);
-                          widget.context.backward(result: {'type': 'select','image':image});
+                          widget.context.backward(
+                              result: {'type': 'select', 'image': image});
                         },
                       ),
                     ],
@@ -178,34 +180,9 @@ void _buildPlatTab(List<Widget> panel, Channel widget, BuildContext context,
                   ),
                 ],
               ),
-              TextSpan(text: '\r\n'),
-              TextSpan(
-                text: '东山学校[¥12.30]:',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: Colors.blueGrey,
-                ),
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    showModalBottomSheet(
-                        context: context,
-                        builder: (context) {
-                          return widget.context
-                              .part('/site/insite/request', context);
-                        });
-                  },
-                children: [
-                  TextSpan(
-                      style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        color: Colors.black,
-                      ),
-                      text: '7万亿市值没了！中石油A股又创历史新低，暴跌90%，跌去了5个茅台！'),
-                ],
-              ),
             ],
           ),
-          maxLines: 4,
+          maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
       ),
@@ -278,10 +255,11 @@ void _buildPlatTab(List<Widget> panel, Channel widget, BuildContext context,
                                 builder: (context) {
                                   return widget.context.part(
                                       '/network/channel/serviceMenu', context);
-                                }).then((value){
+                                }).then((value) {
                               print('-----$value');
-                              if(value==null)return;
-                              widget.context.forward('/micro/app',arguments: value);
+                              if (value == null) return;
+                              widget.context
+                                  .forward('/micro/app', arguments: value);
                             });
                           },
                           icon: Icon(

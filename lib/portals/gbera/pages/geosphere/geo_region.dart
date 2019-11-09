@@ -49,7 +49,7 @@ class _GeoRegionState extends State<GeoRegion> {
                       right: 10,
                     ),
                     child: CardItem(
-                      title: '旺生堂金证银行',
+                      title: '旺生堂纹银银行',
                       subtitle: Text(
                         '涨:0.00001200002',
                         softWrap: true,
@@ -81,7 +81,7 @@ class _GeoRegionState extends State<GeoRegion> {
                       right: 10,
                     ),
                     child: CardItem(
-                      title: '宏生帑价期货交易所',
+                      title: '宏生帑指交易所',
                       subtitle: Text(
                         '涨:4.82',
                         softWrap: true,
@@ -165,6 +165,70 @@ class _GeoRegionState extends State<GeoRegion> {
                         size: 16,
                       ),
                       tipsText: '1.61元/帑',
+                    ),
+                  ),
+                  Divider(
+                    height: 5,
+                    color: Colors.grey,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: 10,
+                      right: 10,
+                    ),
+                    child: CardItem(
+                      title: '实体+',
+                      subtitle: Text(
+                        '实体店面',
+                        softWrap: true,
+                        style: TextStyle(
+                          color: Colors.green[700],
+                        ),
+                      ),
+                      titleColor: Colors.grey[800],
+                      leading: Icon(
+                        Icons.store,
+                        size: 30,
+                        color: Colors.grey,
+                      ),
+                      tail: Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.grey[400],
+                        size: 16,
+                      ),
+                      tipsText: '5390家',
+                    ),
+                  ),
+                  Divider(
+                    height: 1,
+                    indent: 50,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: 10,
+                      right: 10,
+                    ),
+                    child: CardItem(
+                      title: '卖场+',
+                      subtitle: Text(
+                        '网店，线上店铺',
+                        softWrap: true,
+                        style: TextStyle(
+                          color: Colors.green[700],
+                        ),
+                      ),
+                      titleColor: Colors.grey[800],
+                      leading:  Icon(
+                        Icons.shop,
+                        size: 30,
+                        color: Colors.grey,
+                      ),
+                      tail: Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.grey[400],
+                        size: 16,
+                      ),
+                      tipsText: '2948家',
                     ),
                   ),
                 ],

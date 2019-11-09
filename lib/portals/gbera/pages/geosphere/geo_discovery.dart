@@ -22,7 +22,7 @@ class _GeoDiscoveryState extends State<GeoDiscovery> {
         icon: Icon(
           IconData(
             0xe630,
-            fontFamily: 'GberaIconFont',
+            fontFamily: 'geo_discovery',
           ),
         ),
       ),
@@ -30,28 +30,28 @@ class _GeoDiscoveryState extends State<GeoDiscovery> {
         title: '出租车',
         count: 453,
         icon: Icon(
-          IconData(0xe61d, fontFamily: 'GberaIconFont'),
+          IconData(0xe61d, fontFamily: 'geo_discovery'),
         ),
       ),
       _Category(
         title: '楼盘',
         count: 247,
         icon: Icon(
-          IconData(0xe626, fontFamily: 'GberaIconFont'),
+          IconData(0xe626, fontFamily: 'geo_discovery'),
         ),
       ),
       _Category(
         title: '便利店',
         count: 367,
         icon: Icon(
-          IconData(0xe60f, fontFamily: 'GberaIconFont'),
+          IconData(0xe60f, fontFamily: 'geo_discovery'),
         ),
       ),
       _Category(
         title: '加油站',
         count: 744,
         icon: Icon(
-          IconData(0xe617, fontFamily: 'GberaIconFont'),
+          IconData(0xe617, fontFamily: 'geo_discovery'),
         ),
       ),
     ];

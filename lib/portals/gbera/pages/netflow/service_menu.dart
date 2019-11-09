@@ -81,10 +81,12 @@ class ServiceMenu extends StatelessWidget {
       ),
     ];
     return Container(
+      color: Theme.of(context).backgroundColor,
       constraints: BoxConstraints.expand(),
       child: Column(
         children: <Widget>[
           Container(
+            color: Colors.white70,
             padding: EdgeInsets.all(10),
             child: Row(
               mainAxisSize: MainAxisSize.max,

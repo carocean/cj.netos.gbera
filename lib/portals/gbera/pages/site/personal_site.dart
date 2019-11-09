@@ -68,7 +68,7 @@ class _PersonalSiteState extends State<PersonalSite> {
                   iconData: Icons.chat,
                 ),
                 _Operator(
-                  text: '发拍照',
+                  text: '拍照',
                   iconData: Icons.camera_enhance,
                 ),
                 _Operator(
