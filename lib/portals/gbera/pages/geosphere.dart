@@ -1,11 +1,15 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/gbera/parts/CardItem.dart';
+import 'package:image_picker/image_picker.dart';
+
+import 'netflow/channel.dart';
 
 class Geosphere extends StatefulWidget {
-  final PageContext context;
+  PageContext context;
 
   Geosphere({this.context});
 
@@ -16,462 +20,495 @@ class Geosphere extends StatefulWidget {
 class _GeosphereState extends State<Geosphere> {
   var _controller;
   var _backgroud_transparent = true;
-  bool use_wallpapper=false;
+  bool use_wallpapper = false;
 
-
-  _GeosphereState(){
+  _GeosphereState() {
     _controller = ScrollController(initialScrollOffset: 0.0);
-    _controller.addListener(_listener);
+    _controller.addListener(() {
+      if (!use_wallpapper) {
+        return;
+      }
+      if (_backgroud_transparent && _controller.offset >= 40) {
+        //48是appbar的高度，210是appbar展开发的总高
+        setState(() {
+          _backgroud_transparent = false;
+        });
+        return;
+      }
+      if (!_backgroud_transparent && _controller.offset < 40) {
+        setState(() {
+          _backgroud_transparent = true;
+        });
+        return;
+      }
+    });
   }
+
   @override
   void dispose() {
     super.dispose();
     _controller?.dispose();
   }
-  _listener() {
-    if (!use_wallpapper) {
-      return;
-    }
-    if (_backgroud_transparent && _controller.offset >= 250 - 48) {
-      //48是appbar的高度，210是appbar展开发的总高
-      setState(() {
-        _backgroud_transparent = false;
-      });
-      return;
-    }
-    if (!_backgroud_transparent && _controller.offset < 250 - 48) {
-      setState(() {
-        _backgroud_transparent = true;
-      });
-      return;
-    }
-  }
+
   @override
   Widget build(BuildContext context) {
-    use_wallpapper=widget.context.parameters['use_wallpapper'];
-
-    var textStyle1_title = widget.context.style('/geosphere/title.text');
-    var textStyle1_red = widget.context.style('/geosphere/title-red.text');
-    var textStyle1_grey = widget.context.style('/geosphere/title-grey.text');
-
-    //SliverPersistentHeaderDelegate 滑动可折叠头
-    List<Widget> panel = [
-      SliverAppBar(
-        pinned: true,
-        expandedHeight: 250,
-        floating: false,
-        titleSpacing: 10,
-        backgroundColor: use_wallpapper && _backgroud_transparent
-            ? Colors.transparent
-            : null,
-        title: Text(
-          '广州市·天河区',
-          style: TextStyle(
-            fontSize: 14,
+    use_wallpapper = widget.context.parameters['use_wallpapper'];
+    return CustomScrollView(
+      controller: _controller,
+      slivers: <Widget>[
+        SliverAppBar(
+          title: Text('地圈'),
+          pinned: true,
+          automaticallyImplyLeading: false,
+          elevation: 0,
+          centerTitle: true,
+          backgroundColor: use_wallpapper && _backgroud_transparent
+              ? Colors.transparent
+              : null,
+          actions: <Widget>[
+            _PopupMenu(
+              context: widget.context,
+            ),
+          ],
+        ),
+        SliverToBoxAdapter(
+          child: _GeoRegion(widget.context),
+        ),
+//        SliverToBoxAdapter(
+//          child: _Header(),
+//        ),
+        SliverToBoxAdapter(
+          child: _Content(
+            context: widget.context,
           ),
         ),
-        centerTitle: false,
-        automaticallyImplyLeading: false,
-        elevation: 0,
-        actions: <Widget>[],
-        flexibleSpace: FlexibleSpaceBar(
-          collapseMode: CollapseMode.parallax,
-          title: Container(
-            padding: EdgeInsets.only(
-              bottom: 4,
-              top: 4,
-            ),
-            constraints: BoxConstraints.tightForFinite(
-              width: double.maxFinite,
-            ),
-            color: Colors.transparent,
-            child: Text(
-              '我的地圈',
-              style: widget.context.style('/geosphere/mydq.text'),
-            ),
-          ),
-          titlePadding: EdgeInsets.only(
-            left: 10,
-          ),
-          background: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              ///金证喷泉展示区
-              Container(
-                padding: EdgeInsets.only(
-                  top: 100,
-                  left: 20,
-                  right: 20,
-                  bottom: 5,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        widget.context.forward('/geosphere/fountain');
-                      },
-                      behavior: HitTestBehavior.opaque,
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                            child: Image.asset(
-                              'lib/portals/gbera/images/penquan.png',
-                              color: Colors.grey[600],
-                              width: 20,
-                              height: 20,
-                            ),
-                            padding: EdgeInsets.only(
-                              right: 5,
-                            ),
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Padding(
-                                    child: Text(
-                                      '金证喷泉',
-                                      style: textStyle1_title,
-                                    ),
-                                    padding: EdgeInsets.only(
-                                      right: 5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(top: 2),
-                                child: Text(
-                                  '50个',
-                                  style: textStyle1_red,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        widget.context.forward('/geosphere/yuanbao');
-                      },
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                            child: Image.asset(
-                              'lib/portals/gbera/images/yuanbao.png',
-                              width: 20,
-                              height: 20,
-                              color: Colors.grey[600],
-                            ),
-                            padding: EdgeInsets.only(
-                              right: 5,
-                            ),
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Padding(
-                                    child: Text(
-                                      '元宝',
-                                      style: textStyle1_title,
-                                    ),
-                                    padding: EdgeInsets.only(
-                                      right: 5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(top: 2),
-                                child: Text(
-                                  '23个',
-                                  style: textStyle1_red,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+      ],
+    );
+  }
+}
 
-              ///市场
-              Container(
-                margin: EdgeInsets.only(
-                  top: 20,
-                  left: 20,
-                  right: 20,
-                  bottom: 10,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Padding(
-                          child: Icon(
-                            FontAwesomeIcons.btc,
-                            size: 16,
-                            color: Colors.grey[400],
-                          ),
-                          padding: EdgeInsets.only(
-                            right: 5,
-                          ),
-                        ),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: <Widget>[
-                                Padding(
-                                  child: Text(
-                                    '帑指:',
-                                    style: widget.context
-                                        .style('/geosphere/sec-title.text'),
-                                  ),
-                                  padding: EdgeInsets.only(
-                                    right: 5,
-                                  ),
-                                ),
-                                Text(
-                                  '0.13283892091',
-                                  style: textStyle1_red,
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 2),
-                              child: Text(
-                                '广东省·帑银交易市场',
-                                style: textStyle1_grey,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Padding(
-                          child: Icon(
-                            FontAwesomeIcons.wonSign,
-                            size: 16,
-                            color: Colors.grey[400],
-                          ),
-                          padding: EdgeInsets.only(
-                            right: 5,
-                          ),
-                        ),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: <Widget>[
-                                Padding(
-                                  child: Text(
-                                    '纹指:',
-                                    style: widget.context
-                                        .style('/geosphere/sec-title.text'),
-                                  ),
-                                  padding: EdgeInsets.only(
-                                    right: 5,
-                                  ),
-                                ),
-                                Text(
-                                  '0.002399281122',
-                                  style: textStyle1_red,
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 2),
-                              child: Text(
-                                '天河区·金证银行',
-                                style: textStyle1_grey,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Divider(
-                color: Colors.grey[400],
-              ),
-            ],
-          ),
+class _PopupMenu extends StatelessWidget {
+  PageContext context;
+
+  _PopupMenu({this.context});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onLongPress: () {
+        this.context.forward('/netflow/channel/publish_article',
+            arguments: {'type': 'text'});
+      },
+      child: IconButton(
+        icon: Icon(
+          Icons.camera_enhance,
+          size: 20,
         ),
-      ),
-      SliverToBoxAdapter(
-        child: Padding(
-          padding: EdgeInsets.only(
-            right: 10,
-          ),
-          child: GestureDetector(
-            onTap: () {
-              widget.context.forward('/geosphere/settings');
-            },
-            behavior: HitTestBehavior.opaque,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
+        onPressed: () {
+          showDialog<Map<String, Object>>(
+            context: context,
+            builder: (BuildContext context) => SimpleDialog(
+              title: Text('请选择'),
               children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: 1,
-                  ),
+                DialogItem(
+                  text: '文本',
+                  subtext: '注：长按窗口右上角按钮便可不弹出该对话框直接发文',
+                  icon: Icons.font_download,
+                  color: Colors.grey[500],
+                  onPressed: () {
+                    this.context.backward(result: {'type': 'text'});
+                  },
+                ),
+                DialogItem(
+                  text: '拍摄',
+                  icon: Icons.photo_camera,
+                  color: Colors.grey[500],
+                  onPressed: () async {
+                    var image =
+                        await ImagePicker.pickImage(source: ImageSource.camera);
+                    this
+                        .context
+                        .backward(result: {'type': 'take', 'image': image});
+                  },
+                ),
+                DialogItem(
+                  text: '从相册选择',
+                  icon: Icons.image,
+                  color: Colors.grey[500],
+                  onPressed: () async {
+                    var image = await ImagePicker.pickImage(
+                        source: ImageSource.gallery);
+                    this
+                        .context
+                        .backward(result: {'type': 'select', 'image': image});
+                  },
+                ),
+              ],
+            ),
+          ).then<void>((value) {
+            // The value passed to Navigator.pop() or null.
+            if (value != null) {
+              this.context.forward('/netflow/channel/publish_article',
+                  arguments: value);
+            }
+          });
+        },
+      ),
+    );
+  }
+}
+
+class _GeoRegion extends StatelessWidget {
+  PageContext context;
+
+  _GeoRegion(this.context);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(
+              bottom: 30,
+              left: 10,
+              right: 10,
+            ),
+            child: Row(
+              children: <Widget>[
+                Container(
                   child: Icon(
-                    Icons.edit_location,
-                    size: 12,
-                    color: Colors.grey[500],
+                    Icons.location_on,
+                    size: 14,
+                    color: Colors.grey,
                   ),
-                ),
-                Padding(
                   padding: EdgeInsets.only(
-                    right: 4,
-                  ),
-                  child: Text(
-                    '半径:',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 12,
-                    ),
+                    right: 5,
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: 10,
+                Text.rich(
+                  TextSpan(
+                    text: '广州',
+                    children: [
+                      TextSpan(
+                        text: '·',
+                      ),
+                      TextSpan(
+                        text: '天河区',
+                      ),
+                    ],
                   ),
-                  child: Text(
-                    '5公里',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 12,
-                    ),
+                  softWrap: true,
+                  textAlign: TextAlign.left,
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(
+              bottom: 20,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {
+//                    widget.context.forward('/geosphere/fountain');
+                  },
+                  behavior: HitTestBehavior.opaque,
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        child: Image.asset(
+                          'lib/portals/gbera/images/penquan.png',
+                          color: Colors.grey[600],
+                          width: 20,
+                          height: 20,
+                        ),
+                        padding: EdgeInsets.only(
+                          right: 5,
+                        ),
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Padding(
+                                child: Text(
+                                  '金证喷泉',
+                                ),
+                                padding: EdgeInsets.only(
+                                  right: 5,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 2),
+                            child: Text(
+                              '2个',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-                Text(
-                  '天豪大酒店附近',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 12,
+                GestureDetector(
+                  onTap: () {
+//                    widget.context.forward('/geosphere/fountain');
+                  },
+                  behavior: HitTestBehavior.opaque,
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        child: Image.asset(
+                          'lib/portals/gbera/images/penquan.png',
+                          color: Colors.grey[600],
+                          width: 20,
+                          height: 20,
+                        ),
+                        padding: EdgeInsets.only(
+                          right: 5,
+                        ),
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Padding(
+                                child: Text(
+                                  '元宝',
+                                ),
+                                padding: EdgeInsets.only(
+                                  right: 5,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 2),
+                            child: Text(
+                              '129个',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-        ),
-      ),
-      SliverToBoxAdapter(
-        child: Container(
-          padding: EdgeInsets.only(
-            left: 0,
-            top: 20,
-            right: 0,
-            bottom: 10,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Container(
+          Container(
+//            color: Colors.white54,
+            child: Column(
+              children: <Widget>[
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return this
+                              .context
+                              .part('/geosphere/region', context);
+                        });
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      left: 20,
+                      right: 20,
+                    ),
                     padding: EdgeInsets.only(
                       left: 10,
+                      right: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white70,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    child: CardItem(
+                      title: '市场',
+                      titleColor: Colors.grey[600],
+                      leading: Icon(
+                        Icons.title,
+                        color: Colors.grey[500],
+                        size: 20,
+                      ),
+                      tail: Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.grey[400],
+                        size: 18,
+                      ),
+                      tipsText: '本地区有3个',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Header extends StatefulWidget {
+  @override
+  __HeaderState createState() => __HeaderState();
+}
+
+class __HeaderState extends State<_Header> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(
+        top: 30,
+        left: 10,
+        right: 10,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(
+              right: 10,
+            ),
+            child: Text(
+              '我的地圈',
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            ),
+          ),
+          Flexible(
+            fit: FlexFit.loose,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: 5,
+                  ),
+                  child: Icon(
+                    FontAwesomeIcons.streetView,
+                    size: 12,
+                    color: Colors.grey,
+                  ),
+                ),
+                Container(
+                  child: Text(
+                    '半径5公里',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Content extends StatefulWidget {
+  PageContext context;
+
+  _Content({this.context});
+
+  @override
+  __ContentState createState() => __ContentState();
+}
+
+class __ContentState extends State<_Content> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(
+        top: 30,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(
+              left: 10,
+              right: 10,
+              bottom: 5,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: Container(
+                    padding: EdgeInsets.only(
+                      right: 10,
                     ),
                     child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
                         Padding(
-                          child: Icon(
-                            Icons.threesixty,
-                            size: 14,
-                            color: Colors.grey[600],
-                          ),
                           padding: EdgeInsets.only(
-                            right: 5,
+                            right: 10,
+                          ),
+                          child: Text(
+                            '我的地圈',
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
                           ),
                         ),
-                        GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
-                            widget.context.forward('/geosphere/insite');
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        Flexible(
+                          fit: FlexFit.loose,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.max,
                             children: <Widget>[
                               Padding(
                                 padding: EdgeInsets.only(
-                                  bottom: 2,
+                                  right: 5,
                                 ),
-                                child: Text(
-                                  '实时',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.grey[500],
-                                  ),
+                                child: Icon(
+                                  FontAwesomeIcons.streetView,
+                                  size: 12,
+                                  color: Colors.grey,
                                 ),
                               ),
-                              Row(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      right: 2,
-                                    ),
-                                    child: Icon(
-                                      FontAwesomeIcons.levelDownAlt,
-                                      color: Colors.grey[400],
-                                      size: 12,
-                                    ),
+                              Container(
+                                child: Text(
+                                  '半径5公里',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 12,
                                   ),
-                                  Text(
-                                    '624',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
                             ],
                           ),
@@ -479,1002 +516,616 @@ class _GeosphereState extends State<Geosphere> {
                       ],
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      widget.context.forward('/geosphere/outsite');
-                    },
-                    behavior: HitTestBehavior.opaque,
-                    child: Container(
-                      padding: EdgeInsets.only(
-                        right: 10,
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Flexible(
+                      fit: FlexFit.loose,
+                      child: Container(
+                        child: Text(
+                          '发现|1930个',
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 12,
+                          ),
+                        ),
                       ),
-                      child: Row(
-                        children: <Widget>[
-                          Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: 2,
-                                ),
-                                child: Text(
-                                  '',
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(
+                        left: 5,
+                      ),
+                      child: Icon(
+                        FontAwesomeIcons.filter,
+                        size: 12,
+                        color: Colors.grey,
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+              color: Colors.yellowAccent[100],
+            ),
+            constraints: BoxConstraints.tightForFinite(width: double.maxFinite),
+            margin: EdgeInsets.only(
+              bottom: 5,
+              left: 20,
+              right: 20,
+            ),
+            padding: EdgeInsets.only(
+              left: 10,
+              right: 10,
+              top: 5,
+              bottom: 5,
+            ),
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: '出租车王师傅',
+                    style: TextStyle(
+                      color: Colors.blueGrey,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  TextSpan(text: ':'),
+                  TextSpan(text: '进入您的地圈'),
+                ],
+                style: TextStyle(
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          ),
+          _ListRegion(
+            context: widget.context,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ListRegion extends StatefulWidget {
+  PageContext context;
+
+  _ListRegion({this.context});
+
+  @override
+  __ListRegionState createState() => __ListRegionState();
+}
+
+class __ListRegionState extends State<_ListRegion> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          _MessageCard(
+            context: widget.context,
+          ),
+          _MessageCard(
+            context: widget.context,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MessageCard extends StatefulWidget {
+  PageContext context;
+
+  _MessageCard({this.context});
+
+  @override
+  __MessageCardState createState() => __MessageCardState();
+}
+
+class __MessageCardState extends State<_MessageCard> {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: Border(),
+      elevation: 0,
+      margin: EdgeInsets.only(bottom: 15),
+      child: Container(
+        padding: EdgeInsets.only(
+          top: 10,
+          left: 10,
+          right: 10,
+          bottom: 10,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                widget.context.forward('/site/marchant');
+              },
+              child: Padding(
+                padding: EdgeInsets.only(top: 5, right: 5),
+                child: ClipOval(
+                  child: Image(
+                    image: NetworkImage(
+                        'https://sjbz-fd.zol-img.com.cn/t_s208x312c5/g5/M00/01/06/ChMkJ1w3FnmIE9dUAADdYQl3C5IAAuTxAKv7x8AAN15869.jpg'),
+                    height: 35,
+                    width: 35,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          widget.context.forward('/site/marchant');
+                        },
+                        behavior: HitTestBehavior.opaque,
+                        child: Text(
+                          '波涛旅行Hotel',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: IconButton(
+                          padding: EdgeInsets.all(0),
+                          onPressed: () {
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return widget.context.part(
+                                      '/network/channel/serviceMenu', context);
+                                }).then((value) {
+                              print('-----$value');
+                              if (value == null) return;
+                              widget.context
+                                  .forward('/micro/app', arguments: value);
+                            });
+                          },
+                          icon: Icon(
+                            Icons.art_track,
+                            size: 20,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    //内容区
+                    padding: EdgeInsets.only(top: 5, bottom: 10),
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      '不走形式，研发中心月度实现目标，由上级主管给出几个目标维度，被考核人自已填本月实际目标，并由主管审核下级目标，最终呈给人事部。工作态度：考核项固定',
+                      style: TextStyle(
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: LayoutBuilder(
+                      builder: (context, constraint) {
+                        return Wrap(
+                          //多媒体区
+                          children: <Widget>[
+                            GestureDetector(
+                              onTap: () {
+                                widget.context.forward(
+                                  '/images/viewer',
+                                  arguments: {
+                                    'imgSrc':
+                                        'http://www.zdyrs.com/uploadfile/2015/1205/20151205012936705.jpg',
+                                    'text':
+                                        '【#越南偷渡幸存者曾被发刀片#，随时准备逃生：为谋生要接受死亡】11月1日，英国警方发表声明称，早前死亡#货车内39名遇难者均为越南人#。越南方面称具体身份仍需查清，这是一场严重的人道惨剧。越南人Tran Khanh Toan2006年曾藏身集装箱偷渡到英国，但到了英国后因无法维持生计，又回到越南。他对梨视频拍客讲述了自己偷渡时有人在跳下集装箱时被卷入车轮，不幸遇难。而且藏身帆布货车的偷渡者，往往会被发刀片随时用来划开帆布跳车逃生',
+                                  },
+                                ).then((value) {
+                                  print('--------');
+                                });
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.all(5),
+                                child: Image(
+                                  image: NetworkImage(
+                                      'http://www.zdyrs.com/uploadfile/2015/1205/20151205012936705.jpg'),
+                                  width: (constraint.biggest.width / 2) - 20,
+                                  fit: BoxFit.fitWidth,
                                 ),
                               ),
-                              Row(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      right: 2,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                widget.context.forward(
+                                  '/images/viewer',
+                                  arguments: {
+                                    'imgSrc':
+                                        'http://dingyue.nosdn.127.net/vvRjNcu9VBGgAevyEl5kQ0PO4ndOa4p3KJcED=yrAyXUP1529905129060compressflag.jpg',
+                                    'text':
+                                        '据英国天空新闻报道，埃塞克斯警方发表声明称，早些时候集装箱货车内发现的39具遗体应全为越南公民。声明称，警方正与越南政府联系，并“直接联系”一些越南遇难者家属。另据越通社11月1日报道，越南中部河静省公安部门已拘捕两名涉嫌组织介绍他人非法出境或在境外非法滞留的人员。',
+                                  },
+                                );
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.all(5),
+                                child: Image(
+                                  image: NetworkImage(
+                                      'http://dingyue.nosdn.127.net/vvRjNcu9VBGgAevyEl5kQ0PO4ndOa4p3KJcED=yrAyXUP1529905129060compressflag.jpg'),
+                                  width: (constraint.biggest.width / 2) - 20,
+                                  fit: BoxFit.fitWidth,
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                widget.context.forward(
+                                  '/images/viewer',
+                                  arguments: {
+                                    'imgSrc':
+                                        'http://pic1.win4000.com/mobile/2019-03-20/5c91fe81d2606.jpg',
+                                    'text':
+                                        '近年来，小珍（化名）一直以吸收社会大量资金，“拆东墙补西墙”，吸收的资金一度高达5亿余元，资金缺口达1亿余元，一直到资金链断裂才主动自首，自首时账面上只剩下一千多元。',
+                                  },
+                                );
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.all(5),
+                                child: Image(
+                                  image: NetworkImage(
+                                      'http://pic1.win4000.com/mobile/2019-03-20/5c91fe81d2606.jpg'),
+                                  width: (constraint.biggest.width / 2) - 20,
+                                  fit: BoxFit.fitWidth,
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                widget.context.forward(
+                                  '/images/viewer',
+                                  arguments: {
+                                    'imgSrc':
+                                        'http://pic1.win4000.com/mobile/5/557802a8d8569.jpg',
+                                  },
+                                );
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.all(5),
+                                child: Image(
+                                  image: NetworkImage(
+                                      'http://pic1.win4000.com/mobile/5/557802a8d8569.jpg'),
+                                  width: (constraint.biggest.width / 2) - 20,
+                                  fit: BoxFit.fitWidth,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                  Row(
+                    //内容坠
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: Text.rich(
+                          TextSpan(
+                            text: '1小时前',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[400],
+                            ),
+                            children: [
+                              TextSpan(text: '  '),
+                              TextSpan(text: '¥0.24'),
+                              TextSpan(text: '\r\n'),
+                              TextSpan(
+                                text: '来自',
+                                children: [
+                                  TextSpan(
+                                    text: '大飞果果',
+                                    style: TextStyle(
+                                      color: Colors.blueGrey,
+                                      fontWeight: FontWeight.w600,
                                     ),
-                                    child: Icon(
-                                      FontAwesomeIcons.share,
-                                      size: 10,
-                                      color: Colors.grey[400],
-                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        widget.context
+                                            .forward("/site/personal");
+                                      },
                                   ),
-                                  Text(''),
+                                  TextSpan(text: '的管道'),
+                                  TextSpan(
+                                    text: '水葫芦凉茶店',
+                                    style: TextStyle(
+                                      color: Colors.blueGrey,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        widget.context
+                                            .forward("/channel/viewer");
+                                      },
+                                  ),
                                 ],
                               ),
                             ],
                           ),
-                          Padding(
-                            child: Icon(
-                              FontAwesomeIcons.streetView,
-                              size: 14,
-                              color: Colors.grey[500],
+                          softWrap: true,
+                        ),
+                      ),
+                      PopupMenuButton<String>(
+                        icon: Icon(
+                          Icons.linear_scale,
+                          size: 14,
+                          color: Colors.grey[600],
+                        ),
+                        offset: Offset(
+                          0,
+                          35,
+                        ),
+                        onSelected: (value) {
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Container(
+                              child: Text('$value'),
                             ),
-                            padding: EdgeInsets.only(
-                              left: 5,
+                          ));
+                        },
+                        itemBuilder: (context) => <PopupMenuEntry<String>>[
+                          PopupMenuItem(
+                            value: 'like',
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    right: 10,
+                                  ),
+                                  child: Icon(
+                                    FontAwesomeIcons.thumbsUp,
+                                    color: Colors.grey[500],
+                                    size: 15,
+                                  ),
+                                ),
+                                Text(
+                                  '点赞',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
+                          PopupMenuItem(
+                            value: 'comment',
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    right: 10,
+                                  ),
+                                  child: Icon(
+                                    FontAwesomeIcons.comment,
+                                    color: Colors.grey[500],
+                                    size: 15,
+                                  ),
+                                ),
+                                Text(
+                                  '评论',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+//                          PopupMenuDivider(),
                         ],
                       ),
-                    ),
+                    ],
                   ),
-                ],
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-              ),
-              Container(
-                color: Colors.white,
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          child: Text(
-                            '发现',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                          padding: EdgeInsets.only(
-                            right: 10,
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              right: 10,
-                            ),
-                            child: Wrap(
-                              crossAxisAlignment: WrapCrossAlignment.start,
-                              alignment: WrapAlignment.start,
-                              direction: Axis.horizontal,
-                              runSpacing: 10,
-                              children: <Widget>[
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Padding(
-                                      child: Text(
-                                        '行人',
-                                        style: this.widget.context.style(
-                                            '/geosphere/discovery/title.text'),
-                                      ),
-                                      padding: EdgeInsets.only(
-                                        right: 2,
-                                      ),
-                                    ),
-                                    Padding(
-                                      child: Text(
-                                        '1.43万',
-                                        style: this.widget.context.style(
-                                            '/geosphere/discovery/count.text'),
-                                      ),
-                                      padding: EdgeInsets.only(
-                                        right: 5,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  height: 16,
-                                  padding: EdgeInsets.only(
-                                    top: 2,
-                                    bottom: 2,
-                                  ),
-                                  child: VerticalDivider(
-                                    color: Colors.grey[400],
-                                  ),
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Padding(
-                                      child: Text(
-                                        '楼盘',
-                                        style: this.widget.context.style(
-                                            '/geosphere/discovery/title.text'),
-                                      ),
-                                      padding: EdgeInsets.only(
-                                        right: 2,
-                                      ),
-                                    ),
-                                    Padding(
-                                      child: Text(
-                                        '100',
-                                        style: this.widget.context.style(
-                                            '/geosphere/discovery/count.text'),
-                                      ),
-                                      padding: EdgeInsets.only(
-                                        right: 5,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  height: 16,
-                                  padding: EdgeInsets.only(
-                                    top: 2,
-                                    bottom: 2,
-                                  ),
-                                  child: VerticalDivider(
-                                    color: Colors.grey[400],
-                                  ),
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Padding(
-                                      child: Text(
-                                        '出租车',
-                                        style: this.widget.context.style(
-                                            '/geosphere/discovery/title.text'),
-                                      ),
-                                      padding: EdgeInsets.only(
-                                        right: 2,
-                                      ),
-                                    ),
-                                    Padding(
-                                      child: Text(
-                                        '21',
-                                        style: this.widget.context.style(
-                                            '/geosphere/discovery/count.text'),
-                                      ),
-                                      padding: EdgeInsets.only(
-                                        right: 5,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  height: 16,
-                                  padding: EdgeInsets.only(
-                                    top: 2,
-                                    bottom: 2,
-                                  ),
-                                  child: VerticalDivider(
-                                    color: Colors.grey[400],
-                                  ),
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Padding(
-                                      child: Text(
-                                        '餐馆',
-                                        style: this.widget.context.style(
-                                            '/geosphere/discovery/title.text'),
-                                      ),
-                                      padding: EdgeInsets.only(
-                                        right: 2,
-                                      ),
-                                    ),
-                                    Padding(
-                                      child: Text(
-                                        '246',
-                                        style: this.widget.context.style(
-                                            '/geosphere/discovery/count.text'),
-                                      ),
-                                      padding: EdgeInsets.only(
-                                        right: 5,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  height: 16,
-                                  padding: EdgeInsets.only(
-                                    top: 2,
-                                    bottom: 2,
-                                  ),
-                                  child: VerticalDivider(
-                                    color: Colors.grey[400],
-                                  ),
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Padding(
-                                      child: Text(
-                                        '酒店',
-                                        style: this.widget.context.style(
-                                            '/geosphere/discovery/title.text'),
-                                      ),
-                                      padding: EdgeInsets.only(
-                                        right: 2,
-                                      ),
-                                    ),
-                                    Padding(
-                                      child: Text(
-                                        '246',
-                                        style: this.widget.context.style(
-                                            '/geosphere/discovery/count.text'),
-                                      ),
-                                      padding: EdgeInsets.only(
-                                        right: 5,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  height: 16,
-                                  padding: EdgeInsets.only(
-                                    top: 2,
-                                    bottom: 2,
-                                  ),
-                                  child: VerticalDivider(
-                                    color: Colors.grey[400],
-                                  ),
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Padding(
-                                      child: Text(
-                                        '汽车4S店',
-                                        style: this.widget.context.style(
-                                            '/geosphere/discovery/title.text'),
-                                      ),
-                                      padding: EdgeInsets.only(
-                                        right: 2,
-                                      ),
-                                    ),
-                                    Padding(
-                                      child: Text(
-                                        '246',
-                                        style: this.widget.context.style(
-                                            '/geosphere/discovery/count.text'),
-                                      ),
-                                      padding: EdgeInsets.only(
-                                        right: 5,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  height: 16,
-                                  padding: EdgeInsets.only(
-                                    top: 2,
-                                    bottom: 2,
-                                  ),
-                                  child: VerticalDivider(
-                                    color: Colors.grey[400],
-                                  ),
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Padding(
-                                      child: Text(
-                                        '超市',
-                                        style: this.widget.context.style(
-                                            '/geosphere/discovery/title.text'),
-                                      ),
-                                      padding: EdgeInsets.only(
-                                        right: 2,
-                                      ),
-                                    ),
-                                    Padding(
-                                      child: Text(
-                                        '83家',
-                                        style: this.widget.context.style(
-                                            '/geosphere/discovery/count.text'),
-                                      ),
-                                      padding: EdgeInsets.only(
-                                        right: 5,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                      color: Color(0xFFF5F5F5),
                     ),
-                    Divider(
-                      color: Colors.grey[300],
-                      indent: 40,
+                    padding: EdgeInsets.only(
+                      left: 10,
+                      right: 5,
+                      top: 5,
+                      bottom: 5,
                     ),
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      //相关操作区
                       children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Icon(
+                                FontAwesomeIcons.thumbsUp,
+                                color: Colors.grey[500],
+                                size: 16,
+                              ),
+                            ),
+                            Expanded(
+                              child: Text.rich(
+                                TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: '吉儿',
+                                      style: TextStyle(
+                                        color: Colors.blueGrey,
+                                        fontWeight: FontWeight.w600,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          widget.context
+                                              .forward("/site/personal");
+                                        },
+                                    ),
+                                    TextSpan(text: ';  '),
+                                    TextSpan(
+                                      text: '布谷鸟',
+                                      style: TextStyle(
+                                        color: Colors.blueGrey,
+                                        fontWeight: FontWeight.w600,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          widget.context
+                                              .forward("/site/personal");
+                                        },
+                                    ),
+                                    TextSpan(text: ';  '),
+                                    TextSpan(
+                                      text: '大飞果果',
+                                      style: TextStyle(
+                                        color: Colors.blueGrey,
+                                        fontWeight: FontWeight.w600,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          widget.context
+                                              .forward("/site/personal");
+                                        },
+                                    ),
+                                    TextSpan(text: ';  '),
+                                    TextSpan(
+                                      text: '中国好味道',
+                                      style: TextStyle(
+                                        color: Colors.blueGrey,
+                                        fontWeight: FontWeight.w600,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          widget.context
+                                              .forward("/site/personal");
+                                        },
+                                    ),
+                                    TextSpan(text: ';  '),
+                                  ],
+                                ),
+//                                maxLines: 4,
+//                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                              ),
+                            ),
+                          ],
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                        ),
                         Padding(
                           padding: EdgeInsets.only(
-                            right: 10,
+                            bottom: 6,
+                            top: 6,
                           ),
-                          child: Icon(
-                            Icons.message,
-                            color: Colors.grey[500],
-                            size: 30,
+                          child: Divider(
+                            height: 1,
                           ),
                         ),
-                        Expanded(
-                          child: Container(
-                            constraints: BoxConstraints.tightForFinite(
-                              width: double.maxFinite,
-                              height: double.infinity,
-                            ),
-                            child: ListView.separated(
-                              physics: NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemBuilder: (BuildContext context, int i) {
-                                return Wrap(
-                                  direction: Axis.horizontal,
-                                  crossAxisAlignment: WrapCrossAlignment.end,
-                                  runSpacing: 2,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                        right: 2,
-                                      ),
-                                      child: Text(
-                                        '出租车王师傅[¥0.21]:',
-                                        style: widget.context.style(
-                                            '/geosphere/listItemMsgTitle.text'),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                        right: 2,
-                                      ),
-                                      child: Text(
-                                        '驾龄21年，服务七星。空车服务七星。驾龄21年，服务七星。空车服务七星。',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(),
-                                      child: Text(
-                                        '23:26',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          color: Colors.grey[400],
-                                        ),
+                        Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                bottom: 5,
+                              ),
+                              child: Text.rich(
+                                //评论区
+                                TextSpan(
+                                  text: 'carocean:',
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      widget.context.forward("/site/personal");
+                                    },
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.blueGrey,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: '当实现具备实时性需求时，我们一般会选择长连接的通信方式',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        color: Colors.black,
                                       ),
                                     ),
                                   ],
-                                );
-                              },
-                              separatorBuilder: (BuildContext context, int i) {
-                                return Divider(
-                                  color: Colors.grey[300],
-                                );
-                              },
-                              itemCount: 4,
+                                ),
+                                softWrap: true,
+                              ),
                             ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      SliverToBoxAdapter(
-        child: Container(
-          padding: EdgeInsets.only(
-            left: 0,
-            top: 20,
-            right: 0,
-            bottom: 10,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(
-                      left: 10,
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        Padding(
-                          child: Icon(
-                            FontAwesomeIcons.addressBook,
-                            size: 14,
-                            color: Colors.grey[600],
-                          ),
-                          padding: EdgeInsets.only(
-                            right: 5,
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            widget.context.forward('/geosphere/upstream');
-                          },
-                          behavior: HitTestBehavior.opaque,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: 2,
-                                ),
-                                child: Text(
-                                  '地推',
+                            Padding(
+                              padding: EdgeInsets.only(
+                                bottom: 5,
+                              ),
+                              child: Text.rich(
+                                //评论区
+                                TextSpan(
+                                  text: '天空的云:',
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      widget.context.forward("/site/personal");
+                                    },
                                   style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.grey[500],
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.blueGrey,
                                   ),
+                                  children: [
+                                    TextSpan(
+                                      text:
+                                          '学习一门新的语言，第一个呈现基本都是“hello world”。那么我们知道这个是文本显示的。所以第一个我们学习Text,话不多说，直接上代码',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                                softWrap: true,
                               ),
-                              Row(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      right: 2,
-                                    ),
-                                    child: Icon(
-                                      FontAwesomeIcons.levelDownAlt,
-                                      size: 12,
-                                      color: Colors.grey[400],
-                                    ),
-                                  ),
-                                  Text(
-                                    '624',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.grey[700],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ),
-                  Row(
-                    children: <Widget>[
-                      GestureDetector(
-                        onTap: () {
-                          widget.context.forward('/geosphere/downstream');
-                        },
-                        behavior: HitTestBehavior.opaque,
-                        child: Container(
-                          padding: EdgeInsets.only(
-                            right: 10,
-                          ),
-                          child: Row(
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      bottom: 2,
-                                    ),
-                                    child: Text(
-                                      '',
-                                    ),
-                                  ),
-                                  Row(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                          right: 2,
-                                        ),
-                                        child: Icon(
-                                          FontAwesomeIcons.share,
-                                          size: 10,
-                                          color: Colors.grey[400],
-                                        ),
-                                      ),
-                                      Text(''),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                child: Icon(
-                                  FontAwesomeIcons.addressBook,
-                                  size: 14,
-                                  color: Colors.grey[500],
-                                ),
-                                padding: EdgeInsets.only(
-                                  left: 5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          widget.context.forward('/geosphere/outsite');
-                        },
-                        child: Container(
-                          padding: EdgeInsets.only(
-                            right: 10,
-                          ),
-                          child: Row(
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      bottom: 2,
-                                    ),
-                                    child: Text(
-                                      '',
-                                    ),
-                                  ),
-                                  Row(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                          right: 2,
-                                        ),
-                                        child: Icon(
-                                          FontAwesomeIcons.share,
-                                          size: 10,
-                                          color: Colors.grey[400],
-                                        ),
-                                      ),
-                                      Text(''),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                child: Icon(
-                                  FontAwesomeIcons.streetView,
-                                  size: 14,
-                                  color: Colors.grey[500],
-                                ),
-                                padding: EdgeInsets.only(
-                                  left: 5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
                 ],
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
               ),
-              Container(
-                color: Colors.white,
-                padding: EdgeInsets.all(10),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(
-                        right: 10,
-                      ),
-                      child: Icon(
-                        Icons.message,
-                        color: Colors.grey[500],
-                        size: 30,
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        constraints: BoxConstraints.tightForFinite(
-                          width: double.maxFinite,
-                          height: double.infinity,
-                        ),
-                        child: ListView.separated(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemBuilder: (BuildContext context, int i) {
-                            return Wrap(
-                              direction: Axis.horizontal,
-                              crossAxisAlignment: WrapCrossAlignment.end,
-                              runSpacing: 2,
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    right: 2,
-                                  ),
-                                  child: Text(
-                                    '出租车王师傅[¥0.21]:',
-                                    style: widget.context.style(
-                                        '/geosphere/listItemMsgTitle.text'),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    right: 2,
-                                  ),
-                                  child: Text(
-                                    '驾龄21年，服务七星。空车服务七星。驾龄21年，服务七星。空车服务七星。',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(),
-                                  child: Text(
-                                    '23:26',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.grey[400],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int i) {
-                            return Divider(
-                              color: Colors.grey[300],
-                            );
-                          },
-                          itemCount: 4,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-      SliverToBoxAdapter(
-        child: Container(
-          padding: EdgeInsets.only(
-            left: 0,
-            top: 20,
-            right: 0,
-            bottom: 10,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(
-                      left: 10,
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        Padding(
-                          child: Icon(
-                            FontAwesomeIcons.blind,
-                            size: 14,
-                            color: Colors.grey[600],
-                          ),
-                          padding: EdgeInsets.only(
-                            right: 5,
-                          ),
-                        ),
-                        GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
-                            widget.context.forward('/geosphere/visitorsEntry');
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: 2,
-                                ),
-                                child: Text(
-                                  '访客',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.grey[500],
-                                  ),
-                                ),
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      right: 2,
-                                    ),
-                                    child: Icon(
-                                      FontAwesomeIcons.reply,
-                                      color: Colors.grey[400],
-                                      size: 12,
-                                    ),
-                                  ),
-                                  Text(
-                                    '624',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.grey[700],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    children: <Widget>[
-                      GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          widget.context.forward('/geosphere/myspace');
-                        },
-                        child: Container(
-                          padding: EdgeInsets.only(
-                            right: 10,
-                          ),
-                          child: Row(
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      bottom: 2,
-                                    ),
-                                    child: Text(
-                                      '',
-                                    ),
-                                  ),
-                                  Row(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                          right: 2,
-                                        ),
-                                        child: Transform(
-                                          alignment: Alignment.center,
-                                          transform: Matrix4.identity()
-                                            ..rotateZ(80.1),
-                                          child: Icon(
-                                            FontAwesomeIcons.reply,
-                                            size: 10,
-                                            color: Colors.grey[400],
-                                          ),
-                                        ),
-                                      ),
-                                      Text(''),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                child: Icon(
-                                  FontAwesomeIcons.commentAlt,
-                                  size: 14,
-                                  color: Colors.grey[500],
-                                ),
-                                padding: EdgeInsets.only(
-                                  left: 5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          widget.context.forward('/geosphere/outlook');
-                        },
-                        child: Container(
-                          padding: EdgeInsets.only(
-                            right: 10,
-                          ),
-                          child: Row(
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      bottom: 2,
-                                    ),
-                                    child: Text(
-                                      '',
-                                    ),
-                                  ),
-                                  Row(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                          right: 2,
-                                        ),
-                                        child: Transform(
-                                          alignment: Alignment.center,
-                                          transform: Matrix4.identity()
-                                            ..rotateZ(80.1),
-                                          child: Icon(
-                                            FontAwesomeIcons.reply,
-                                            size: 10,
-                                            color: Colors.grey[400],
-                                          ),
-                                        ),
-                                      ),
-                                      Text(''),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                child: Icon(
-                                  FontAwesomeIcons.streetView,
-                                  size: 14,
-                                  color: Colors.grey[500],
-                                ),
-                                padding: EdgeInsets.only(
-                                  left: 5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-              ),
-              Container(
-                color: Colors.white,
-                padding: EdgeInsets.all(10),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(
-                        right: 10,
-                      ),
-                      child: Icon(
-                        Icons.message,
-                        color: Colors.grey[500],
-                        size: 30,
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        constraints: BoxConstraints.tightForFinite(
-                          width: double.maxFinite,
-                          height: double.infinity,
-                        ),
-                        child: ListView.separated(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemBuilder: (BuildContext context, int i) {
-                            return Wrap(
-                              direction: Axis.horizontal,
-                              crossAxisAlignment: WrapCrossAlignment.end,
-                              runSpacing: 2,
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    right: 2,
-                                  ),
-                                  child: Text(
-                                    '出租车王师傅[¥0.21]:',
-                                    style: widget.context.style(
-                                        '/geosphere/listItemMsgTitle.text'),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    right: 2,
-                                  ),
-                                  child: Text(
-                                    '驾龄21年，服务七星。空车服务七星。驾龄21年，服务七星。空车服务七星。',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(),
-                                  child: Text(
-                                    '23:26',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.grey[400],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int i) {
-                            return Divider(
-                              color: Colors.grey[300],
-                            );
-                          },
-                          itemCount: 4,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ];
-    return CustomScrollView(
-      controller: use_wallpapper?_controller:null,
-      slivers: panel,
     );
   }
 }

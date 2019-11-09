@@ -16,6 +16,7 @@ import 'package:gbera/portals/gbera/pages/geosphere/geo_insite.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_myspace.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_outlook.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_outsite.dart';
+import 'package:gbera/portals/gbera/pages/geosphere/geo_region.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_settings.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_upstream.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_visitors_entry.dart';
@@ -424,6 +425,15 @@ class GberaPortal {
           icon: GalleryIcons.shrine,
           url: '/geosphere',
           buildPage: (PageContext pageContext) => Geosphere(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '地方市场',
+          subtitle: '',
+          icon: GalleryIcons.shrine,
+          url: '/geosphere/region',
+          buildPage: (PageContext pageContext) => GeoRegion(
             context: pageContext,
           ),
         ),

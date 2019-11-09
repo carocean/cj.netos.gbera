@@ -364,6 +364,7 @@ class __HeaderState extends State<_Header> {
                               .part('/network/channel/serviceMenu', context);
                         }).then((value){
                           print('-----$value');
+                          if(value==null)return;
                           widget.context.forward('/micro/app',arguments: value);
                     });
                   },
@@ -398,6 +399,7 @@ class __HeaderState extends State<_Header> {
                           return widget.context
                               .part('/network/channel/site/output', context);
                         }).then((value) {
+                          if(value==null)return;
                           widget.context.forward('/channel/viewer');
                     });
                   },

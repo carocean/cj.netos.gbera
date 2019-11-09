@@ -280,6 +280,7 @@ void _buildPlatTab(List<Widget> panel, Channel widget, BuildContext context,
                                       '/network/channel/serviceMenu', context);
                                 }).then((value){
                               print('-----$value');
+                              if(value==null)return;
                               widget.context.forward('/micro/app',arguments: value);
                             });
                           },
