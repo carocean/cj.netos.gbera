@@ -80,6 +80,25 @@ class _GeosphereState extends State<Geosphere> {
         SliverToBoxAdapter(
           child: _Content(
             context: widget.context,
+            onTapMarchant: (value){
+              widget.context.forward('/site/marchant');
+            },
+            onTapDiscovery: (){
+              showModalBottomSheet(context: context, builder: (context){
+                return widget.context.part('/geosphere/discovery', context);
+              }).then((v){
+                print('----$v');
+
+              });
+            },
+            onTapGeoCircle: (){
+              showModalBottomSheet(context: context, builder: (context){
+                return widget.context.part('/geosphere/settings', context);
+              }).then((v){
+                print('----$v');
+
+              });
+            },
           ),
         ),
       ],
@@ -272,7 +291,7 @@ class _GeoRegion extends StatelessWidget {
                     children: <Widget>[
                       Padding(
                         child: Image.asset(
-                          'lib/portals/gbera/images/penquan.png',
+                          'lib/portals/gbera/images/yuanbao.png',
                           color: Colors.grey[600],
                           width: 20,
                           height: 20,
@@ -341,13 +360,15 @@ class _GeoRegion extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: Colors.white70,
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
                     ),
                     child: CardItem(
                       title: '市场',
+                      paddingBottom: 12,
+                      paddingTop: 12,
                       titleColor: Colors.grey[600],
                       leading: Icon(
-                        Icons.title,
+                        FontAwesomeIcons.trademark,
                         color: Colors.grey[500],
                         size: 20,
                       ),
@@ -369,74 +390,12 @@ class _GeoRegion extends StatelessWidget {
   }
 }
 
-class _Header extends StatefulWidget {
-  @override
-  __HeaderState createState() => __HeaderState();
-}
-
-class __HeaderState extends State<_Header> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-        top: 30,
-        left: 10,
-        right: 10,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(
-              right: 10,
-            ),
-            child: Text(
-              '我的地圈',
-              style: TextStyle(
-                fontSize: 20,
-              ),
-            ),
-          ),
-          Flexible(
-            fit: FlexFit.loose,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: 5,
-                  ),
-                  child: Icon(
-                    FontAwesomeIcons.streetView,
-                    size: 12,
-                    color: Colors.grey,
-                  ),
-                ),
-                Container(
-                  child: Text(
-                    '半径5公里',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _Content extends StatefulWidget {
   PageContext context;
-
-  _Content({this.context});
+  Function() onTapDiscovery;
+  Function() onTapGeoCircle;
+  Function(Object args) onTapMarchant;
+  _Content({this.context,this.onTapDiscovery,this.onTapMarchant,this.onTapGeoCircle});
 
   @override
   __ContentState createState() => __ContentState();
@@ -465,85 +424,102 @@ class __ContentState extends State<_Content> {
               children: <Widget>[
                 Flexible(
                   fit: FlexFit.loose,
-                  child: Container(
-                    padding: EdgeInsets.only(
-                      right: 10,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(
-                            right: 10,
-                          ),
-                          child: Text(
-                            '我的地圈',
-                            style: TextStyle(
-                              fontSize: 20,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      if(widget.onTapGeoCircle!=null){
+                        widget.onTapGeoCircle();
+                      }
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(
+                        right: 10,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                              right: 10,
+                            ),
+                            child: Text(
+                              '我的地圈',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
-                        ),
-                        Flexible(
-                          fit: FlexFit.loose,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  right: 5,
-                                ),
-                                child: Icon(
-                                  FontAwesomeIcons.streetView,
-                                  size: 12,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              Container(
-                                child: Text(
-                                  '半径5公里',
-                                  style: TextStyle(
+                          Flexible(
+                            fit: FlexFit.loose,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    right: 5,
+                                  ),
+                                  child: Icon(
+                                    FontAwesomeIcons.streetView,
+                                    size: 12,
                                     color: Colors.grey,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 12,
                                   ),
                                 ),
-                              ),
-                            ],
+                                Container(
+                                  child: Text(
+                                    '半径5公里',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Flexible(
-                      fit: FlexFit.loose,
-                      child: Container(
-                        child: Text(
-                          '发现|1930个',
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 12,
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    if(widget.onTapDiscovery!=null){
+                      widget.onTapDiscovery();
+                    }
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Flexible(
+                        fit: FlexFit.loose,
+                        child: Container(
+                          child: Text(
+                            '发现|1930个',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 12,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(
-                        left: 5,
-                      ),
-                      child: Icon(
-                        FontAwesomeIcons.filter,
-                        size: 12,
-                        color: Colors.grey,
-                      ),
-                    )
-                  ],
+                      Container(
+                        padding: EdgeInsets.only(
+                          left: 5,
+                        ),
+                        child: Icon(
+                          FontAwesomeIcons.filter,
+                          size: 12,
+                          color: Colors.grey,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -555,7 +531,8 @@ class __ContentState extends State<_Content> {
             ),
             constraints: BoxConstraints.tightForFinite(width: double.maxFinite),
             margin: EdgeInsets.only(
-              bottom: 5,
+              top: 5,
+              bottom: 10,
               left: 20,
               right: 20,
             ),
@@ -570,6 +547,12 @@ class __ContentState extends State<_Content> {
                 children: [
                   TextSpan(
                     text: '出租车王师傅',
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        if(widget.onTapMarchant!=null){
+                          widget.onTapMarchant({"uid":'出租车王师傅'});
+                        }
+                      },
                     style: TextStyle(
                       color: Colors.blueGrey,
                       fontWeight: FontWeight.w800,

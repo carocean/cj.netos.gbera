@@ -10,16 +10,10 @@ import 'package:gbera/portals/gbera/pages/desktop/desklets_settings.dart';
 import 'package:gbera/portals/gbera/pages/desktop/desktop_settings.dart';
 import 'package:gbera/portals/gbera/pages/desktop/portlet_list.dart';
 import 'package:gbera/portals/gbera/pages/geosphere.dart';
-import 'package:gbera/portals/gbera/pages/geosphere/geo_downstream.dart';
+import 'package:gbera/portals/gbera/pages/geosphere/geo_discovery.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_fountain.dart';
-import 'package:gbera/portals/gbera/pages/geosphere/geo_insite.dart';
-import 'package:gbera/portals/gbera/pages/geosphere/geo_myspace.dart';
-import 'package:gbera/portals/gbera/pages/geosphere/geo_outlook.dart';
-import 'package:gbera/portals/gbera/pages/geosphere/geo_outsite.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_region.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_settings.dart';
-import 'package:gbera/portals/gbera/pages/geosphere/geo_upstream.dart';
-import 'package:gbera/portals/gbera/pages/geosphere/geo_visitors_entry.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_yuanbao.dart';
 import 'package:gbera/portals/gbera/pages/market.dart';
 import 'package:gbera/portals/gbera/pages/market/entities_plus.dart';
@@ -434,6 +428,15 @@ class GberaPortal {
           icon: GalleryIcons.shrine,
           url: '/geosphere/region',
           buildPage: (PageContext pageContext) => GeoRegion(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '发现',
+          subtitle: '',
+          icon: GalleryIcons.shrine,
+          url: '/geosphere/discovery',
+          buildPage: (PageContext pageContext) => GeoDiscovery(
             context: pageContext,
           ),
         ),
@@ -865,70 +868,7 @@ class GberaPortal {
             context: pageContext,
           ),
         ),
-        Page(
-          title: '自地圈',
-          subtitle: '我的地圈动态进入我的地微',
-          icon: GalleryIcons.shrine,
-          url: '/geosphere/insite',
-          buildPage: (PageContext pageContext) => GeoInsite(
-            context: pageContext,
-          ),
-        ),
-        Page(
-          title: '到地圈',
-          subtitle: '我的地微推送到我的地圈',
-          icon: GalleryIcons.shrine,
-          url: '/geosphere/outsite',
-          buildPage: (PageContext pageContext) => GeoOutsite(
-            context: pageContext,
-          ),
-        ),
-        Page(
-          title: '自上游',
-          subtitle: '',
-          icon: GalleryIcons.shrine,
-          url: '/geosphere/upstream',
-          buildPage: (PageContext pageContext) => GeoUpstream(
-            context: pageContext,
-          ),
-        ),
-        Page(
-          title: '到下游',
-          subtitle: '',
-          icon: GalleryIcons.shrine,
-          url: '/geosphere/downstream',
-          buildPage: (PageContext pageContext) => GeoDownstream(
-            context: pageContext,
-          ),
-        ),
-        Page(
-          title: '到访客',
-          subtitle: '',
-          icon: GalleryIcons.shrine,
-          url: '/geosphere/visitorsEntry',
-          buildPage: (PageContext pageContext) => GeoVisitorsEntry(
-            context: pageContext,
-          ),
-        ),
-        Page(
-          title: '自地圈',
-          subtitle: '',
-          icon: GalleryIcons.shrine,
-          url: '/geosphere/outlook',
-          buildPage: (PageContext pageContext) => GeoOutlook(
-            context: pageContext,
-          ),
-        ),
-        Page(
-          title: '自地微',
-          subtitle: '',
-          desc: '个人的地理信息门户，里面有其发出的文章等，访客可申请访问，默认为公开',
-          icon: GalleryIcons.shrine,
-          url: '/geosphere/myspace',
-          buildPage: (PageContext pageContext) => GeoMySpace(
-            context: pageContext,
-          ),
-        ),
+
         Page(
           title: '银行卡',
           subtitle: '',

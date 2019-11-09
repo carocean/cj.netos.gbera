@@ -84,6 +84,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
   assets:
     - lib/portals/gbera/images/gbera.png
     - lib/portals/gbera/images/gbera_bk.png
@@ -101,3 +102,8 @@ flutter:
     - lib/portals/gbera/wallpapers/4.jpeg
     - lib/portals/gbera/wallpapers/5.jpeg
     - lib/portals/gbera/wallpapers/6.png
+
+  fonts:
+    - family: GberaIconFont
+      fonts:
+        - asset: lib/portals/gbera/fonts/geo_discovery.ttf
