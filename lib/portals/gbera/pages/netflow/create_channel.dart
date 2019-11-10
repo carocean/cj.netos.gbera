@@ -30,8 +30,46 @@ class _CreateChannelState extends State<CreateChannel> {
             Icons.clear,
           ),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.check,
+            ),
+            onPressed: () {},
+          ),
+        ],
       ),
-      body: Container(),
+      body: Container(
+        constraints: BoxConstraints.expand(),
+        alignment: Alignment.center,
+        child: Container(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 20,
+            bottom: 60,
+          ),
+          margin: EdgeInsets.only(
+            left: 20,
+            right: 20,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextField(
+                autofocus: true,
+                decoration: InputDecoration(
+                  labelText: '管道名',
+                  hintText: '输入名称',
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

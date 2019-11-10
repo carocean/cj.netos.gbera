@@ -36,6 +36,15 @@ class _ChannelViewerState extends State<ChannelViewer> {
               title: '',
               items: [
                 _CardItem(
+                  title: '管道号',
+                  tipsText: '00383882827222',
+                  operator: Icon(
+                    Icons.content_copy,
+                    color: Colors.grey[400],
+                    size: 18,
+                  ),
+                ),
+                _CardItem(
                   title: '拥有者',
                   tipsText: '大飞果果',
                 ),

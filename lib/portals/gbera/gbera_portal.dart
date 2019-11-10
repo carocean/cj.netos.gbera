@@ -29,6 +29,7 @@ import 'package:gbera/portals/gbera/pages/netflow/channel_popularize.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_qrcode.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_rename.dart';
 import 'package:gbera/portals/gbera/pages/netflow/create_channel.dart';
+import 'package:gbera/portals/gbera/pages/netflow/publics_settings.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publish_article.dart';
 import 'package:gbera/portals/gbera/pages/netflow/scan_channel.dart';
 import 'package:gbera/portals/gbera/pages/netflow/search_channel.dart';
@@ -303,7 +304,7 @@ class GberaPortal {
           ),
         ),
         Page(
-          title: '扫码管道',
+          title: '管道信息',
           subtitle: '',
           icon: FontAwesomeIcons.qrcode,
           url: '/netflow/manager/scan_channel',
@@ -326,6 +327,15 @@ class GberaPortal {
           icon: Icons.settings_input_composite,
           url: '/netflow/manager/channel_gateway',
           buildPage: (PageContext pageContext) => ChannelGateway(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '公众活动设置',
+          subtitle: '',
+          icon: Icons.settings_input_composite,
+          url: '/netflow/manager/publics',
+          buildPage: (PageContext pageContext) => PublicsSettings(
             context: pageContext,
           ),
         ),
@@ -909,7 +919,7 @@ class GberaPortal {
           ),
         ),
         Page(
-          title: '联系人',
+          title: '公众',
           subtitle: '',
           icon: FontAwesomeIcons.addressBook,
           url: '/contact/list',

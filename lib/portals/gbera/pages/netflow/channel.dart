@@ -143,51 +143,7 @@ void _buildPlatTab(List<Widget> panel, Channel widget, BuildContext context,
       ),
     ),
   );
-  var nopass = SliverToBoxAdapter(
-    child: Card(
-      shape: Border(),
-      elevation: 0,
-      margin: EdgeInsets.only(bottom: 15),
-      color: Colors.transparent,
-      child: Container(
-        margin: EdgeInsets.all(10),
-        child: Text.rich(
-          TextSpan(
-            children: [
-              TextSpan(
-                text: '云台花园[¥6.25]:',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: Colors.blueGrey,
-                ),
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    showModalBottomSheet(
-                        context: context,
-                        builder: (context) {
-                          return widget.context
-                              .part('/site/insite/request', context);
-                        });
-                  },
-                children: [
-                  TextSpan(
-                    style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      color: Colors.black,
-                    ),
-                    text:
-                        '日前，世界文化遗产、日本冲绳县那霸市首里城发生大火，主要建筑物付之一炬。目前，冲绳县警方已基本确定起火点位于首里城正殿一层.',
-                  ),
-                ],
-              ),
-            ],
-          ),
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
-    ),
-  );
+
   var item = SliverToBoxAdapter(
     child: Card(
       shape: Border(),
@@ -686,7 +642,6 @@ void _buildPlatTab(List<Widget> panel, Channel widget, BuildContext context,
     ),
   );
   panel.add(header);
-  panel.add(nopass);
   panel.add(item);
   panel.add(item);
 }

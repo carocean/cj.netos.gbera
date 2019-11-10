@@ -48,7 +48,7 @@ class InSiteRequest extends StatelessWidget {
                         ),
                         children: [
                           TextSpan(
-                            text: '大飞果果',
+                            text: '大理-家丽',
                             style: TextStyle(
                               color: Colors.blueGrey,
                               fontWeight: FontWeight.w800,
@@ -67,7 +67,7 @@ class InSiteRequest extends StatelessWidget {
                             ),
                           ),
                           TextSpan(
-                            text: '云台花园',
+                            text: '随便漫谈',
                             style: TextStyle(
                               color: Colors.blueGrey,
                               fontWeight: FontWeight.w800,
@@ -123,15 +123,29 @@ class InSiteRequest extends StatelessWidget {
                                     padding: EdgeInsets.only(
                                       left: 5,
                                     ),
-                                    child: Text('¥6.25'),
+                                    child: Text.rich(
+                                      TextSpan(
+                                        text: '',
+                                        children: [
+                                          TextSpan(text: '以加入我的管道'),
+                                          TextSpan(text: '  '),
+                                          TextSpan(text: '¥6.25'),
+                                        ],
+                                        style: TextStyle(
+                                          color: Colors.grey[500],
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                   Padding(
                                     padding: EdgeInsets.only(
                                       left: 5,
                                     ),
                                     child: Icon(
-                                      Icons.check,
+                                      Icons.arrow_forward_ios,
                                       size: 16,
+                                      color: Colors.grey[400],
                                     ),
                                   ),
                                 ],
@@ -151,9 +165,70 @@ class InSiteRequest extends StatelessWidget {
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Text('拒绝接收其信息'),
+                              Text('仅拒绝接收其该管道信息'),
                               Row(
                                 children: <Widget>[],
+                              )
+                            ],
+                          ),
+                        ),
+                        Divider(
+                          height: 1,
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(
+                            top: 10,
+                            bottom: 10,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text('拒绝接收其所有管道信息'),
+                              Row(
+                                children: <Widget>[],
+                              )
+                            ],
+                          ),
+                        ),
+                        Divider(
+                          height: 1,
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(
+                            top: 10,
+                            bottom: 10,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text('什么也不做'),
+                              Row(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      left: 5,
+                                    ),
+                                    child: Text(
+                                      '公众活动将继续接收到其信息',
+                                      style: TextStyle(
+                                        color: Colors.grey[500],
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      left: 5,
+                                    ),
+                                    child: Icon(
+                                      Icons.check,
+                                      size: 16,
+                                      color: Colors.grey[400],
+                                    ),
+                                  ),
+                                ],
                               )
                             ],
                           ),

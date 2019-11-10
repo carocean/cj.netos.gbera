@@ -46,6 +46,18 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                 title: '',
                 items: [
                   _CardItem(
+                    title: '管道号',
+                    tipsText: '003838838727272',
+                    onItemTap: () {
+                      widget.context.forward('/netflow/channel/rename');
+                    },
+                    operator: Icon(
+                      Icons.content_copy,
+                      color: Colors.grey[400],
+                      size: 18,
+                    ),
+                  ),
+                  _CardItem(
                     title: '名称',
                     tipsText: '${widget.title}',
                     onItemTap: () {
@@ -133,8 +145,7 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                     title: '地圈',
                     tipsText: '是否充许本管道的信息推送到我的地圈',
                     operator: _MySwitch(),
-                    onItemTap: () {
-                    },
+                    onItemTap: () {},
                   ),
                   _CardItem(
                     title: '管道',
@@ -146,7 +157,8 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                   _CardItem(
                     title: '网关',
                     onItemTap: () {
-                      widget.context.forward('/netflow/channel/outsite/gateway');
+                      widget.context
+                          .forward('/netflow/channel/outsite/gateway');
                     },
                   ),
                 ],
