@@ -75,7 +75,7 @@ class _NetflowState extends State<Netflow> {
       ),
       Activity(
         who: '大理-家丽',
-        money: '50.32',
+        money: '6.25',
         picCount: 1,
         time: '1分钟前',
         channel: '随便漫谈',
