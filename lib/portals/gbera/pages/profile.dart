@@ -283,6 +283,60 @@ class Profile extends StatelessWidget {
             height: 1,
             indent: 40,
           ),
+          Container(
+            padding: EdgeInsets.only(
+              top: 15,
+              bottom: 15,
+            ),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+//                this.context.forward('/contact/list');
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: 10,
+                    ),
+                    child: Icon(
+                      this.context.findPage('/contact/list').icon,
+                      size: 30,
+                      color:
+                      this.context.style('/profile/list/item-icon.color'),
+                    ),
+                  ),
+                  Expanded(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          '微站',
+                          style: this
+                              .context
+                              .style('/profile/list/item-title.text'),
+                        ),
+                        Icon(
+                          Icons.keyboard_arrow_right,
+                          size: 20,
+                          color: Colors.grey[400],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Divider(
+            height: 1,
+            indent: 40,
+          ),
           //安全与隐私
           Container(
             padding: EdgeInsets.only(

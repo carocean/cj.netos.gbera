@@ -127,7 +127,7 @@ class InSiteRequest extends StatelessWidget {
                                       TextSpan(
                                         text: '',
                                         children: [
-                                          TextSpan(text: '以加入到我的管道'),
+                                          TextSpan(text: '加入到我的管道方可查看'),
                                           TextSpan(text: '  可获得:'),
                                           TextSpan(text: '¥6.25'),
                                         ],

@@ -12,6 +12,7 @@ class ChannelViewer extends StatefulWidget {
 }
 
 class _ChannelViewerState extends State<ChannelViewer> {
+  var _injection=true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,12 +50,21 @@ class _ChannelViewerState extends State<ChannelViewer> {
                   tipsText: '大飞果果',
                 ),
                 _CardItem(
+                  title: '微站',
+                  tipsText: '万达集团',
+                ),
+                _CardItem(
                   title: '动态',
                   tipsText: '983条',
                 ),
                 _CardItem(
-                  title: '微站',
-                  tipsText: '百味果园;万达集团',
+                  title: _injection?'已关注':'关注',
+                  tipsText: '以接收或拒绝该管道的动态',
+                  operator: Switch.adaptive(value: _injection, onChanged: (v) {
+                    setState(() {
+                      _injection=!_injection;
+                    });
+                  }),
                 ),
               ],
             ),
@@ -66,15 +76,27 @@ class _ChannelViewerState extends State<ChannelViewer> {
           ),
           SliverToBoxAdapter(
             child: _Card(
-              title: '入站',
+              title: '管道进口',
               items: [
                 _CardItem(
-                  title: '管道',
+                  title: '公众',
                   tipsText: '1200个',
                 ),
+              ],
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              height: 10,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: _Card(
+              title: '管道出口',
+              items: [
                 _CardItem(
-                  title: '申请',
-                  tipsText: '申请入站连结',
+                  title: '公众',
+                  tipsText: '246.32万个',
                 ),
               ],
             ),
@@ -86,15 +108,11 @@ class _ChannelViewerState extends State<ChannelViewer> {
           ),
           SliverToBoxAdapter(
             child: _Card(
-              title: '出站',
+              title: '',
               items: [
                 _CardItem(
-                  title: '管道',
-                  tipsText: '246.32万个',
-                ),
-                _CardItem(
-                  title: '申请',
-                  tipsText: '已通过',
+                  title: '转让',
+                  tipsText: '该管道出售，¥1.25万元',
                 ),
               ],
             ),

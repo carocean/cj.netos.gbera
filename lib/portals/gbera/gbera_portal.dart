@@ -29,6 +29,7 @@ import 'package:gbera/portals/gbera/pages/netflow/channel_popularize.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_qrcode.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_rename.dart';
 import 'package:gbera/portals/gbera/pages/netflow/create_channel.dart';
+import 'package:gbera/portals/gbera/pages/netflow/publics_activities.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publics_settings.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publish_article.dart';
 import 'package:gbera/portals/gbera/pages/netflow/scan_channel.dart';
@@ -331,12 +332,21 @@ class GberaPortal {
           ),
         ),
         Page(
-          title: '公众活动设置',
+          title: '活动设置',
           subtitle: '',
           icon: Icons.settings_input_composite,
           url: '/netflow/manager/publics',
           buildPage: (PageContext pageContext) => PublicsSettings(
             context: pageContext,
+          ),
+        ),
+        Page(
+          title: '公众活动',
+          subtitle: '',
+          icon: Icons.settings_input_composite,
+          url: '/netflow/publics/activities',
+          buildPage: (PageContext pageContext) => PublicActivies(
+            pageContext: pageContext,
           ),
         ),
         Page(

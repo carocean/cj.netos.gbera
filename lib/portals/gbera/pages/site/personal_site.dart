@@ -64,7 +64,7 @@ class _PersonalSiteState extends State<PersonalSite> {
             child: _OperatorCard(
               operators: [
                 _Operator(
-                  text: '发消息',
+                  text: '发私信',
                   iconData: Icons.chat,
                 ),
                 _Operator(

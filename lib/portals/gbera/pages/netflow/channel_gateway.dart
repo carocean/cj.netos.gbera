@@ -25,16 +25,18 @@ class _ChannelGatewayState extends State<ChannelGateway> {
           '管道设置',
         ),
         titleSpacing: 0,
-        elevation: 0,
+        centerTitle: true,
         automaticallyImplyLeading: false,
-        leading: IconButton(
-          onPressed: () {
-            widget.context.backward();
-          },
-          icon: Icon(
-            Icons.clear,
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {
+              widget.context.backward();
+            },
+            icon: Icon(
+              Icons.clear,
+            ),
           ),
-        ),
+        ],
       ),
       body: Container(
         constraints: BoxConstraints.expand(),
@@ -78,6 +80,13 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                       widget.context.forward('/site/marchant');
                     },
                   ),
+                  _CardItem(
+                    title: '动态',
+                    tipsText: '245篇',
+                    onItemTap: () {
+
+                    },
+                  ),
                 ],
               ),
             ),
@@ -98,10 +107,10 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                     },
                   ),
                   _CardItem(
-                    title: '访客',
-                    tipsText: '2910.324万人',
+                    title: '转让',
+                    tipsText: '受让方除得到本管道且连同所属微站',
                     onItemTap: () {
-                      widget.context.forward('/netflow/channel/visitors');
+                      widget.context.forward('/netflow/channel/popularize');
                     },
                   ),
                 ],
@@ -114,21 +123,15 @@ class _ChannelGatewayState extends State<ChannelGateway> {
             ),
             SliverToBoxAdapter(
               child: _Card(
-                title: '入站设置',
+                title: '管道进口',
                 items: [
                   _CardItem(
-                    title: '管道',
-                    tipsText: '未审批135个|共1210个',
+                    title: '公众',
+                    tipsText: '如果不愿接收某人的信息可将他移除',
                     onItemTap: () {
                       widget.context.forward('/netflow/channel/insite');
                     },
                   ),
-                  _CardItem(
-                    title: '网关',
-                    onItemTap: () {
-                      widget.context.forward('/netflow/channel/insite/gateway');
-                    },
-                  ),
                 ],
               ),
             ),
@@ -139,27 +142,20 @@ class _ChannelGatewayState extends State<ChannelGateway> {
             ),
             SliverToBoxAdapter(
               child: _Card(
-                title: '出站设置',
+                title: '管道出口',
                 items: [
+                  _CardItem(
+                    title: '公众',
+                    tipsText: '如果不愿让某人接收信息可将他移除',
+                    onItemTap: () {
+                      widget.context.forward('/netflow/channel/insite');
+                    },
+                  ),
                   _CardItem(
                     title: '地圈',
                     tipsText: '是否充许本管道的信息推送到我的地圈',
                     operator: _MySwitch(),
                     onItemTap: () {},
-                  ),
-                  _CardItem(
-                    title: '管道',
-                    tipsText: '未审批86个|共283万个',
-                    onItemTap: () {
-                      widget.context.forward('/netflow/channel/insite');
-                    },
-                  ),
-                  _CardItem(
-                    title: '网关',
-                    onItemTap: () {
-                      widget.context
-                          .forward('/netflow/channel/outsite/gateway');
-                    },
                   ),
                 ],
               ),
