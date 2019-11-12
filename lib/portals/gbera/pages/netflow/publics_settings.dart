@@ -44,21 +44,15 @@ class _PublicsSettingsState extends State<PublicsSettings> {
                 CardItem(
                   title: '微站',
                 ),
+                CardItem(
+                  title: '管道',
+                ),
               ],
             ),
           ),
           SliverToBoxAdapter(
             child: Container(
               height: 10,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: _Card(
-              items: <Widget>[
-                CardItem(
-                  title: '管道',
-                ),
-              ],
             ),
           ),
           SliverToBoxAdapter(

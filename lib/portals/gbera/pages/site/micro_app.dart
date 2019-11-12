@@ -134,6 +134,9 @@ class _TitleBar extends StatelessWidget {
                         PopupMenuItem(
                           child: Text('关于'),
                         ),
+                        PopupMenuItem(
+                          child: Text('转让'),
+                        ),
                       ];
                     },
                   ),

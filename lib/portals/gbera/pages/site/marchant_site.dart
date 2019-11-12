@@ -38,6 +38,11 @@ class _MarchantSiteState extends State<MarchantSite> {
   var _controller;
 
   @override
+  void dispose() {
+    _controller=null;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

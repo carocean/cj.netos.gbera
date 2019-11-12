@@ -17,6 +17,8 @@ class ChannelGateway extends StatefulWidget {
 }
 
 class _ChannelGatewayState extends State<ChannelGateway> {
+  bool _isInvisualabled = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,6 +68,7 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                       widget.context.forward('/netflow/channel/rename');
                     },
                   ),
+
                   _CardItem(
                     title: '二维码',
                     tipsIconData: FontAwesomeIcons.qrcode,
@@ -83,8 +86,23 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                   _CardItem(
                     title: '动态',
                     tipsText: '245篇',
+                    onItemTap: () {},
+                  ),
+                  _CardItem(
+                    title: '对他人可见',
+                    tipsText: '为完全开放，他人可见公众和地圈',
+                    operator: SizedBox(
+                      height: 20,
+                      child: Switch.adaptive(
+                          value: _isInvisualabled,
+                          onChanged: (v) {
+                            setState(() {
+                              _isInvisualabled = !_isInvisualabled;
+                            });
+                          }),
+                    ),
                     onItemTap: () {
-
+                      widget.context.forward('/netflow/channel/rename');
                     },
                   ),
                 ],

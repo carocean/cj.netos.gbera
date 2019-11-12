@@ -14,6 +14,31 @@ class PersonalSite extends StatefulWidget {
 }
 
 class _PersonalSiteState extends State<PersonalSite> {
+  _PersonalSiteState()
+      : _controller = ScrollController(initialScrollOffset: 0.0),
+        showOnAppbar = false {
+    _controller.addListener(() {
+      if (_controller.offset >= 40) {
+        setState(() {
+          showOnAppbar = true;
+        });
+        return;
+      }
+      if (_controller.offset < 40) {
+        setState(() {
+          showOnAppbar = false;
+        });
+        return;
+      }
+    });
+  }
+
+  bool _check_showAssociationWithSuperior = false;
+
+  bool showOnAppbar;
+  var _controller;
+  bool _isFollowed = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +46,7 @@ class _PersonalSiteState extends State<PersonalSite> {
         titleSpacing: 0,
         elevation: 0,
         automaticallyImplyLeading: false,
+        centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
           onPressed: () {
@@ -30,6 +56,7 @@ class _PersonalSiteState extends State<PersonalSite> {
             Icons.clear,
           ),
         ),
+        title: showOnAppbar ? Text('A-Winnie地空雷') : Text(''),
         actions: <Widget>[
           IconButton(
             onPressed: () {
@@ -44,6 +71,7 @@ class _PersonalSiteState extends State<PersonalSite> {
       ),
       body: CustomScrollView(
         shrinkWrap: true,
+        controller: _controller,
         slivers: <Widget>[
           SliverToBoxAdapter(
             child: _Header(
@@ -53,6 +81,85 @@ class _PersonalSiteState extends State<PersonalSite> {
               uid: '008383827727366',
               address: '广东 广州',
               signText: '好的皮千遍一律，有趣的灵魂万里挑一',
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              height: 10,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              color: Colors.white,
+              child: Center(
+                child: FlatButton(
+                  child: Text(
+                    _isFollowed ? '不再关注' : '关注',
+                    style: TextStyle(
+                      color: Colors.blueGrey,
+                    ),
+                  ),
+                  onPressed: () {
+                    showCupertinoModalPopup(
+                        context: context,
+                        builder: (context) {
+                          return CupertinoActionSheet(
+                            actions: <Widget>[
+                              CupertinoActionSheetAction(
+                                onPressed: () {
+                                  widget.context.backward(
+                                      result: <String, Object>{
+                                        'action': 'all_channel'
+                                      });
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    right: 5,
+                                  ),
+                                  child: Text.rich(
+                                    TextSpan(
+                                      text: '关注他所有管道活动',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                      children: [
+                                        TextSpan(text: '\r\n'),
+                                        TextSpan(
+                                          text: '可以有选择的关注其管道活动->取消此对话框进入他的管道',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              CupertinoActionSheetAction(
+                                onPressed: () {
+                                  widget.context.backward();
+                                },
+                                isDestructiveAction: true,
+                                child: Text('取消'),
+                              ),
+                            ],
+                          );
+                        }).then((v) {
+                      if (v == null) {
+                        return;
+                      }
+                      switch (v['action']) {
+                        case 'all_channel':
+                          setState(() {
+                            _isFollowed = !_isFollowed;
+                          });
+                          break;
+                      }
+                    });
+                  },
+                ),
+              ),
             ),
           ),
           SliverToBoxAdapter(
@@ -84,10 +191,106 @@ class _PersonalSiteState extends State<PersonalSite> {
             ),
           ),
           SliverToBoxAdapter(
+            child: Container(
+              padding: EdgeInsets.only(
+                left: 10,
+                bottom: 2,
+                top: 5,
+              ),
+              child: Text(
+                '微站',
+                style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                    color: Colors.grey[600]),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
             child: _Body(
               channelItems: [
                 _ChannelItemInfo(
-                  title: '公共',
+                  title: '兰州拉面馆',
+                  images: [
+                    'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
+                    'http://b-ssl.duitang.com/uploads/item/201510/10/20151010054541_3YmaC.jpeg',
+                    'http://b-ssl.duitang.com/uploads/item/201610/10/20161010221028_3Xzwi.jpeg',
+                    'http://cdn.duitang.com/uploads/item/201606/14/20160614002619_WfLXj.jpeg',
+                  ],
+                ),
+                _ChannelItemInfo(
+                  title: '天主教堂',
+                  images: [
+                    'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
+                    'http://b-ssl.duitang.com/uploads/item/201510/10/20151010054541_3YmaC.jpeg',
+                    'http://b-ssl.duitang.com/uploads/item/201610/10/20161010221028_3Xzwi.jpeg',
+                    'http://cdn.duitang.com/uploads/item/201606/14/20160614002619_WfLXj.jpeg',
+                  ],
+                ),
+              ],
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              height: 10,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              padding: EdgeInsets.only(
+                left: 10,
+                bottom: 2,
+                top: 5,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.only(
+                      right: 10,
+                    ),
+                    child: FilterChip(
+                      elevation: 0,
+                      avatar: !_check_showAssociationWithSuperior? Icon(
+                        FontAwesomeIcons.filter,
+                        size: 14,
+                        color: Colors.grey[700],
+                      ):null,
+                      label: Text(''),
+                      padding: EdgeInsets.all(0),
+                      labelPadding: EdgeInsets.all(0),
+                      pressElevation: 0,
+                      tooltip: '选上可以看仅与上级用户相关的管道，即仅为当前用户管道的进口公众里包含上级用户的才列出',
+                      selected: _check_showAssociationWithSuperior,
+                      onSelected: (v) {
+                        setState(() {
+                          _check_showAssociationWithSuperior =
+                              !_check_showAssociationWithSuperior;
+                        });
+                      },
+                    ),
+                  ),
+                  Text(
+                    _check_showAssociationWithSuperior ? '仅看与你相关的管道' : '全部管道',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Colors.grey[600]),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: _Body(
+              channelItems: [
+                _ChannelItemInfo(
+                  title: '豫江南',
+                  onTap:(){
+                    widget.context.forward('/netflow/channel/portal');
+
+                  },
                   images: [
                     'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
                     'http://b-ssl.duitang.com/uploads/item/201510/10/20151010054541_3YmaC.jpeg',
@@ -97,6 +300,10 @@ class _PersonalSiteState extends State<PersonalSite> {
                 ),
                 _ChannelItemInfo(
                   title: '熟人圈',
+                  onTap:(){
+                    widget.context.forward('/netflow/channel/portal');
+
+                  },
                   images: [
                     'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
                     'http://b-ssl.duitang.com/uploads/item/201510/10/20151010054541_3YmaC.jpeg',
@@ -106,6 +313,10 @@ class _PersonalSiteState extends State<PersonalSite> {
                 ),
                 _ChannelItemInfo(
                   title: '地推',
+                  onTap:(){
+                    widget.context.forward('/netflow/channel/portal');
+
+                  },
                   images: [
                     'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
                     'http://b-ssl.duitang.com/uploads/item/201510/10/20151010054541_3YmaC.jpeg',
@@ -115,6 +326,10 @@ class _PersonalSiteState extends State<PersonalSite> {
                 ),
                 _ChannelItemInfo(
                   title: '中山大学社区',
+                  onTap:(){
+                    widget.context.forward('/netflow/channel/portal');
+
+                  },
                   images: [
                     'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
                     'http://b-ssl.duitang.com/uploads/item/201510/10/20151010054541_3YmaC.jpeg',
@@ -359,8 +574,8 @@ class __HeaderState extends State<_Header> {
 class _ChannelItemInfo {
   String title;
   List images;
-
-  _ChannelItemInfo({this.title, this.images});
+  Function() onTap;
+  _ChannelItemInfo({this.title, this.images,this.onTap});
 }
 
 class _Body extends StatefulWidget {
@@ -379,7 +594,7 @@ class __BodyState extends State<_Body> {
       color: Colors.white,
       child: Column(
         children: widget.channelItems.map((value) {
-          return Column(
+          return GestureDetector(behavior: HitTestBehavior.opaque,onTap: value.onTap,child: Column(
             children: <Widget>[
               _ChannelItem(
                 title: value.title,
@@ -390,7 +605,7 @@ class __BodyState extends State<_Body> {
                 indent: 20,
               ),
             ],
-          );
+          ),);
         }).toList(),
       ),
     );
@@ -401,7 +616,8 @@ class _ChannelItem extends StatefulWidget {
   List images = [];
   String title;
 
-  _ChannelItem({this.title = '', this.images});
+
+  _ChannelItem({this.title = '', this.images, });
 
   @override
   __ChannelItemState createState() => __ChannelItemState();

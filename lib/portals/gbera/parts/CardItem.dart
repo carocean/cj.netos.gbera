@@ -12,7 +12,6 @@ class CardItem extends StatefulWidget {
   double paddingTop;
   double paddingBottom;
   Function() onItemTap;
-
   CardItem({
     this.title,
     this.subtitle,
