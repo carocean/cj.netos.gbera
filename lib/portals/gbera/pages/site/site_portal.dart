@@ -5,39 +5,40 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/util.dart';
 
-class ChannelPortal extends StatefulWidget {
+class SitePortal extends StatefulWidget {
   PageContext context;
 
-  ChannelPortal({this.context});
+  SitePortal({this.context});
 
   @override
-  _ChannelPortalState createState() => _ChannelPortalState();
+  _SitePortalState createState() => _SitePortalState();
 }
 
-class _ChannelPortalState extends State<ChannelPortal> {
-  _ChannelPortalState()
+class _SitePortalState extends State<SitePortal> {
+  _SitePortalState()
       : _controller = ScrollController(initialScrollOffset: 0.0),
         showAppBar = false {
     _controller.addListener(_scrollListener);
   }
+
   @override
   void dispose() {
     super.dispose();
     _controller?.dispose();
   }
+
   _scrollListener() {
-    var sub=Adapt.screenH()/3-60;
-    print('${_controller.offset}----$sub');
+    var sub = Adapt.screenH() / 3 - 90;
     if (_controller.offset > sub) {
-      if(!showAppBar) {
+      if (!showAppBar) {
         setState(() {
           showAppBar = true;
         });
       }
       return;
     }
-    if (_controller.offset <sub) {
-      if(showAppBar) {
+    if (_controller.offset < sub) {
+      if (showAppBar) {
         setState(() {
           showAppBar = false;
         });
@@ -45,6 +46,7 @@ class _ChannelPortalState extends State<ChannelPortal> {
       return;
     }
   }
+
   ScrollController _controller;
   bool showAppBar = false;
 
@@ -74,15 +76,17 @@ class _ChannelPortalState extends State<ChannelPortal> {
     return SliverAppBar(
       titleSpacing: 0,
       pinned: true,
-      floating: false,
-      snap: false,
+      floating: true,
+      snap: true,
       elevation: 0,
       expandedHeight: Adapt.screenH() / 3,
       backgroundColor: showAppBar ? Theme.of(context).appBarTheme.color : null,
       automaticallyImplyLeading: true,
-      centerTitle: false,
-      title: showAppBar ? Text('cj') : null,
-      flexibleSpace:  _Header(showAppBar: showAppBar,),
+      centerTitle: true,
+      title: showAppBar ? Text('中国邮政') : null,
+      flexibleSpace: _Header(
+        showAppBar: showAppBar,
+      ),
     );
   }
 }
@@ -99,8 +103,11 @@ class _Header extends StatefulWidget {
 class __HeaderState extends State<_Header> {
   @override
   Widget build(BuildContext context) {
-    if(widget.showAppBar){
-      return Container(width: 0,height: 0,);
+    if (widget.showAppBar) {
+      return Container(
+        width: 0,
+        height: 0,
+      );
     }
 
     return Container(
@@ -108,7 +115,7 @@ class __HeaderState extends State<_Header> {
       decoration: BoxDecoration(
         image: DecorationImage(
           image: NetworkImage(
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573584350457&di=348e3a088908202dd5e5aae49ff6fe17&imgtype=0&src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F2017-11-17%2F5a0e94afc140c.jpg',
+            'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3041958106,557182480&fm=26&gp=0.jpg',
           ),
           fit: BoxFit.cover,
         ),
@@ -132,19 +139,19 @@ class __HeaderState extends State<_Header> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(6.0),
                         child: Image.network(
-                          'http://cdn1.mmia.com/spfocusimg/2012/914/renwu7121.jpg',
+                          'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573752021369&di=29710e18090404bf7e89a71c89996c0b&imgtype=0&src=http%3A%2F%2Fi1.ymfile.com%2Fuploads%2Fproduct%2F08%2F27%2Fx1_1.1377571169_489_142_14295.jpg',
                           height: 60,
                           width: 60,
-                          fit: BoxFit.cover,
+                          fit: BoxFit.fill,
                         ),
                       ),
                     ),
                     Container(
                       child: Text(
-                        '没有行囊，没有目的，我孤独的走在路上。',
+                        '提供贴心服务',
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
-                          color: Colors.white,
+                          color: Colors.grey,
                           fontSize: 12,
                         ),
                         maxLines: 1,
@@ -153,13 +160,12 @@ class __HeaderState extends State<_Header> {
                     ),
                   ],
                 ),
-                Container(
+                Padding(
                   padding: EdgeInsets.only(
                     top: 5,
                   ),
                   child: Text(
-                    'cj',
-                    textAlign: TextAlign.center,
+                    '中国邮政',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       color: Colors.grey[800],
@@ -232,6 +238,7 @@ class _MessageCard extends StatefulWidget {
 }
 
 class __MessageCardState extends State<_MessageCard> {
+  int _maxLines=4;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -275,7 +282,7 @@ class __MessageCardState extends State<_MessageCard> {
                         },
                         behavior: HitTestBehavior.opaque,
                         child: Text(
-                          '今天 12:30',
+                          '昨天 8:51',
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             color: Colors.grey[900],
@@ -297,11 +304,30 @@ class __MessageCardState extends State<_MessageCard> {
                     //内容区
                     padding: EdgeInsets.only(top: 10, bottom: 10),
                     alignment: Alignment.topLeft,
-                    child: Text(
-                      '据香港商报网官博消息，11日，马鞍山一男子疑因政见不同，遭暴徒泼易燃液体点火，造成四成皮肤二级烧伤。由全国政协副主席、前行政长官梁振英发起和成立的803基金，旗下悬红爆料网站803.hk，悬赏30万港币缉拿凶手。                      此外，还有四个新增悬赏案件分别为：11.11在葵芳站运作中的港铁车厢纵火，造成乘客惊恐走避，悬赏30万港币;11.11在路面纵火和向行驶中校巴掷汽油弹，学童和乘客受惊，悬赏30万港币;11.11向行驶中港铁列车及铁轨掷铁枝及单车，险酿意外，悬赏30万港币;11.10沙田美心皇宫被严重“装修”，继续破坏不支持暴行的商户和食肆，悬赏20万港币。',
+                    child: Text.rich(
+                      TextSpan(
+                        text:
+                            '11月11日晚，在全系统“双11”旺季生产运行的关键时点，集团公司党组书记、董事长刘爱力，副总经理张荣林一行来到北京邮件综合处理中心，了解邮政“双11”生产运行情况，慰问一线干部员工，强调要充分认识做好“双11”服务保障工作的重要意义，按照“争市场、强重点、重体验、保稳定”的总体要求和集团公司的部署安排，坚定信心、铆足干劲，精心组织、全网联动，全力打赢“双11”旺季生产运行攻坚战。',
+                        children: [
+                        ],
+                        recognizer: TapGestureRecognizer()..onTap = () {
+                          print('xxxxx');
+                          if(_maxLines<=4) {
+                            setState(() {
+                              _maxLines = 1000;
+                            });
+                          }else{
+                            setState(() {
+                              _maxLines = 4;
+                            });
+                          }
+                        },
+                      ),
                       style: TextStyle(
                         fontSize: 15,
                       ),
+                      maxLines: _maxLines,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   Container(
@@ -316,9 +342,9 @@ class __MessageCardState extends State<_MessageCard> {
                                   '/images/viewer',
                                   arguments: {
                                     'imgSrc':
-                                        'http://www.zdyrs.com/uploadfile/2015/1205/20151205012936705.jpg',
+                                        'http://www.chinapost.com.cn/res/ChinaPostJT/1911/19115270.jpg',
                                     'text':
-                                        '【#越南偷渡幸存者曾被发刀片#，随时准备逃生：为谋生要接受死亡】11月1日，英国警方发表声明称，早前死亡#货车内39名遇难者均为越南人#。越南方面称具体身份仍需查清，这是一场严重的人道惨剧。越南人Tran Khanh Toan2006年曾藏身集装箱偷渡到英国，但到了英国后因无法维持生计，又回到越南。他对梨视频拍客讲述了自己偷渡时有人在跳下集装箱时被卷入车轮，不幸遇难。而且藏身帆布货车的偷渡者，往往会被发刀片随时用来划开帆布跳车逃生',
+                                        '新华社北京11月13日电（记者赵文君）今年“双11”当天，中国邮政订单量超过1亿件，包裹快递收寄量达6668万件。中国邮政EMS提前新建、改建一批重点邮件处理中心，全网日均处理能力新增2600万件。为了提升“双11”配送时效，北京市邮政寄递事业部采用“最后一公里极速前进”模式，将部分预售订单提前包装、提前出库，配送至各网点进行暂存。在“双11”当天，客户支付尾款后，末端网点直接派件。从11月8日至10日，北京市邮政的9.2万件邮件采取了这一模式，快速送至各网点。                                   ',
                                   },
                                 ).then((value) {
                                   print('--------');
@@ -328,7 +354,7 @@ class __MessageCardState extends State<_MessageCard> {
                                 padding: EdgeInsets.all(5),
                                 child: Image(
                                   image: NetworkImage(
-                                      'http://www.zdyrs.com/uploadfile/2015/1205/20151205012936705.jpg'),
+                                      'http://www.chinapost.com.cn/res/ChinaPostJT/1911/19115270.jpg'),
                                   width: (constraint.biggest.width / 2) - 20,
                                   fit: BoxFit.fitWidth,
                                 ),
@@ -340,9 +366,9 @@ class __MessageCardState extends State<_MessageCard> {
                                   '/images/viewer',
                                   arguments: {
                                     'imgSrc':
-                                        'http://cms-bucket.ws.126.net/2019/11/11/5f8050a570554d2688a673d30477da92.png?imageView&thumbnail=550x0',
+                                        'http://www.chinapost.com.cn/res/ChinaPostJT/1911/19115273.jpg',
                                     'text':
-                                        '据英国天空新闻报道，埃塞克斯警方发表声明称，早些时候集装箱货车内发现的39具遗体应全为越南公民。声明称，警方正与越南政府联系，并“直接联系”一些越南遇难者家属。另据越通社11月1日报道，越南中部河静省公安部门已拘捕两名涉嫌组织介绍他人非法出境或在境外非法滞留的人员。',
+                                        '刘爱力指出，要深入贯彻落实习近平总书记关于关心关爱“快递小哥”重要指示批示精神，切实关心关爱员工。要把吃、住、行等后勤保障措施落实到位，解除员工生产生活的后顾之忧，体现邮政企业的人文关怀。同时，要加强生产安全管理和交通安全教育，确保员工人身安全和邮件安全。。',
                                   },
                                 );
                               },
@@ -350,49 +376,7 @@ class __MessageCardState extends State<_MessageCard> {
                                 padding: EdgeInsets.all(5),
                                 child: Image(
                                   image: NetworkImage(
-                                      'http://cms-bucket.ws.126.net/2019/11/11/5f8050a570554d2688a673d30477da92.png?imageView&thumbnail=550x0'),
-                                  width: (constraint.biggest.width / 2) - 20,
-                                  fit: BoxFit.fitWidth,
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                widget.context.forward(
-                                  '/images/viewer',
-                                  arguments: {
-                                    'imgSrc':
-                                        'http://pic1.win4000.com/mobile/2019-03-20/5c91fe81d2606.jpg',
-                                    'text':
-                                        '近年来，小珍（化名）一直以吸收社会大量资金，“拆东墙补西墙”，吸收的资金一度高达5亿余元，资金缺口达1亿余元，一直到资金链断裂才主动自首，自首时账面上只剩下一千多元。',
-                                  },
-                                );
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Image(
-                                  image: NetworkImage(
-                                      'http://pic1.win4000.com/mobile/2019-03-20/5c91fe81d2606.jpg'),
-                                  width: (constraint.biggest.width / 2) - 20,
-                                  fit: BoxFit.fitWidth,
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                widget.context.forward(
-                                  '/images/viewer',
-                                  arguments: {
-                                    'imgSrc':
-                                        'http://pic1.win4000.com/mobile/5/557802a8d8569.jpg',
-                                  },
-                                );
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Image(
-                                  image: NetworkImage(
-                                      'http://pic1.win4000.com/mobile/5/557802a8d8569.jpg'),
+                                      'http://www.chinapost.com.cn/res/ChinaPostJT/1911/19115273.jpg'),
                                   width: (constraint.biggest.width / 2) - 20,
                                   fit: BoxFit.fitWidth,
                                 ),
@@ -595,7 +579,7 @@ class __MessageCardState extends State<_MessageCard> {
                               child: Text.rich(
                                 //评论区
                                 TextSpan(
-                                  text: 'carocean:',
+                                  text: '天空:',
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                       widget.context.forward("/site/personal");
@@ -606,7 +590,8 @@ class __MessageCardState extends State<_MessageCard> {
                                   ),
                                   children: [
                                     TextSpan(
-                                      text: '当实现具备实时性需求时，我们一般会选择长连接的通信方式',
+                                      text:
+                                          '按照“争市场、强重点、重体验、保稳定”的总体要求和集团公司的部署安排，坚定信心、铆足干劲，精心组织、全网联动，全力打赢“双11”旺季生产运行攻坚战',
                                       style: TextStyle(
                                         fontWeight: FontWeight.normal,
                                         color: Colors.black,
@@ -624,7 +609,7 @@ class __MessageCardState extends State<_MessageCard> {
                               child: Text.rich(
                                 //评论区
                                 TextSpan(
-                                  text: '天空的云:',
+                                  text: '郑泉轩:',
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                       widget.context.forward("/site/personal");
@@ -636,7 +621,7 @@ class __MessageCardState extends State<_MessageCard> {
                                   children: [
                                     TextSpan(
                                       text:
-                                          '学习一门新的语言，第一个呈现基本都是“hello world”。那么我们知道这个是文本显示的。所以第一个我们学习Text,话不多说，直接上代码',
+                                          '中邮证券有限责任公司内蒙古分公司举行开业仪式。中国邮政集团公司副总经理康宁、内蒙古自治区地方金融监督管理局局长助理吴光飙出席并讲话。',
                                       style: TextStyle(
                                         fontWeight: FontWeight.normal,
                                         color: Colors.black,

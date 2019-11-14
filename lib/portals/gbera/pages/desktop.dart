@@ -32,17 +32,21 @@ class _DesktopState extends State<Desktop> {
     if (!use_wallpapper) {
       return;
     }
-    if (_backgroud_transparent && _controller.offset >= 210 - 48) {
+    if (_controller.offset >= 210 - 48) {
       //48是appbar的默认高度，210是appbar展开发的总高
-      setState(() {
-        _backgroud_transparent = false;
-      });
+      if(_backgroud_transparent) {
+        setState(() {
+          _backgroud_transparent = false;
+        });
+      }
       return;
     }
-    if (!_backgroud_transparent && _controller.offset < 210 - 48) {
-      setState(() {
-        _backgroud_transparent = true;
-      });
+    if (_controller.offset < 210 - 48) {
+      if(!_backgroud_transparent) {
+        setState(() {
+          _backgroud_transparent = true;
+        });
+      }
       return;
     }
   }

@@ -38,17 +38,21 @@ class _NetflowState extends State<Netflow> {
     if (!use_wallpapper) {
       return;
     }
-    if (_backgroud_transparent && _controller.offset >= 30) {
+    if (_controller.offset >= 30) {
       //48是appbar的高度，210是appbar展开发的总高
-      setState(() {
-        _backgroud_transparent = false;
-      });
+      if (_backgroud_transparent) {
+        setState(() {
+          _backgroud_transparent = false;
+        });
+      }
       return;
     }
-    if (!_backgroud_transparent && _controller.offset < 30) {
-      setState(() {
-        _backgroud_transparent = true;
-      });
+    if (_controller.offset < 30) {
+      if (!_backgroud_transparent) {
+        setState(() {
+          _backgroud_transparent = true;
+        });
+      }
       return;
     }
   }
@@ -125,170 +129,172 @@ class _NetflowState extends State<Netflow> {
       controller: _controller,
       slivers: <Widget>[
         _sliverAppBar(),
-        SliverToBoxAdapter(child:  Container(
-          padding: EdgeInsets.only(
-            left: 10,
-            bottom: 5,
-          ),
-          alignment: Alignment.centerLeft,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  widget.context.forward('/netflow/manager/publics',
-                      arguments: {'title': '公众活动'});
-                },
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(
-                        right: 5,
+        SliverToBoxAdapter(
+          child: Container(
+            padding: EdgeInsets.only(
+              left: 10,
+              bottom: 5,
+            ),
+            alignment: Alignment.centerLeft,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    widget.context.forward('/netflow/manager/publics',
+                        arguments: {'title': '公众活动'});
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: 5,
+                        ),
+                        child: Icon(
+                          widget.context
+                              .findPage('/netflow/manager/channel_gateway')
+                              ?.icon,
+                          size: 18,
+                          color: Colors.grey[600],
+                        ),
                       ),
-                      child: Icon(
-                        widget.context
-                            .findPage('/netflow/manager/channel_gateway')
-                            ?.icon,
-                        size: 18,
-                        color: Colors.grey[600],
+                      Text(
+                        '公众活动',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                    Text(
-                      '公众活动',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  showCupertinoModalPopup(
-                      context: context,
-                      builder: (context) {
-                        return CupertinoActionSheet(
-                          actions: <Widget>[
-                            CupertinoActionSheetAction(
-                              child: const Text.rich(
-                                TextSpan(
-                                  text: '全屏',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                  children: [
-                                    TextSpan(text: '\r\n'),
-                                    TextSpan(
-                                      text: '长按全屏按钮可直接进入全屏',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context, 'Profiteroles');
-                              },
-                            ),
-                            CupertinoActionSheetAction(
-                              child: const Text.rich(
-                                TextSpan(
-                                  text: '私信',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                  children: [
-                                    TextSpan(text: '\r\n'),
-                                    TextSpan(
-                                      text: '仅列出标为私信的活动',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context, 'Profiteroles');
-                              },
-                            ),
-                            CupertinoActionSheetAction(
-                              child: const Text.rich(
-                                TextSpan(
-                                  text: '其它',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                  children: [
-                                    TextSpan(text: '\r\n'),
-                                    TextSpan(
-                                      text: '仅列出标为普通信的活动',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context, 'Profiteroles');
-                              },
-                            ),
-                            CupertinoActionSheetAction(
-                              child: const Text.rich(
-                                TextSpan(
-                                  text: '全部',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                  children: [
-                                    TextSpan(text: '\r\n'),
-                                    TextSpan(
-                                      text: '',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context, 'Profiteroles');
-                              },
-                            ),
-                          ],
-                        );
-                      });
-                },
-                onLongPress: () {
-                  widget.context.forward('/netflow/publics/activities',
-                      arguments: {'title': '公众活动'});
-                },
-                child: Container(
-                  margin: EdgeInsets.only(
-                    right: 15,
-                  ),
-                  child: Icon(
-                    Icons.open_with,
-                    color: Colors.grey[600],
-                    size: 20,
+                    ],
                   ),
                 ),
-              ),
-            ],
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    showCupertinoModalPopup(
+                        context: context,
+                        builder: (context) {
+                          return CupertinoActionSheet(
+                            actions: <Widget>[
+                              CupertinoActionSheetAction(
+                                child: const Text.rich(
+                                  TextSpan(
+                                    text: '全屏',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                    children: [
+                                      TextSpan(text: '\r\n'),
+                                      TextSpan(
+                                        text: '长按全屏按钮可直接进入全屏',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context, 'Profiteroles');
+                                },
+                              ),
+                              CupertinoActionSheetAction(
+                                child: const Text.rich(
+                                  TextSpan(
+                                    text: '私信',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                    children: [
+                                      TextSpan(text: '\r\n'),
+                                      TextSpan(
+                                        text: '仅列出标为私信的活动',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context, 'Profiteroles');
+                                },
+                              ),
+                              CupertinoActionSheetAction(
+                                child: const Text.rich(
+                                  TextSpan(
+                                    text: '其它',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                    children: [
+                                      TextSpan(text: '\r\n'),
+                                      TextSpan(
+                                        text: '仅列出标为普通信的活动',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context, 'Profiteroles');
+                                },
+                              ),
+                              CupertinoActionSheetAction(
+                                child: const Text.rich(
+                                  TextSpan(
+                                    text: '全部',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                    children: [
+                                      TextSpan(text: '\r\n'),
+                                      TextSpan(
+                                        text: '',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context, 'Profiteroles');
+                                },
+                              ),
+                            ],
+                          );
+                        });
+                  },
+                  onLongPress: () {
+                    widget.context.forward('/netflow/publics/activities',
+                        arguments: {'title': '公众活动'});
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      right: 15,
+                    ),
+                    child: Icon(
+                      Icons.open_with,
+                      color: Colors.grey[600],
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),),
+        ),
         SliverToBoxAdapter(
           child: Container(
             child: activities.length > 0
@@ -484,12 +490,12 @@ class _NetflowState extends State<Netflow> {
 
 class Activity {
   final String who;
-  final  String content;
+  final String content;
   final String money;
   final int picCount;
-  final  String time;
-  final  String channel;
-  final  Function() onTap;
+  final String time;
+  final String channel;
+  final Function() onTap;
 
   const Activity({
     this.who,
@@ -519,7 +525,6 @@ class _ActivitiesRegionState extends State<_ActivitiesRegion> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-
         Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -538,7 +543,7 @@ class _ActivitiesRegionState extends State<_ActivitiesRegion> {
             child: Column(
               children: widget.activities.map((v) {
                 index++;
-                bool notBottom=index < widget.activities.length;
+                bool notBottom = index < widget.activities.length;
                 if (index >= widget.activities.length) {
                   index = 0;
                 }

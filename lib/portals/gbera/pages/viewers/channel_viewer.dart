@@ -12,7 +12,8 @@ class ChannelViewer extends StatefulWidget {
 }
 
 class _ChannelViewerState extends State<ChannelViewer> {
-  var _injection=true;
+  var _injection = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,21 +51,30 @@ class _ChannelViewerState extends State<ChannelViewer> {
                   tipsText: '大飞果果',
                 ),
                 _CardItem(
-                  title: '微站',
-                  tipsText: '万达集团',
-                ),
-                _CardItem(
                   title: '动态',
                   tipsText: '983条',
+                  onTap: () {
+                    widget.context.forward('/netflow/portal/channel');
+                  },
                 ),
                 _CardItem(
-                  title: _injection?'已关注':'关注',
+                  title: '微站',
+                  tipsText: '万达集团',
+                  onTap: (){
+                    widget.context.forward('/site/marchant');
+                  },
+                ),
+
+                _CardItem(
+                  title: _injection ? '已关注' : '关注',
                   tipsText: '以接收或拒绝该管道的动态',
-                  operator: Switch.adaptive(value: _injection, onChanged: (v) {
-                    setState(() {
-                      _injection=!_injection;
-                    });
-                  }),
+                  operator: Switch.adaptive(
+                      value: _injection,
+                      onChanged: (v) {
+                        setState(() {
+                          _injection = !_injection;
+                        });
+                      }),
                 ),
               ],
             ),
@@ -128,12 +138,14 @@ class _CardItem extends StatefulWidget {
   IconData tipsIconData;
   String tipsText;
   Widget operator;
+  Function() onTap;
 
   _CardItem({
     this.title,
     this.tipsText = '',
     this.tipsIconData,
     this.operator,
+    this.onTap,
   }) {
     if (operator == null) {
       this.operator = Icon(
@@ -151,73 +163,77 @@ class _CardItem extends StatefulWidget {
 class _CardItemState extends State<_CardItem> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-        top: 15,
-        bottom: 15,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(
-              right: 10,
-            ),
-            child: Text(
-              widget.title,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 15,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: widget.onTap,
+      child: Container(
+        padding: EdgeInsets.only(
+          top: 15,
+          bottom: 15,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(
+                right: 10,
+              ),
+              child: Text(
+                widget.title,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: StringUtil.isEmpty(widget.tipsText)
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: StringUtil.isEmpty(widget.tipsText)
+                        ? Container(
+                            width: 0,
+                            height: 0,
+                          )
+                        : Container(
+                            alignment: Alignment.centerRight,
+                            padding: EdgeInsets.only(left: 5),
+                            child: Text(
+                              widget.tipsText,
+                              softWrap: true,
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 12,
+                              ),
+                              textDirection: TextDirection.rtl,
+                            ),
+                          ),
+                  ),
+                  widget.tipsIconData == null
                       ? Container(
                           width: 0,
                           height: 0,
                         )
-                      : Container(
-                          alignment: Alignment.centerRight,
+                      : Padding(
                           padding: EdgeInsets.only(left: 5),
-                          child: Text(
-                            widget.tipsText,
-                            softWrap: true,
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 12,
-                            ),
-                            textDirection: TextDirection.rtl,
+                          child: Icon(
+                            widget.tipsIconData,
+                            size: 12,
+                            color: Colors.grey[500],
                           ),
                         ),
-                ),
-                widget.tipsIconData == null
-                    ? Container(
-                        width: 0,
-                        height: 0,
-                      )
-                    : Padding(
-                        padding: EdgeInsets.only(left: 5),
-                        child: Icon(
-                          widget.tipsIconData,
-                          size: 12,
-                          color: Colors.grey[500],
-                        ),
-                      ),
-                Padding(
-                  padding: EdgeInsets.only(left: 5),
-                  child: widget.operator,
-                ),
-              ],
+                  Padding(
+                    padding: EdgeInsets.only(left: 5),
+                    child: widget.operator,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

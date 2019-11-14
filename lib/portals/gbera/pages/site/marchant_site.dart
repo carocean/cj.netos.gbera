@@ -18,28 +18,34 @@ class _MarchantSiteState extends State<MarchantSite> {
   _MarchantSiteState()
       : _controller = ScrollController(initialScrollOffset: 0.0),
         showOnAppbar = false {
-    _controller.addListener(() {
-      if (_controller.offset >= 40) {
-        setState(() {
-          showOnAppbar = true;
-        });
-        return;
-      }
-      if (_controller.offset < 40) {
-        setState(() {
-          showOnAppbar = false;
-        });
-        return;
-      }
-    });
+    _controller.addListener(_listener);
   }
 
   bool showOnAppbar;
   var _controller;
 
+  _listener() {
+    if (_controller.offset >= 40) {
+      if(!showOnAppbar) {
+        setState(() {
+          showOnAppbar = true;
+        });
+      }
+      return;
+    }
+    if (_controller.offset < 40) {
+      if(showOnAppbar) {
+        setState(() {
+          showOnAppbar = false;
+        });
+      }
+      return;
+    }
+  }
+
   @override
   void dispose() {
-    _controller=null;
+    _controller = null;
   }
 
   @override
@@ -65,8 +71,11 @@ class _MarchantSiteState extends State<MarchantSite> {
               showCupertinoModalPopup(
                   context: context,
                   builder: (context) {
-                    return _ActionSheet();
-                  });
+                    return _ActionSheet(context: widget.context,);
+                  }).then((v){
+//                    widget.context.forward('/netflow/portal/site');
+
+              });
             },
             icon: Icon(
               FontAwesomeIcons.ellipsisH,
@@ -189,6 +198,10 @@ Widget _listBuilder(BuildContext context, int index) {
 }
 
 class _ActionSheet extends StatelessWidget {
+  PageContext context;
+
+  _ActionSheet({this.context});
+
   @override
   Widget build(BuildContext context) {
     return CupertinoActionSheet(
@@ -201,7 +214,7 @@ class _ActionSheet extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            Navigator.pop(context, 'Profiteroles');
+            this.context.backward(result: <String,Object>{'action':'activies'});
           },
         ),
         CupertinoActionSheetAction(
@@ -212,7 +225,7 @@ class _ActionSheet extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            Navigator.pop(context, 'qrcode');
+            this.context.backward(result: <String,Object>{'action':'activies'});
           },
         ),
         CupertinoActionSheetAction(
@@ -223,7 +236,7 @@ class _ActionSheet extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            Navigator.pop(context, 'more');
+            this.context.backward(result: <String,Object>{'action':'activies'});
           },
         ),
       ],
@@ -367,10 +380,10 @@ class __HeaderState extends State<_Header> {
                         builder: (context) {
                           return widget.context
                               .part('/network/channel/serviceMenu', context);
-                        }).then((value){
-                          print('-----$value');
-                          if(value==null)return;
-                          widget.context.forward('/micro/app',arguments: value);
+                        }).then((value) {
+                      print('-----$value');
+                      if (value == null) return;
+                      widget.context.forward('/micro/app', arguments: value);
                     });
                   },
                   child: Text(
@@ -404,8 +417,8 @@ class __HeaderState extends State<_Header> {
                           return widget.context
                               .part('/network/channel/site/output', context);
                         }).then((value) {
-                          if(value==null)return;
-                          widget.context.forward('/channel/viewer');
+                      if (value == null) return;
+                      widget.context.forward('/channel/viewer');
                     });
                   },
                   child: Text(

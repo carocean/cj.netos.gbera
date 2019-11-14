@@ -17,20 +17,26 @@ class _PersonalSiteState extends State<PersonalSite> {
   _PersonalSiteState()
       : _controller = ScrollController(initialScrollOffset: 0.0),
         showOnAppbar = false {
-    _controller.addListener(() {
-      if (_controller.offset >= 40) {
+    _controller.addListener(_listener);
+  }
+
+  _listener() {
+    if (_controller.offset >= 40) {
+      if (!showOnAppbar) {
         setState(() {
           showOnAppbar = true;
         });
-        return;
       }
-      if (_controller.offset < 40) {
+      return;
+    }
+    if (_controller.offset < 40) {
+      if (showOnAppbar) {
         setState(() {
           showOnAppbar = false;
         });
-        return;
       }
-    });
+      return;
+    }
   }
 
   bool _check_showAssociationWithSuperior = false;
@@ -217,6 +223,9 @@ class _PersonalSiteState extends State<PersonalSite> {
                     'http://b-ssl.duitang.com/uploads/item/201610/10/20161010221028_3Xzwi.jpeg',
                     'http://cdn.duitang.com/uploads/item/201606/14/20160614002619_WfLXj.jpeg',
                   ],
+                  onTap: (){
+                    widget.context.forward('/site/marchant');
+                  },
                 ),
                 _ChannelItemInfo(
                   title: '天主教堂',
@@ -226,6 +235,9 @@ class _PersonalSiteState extends State<PersonalSite> {
                     'http://b-ssl.duitang.com/uploads/item/201610/10/20161010221028_3Xzwi.jpeg',
                     'http://cdn.duitang.com/uploads/item/201606/14/20160614002619_WfLXj.jpeg',
                   ],
+                  onTap: (){
+                    widget.context.forward('/site/marchant');
+                  },
                 ),
               ],
             ),
@@ -252,11 +264,13 @@ class _PersonalSiteState extends State<PersonalSite> {
                     ),
                     child: FilterChip(
                       elevation: 0,
-                      avatar: !_check_showAssociationWithSuperior? Icon(
-                        FontAwesomeIcons.filter,
-                        size: 14,
-                        color: Colors.grey[700],
-                      ):null,
+                      avatar: !_check_showAssociationWithSuperior
+                          ? Icon(
+                              FontAwesomeIcons.filter,
+                              size: 14,
+                              color: Colors.grey[700],
+                            )
+                          : null,
                       label: Text(''),
                       padding: EdgeInsets.all(0),
                       labelPadding: EdgeInsets.all(0),
@@ -287,9 +301,8 @@ class _PersonalSiteState extends State<PersonalSite> {
               channelItems: [
                 _ChannelItemInfo(
                   title: '豫江南',
-                  onTap:(){
-                    widget.context.forward('/netflow/channel/portal');
-
+                  onTap: () {
+                    widget.context.forward('/netflow/portal/channel');
                   },
                   images: [
                     'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
@@ -300,9 +313,8 @@ class _PersonalSiteState extends State<PersonalSite> {
                 ),
                 _ChannelItemInfo(
                   title: '熟人圈',
-                  onTap:(){
-                    widget.context.forward('/netflow/channel/portal');
-
+                  onTap: () {
+                    widget.context.forward('/netflow/portal/channel');
                   },
                   images: [
                     'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
@@ -313,9 +325,8 @@ class _PersonalSiteState extends State<PersonalSite> {
                 ),
                 _ChannelItemInfo(
                   title: '地推',
-                  onTap:(){
-                    widget.context.forward('/netflow/channel/portal');
-
+                  onTap: () {
+                    widget.context.forward('/netflow/portal/channel');
                   },
                   images: [
                     'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
@@ -326,9 +337,8 @@ class _PersonalSiteState extends State<PersonalSite> {
                 ),
                 _ChannelItemInfo(
                   title: '中山大学社区',
-                  onTap:(){
-                    widget.context.forward('/netflow/channel/portal');
-
+                  onTap: () {
+                    widget.context.forward('/netflow/portal/channel');
                   },
                   images: [
                     'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
@@ -575,7 +585,8 @@ class _ChannelItemInfo {
   String title;
   List images;
   Function() onTap;
-  _ChannelItemInfo({this.title, this.images,this.onTap});
+
+  _ChannelItemInfo({this.title, this.images, this.onTap});
 }
 
 class _Body extends StatefulWidget {
@@ -594,18 +605,22 @@ class __BodyState extends State<_Body> {
       color: Colors.white,
       child: Column(
         children: widget.channelItems.map((value) {
-          return GestureDetector(behavior: HitTestBehavior.opaque,onTap: value.onTap,child: Column(
-            children: <Widget>[
-              _ChannelItem(
-                title: value.title,
-                images: value.images,
-              ),
-              Divider(
-                height: 1,
-                indent: 20,
-              ),
-            ],
-          ),);
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: value.onTap,
+            child: Column(
+              children: <Widget>[
+                _ChannelItem(
+                  title: value.title,
+                  images: value.images,
+                ),
+                Divider(
+                  height: 1,
+                  indent: 20,
+                ),
+              ],
+            ),
+          );
         }).toList(),
       ),
     );
@@ -616,8 +631,10 @@ class _ChannelItem extends StatefulWidget {
   List images = [];
   String title;
 
-
-  _ChannelItem({this.title = '', this.images, });
+  _ChannelItem({
+    this.title = '',
+    this.images,
+  });
 
   @override
   __ChannelItemState createState() => __ChannelItemState();

@@ -36,6 +36,7 @@ import 'package:gbera/portals/gbera/pages/netflow/publish_article.dart';
 import 'package:gbera/portals/gbera/pages/netflow/scan_channel.dart';
 import 'package:gbera/portals/gbera/pages/netflow/search_channel.dart';
 import 'package:gbera/portals/gbera/pages/netflow/service_menu.dart';
+import 'package:gbera/portals/gbera/pages/site/site_portal.dart';
 import 'package:gbera/portals/gbera/pages/profile.dart';
 import 'package:gbera/portals/gbera/pages/profile/edit_sex.dart';
 import 'package:gbera/portals/gbera/pages/profile/edit_username.dart';
@@ -360,10 +361,10 @@ class GberaPortal {
           ),
         ),
         Page(
-          title: '他的活动',
+          title: '管道活动门户',
           subtitle: '',
           icon: Icons.art_track,
-          url: '/netflow/channel/portal',
+          url: '/netflow/portal/channel',
           buildPage: (PageContext pageContext) => ChannelPortal(
             context: pageContext,
           ),

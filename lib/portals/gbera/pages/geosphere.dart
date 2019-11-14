@@ -24,24 +24,30 @@ class _GeosphereState extends State<Geosphere> {
 
   _GeosphereState() {
     _controller = ScrollController(initialScrollOffset: 0.0);
-    _controller.addListener(() {
-      if (!use_wallpapper) {
-        return;
-      }
-      if (_backgroud_transparent && _controller.offset >= 40) {
-        //48是appbar的高度，210是appbar展开发的总高
+    _controller.addListener(_listener);
+  }
+
+  _listener() {
+    if (!use_wallpapper) {
+      return;
+    }
+    if (_backgroud_transparent && _controller.offset >= 40) {
+      //48是appbar的高度，210是appbar展开发的总高
+      if (_backgroud_transparent) {
         setState(() {
           _backgroud_transparent = false;
         });
-        return;
       }
-      if (!_backgroud_transparent && _controller.offset < 40) {
+      return;
+    }
+    if (!_backgroud_transparent && _controller.offset < 40) {
+      if (!_backgroud_transparent) {
         setState(() {
           _backgroud_transparent = true;
         });
-        return;
       }
-    });
+      return;
+    }
   }
 
   @override
