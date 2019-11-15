@@ -20,24 +20,26 @@ class _ChannelPortalState extends State<ChannelPortal> {
         showAppBar = false {
     _controller.addListener(_scrollListener);
   }
+
   @override
   void dispose() {
     super.dispose();
     _controller?.dispose();
   }
+
   _scrollListener() {
-    var sub=Adapt.screenH()/3-60;
+    var sub = Adapt.screenH() / 3 - 60;
     print('${_controller.offset}----$sub');
     if (_controller.offset > sub) {
-      if(!showAppBar) {
+      if (!showAppBar) {
         setState(() {
           showAppBar = true;
         });
       }
       return;
     }
-    if (_controller.offset <sub) {
-      if(showAppBar) {
+    if (_controller.offset < sub) {
+      if (showAppBar) {
         setState(() {
           showAppBar = false;
         });
@@ -45,6 +47,7 @@ class _ChannelPortalState extends State<ChannelPortal> {
       return;
     }
   }
+
   ScrollController _controller;
   bool showAppBar = false;
 
@@ -57,7 +60,7 @@ class _ChannelPortalState extends State<ChannelPortal> {
           _getAppBar(),
           SliverToBoxAdapter(
             child: SizedBox(
-              height: 40,
+              height: 70,
             ),
           ),
           SliverToBoxAdapter(
@@ -81,16 +84,20 @@ class _ChannelPortalState extends State<ChannelPortal> {
       backgroundColor: showAppBar ? Theme.of(context).appBarTheme.color : null,
       automaticallyImplyLeading: true,
       centerTitle: false,
-      title: showAppBar ? Text('cj') : null,
-      flexibleSpace:  _Header(showAppBar: showAppBar,),
+      title: showAppBar ? Text('云台花园') : null,
+      flexibleSpace: _Header(
+        showAppBar: showAppBar,
+        context: widget.context,
+      ),
     );
   }
 }
 
 class _Header extends StatefulWidget {
   bool showAppBar;
+  PageContext context;
 
-  _Header({this.showAppBar});
+  _Header({this.showAppBar, this.context});
 
   @override
   __HeaderState createState() => __HeaderState();
@@ -99,8 +106,11 @@ class _Header extends StatefulWidget {
 class __HeaderState extends State<_Header> {
   @override
   Widget build(BuildContext context) {
-    if(widget.showAppBar){
-      return Container(width: 0,height: 0,);
+    if (widget.showAppBar) {
+      return Container(
+        width: 0,
+        height: 0,
+      );
     }
 
     return Container(
@@ -117,7 +127,7 @@ class __HeaderState extends State<_Header> {
         overflow: Overflow.visible,
         children: <Widget>[
           Positioned(
-            bottom: -40,
+            bottom: -60,
             left: 10,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,13 +139,18 @@ class __HeaderState extends State<_Header> {
                       padding: EdgeInsets.only(
                         right: 10,
                       ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(6.0),
-                        child: Image.network(
-                          'http://cdn1.mmia.com/spfocusimg/2012/914/renwu7121.jpg',
-                          height: 60,
-                          width: 60,
-                          fit: BoxFit.cover,
+                      child: GestureDetector(
+                        onTap: () {
+                          widget.context.forward('/site/personal');
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(6.0),
+                          child: Image.network(
+                            'http://cdn1.mmia.com/spfocusimg/2012/914/renwu7121.jpg',
+                            height: 60,
+                            width: 60,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
@@ -157,12 +172,18 @@ class __HeaderState extends State<_Header> {
                   padding: EdgeInsets.only(
                     top: 5,
                   ),
-                  child: Text(
-                    'cj',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey[800],
+                  child: Text.rich(
+                    TextSpan(
+                      text: '会飞之鱼',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        color: Colors.grey[400],
+                      ),
+                      children: [
+                        TextSpan(text: '\r\n'),
+                        TextSpan(text: '的管道'),
+                        TextSpan(text: '云台花园'),
+                      ],
                     ),
                   ),
                 ),

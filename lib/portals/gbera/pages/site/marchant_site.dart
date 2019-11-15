@@ -22,7 +22,7 @@ class _MarchantSiteState extends State<MarchantSite> {
   }
 
   bool showOnAppbar;
-  var _controller;
+  ScrollController _controller;
 
   _listener() {
     if (_controller.offset >= 40) {
@@ -43,9 +43,11 @@ class _MarchantSiteState extends State<MarchantSite> {
     }
   }
 
+
   @override
   void dispose() {
-    _controller = null;
+      super.dispose();
+      _controller.dispose();
   }
 
   @override

@@ -68,7 +68,6 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                       widget.context.forward('/netflow/channel/rename');
                     },
                   ),
-
                   _CardItem(
                     title: '二维码',
                     tipsIconData: FontAwesomeIcons.qrcode,
@@ -84,9 +83,14 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                     },
                   ),
                   _CardItem(
-                    title: '动态',
-                    tipsText: '245篇',
-                    onItemTap: () {},
+                    title: '管道动态',
+                    images: [
+                      'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
+                      'http://b-ssl.duitang.com/uploads/item/201510/10/20151010054541_3YmaC.jpeg',
+                    ],
+                    onItemTap: () {
+                      widget.context.forward('/netflow/portal/channel');
+                    },
                   ),
                   _CardItem(
                     title: '对他人可见',
@@ -147,7 +151,7 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                     title: '公众',
                     tipsText: '如果不愿接收某人的信息可将他移除',
                     onItemTap: () {
-                      widget.context.forward('/netflow/channel/insite');
+                      widget.context.forward('/netflow/channel/insite/publics');
                     },
                   ),
                 ],
@@ -166,7 +170,8 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                     title: '公众',
                     tipsText: '如果不愿让某人接收信息可将他移除',
                     onItemTap: () {
-                      widget.context.forward('/netflow/channel/insite');
+                      widget.context
+                          .forward('/netflow/channel/outsite/publics');
                     },
                   ),
                   _CardItem(
@@ -217,6 +222,7 @@ class _CardItem extends StatefulWidget {
   String tipsText;
   Widget operator;
   Function() onItemTap;
+  List<String> images;
 
   _CardItem({
     this.title,
@@ -224,6 +230,7 @@ class _CardItem extends StatefulWidget {
     this.tipsIconData,
     this.operator,
     this.onItemTap,
+    this.images,
   }) {
     if (operator == null) {
       this.operator = Icon(
@@ -231,6 +238,9 @@ class _CardItem extends StatefulWidget {
         size: 18,
         color: Colors.grey[500],
       );
+    }
+    if (this.images == null) {
+      this.images = [];
     }
   }
 
@@ -271,24 +281,57 @@ class _CardItemState extends State<_CardItem> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                    child: StringUtil.isEmpty(widget.tipsText)
-                        ? Container(
-                            width: 0,
-                            height: 0,
-                          )
-                        : Container(
-                            alignment: Alignment.centerRight,
-                            padding: EdgeInsets.only(left: 5),
-                            child: Text(
-                              widget.tipsText,
-                              softWrap: true,
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 12,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        widget.images.isEmpty
+                            ? Container(
+                                width: 0,
+                                height: 0,
+                              )
+                            : Flexible(
+                                child: Wrap(
+                                  textDirection: TextDirection.rtl,
+                                  children: widget.images.map((value) {
+                                    return Padding(
+                                      padding: EdgeInsets.all(4),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(3),
+                                        ),
+                                        child: Image.network(
+                                          value,
+                                          width: 40,
+                                          height: 40,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
                               ),
-                              textDirection: TextDirection.rtl,
-                            ),
-                          ),
+                        StringUtil.isEmpty(widget.tipsText)
+                            ? Container(
+                                width: 0,
+                                height: 0,
+                              )
+                            : Expanded(
+                                child: Container(
+                                  alignment: Alignment.centerRight,
+                                  padding: EdgeInsets.only(left: 5),
+                                  child: Text(
+                                    widget.tipsText,
+                                    softWrap: true,
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontSize: 12,
+                                    ),
+                                    textDirection: TextDirection.rtl,
+                                  ),
+                                ),
+                              ),
+                      ],
+                    ),
                   ),
                   widget.tipsIconData == null
                       ? Container(

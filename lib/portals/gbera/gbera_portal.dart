@@ -31,6 +31,7 @@ import 'package:gbera/portals/gbera/pages/netflow/channel_rename.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_portal.dart';
 import 'package:gbera/portals/gbera/pages/netflow/create_channel.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publics_activities.dart';
+import 'package:gbera/portals/gbera/pages/netflow/insite_publics.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publics_settings.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publish_article.dart';
 import 'package:gbera/portals/gbera/pages/netflow/scan_channel.dart';
@@ -343,6 +344,24 @@ class GberaPortal {
           ),
         ),
         Page(
+          title: '管道进口公众',
+          subtitle: '',
+          icon: Icons.settings_input_composite,
+          url: '/netflow/channel/insite/publics',
+          buildPage: (PageContext pageContext) => InsitePublics(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '管道出口公众',
+          subtitle: '',
+          icon: Icons.settings_input_composite,
+          url: '/netflow/channel/outsite/publics',
+          buildPage: (PageContext pageContext) => InsitePublics(
+            context: pageContext,
+          ),
+        ),
+        Page(
           title: '公众活动',
           subtitle: '',
           icon: Icons.settings_input_composite,
@@ -385,8 +404,7 @@ class GberaPortal {
           desc: '',
           icon: Icons.art_track,
           url: '/network/channel/site/output',
-          buildPage: (PageContext pageContext) =>
-              SiteChannelBinder(
+          buildPage: (PageContext pageContext) => SiteChannelBinder(
             context: pageContext,
           ),
         ),
@@ -396,10 +414,9 @@ class GberaPortal {
           desc: '',
           icon: Icons.art_track,
           url: '/micro/app',
-          buildPage: (PageContext pageContext) =>
-              MicroApp(
-                context: pageContext,
-              ),
+          buildPage: (PageContext pageContext) => MicroApp(
+            context: pageContext,
+          ),
         ),
         Page(
           title: '商户站点',
@@ -929,7 +946,6 @@ class GberaPortal {
             context: pageContext,
           ),
         ),
-
         Page(
           title: '银行卡',
           subtitle: '',

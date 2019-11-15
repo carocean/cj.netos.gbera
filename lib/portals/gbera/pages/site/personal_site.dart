@@ -1,6 +1,7 @@
 ///个人站点
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 
@@ -219,8 +220,6 @@ class _PersonalSiteState extends State<PersonalSite> {
                   title: '兰州拉面馆',
                   images: [
                     'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
-                    'http://b-ssl.duitang.com/uploads/item/201510/10/20151010054541_3YmaC.jpeg',
-                    'http://b-ssl.duitang.com/uploads/item/201610/10/20161010221028_3Xzwi.jpeg',
                     'http://cdn.duitang.com/uploads/item/201606/14/20160614002619_WfLXj.jpeg',
                   ],
                   onTap: (){
@@ -231,9 +230,6 @@ class _PersonalSiteState extends State<PersonalSite> {
                   title: '天主教堂',
                   images: [
                     'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
-                    'http://b-ssl.duitang.com/uploads/item/201510/10/20151010054541_3YmaC.jpeg',
-                    'http://b-ssl.duitang.com/uploads/item/201610/10/20161010221028_3Xzwi.jpeg',
-                    'http://cdn.duitang.com/uploads/item/201606/14/20160614002619_WfLXj.jpeg',
                   ],
                   onTap: (){
                     widget.context.forward('/site/marchant');
@@ -302,50 +298,26 @@ class _PersonalSiteState extends State<PersonalSite> {
                 _ChannelItemInfo(
                   title: '豫江南',
                   onTap: () {
-                    widget.context.forward('/netflow/portal/channel');
+                    widget.context.forward('/channel/viewer',arguments: <String,Object>{'title':'豫江南'});
                   },
-                  images: [
-                    'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
-                    'http://b-ssl.duitang.com/uploads/item/201510/10/20151010054541_3YmaC.jpeg',
-                    'http://b-ssl.duitang.com/uploads/item/201610/10/20161010221028_3Xzwi.jpeg',
-                    'http://cdn.duitang.com/uploads/item/201606/14/20160614002619_WfLXj.jpeg',
-                  ],
                 ),
                 _ChannelItemInfo(
                   title: '熟人圈',
                   onTap: () {
-                    widget.context.forward('/netflow/portal/channel');
+                    widget.context.forward('/channel/viewer',arguments: <String,Object>{'title':'熟人圈'});
                   },
-                  images: [
-                    'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
-                    'http://b-ssl.duitang.com/uploads/item/201510/10/20151010054541_3YmaC.jpeg',
-                    'http://b-ssl.duitang.com/uploads/item/201610/10/20161010221028_3Xzwi.jpeg',
-                    'http://cdn.duitang.com/uploads/item/201606/14/20160614002619_WfLXj.jpeg',
-                  ],
                 ),
                 _ChannelItemInfo(
                   title: '地推',
                   onTap: () {
-                    widget.context.forward('/netflow/portal/channel');
+                    widget.context.forward('/channel/viewer',arguments: <String,Object>{'title':'地推'});
                   },
-                  images: [
-                    'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
-                    'http://b-ssl.duitang.com/uploads/item/201510/10/20151010054541_3YmaC.jpeg',
-                    'http://b-ssl.duitang.com/uploads/item/201610/10/20161010221028_3Xzwi.jpeg',
-                    'http://cdn.duitang.com/uploads/item/201606/14/20160614002619_WfLXj.jpeg',
-                  ],
                 ),
                 _ChannelItemInfo(
                   title: '中山大学社区',
                   onTap: () {
-                    widget.context.forward('/netflow/portal/channel');
+                    widget.context.forward('/channel/viewer',arguments: <String,Object>{'title':'中山大学社区'});
                   },
-                  images: [
-                    'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
-                    'http://b-ssl.duitang.com/uploads/item/201510/10/20151010054541_3YmaC.jpeg',
-                    'http://b-ssl.duitang.com/uploads/item/201610/10/20161010221028_3Xzwi.jpeg',
-                    'http://cdn.duitang.com/uploads/item/201606/14/20160614002619_WfLXj.jpeg',
-                  ],
                 ),
               ],
             ),
@@ -586,7 +558,11 @@ class _ChannelItemInfo {
   List images;
   Function() onTap;
 
-  _ChannelItemInfo({this.title, this.images, this.onTap});
+  _ChannelItemInfo({this.title, this.images, this.onTap}){
+   if(this.images==null) {
+     this.images=[];
+   }
+  }
 }
 
 class _Body extends StatefulWidget {
@@ -653,7 +629,7 @@ class __ChannelItemState extends State<_ChannelItem> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Padding(
+          Container(
             padding: EdgeInsets.only(
               right: 10,
             ),
@@ -691,6 +667,8 @@ class __ChannelItemState extends State<_ChannelItem> {
                 Padding(
                   padding: EdgeInsets.only(
                     left: 10,
+                    top: 15,
+                    bottom: 15,
                   ),
                   child: Icon(
                     Icons.arrow_forward_ios,

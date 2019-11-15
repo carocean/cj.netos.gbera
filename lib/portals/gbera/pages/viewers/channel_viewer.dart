@@ -36,35 +36,7 @@ class _ChannelViewerState extends State<ChannelViewer> {
           SliverToBoxAdapter(
             child: _Card(
               title: '',
-              items: [
-                _CardItem(
-                  title: '管道号',
-                  tipsText: '00383882827222',
-                  operator: Icon(
-                    Icons.content_copy,
-                    color: Colors.grey[400],
-                    size: 18,
-                  ),
-                ),
-                _CardItem(
-                  title: '拥有者',
-                  tipsText: '大飞果果',
-                ),
-                _CardItem(
-                  title: '动态',
-                  tipsText: '983条',
-                  onTap: () {
-                    widget.context.forward('/netflow/portal/channel');
-                  },
-                ),
-                _CardItem(
-                  title: '微站',
-                  tipsText: '万达集团',
-                  onTap: (){
-                    widget.context.forward('/site/marchant');
-                  },
-                ),
-
+              items: <_CardItem>[
                 _CardItem(
                   title: _injection ? '已关注' : '关注',
                   tipsText: '以接收或拒绝该管道的动态',
@@ -86,11 +58,60 @@ class _ChannelViewerState extends State<ChannelViewer> {
           ),
           SliverToBoxAdapter(
             child: _Card(
+              title: '',
+              items: [
+                _CardItem(
+                  title: '管道号',
+                  tipsText: '00383882827222',
+                  operator: Icon(
+                    Icons.content_copy,
+                    color: Colors.grey[400],
+                    size: 18,
+                  ),
+                ),
+                _CardItem(
+                  title: '拥有者',
+                  tipsText: '大飞果果',
+                  onTap: () {
+                    widget.context.forward('/site/personal');
+                  },
+                ),
+                _CardItem(
+                  title: '管道动态',
+                  images: [
+                    'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
+                    'http://b-ssl.duitang.com/uploads/item/201510/10/20151010054541_3YmaC.jpeg',
+                    'http://b-ssl.duitang.com/uploads/item/201610/10/20161010221028_3Xzwi.jpeg',
+                  ],
+                  onTap: () {
+                    widget.context.forward('/netflow/portal/channel');
+                  },
+                ),
+                _CardItem(
+                  title: '微站',
+                  tipsText: '万达集团',
+                  onTap: () {
+                    widget.context.forward('/site/marchant');
+                  },
+                ),
+              ],
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              height: 10,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: _Card(
               title: '管道进口',
               items: [
                 _CardItem(
                   title: '公众',
-                  tipsText: '1200个',
+                  tipsText: '1200人',
+                  onTap: () {
+                    widget.context.forward('/netflow/channel/insite/publics');
+                  },
                 ),
               ],
             ),
@@ -106,7 +127,11 @@ class _ChannelViewerState extends State<ChannelViewer> {
               items: [
                 _CardItem(
                   title: '公众',
-                  tipsText: '246.32万个',
+                  tipsText:
+                      '246.32万个',
+                  onTap: () {
+                    widget.context.forward('/netflow/channel/outsite/publics');
+                  },
                 ),
               ],
             ),
@@ -137,6 +162,7 @@ class _CardItem extends StatefulWidget {
   String title;
   IconData tipsIconData;
   String tipsText;
+  List<String> images;
   Widget operator;
   Function() onTap;
 
@@ -146,6 +172,7 @@ class _CardItem extends StatefulWidget {
     this.tipsIconData,
     this.operator,
     this.onTap,
+    this.images,
   }) {
     if (operator == null) {
       this.operator = Icon(
@@ -153,6 +180,9 @@ class _CardItem extends StatefulWidget {
         size: 18,
         color: Colors.grey[500],
       );
+    }
+    if (this.images == null) {
+      this.images = [];
     }
   }
 
@@ -193,24 +223,57 @@ class _CardItemState extends State<_CardItem> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                    child: StringUtil.isEmpty(widget.tipsText)
-                        ? Container(
-                            width: 0,
-                            height: 0,
-                          )
-                        : Container(
-                            alignment: Alignment.centerRight,
-                            padding: EdgeInsets.only(left: 5),
-                            child: Text(
-                              widget.tipsText,
-                              softWrap: true,
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 12,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        widget.images.isEmpty
+                            ? Container(
+                                width: 0,
+                                height: 0,
+                              )
+                            : Expanded(
+                                child: Wrap(
+                                  textDirection: TextDirection.rtl,
+                                  children: widget.images.map((value) {
+                                    return Padding(
+                                      padding: EdgeInsets.all(4),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(3),
+                                        ),
+                                        child: Image.network(
+                                          value,
+                                          width: 40,
+                                          height: 40,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
                               ),
-                              textDirection: TextDirection.rtl,
-                            ),
-                          ),
+                        StringUtil.isEmpty(widget.tipsText)
+                            ? Container(
+                                width: 0,
+                                height: 0,
+                              )
+                            : Flexible(
+                                child: Container(
+                                  alignment: Alignment.centerRight,
+                                  padding: EdgeInsets.only(left: 5),
+                                  child: Text(
+                                    widget.tipsText,
+                                    softWrap: true,
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontSize: 12,
+                                    ),
+                                    textDirection: TextDirection.rtl,
+                                  ),
+                                ),
+                              ),
+                      ],
+                    ),
                   ),
                   widget.tipsIconData == null
                       ? Container(
