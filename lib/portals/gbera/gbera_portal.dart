@@ -33,10 +33,11 @@ import 'package:gbera/portals/gbera/pages/netflow/channel_popularize.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_qrcode.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_rename.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_portal.dart';
+import 'package:gbera/portals/gbera/pages/netflow/channels_of_user.dart';
 import 'package:gbera/portals/gbera/pages/netflow/create_channel.dart';
 import 'package:gbera/portals/gbera/pages/netflow/outsite_publics.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publics_activities.dart';
-import 'package:gbera/portals/gbera/pages/netflow/inoutsite_publics.dart';
+import 'package:gbera/portals/gbera/pages/netflow/insite_publics.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publics_for_activies.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publics_settings.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publish_article.dart';
@@ -534,6 +535,16 @@ class GberaPortal {
           icon: Icons.art_track,
           url: '/channel/viewer',
           buildPage: (PageContext pageContext) => ChannelViewer(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '他的管道',
+          subtitle: '用于活动网关中查看他的管道列表',
+          desc: '',
+          icon: Icons.art_track,
+          url: '/channel/list_of_user',
+          buildPage: (PageContext pageContext) => ChannelsOfUser(
             context: pageContext,
           ),
         ),

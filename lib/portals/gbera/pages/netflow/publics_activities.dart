@@ -15,7 +15,6 @@ class PublicActivies extends StatefulWidget {
 class _PublicActiviesState extends State<PublicActivies>
     with SingleTickerProviderStateMixin {
   TabController _controller;
-  bool _customIndicator = false;
 
   @override
   void initState() {
