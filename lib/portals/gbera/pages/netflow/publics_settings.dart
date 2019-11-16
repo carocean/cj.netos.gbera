@@ -40,12 +40,31 @@ class _PublicsSettingsState extends State<PublicsSettings> {
               items: <Widget>[
                 CardItem(
                   title: '公众',
+                  onItemTap: () {
+                    widget.context.forward(
+                        '/netflow/channel/publics/list_for_activies');
+                  },
                 ),
                 CardItem(
                   title: '微站',
+                  onItemTap: () {
+                    widget.context.forward(
+                        '/netflow/activies/sites');
+                  },
                 ),
                 CardItem(
                   title: '管道',
+                  onItemTap: () {
+                    widget.context.forward(
+                        '/netflow/activies/channels');
+                  },
+                ),
+                CardItem(
+                  title: '微应用',
+                  onItemTap: () {
+                    widget.context.forward(
+                        '/netflow/activies/microapps');
+                  },
                 ),
               ],
             ),
@@ -66,6 +85,10 @@ class _PublicsSettingsState extends State<PublicsSettings> {
                 CardItem(
                   title: '网关',
                   tipsText: '用于拒收指定的公众或管道活动',
+                  onItemTap: () {
+                    widget.context.forward(
+                        '/netflow/activities/gateway_settings');
+                  },
                 ),
               ],
             ),

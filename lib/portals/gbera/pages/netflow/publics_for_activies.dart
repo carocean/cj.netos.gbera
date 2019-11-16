@@ -6,16 +6,16 @@ import 'package:gbera/portals/gbera/pages/netflow/channel.dart';
 import 'package:gbera/portals/gbera/parts/CardItem.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 
-class OutsitePublics extends StatefulWidget {
+class PublicsForActivies extends StatefulWidget {
   PageContext context;
 
-  OutsitePublics({this.context});
+  PublicsForActivies({this.context});
 
   @override
-  _OutsitePublicsState createState() => _OutsitePublicsState();
+  _PublicsForActiviesState createState() => _PublicsForActiviesState();
 }
 
-class _OutsitePublicsState extends State<OutsitePublics> {
+class _PublicsForActiviesState extends State<PublicsForActivies> {
   @override
   Widget build(BuildContext context) {
     var items = <CardItem>[];
@@ -73,17 +73,6 @@ class _OutsitePublicsState extends State<OutsitePublics> {
                         color: Colors.grey[500],
                       ),
                       children: [
-                        TextSpan(text: '  '),
-                        TextSpan(
-                          text: '连结我',
-                          style: TextStyle(
-                            color: Colors.blueGrey,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          recognizer: TapGestureRecognizer()..onTap=(){
-                            print('----关注');
-                          },
-                        ),
                       ],
                     ),
                   ),

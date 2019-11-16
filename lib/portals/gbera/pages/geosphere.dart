@@ -705,7 +705,7 @@ class __MessageCardState extends State<_MessageCard> {
                                 context: context,
                                 builder: (context) {
                                   return widget.context.part(
-                                      '/network/channel/serviceMenu', context);
+                                      '/netflow/channel/serviceMenu', context);
                                 }).then((value) {
                               print('-----$value');
                               if (value == null) return;

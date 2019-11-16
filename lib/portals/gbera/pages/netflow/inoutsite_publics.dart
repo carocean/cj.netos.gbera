@@ -6,16 +6,16 @@ import 'package:gbera/portals/gbera/pages/netflow/channel.dart';
 import 'package:gbera/portals/gbera/parts/CardItem.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 
-class OutsitePublics extends StatefulWidget {
+class InsitePublics extends StatefulWidget {
   PageContext context;
 
-  OutsitePublics({this.context});
+  InsitePublics({this.context});
 
   @override
-  _OutsitePublicsState createState() => _OutsitePublicsState();
+  _InsitePublicsState createState() => _InsitePublicsState();
 }
 
-class _OutsitePublicsState extends State<OutsitePublics> {
+class _InsitePublicsState extends State<InsitePublics> {
   @override
   Widget build(BuildContext context) {
     var items = <CardItem>[];

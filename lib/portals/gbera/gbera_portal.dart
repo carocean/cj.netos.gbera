@@ -22,6 +22,10 @@ import 'package:gbera/portals/gbera/pages/market/services_plus.dart';
 import 'package:gbera/portals/gbera/pages/market/stores_plus.dart';
 import 'package:gbera/portals/gbera/pages/market/tydeal_market.dart';
 import 'package:gbera/portals/gbera/pages/netflow.dart';
+import 'package:gbera/portals/gbera/pages/netflow/activies_channels.dart';
+import 'package:gbera/portals/gbera/pages/netflow/activies_gateway_settings.dart';
+import 'package:gbera/portals/gbera/pages/netflow/activies_microapps.dart';
+import 'package:gbera/portals/gbera/pages/netflow/activies_sites.dart';
 import 'package:gbera/portals/gbera/pages/netflow/avatar.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_gateway.dart';
@@ -30,8 +34,10 @@ import 'package:gbera/portals/gbera/pages/netflow/channel_qrcode.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_rename.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_portal.dart';
 import 'package:gbera/portals/gbera/pages/netflow/create_channel.dart';
+import 'package:gbera/portals/gbera/pages/netflow/outsite_publics.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publics_activities.dart';
-import 'package:gbera/portals/gbera/pages/netflow/insite_publics.dart';
+import 'package:gbera/portals/gbera/pages/netflow/inoutsite_publics.dart';
+import 'package:gbera/portals/gbera/pages/netflow/publics_for_activies.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publics_settings.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publish_article.dart';
 import 'package:gbera/portals/gbera/pages/netflow/scan_channel.dart';
@@ -345,7 +351,7 @@ class GberaPortal {
         ),
         Page(
           title: '管道进口公众',
-          subtitle: '',
+          subtitle: '覆盖我的管道的公众管道、查看他人的管道都是此页面，以权限控制显示',
           icon: Icons.settings_input_composite,
           url: '/netflow/channel/insite/publics',
           buildPage: (PageContext pageContext) => InsitePublics(
@@ -354,10 +360,19 @@ class GberaPortal {
         ),
         Page(
           title: '管道出口公众',
-          subtitle: '',
+          subtitle: '覆盖我的管道的公众管道、查看他人的管道都是此页面，以权限控制显示',
           icon: Icons.settings_input_composite,
           url: '/netflow/channel/outsite/publics',
-          buildPage: (PageContext pageContext) => InsitePublics(
+          buildPage: (PageContext pageContext) => OutsitePublics(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '活动设置中的公众列表',
+          subtitle: '',
+          icon: Icons.settings_input_composite,
+          url: '/netflow/channel/publics/list_for_activies',
+          buildPage: (PageContext pageContext) => PublicsForActivies(
             context: pageContext,
           ),
         ),
@@ -393,7 +408,7 @@ class GberaPortal {
           subtitle: '',
           desc: '为个人站点或商户站点提供的服务列表',
           icon: Icons.art_track,
-          url: '/network/channel/serviceMenu',
+          url: '/netflow/channel/serviceMenu',
           buildPage: (PageContext pageContext) => ServiceMenu(
             context: pageContext,
           ),
@@ -403,7 +418,7 @@ class GberaPortal {
           subtitle: '',
           desc: '',
           icon: Icons.art_track,
-          url: '/network/channel/site/output',
+          url: '/netflow/channel/site/output',
           buildPage: (PageContext pageContext) => SiteChannelBinder(
             context: pageContext,
           ),
@@ -445,6 +460,46 @@ class GberaPortal {
           icon: Icons.art_track,
           url: '/site/insite/request',
           buildPage: (PageContext pageContext) => InSiteRequest(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '微站',
+          subtitle: '用于活动设置中查看我的微站列表',
+          desc: '',
+          icon: Icons.art_track,
+          url: '/netflow/activies/sites',
+          buildPage: (PageContext pageContext) => ActivitiesSites(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '管道',
+          subtitle: '用于活动设置中查看我的管道列表',
+          desc: '',
+          icon: Icons.art_track,
+          url: '/netflow/activies/channels',
+          buildPage: (PageContext pageContext) => ActivitiesChannels(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '微应用',
+          subtitle: '用于活动设置中查看我的微应用列表',
+          desc: '',
+          icon: Icons.art_track,
+          url: '/netflow/activies/microapps',
+          buildPage: (PageContext pageContext) => ActivitiesMicroapps(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '网关',
+          subtitle: '用于活动设置中拒绝接收用户或管道发来的信息',
+          desc: '',
+          icon: Icons.art_track,
+          url: '/netflow/activities/gateway_settings',
+          buildPage: (PageContext pageContext) => ActivitiesGatewaySettings(
             context: pageContext,
           ),
         ),

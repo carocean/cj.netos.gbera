@@ -210,7 +210,7 @@ void _buildPlatTab(List<Widget> panel, Channel widget, BuildContext context,
                                 context: context,
                                 builder: (context) {
                                   return widget.context.part(
-                                      '/network/channel/serviceMenu', context);
+                                      '/netflow/channel/serviceMenu', context);
                                 }).then((value) {
                               print('-----$value');
                               if (value == null) return;

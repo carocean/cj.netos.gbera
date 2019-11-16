@@ -381,7 +381,7 @@ class __HeaderState extends State<_Header> {
                         context: context,
                         builder: (context) {
                           return widget.context
-                              .part('/network/channel/serviceMenu', context);
+                              .part('/netflow/channel/serviceMenu', context);
                         }).then((value) {
                       print('-----$value');
                       if (value == null) return;
@@ -417,7 +417,7 @@ class __HeaderState extends State<_Header> {
                         context: context,
                         builder: (context) {
                           return widget.context
-                              .part('/network/channel/site/output', context);
+                              .part('/netflow/channel/site/output', context);
                         }).then((value) {
                       if (value == null) return;
                       widget.context.forward('/channel/viewer');
