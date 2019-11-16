@@ -22,7 +22,9 @@ class _GeosphereState extends State<Geosphere> {
   var _backgroud_transparent = true;
   bool use_wallpapper = false;
 
-  _GeosphereState() {
+
+  @override
+  void initState() {
     _controller = ScrollController(initialScrollOffset: 0.0);
     _controller.addListener(_listener);
   }
@@ -731,6 +733,7 @@ class __MessageCardState extends State<_MessageCard> {
                       style: TextStyle(
                         fontSize: 15,
                       ),
+                      maxLines: 4,
                     ),
                   ),
                   Container(
