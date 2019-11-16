@@ -111,3 +111,9 @@ flutter:
     - family: geo_navigation
       fonts:
         - asset: lib/portals/gbera/fonts/geo_navigation.ttf
+    - family: geo_locations
+      fonts:
+        - asset: lib/portals/gbera/fonts/geo_locations.ttf
+    - family: market
+      fonts:
+        - asset: lib/portals/gbera/fonts/market.ttf
