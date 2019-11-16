@@ -87,16 +87,10 @@ class _ChannelViewerState extends State<ChannelViewer> {
                     widget.context.forward('/netflow/portal/channel');
                   },
                 ),
-                _CardItem(
-                  title: '微站',
-                  tipsText: '万达集团',
-                  onTap: () {
-                    widget.context.forward('/site/marchant');
-                  },
-                ),
               ],
             ),
           ),
+
           SliverToBoxAdapter(
             child: Container(
               height: 10,
@@ -127,10 +121,35 @@ class _ChannelViewerState extends State<ChannelViewer> {
               items: [
                 _CardItem(
                   title: '公众',
-                  tipsText:
-                      '246.32万个',
+                  tipsText: '246.32万个',
                   onTap: () {
                     widget.context.forward('/netflow/channel/outsite/publics');
+                  },
+                ),
+              ],
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              height: 10,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: _Card(
+              title: '',
+              items: [
+                _CardItem(
+                  title: '微站',
+                  tipsText: '21个',
+                  onTap: () {
+                    widget.context.forward('/netflow/activies/sites');
+                  },
+                ),
+                _CardItem(
+                  title: '微应用',
+                  tipsText: '83个',
+                  onTap: () {
+                    widget.context.forward('/netflow/activies/microapps');
                   },
                 ),
               ],

@@ -112,32 +112,7 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                 ],
               ),
             ),
-            SliverToBoxAdapter(
-              child: Container(
-                height: 10,
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: _Card(
-                title: '',
-                items: [
-                  _CardItem(
-                    title: '推广',
-                    tipsText: '让别人帮您推广本管道，请充钱',
-                    onItemTap: () {
-                      widget.context.forward('/netflow/channel/popularize');
-                    },
-                  ),
-                  _CardItem(
-                    title: '转让',
-                    tipsText: '受让方除得到本管道且连同所属微站',
-                    onItemTap: () {
-                      widget.context.forward('/netflow/channel/popularize');
-                    },
-                  ),
-                ],
-              ),
-            ),
+
             SliverToBoxAdapter(
               child: Container(
                 height: 10,
@@ -179,6 +154,32 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                     tipsText: '是否充许本管道的信息推送到我的地圈',
                     operator: _MySwitch(),
                     onItemTap: () {},
+                  ),
+                ],
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                height: 10,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: _Card(
+                title: '',
+                items: [
+                  _CardItem(
+                    title: '推广',
+                    tipsText: '让别人帮您推广本管道，请充钱',
+                    onItemTap: () {
+                      widget.context.forward('/netflow/channel/popularize');
+                    },
+                  ),
+                  _CardItem(
+                    title: '转让',
+                    tipsText: '受让方除得到本管道且连同所属微站',
+                    onItemTap: () {
+                      widget.context.forward('/netflow/channel/popularize');
+                    },
                   ),
                 ],
               ),

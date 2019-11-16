@@ -157,33 +157,32 @@ class _MarketState extends State<Market> {
       ),
     ];
 
-    List<Widget> panel = [
-      SliverAppBar(
-        title: Text('市场'),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.transparent,
-      ),
-      SliverList(
-        delegate: SliverChildListDelegate(
-          tiles_plus.toList(),
-        ),
-      ),
-      SliverToBoxAdapter(
-        //分隔栏
-        child: Container(
-          margin: EdgeInsets.only(bottom: 20),
-        ),
-      ),
-      SliverList(
-        delegate: SliverChildListDelegate(
-          tiles_markets.toList(),
-        ),
-      ),
-    ];
     return SafeArea(
       child: CustomScrollView(
-        slivers: panel,
+        slivers: [
+          SliverAppBar(
+            title: Text('市场'),
+            centerTitle: true,
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.transparent,
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              tiles_plus.toList(),
+            ),
+          ),
+          SliverToBoxAdapter(
+            //分隔栏
+            child: Container(
+              margin: EdgeInsets.only(bottom: 20),
+            ),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              tiles_markets.toList(),
+            ),
+          ),
+        ],
       ),
     );
   }

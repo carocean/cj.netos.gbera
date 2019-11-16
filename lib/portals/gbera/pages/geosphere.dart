@@ -92,7 +92,7 @@ class _GeosphereState extends State<Geosphere> {
           child: _Content(
             context: widget.context,
             onTapMarchant: (value) {
-              widget.context.forward('/site/marchant');
+              widget.context.forward('/site/personal');
             },
             onTapDiscovery: () {
               showModalBottomSheet(
@@ -569,15 +569,15 @@ class __ContentState extends State<_Content> {
             ),
             child: Text.rich(
               TextSpan(
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    if (widget.onTapMarchant != null) {
+                      widget.onTapMarchant({"uid": '出租车王师傅'});
+                    }
+                  },
                 children: [
                   TextSpan(
                     text: '出租车王师傅',
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        if (widget.onTapMarchant != null) {
-                          widget.onTapMarchant({"uid": '出租车王师傅'});
-                        }
-                      },
                     style: TextStyle(
                       color: Colors.blueGrey,
                       fontWeight: FontWeight.w800,
