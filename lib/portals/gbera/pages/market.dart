@@ -253,7 +253,7 @@ class _MarketState extends State<Market> {
           color: Colors.grey[600],
         ),
         onTap: () {
-          widget.context.forward('/market/gogo');
+          widget.context.forward('/market/goGOGO');
         },
       ),
     ];

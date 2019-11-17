@@ -16,6 +16,8 @@ import 'package:gbera/portals/gbera/pages/geosphere/geo_region.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_settings.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_yuanbao.dart';
 import 'package:gbera/portals/gbera/pages/market.dart';
+import 'package:gbera/portals/gbera/pages/market/go_gogo.dart';
+import 'package:gbera/portals/gbera/pages/market/go_shopping_cart.dart';
 import 'package:gbera/portals/gbera/pages/netflow.dart';
 import 'package:gbera/portals/gbera/pages/netflow/activies_channels.dart';
 import 'package:gbera/portals/gbera/pages/netflow/activies_gateway_settings.dart';
@@ -996,6 +998,26 @@ class GberaPortal {
           icon: GalleryIcons.shrine,
           url: '/desktop/portlets',
           buildPage: (PageContext pageContext) => PortletList(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: 'goGOGO',
+          subtitle: '',
+          desc: '平台购物商城',
+          icon: GalleryIcons.shrine,
+          url: '/market/goGOGO',
+          buildPage: (PageContext pageContext) => Gogogo(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '购物车',
+          subtitle: '',
+          desc: '平台购物商城',
+          icon: GalleryIcons.shrine,
+          url: '/market/shopping_cart',
+          buildPage: (PageContext pageContext) => ShoppingCartPage(
             context: pageContext,
           ),
         ),
