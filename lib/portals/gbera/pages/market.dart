@@ -15,9 +15,47 @@ class Market extends StatefulWidget {
 }
 
 class _MarketState extends State<Market> {
+  ScrollController _controller;
+  bool showAppBar = false;
+
+  @override
+  void initState() {
+    _controller = ScrollController(initialScrollOffset: 0.0);
+    showAppBar = false;
+    _controller.addListener(_scrollListener);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller?.dispose();
+  }
+
+  _scrollListener() {
+    var sub = 40;
+    print('${_controller.offset}----$sub');
+    if (_controller.offset > sub) {
+      if (!showAppBar) {
+        setState(() {
+          showAppBar = true;
+        });
+      }
+      return;
+    }
+    if (_controller.offset < sub) {
+      if (showAppBar) {
+        setState(() {
+          showAppBar = false;
+        });
+      }
+      return;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
+      controller: _controller,
       slivers: [
         SliverAppBar(
           title: Text('市场'),
@@ -25,7 +63,7 @@ class _MarketState extends State<Market> {
           centerTitle: true,
           elevation: 0,
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
+          backgroundColor: showAppBar ? Colors.white : Colors.transparent,
           actions: <Widget>[
             IconButton(
               icon: Icon(
@@ -47,7 +85,7 @@ class _MarketState extends State<Market> {
         ),
         SliverList(
           delegate: SliverChildListDelegate(
-            _platformServices().toList(),
+            _shoppingMarket().toList(),
           ),
         ),
         SliverToBoxAdapter(
@@ -57,7 +95,7 @@ class _MarketState extends State<Market> {
         ),
         SliverList(
           delegate: SliverChildListDelegate(
-            _shoppingMarket().toList(),
+            _platformServices().toList(),
           ),
         ),
         SliverToBoxAdapter(
@@ -80,7 +118,7 @@ class _MarketState extends State<Market> {
         top: 30,
         bottom: 20,
       ),
-      color: Colors.white,
+      color: showAppBar ? Colors.white : null,
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -170,7 +208,14 @@ class _MarketState extends State<Market> {
 
     return services.map((service) {
       return Container(
-        color: Colors.white,
+        decoration: BoxDecoration(
+          color: Colors.white,
+//          borderRadius: BorderRadius.circular(4),
+        ),
+        margin: EdgeInsets.only(
+          left: 10,
+          right: 10,
+        ),
         child: Column(
           children: <Widget>[
             Container(
@@ -181,11 +226,15 @@ class _MarketState extends State<Market> {
               child: CardItem(
                 title: service.name,
                 leading: service.icon,
+                onItemTap: service.onTap,
+                paddingTop: 10,
+                paddingBottom: 10,
               ),
             ),
             Container(
               child: Divider(
                 height: 1,
+                indent: 50,
               ),
             ),
           ],
@@ -197,18 +246,28 @@ class _MarketState extends State<Market> {
   List<Widget> _shoppingMarket() {
     var services = <_PlatformService>[
       _PlatformService(
-        name: '购物',
+        name: 'goGOGO',
         icon: Icon(
           Icons.shopping_basket,
           size: 30,
           color: Colors.grey[600],
         ),
+        onTap: () {
+          widget.context.forward('/market/gogo');
+        },
       ),
     ];
 
     return services.map((service) {
       return Container(
-        color: Colors.white,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        margin: EdgeInsets.only(
+          left: 10,
+          right: 10,
+        ),
         child: Column(
           children: <Widget>[
             Container(
@@ -219,6 +278,9 @@ class _MarketState extends State<Market> {
               child: CardItem(
                 title: service.name,
                 leading: service.icon,
+                onItemTap: service.onTap,
+                paddingBottom: 10,
+                paddingTop: 10,
               ),
             ),
             Container(
@@ -456,6 +518,7 @@ class _News {
 class _PlatformService {
   String name;
   Icon icon;
+  Function() onTap;
 
-  _PlatformService({this.name, this.icon});
+  _PlatformService({this.name, this.icon, this.onTap});
 }

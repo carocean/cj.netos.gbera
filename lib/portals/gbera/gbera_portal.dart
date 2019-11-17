@@ -16,11 +16,6 @@ import 'package:gbera/portals/gbera/pages/geosphere/geo_region.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_settings.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_yuanbao.dart';
 import 'package:gbera/portals/gbera/pages/market.dart';
-import 'package:gbera/portals/gbera/pages/market/entities_plus.dart';
-import 'package:gbera/portals/gbera/pages/market/jzbanks.dart';
-import 'package:gbera/portals/gbera/pages/market/services_plus.dart';
-import 'package:gbera/portals/gbera/pages/market/stores_plus.dart';
-import 'package:gbera/portals/gbera/pages/market/tydeal_market.dart';
 import 'package:gbera/portals/gbera/pages/netflow.dart';
 import 'package:gbera/portals/gbera/pages/netflow/activies_channels.dart';
 import 'package:gbera/portals/gbera/pages/netflow/activies_gateway_settings.dart';
@@ -937,51 +932,6 @@ class GberaPortal {
           icon: Icons.account_box,
           url: '/users/accounts',
           buildPage: (PageContext pageContext) => Accounts(
-            context: pageContext,
-          ),
-        ),
-        Page(
-          title: '实体+',
-          subtitle: '',
-          icon: GalleryIcons.shrine,
-          url: '/market/plus/entities',
-          buildPage: (PageContext pageContext) => EntitiesPlus(
-            context: pageContext,
-          ),
-        ),
-        Page(
-          title: '卖场+',
-          subtitle: '',
-          icon: GalleryIcons.shrine,
-          url: '/market/plus/stores',
-          buildPage: (PageContext pageContext) => StoresPlus(
-            context: pageContext,
-          ),
-        ),
-        Page(
-          title: '服务+',
-          subtitle: '',
-          icon: GalleryIcons.shrine,
-          url: '/market/plus/services',
-          buildPage: (PageContext pageContext) => ServicesPlus(
-            context: pageContext,
-          ),
-        ),
-        Page(
-          title: '金证银行',
-          subtitle: '',
-          icon: GalleryIcons.shrine,
-          url: '/market/jzbanks',
-          buildPage: (PageContext pageContext) => JZBanks(
-            context: pageContext,
-          ),
-        ),
-        Page(
-          title: '帑银交易所',
-          subtitle: '',
-          icon: GalleryIcons.shrine,
-          url: '/market/tydealmarket',
-          buildPage: (PageContext pageContext) => TYDealMarket(
             context: pageContext,
           ),
         ),

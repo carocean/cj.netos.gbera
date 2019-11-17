@@ -34,7 +34,7 @@ class _DesktopState extends State<Desktop> {
     }
     if (_controller.offset >= 210 - 48) {
       //48是appbar的默认高度，210是appbar展开发的总高
-      if(_backgroud_transparent) {
+      if (_backgroud_transparent) {
         setState(() {
           _backgroud_transparent = false;
         });
@@ -42,7 +42,7 @@ class _DesktopState extends State<Desktop> {
       return;
     }
     if (_controller.offset < 210 - 48) {
-      if(!_backgroud_transparent) {
+      if (!_backgroud_transparent) {
         setState(() {
           _backgroud_transparent = true;
         });
@@ -345,9 +345,13 @@ class _DesktopState extends State<Desktop> {
           }
         }
         var lets_region = SliverToBoxAdapter(
+          child: Container(
+//            margin: EdgeInsets.only(left: 10,right: 10,),
             child: Column(
-          children: widgets,
-        ));
+              children: widgets,
+            ),
+          ),
+        );
         _slivers.add(lets_region);
 
         var myarea = CustomScrollView(
