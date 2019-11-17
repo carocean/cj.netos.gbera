@@ -1,5 +1,9 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/common/util.dart';
 
 class Gogogo extends StatefulWidget {
   PageContext context;
@@ -104,21 +108,18 @@ class _GogogoState extends State<Gogogo> with SingleTickerProviderStateMixin {
           ];
         },
         body: Stack(
+          fit: StackFit.loose,
           children: <Widget>[
             TabBarView(
               controller: _controller,
               children: _pages.map<Widget>((_Page page) {
-                return SafeArea(
-                  top: false,
-                  bottom: false,
-                  child: Container(
-                    padding: const EdgeInsets.only(
-                      top: 10,
-                    ),
-                    child: _PageRegion(
-                      context: widget.context,
-                      page: page,
-                    ),
+                return Container(
+                  padding: const EdgeInsets.only(
+                    top: 10,
+                  ),
+                  child: _PageRegion(
+                    context: widget.context,
+                    page: page,
                   ),
                 );
               }).toList(),
@@ -142,21 +143,134 @@ class _GogogoState extends State<Gogogo> with SingleTickerProviderStateMixin {
   List<_Page> _allPages() {
     return <_Page>[
       _Page(
-        title: 'Home',
+        title: 'HoME',
         categories: [
-          _Category(
+          Category(
+            id: 'all',
+            title: '全部',
+          ),
+          Category(
+            id: 'liuxing',
             title: '流行',
           ),
-          _Category(
+          Category(
+            id: 'zhaoshang',
             title: '招商',
           ),
+        ],
+        merchandises: [
+          _Merchandise(
+              name: '超级至尊比萨1',
+              category: 'liuxing',
+              price: '99.00',
+              images: [
+                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG',
+                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG'
+              ],
+              desc:
+                  '腊肉肠、香肠、火腿、牛肉，搭配菠萝、蘑菇、洋葱、青椒等蔬菜水果，如此丰盛馅料，口口都是令人满足的好滋味。主要原料:面团、牛肉粒、猪肉粒、火腿、腊肉肠、芝士、蔬菜、菠萝、黑橄榄。铁盘个人装250克建议1人用，铁盘普通装440克建议2-3人用，铁盘大装880克建议3-4人用，芝心普通装570克建议2-3人用，大方薄底普通装390克建议2-3人用。'),
+          _Merchandise(
+              name: '超级至尊比萨1',
+              category: 'liuxing',
+              price: '82.25',
+              images: [
+                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG'
+              ],
+              desc:
+                  '腊肉肠、香肠、火腿、牛肉，搭配菠萝、蘑菇、洋葱、青椒等蔬菜水果，如此丰盛馅料，口口都是令人满足的好滋味。主要原料:面团、牛肉粒、猪肉粒、火腿、腊肉肠、芝士、蔬菜、菠萝、黑橄榄。铁盘个人装250克建议1人用，铁盘普通装440克建议2-3人用，铁盘大装880克建议3-4人用，芝心普通装570克建议2-3人用，大方薄底普通装390克建议2-3人用。'),
+          _Merchandise(
+              name: '超级至尊比萨2',
+              category: 'zhaoshang',
+              images: [
+                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG'
+              ],
+              desc:
+                  '腊肉肠、香肠、火腿、牛肉，搭配菠萝、蘑菇、洋葱、青椒等蔬菜水果，如此丰盛馅料，口口都是令人满足的好滋味。主要原料:面团、牛肉粒、猪肉粒、火腿、腊肉肠、芝士、蔬菜、菠萝、黑橄榄。铁盘个人装250克建议1人用，铁盘普通装440克建议2-3人用，铁盘大装880克建议3-4人用，芝心普通装570克建议2-3人用，大方薄底普通装390克建议2-3人用。'),
         ],
       ),
       _Page(
         title: 'GoDOWN',
+        categories: [
+          Category(
+            id: 'liuxing',
+            title: '餐饮',
+          ),
+          Category(
+            id: 'zhaoshang',
+            title: '休闲',
+          ),
+        ],
+        merchandises: [
+          _Merchandise(
+              name: '北味川菜馆',
+              category: 'liuxing',
+              price: '99.00',
+              images: [
+                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG',
+                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG'
+              ],
+              desc:
+                  '腊肉肠、香肠、火腿、牛肉，搭配菠萝、蘑菇、洋葱、青椒等蔬菜水果，如此丰盛馅料，口口都是令人满足的好滋味。主要原料:面团、牛肉粒、猪肉粒、火腿、腊肉肠、芝士、蔬菜、菠萝、黑橄榄。铁盘个人装250克建议1人用，铁盘普通装440克建议2-3人用，铁盘大装880克建议3-4人用，芝心普通装570克建议2-3人用，大方薄底普通装390克建议2-3人用。'),
+          _Merchandise(
+              name: '超级至尊比萨1',
+              category: 'liuxing',
+              price: '82.25',
+              images: [
+                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG'
+              ],
+              desc:
+                  '腊肉肠、香肠、火腿、牛肉，搭配菠萝、蘑菇、洋葱、青椒等蔬菜水果，如此丰盛馅料，口口都是令人满足的好滋味。主要原料:面团、牛肉粒、猪肉粒、火腿、腊肉肠、芝士、蔬菜、菠萝、黑橄榄。铁盘个人装250克建议1人用，铁盘普通装440克建议2-3人用，铁盘大装880克建议3-4人用，芝心普通装570克建议2-3人用，大方薄底普通装390克建议2-3人用。'),
+          _Merchandise(
+              name: '超级至尊比萨2',
+              category: 'zhaoshang',
+              images: [
+                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG'
+              ],
+              desc:
+                  '腊肉肠、香肠、火腿、牛肉，搭配菠萝、蘑菇、洋葱、青椒等蔬菜水果，如此丰盛馅料，口口都是令人满足的好滋味。主要原料:面团、牛肉粒、猪肉粒、火腿、腊肉肠、芝士、蔬菜、菠萝、黑橄榄。铁盘个人装250克建议1人用，铁盘普通装440克建议2-3人用，铁盘大装880克建议3-4人用，芝心普通装570克建议2-3人用，大方薄底普通装390克建议2-3人用。'),
+        ],
       ),
       _Page(
         title: 'GoUP',
+        categories: [
+          Category(
+            id: 'liuxing',
+            title: '女装卖场',
+          ),
+          Category(
+            id: 'zhaoshang',
+            title: '手机卖场',
+          ),
+        ],
+        merchandises: [
+          _Merchandise(
+              name: '超级至尊比萨1',
+              category: 'liuxing',
+              price: '99.00',
+              images: [
+                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG',
+                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG'
+              ],
+              desc:
+                  '腊肉肠、香肠、火腿、牛肉，搭配菠萝、蘑菇、洋葱、青椒等蔬菜水果，如此丰盛馅料，口口都是令人满足的好滋味。主要原料:面团、牛肉粒、猪肉粒、火腿、腊肉肠、芝士、蔬菜、菠萝、黑橄榄。铁盘个人装250克建议1人用，铁盘普通装440克建议2-3人用，铁盘大装880克建议3-4人用，芝心普通装570克建议2-3人用，大方薄底普通装390克建议2-3人用。'),
+          _Merchandise(
+              name: '超级至尊比萨1',
+              category: 'liuxing',
+              price: '82.25',
+              images: [
+                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG'
+              ],
+              desc:
+                  '腊肉肠、香肠、火腿、牛肉，搭配菠萝、蘑菇、洋葱、青椒等蔬菜水果，如此丰盛馅料，口口都是令人满足的好滋味。主要原料:面团、牛肉粒、猪肉粒、火腿、腊肉肠、芝士、蔬菜、菠萝、黑橄榄。铁盘个人装250克建议1人用，铁盘普通装440克建议2-3人用，铁盘大装880克建议3-4人用，芝心普通装570克建议2-3人用，大方薄底普通装390克建议2-3人用。'),
+          _Merchandise(
+              name: '超级至尊比萨2',
+              category: 'zhaoshang',
+              images: [
+                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG'
+              ],
+              desc:
+                  '腊肉肠、香肠、火腿、牛肉，搭配菠萝、蘑菇、洋葱、青椒等蔬菜水果，如此丰盛馅料，口口都是令人满足的好滋味。主要原料:面团、牛肉粒、猪肉粒、火腿、腊肉肠、芝士、蔬菜、菠萝、黑橄榄。铁盘个人装250克建议1人用，铁盘普通装440克建议2-3人用，铁盘大装880克建议3-4人用，芝心普通装570克建议2-3人用，大方薄底普通装390克建议2-3人用。'),
+        ],
       ),
     ];
   }
@@ -221,26 +335,61 @@ class __ShoppingCartBarState extends State<_ShoppingCartBar> {
 
 class _Page {
   String title;
-  List<_Category> categories;
+  List<Category> categories;
+  List<_Merchandise> merchandises;
 
-  _Page({this.title, this.categories}) {
+  _Page({this.title, this.categories, this.merchandises}) {
     if (this.categories == null) {
       this.categories = [];
+    }
+    if (this.merchandises == null) this.merchandises = [];
+  }
+}
+
+///商品
+class _Merchandise {
+  String category;
+  String name;
+  String desc;
+  List<String> images;
+  String price;
+  int count;
+
+  _Merchandise(
+      {this.category,
+      this.name,
+      this.desc,
+      this.images,
+      this.price,
+      this.count}) {
+    if (images == null) {
+      this.images = [];
     }
   }
 }
 
-class _Category {
+class Category {
+  String id;
   String title;
 
-  _Category({this.title});
+  @override
+  bool operator ==(other) {
+    return id == other?.id;
+  }
+
+  @override
+  int get hashCode {
+    return id == null ? super.hashCode : id.hashCode;
+  }
+
+  Category({this.id, this.title});
 }
 
 class _PageRegion extends StatefulWidget {
   PageContext context;
   _Page page;
-
-  _PageRegion({this.context, this.page});
+  Category filter;
+  _PageRegion({this.context, this.page,this.filter});
 
   @override
   __PageRegionState createState() => __PageRegionState();
@@ -249,10 +398,212 @@ class _PageRegion extends StatefulWidget {
 class __PageRegionState extends State<_PageRegion> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: <Widget>[],
-      ),
+    return Stack(
+      children: <Widget>[
+        ListView(
+          padding: EdgeInsets.all(0),
+          shrinkWrap: true,
+          children: widget.page.categories.map((category) {
+            if(widget.filter==null||widget.filter==Category(id: 'all',)){
+              List<_Merchandise> merchandises = [];
+              widget?.page?.merchandises?.forEach((m) {
+                if (m?.category == category?.id) {
+                  merchandises.add(m);
+                }
+              });
+              return _CategoryRegion(
+                category: category,
+                merchandises: merchandises,
+              );
+            }
+            if(widget.filter==category){
+              List<_Merchandise> merchandises = [];
+              widget?.page?.merchandises?.forEach((m) {
+                if (m?.category == category?.id) {
+                  merchandises.add(m);
+                }
+              });
+              return _CategoryRegion(
+                category: category,
+                merchandises: merchandises,
+              );
+            }
+            return Container(height: 0,width: 0,);
+          }).toList(),
+        ),
+        Positioned(
+          right: 10,
+          top: 6,
+          child: GestureDetector(
+            child: Icon(
+              FontAwesomeIcons.filter,
+              color: Colors.grey,
+              size: 16,
+            ),
+            onTap: () {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return widget.context.part(
+                        '/goGOGO/category/filter', context,
+                        arguments: <String, Object>{
+                          'categories': widget.page.categories
+                        });
+                  }).then((result){
+                    print('----$result');
+                    setState(() {
+                      widget.filter=result['category'];
+                    });
+              });
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CategoryRegion extends StatefulWidget {
+  Category category;
+  List<_Merchandise> merchandises;
+
+  _CategoryRegion({this.category, this.merchandises});
+
+  @override
+  __CategoryRegionState createState() => __CategoryRegionState();
+}
+
+class __CategoryRegionState extends State<_CategoryRegion> {
+  @override
+  Widget build(BuildContext context) {
+    if (widget.merchandises.isEmpty) {
+      return Container(
+        height: 0,
+        width: 0,
+      );
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.only(
+            left: 10,
+            right: 10,
+            bottom: 5,
+          ),
+          child: Text(
+            widget.category.title,
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 20,
+            ),
+          ),
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: widget.merchandises?.map((merchandise) {
+//                          return _CategoryRegion(merchandise);
+            return _MerchandiseRegion(
+              merchandise: merchandise,
+            );
+          })?.toList(),
+        ),
+        Container(
+          height: 20,
+        ),
+      ],
+    );
+  }
+}
+
+class _MerchandiseRegion extends StatefulWidget {
+  _Merchandise merchandise;
+
+  _MerchandiseRegion({this.merchandise});
+
+  @override
+  __MerchandiseRegionState createState() => __MerchandiseRegionState();
+}
+
+class __MerchandiseRegionState extends State<_MerchandiseRegion> {
+  int maxLines = 2;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.all(10),
+          color: Colors.white,
+          child: Column(
+            children: <Widget>[
+              Wrap(
+                spacing: 10,
+                children: widget.merchandise.images.length == 1
+                    ? [
+                        Image.network(
+                          widget.merchandise.images[0],
+                          fit: BoxFit.cover,
+                        )
+                      ]
+                    : widget.merchandise.images.map((img) {
+                        return Image.network(
+                          img,
+                          fit: BoxFit.cover,
+                          width: Adapt.screenW() / 2 - 25,
+                        );
+                      }).toList(),
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text.rich(
+                  TextSpan(
+                    text: widget.merchandise.name,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    children: [
+                      TextSpan(text: '  '),
+                      TextSpan(
+                        text: '¥${widget.merchandise.price ?? ''}',
+                        style: TextStyle(
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                child: Text.rich(
+                  TextSpan(
+                    text: widget.merchandise.desc ?? '',
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        setState(() {
+                          if (maxLines == 2) {
+                            maxLines = 100;
+                          } else {
+                            maxLines = 2;
+                          }
+                        });
+                      },
+                  ),
+                  maxLines: maxLines,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          height: 10,
+        ),
+      ],
     );
   }
 }
