@@ -143,6 +143,7 @@ class _GogogoState extends State<Gogogo> with SingleTickerProviderStateMixin {
   List<_Page> _allPages() {
     return <_Page>[
       _Page(
+        id: 'home',
         title: 'HoME',
         categories: [
           Category(
@@ -160,7 +161,8 @@ class _GogogoState extends State<Gogogo> with SingleTickerProviderStateMixin {
         ],
         merchandises: [
           _Merchandise(
-              name: '超级至尊比萨1',
+              name:
+                  '华为 HUAWEI Mate 30 Pro 5G 麒麟990 OLED环幕屏双4000万徕卡电影四摄8GB+256GB丹霞橙5G全网通版',
               category: 'liuxing',
               price: '99.00',
               images: [
@@ -189,6 +191,7 @@ class _GogogoState extends State<Gogogo> with SingleTickerProviderStateMixin {
         ],
       ),
       _Page(
+        id: 'godown',
         title: 'GoDOWN',
         categories: [
           Category(
@@ -231,25 +234,39 @@ class _GogogoState extends State<Gogogo> with SingleTickerProviderStateMixin {
         ],
       ),
       _Page(
+        id: 'goup',
         title: 'GoUP',
         categories: [
+          Category(
+            id: 'phone',
+            title: '手机卖场',
+          ),
           Category(
             id: 'liuxing',
             title: '女装卖场',
           ),
-          Category(
-            id: 'zhaoshang',
-            title: '手机卖场',
-          ),
         ],
         merchandises: [
           _Merchandise(
-              name: '超级至尊比萨1',
-              category: 'liuxing',
+              name:
+                  '华为 HUAWEI Mate 30 Pro 5G 麒麟990 OLED环幕屏双4000万徕卡电影四摄8GB+256GB丹霞橙5G全网通版',
+              category: 'phone',
               price: '99.00',
+              sites: [
+                _MerchantSite(
+                    siteAvatar:
+                        'https://g-search1.alicdn.com/img/bao/uploaded/i4//eb/1d/T19AHNFdJbXXb1upjX.jpg_140x140Q90.jpg',
+                    siteTitle: '中国移动官方旗舰店'),
+                _MerchantSite(
+                    siteAvatar:
+                        'https://g-search1.alicdn.com/img/bao/uploaded/i4//c4/13/TB1etCbSpXXXXcsXXXXSutbFXXX.jpg_140x140Q90.jpg',
+                    siteTitle: 'Apple 产品京东自营旗舰店'),
+              ],
               images: [
-                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG',
-                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG'
+                'https://img11.360buyimg.com/n1/s450x450_jfs/t1/100072/19/531/218255/5dafcdf6E996f8eda/5ffdb56099d4da7c.jpg',
+                'https://img11.360buyimg.com/n1/s450x450_jfs/t1/81012/28/13665/159765/5dafcdf7Eb247ff7f/c516fc4de783079c.jpg',
+                'https://img11.360buyimg.com/n1/s450x450_jfs/t1/85120/6/577/92522/5dafcdf7E3ed87530/777b12adea1822f6.jpg',
+                'https://img11.360buyimg.com/n1/s450x450_jfs/t1/85862/1/558/120277/5dafcdf8E2d92f14a/f0a5f500c3188252.jpg',
               ],
               desc:
                   '腊肉肠、香肠、火腿、牛肉，搭配菠萝、蘑菇、洋葱、青椒等蔬菜水果，如此丰盛馅料，口口都是令人满足的好滋味。主要原料:面团、牛肉粒、猪肉粒、火腿、腊肉肠、芝士、蔬菜、菠萝、黑橄榄。铁盘个人装250克建议1人用，铁盘普通装440克建议2-3人用，铁盘大装880克建议3-4人用，芝心普通装570克建议2-3人用，大方薄底普通装390克建议2-3人用。'),
@@ -263,13 +280,13 @@ class _GogogoState extends State<Gogogo> with SingleTickerProviderStateMixin {
               desc:
                   '腊肉肠、香肠、火腿、牛肉，搭配菠萝、蘑菇、洋葱、青椒等蔬菜水果，如此丰盛馅料，口口都是令人满足的好滋味。主要原料:面团、牛肉粒、猪肉粒、火腿、腊肉肠、芝士、蔬菜、菠萝、黑橄榄。铁盘个人装250克建议1人用，铁盘普通装440克建议2-3人用，铁盘大装880克建议3-4人用，芝心普通装570克建议2-3人用，大方薄底普通装390克建议2-3人用。'),
           _Merchandise(
-              name: '超级至尊比萨2',
-              category: 'zhaoshang',
+              name: 'Apple iPhone 11 (A2223) 128GB 黑色 移动联通电信4G手机 双卡双待',
+              category: 'phone',
               images: [
-                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG'
+                'https://img12.360buyimg.com/n1/s450x450_jfs/t1/59022/28/10293/141808/5d78088fEf6e7862d/68836f52ffaaad96.jpg',
+                'https://img12.360buyimg.com/n1/s450x450_jfs/t1/61588/10/9949/164377/5d7808a1E6c3615dd/7c45f7039b9cbae8.jpg',
               ],
-              desc:
-                  '腊肉肠、香肠、火腿、牛肉，搭配菠萝、蘑菇、洋葱、青椒等蔬菜水果，如此丰盛馅料，口口都是令人满足的好滋味。主要原料:面团、牛肉粒、猪肉粒、火腿、腊肉肠、芝士、蔬菜、菠萝、黑橄榄。铁盘个人装250克建议1人用，铁盘普通装440克建议2-3人用，铁盘大装880克建议3-4人用，芝心普通装570克建议2-3人用，大方薄底普通装390克建议2-3人用。'),
+              desc: 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5599元。'),
         ],
       ),
     ];
@@ -335,15 +352,23 @@ class __ShoppingCartBarState extends State<_ShoppingCartBar> {
 
 class _Page {
   String title;
+  String id;
   List<Category> categories;
   List<_Merchandise> merchandises;
 
-  _Page({this.title, this.categories, this.merchandises}) {
+  _Page({this.id, this.title, this.categories, this.merchandises}) {
     if (this.categories == null) {
       this.categories = [];
     }
     if (this.merchandises == null) this.merchandises = [];
   }
+}
+
+class _MerchantSite {
+  String siteTitle;
+  String siteAvatar;
+
+  _MerchantSite({this.siteTitle, this.siteAvatar});
 }
 
 ///商品
@@ -352,11 +377,13 @@ class _Merchandise {
   String name;
   String desc;
   List<String> images;
+  List<_MerchantSite> sites;
   String price;
   int count;
 
   _Merchandise(
       {this.category,
+      this.sites,
       this.name,
       this.desc,
       this.images,
@@ -364,6 +391,9 @@ class _Merchandise {
       this.count}) {
     if (images == null) {
       this.images = [];
+    }
+    if (sites == null) {
+      this.sites = [];
     }
   }
 }
@@ -389,7 +419,8 @@ class _PageRegion extends StatefulWidget {
   PageContext context;
   _Page page;
   Category filter;
-  _PageRegion({this.context, this.page,this.filter});
+
+  _PageRegion({this.context, this.page, this.filter});
 
   @override
   __PageRegionState createState() => __PageRegionState();
@@ -404,7 +435,11 @@ class __PageRegionState extends State<_PageRegion> {
           padding: EdgeInsets.all(0),
           shrinkWrap: true,
           children: widget.page.categories.map((category) {
-            if(widget.filter==null||widget.filter==Category(id: 'all',)){
+            if (widget.filter == null ||
+                widget.filter ==
+                    Category(
+                      id: 'all',
+                    )) {
               List<_Merchandise> merchandises = [];
               widget?.page?.merchandises?.forEach((m) {
                 if (m?.category == category?.id) {
@@ -412,11 +447,12 @@ class __PageRegionState extends State<_PageRegion> {
                 }
               });
               return _CategoryRegion(
+                pageid: widget.page.id,
                 category: category,
                 merchandises: merchandises,
               );
             }
-            if(widget.filter==category){
+            if (widget.filter == category) {
               List<_Merchandise> merchandises = [];
               widget?.page?.merchandises?.forEach((m) {
                 if (m?.category == category?.id) {
@@ -424,11 +460,15 @@ class __PageRegionState extends State<_PageRegion> {
                 }
               });
               return _CategoryRegion(
+                pageid: widget.page.id,
                 category: category,
                 merchandises: merchandises,
               );
             }
-            return Container(height: 0,width: 0,);
+            return Container(
+              height: 0,
+              width: 0,
+            );
           }).toList(),
         ),
         Positioned(
@@ -449,11 +489,11 @@ class __PageRegionState extends State<_PageRegion> {
                         arguments: <String, Object>{
                           'categories': widget.page.categories
                         });
-                  }).then((result){
-                    print('----$result');
-                    setState(() {
-                      widget.filter=result['category'];
-                    });
+                  }).then((result) {
+                print('----$result');
+                setState(() {
+                  widget.filter = result['category'];
+                });
               });
             },
           ),
@@ -464,10 +504,11 @@ class __PageRegionState extends State<_PageRegion> {
 }
 
 class _CategoryRegion extends StatefulWidget {
+  String pageid;
   Category category;
   List<_Merchandise> merchandises;
 
-  _CategoryRegion({this.category, this.merchandises});
+  _CategoryRegion({this.pageid, this.category, this.merchandises});
 
   @override
   __CategoryRegionState createState() => __CategoryRegionState();
@@ -506,30 +547,69 @@ class __CategoryRegionState extends State<_CategoryRegion> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: widget.merchandises?.map((merchandise) {
 //                          return _CategoryRegion(merchandise);
-            return _MerchandiseRegion(
-              merchandise: merchandise,
-            );
+            switch (widget.pageid) {
+              case 'home':
+                return _HomeRegion();
+              case 'godown':
+                return _GodownRegion();
+              case 'goup':
+                return _GoodsRegion(
+                  merchandise: merchandise,
+                );
+              default:
+                return Container(
+                  height: 0,
+                  width: 0,
+                );
+            }
           })?.toList(),
         ),
         Container(
-          height: 20,
+          height: 10,
         ),
       ],
     );
   }
 }
 
-class _MerchandiseRegion extends StatefulWidget {
-  _Merchandise merchandise;
-
-  _MerchandiseRegion({this.merchandise});
-
+class _HomeRegion extends StatefulWidget {
   @override
-  __MerchandiseRegionState createState() => __MerchandiseRegionState();
+  _HomeRegionState createState() => _HomeRegionState();
 }
 
-class __MerchandiseRegionState extends State<_MerchandiseRegion> {
-  int maxLines = 2;
+class _HomeRegionState extends State<_HomeRegion> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+///商家展窗
+class _GodownRegion extends StatefulWidget {
+  @override
+  _GodownRegionState createState() => _GodownRegionState();
+}
+
+class _GodownRegionState extends State<_GodownRegion> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+///商品展窗
+class _GoodsRegion extends StatefulWidget {
+  _Merchandise merchandise;
+
+  _GoodsRegion({this.merchandise});
+
+  @override
+  _GoodsRegionState createState() => _GoodsRegionState();
+}
+
+class _GoodsRegionState extends State<_GoodsRegion> {
+  int title_maxLines = 2;
+  int desc_maxLines = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -540,61 +620,378 @@ class __MerchandiseRegionState extends State<_MerchandiseRegion> {
           color: Colors.white,
           child: Column(
             children: <Widget>[
-              Wrap(
-                spacing: 10,
-                children: widget.merchandise.images.length == 1
-                    ? [
-                        Image.network(
-                          widget.merchandise.images[0],
-                          fit: BoxFit.cover,
-                        )
-                      ]
-                    : widget.merchandise.images.map((img) {
-                        return Image.network(
-                          img,
-                          fit: BoxFit.cover,
-                          width: Adapt.screenW() / 2 - 25,
-                        );
-                      }).toList(),
-              ),
               Container(
-                alignment: Alignment.centerLeft,
-                child: Text.rich(
-                  TextSpan(
-                    text: widget.merchandise.name,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    children: [
-                      TextSpan(text: '  '),
-                      TextSpan(
-                        text: '¥${widget.merchandise.price ?? ''}',
-                        style: TextStyle(
-                          color: Colors.red,
-                        ),
-                      ),
-                    ],
+                child: DefaultTabController(
+                  length: widget.merchandise.images.length,
+                  child: _PageSelector(
+                    images: widget.merchandise.images,
                   ),
                 ),
+                padding: EdgeInsets.only(
+                  bottom: 5,
+                ),
+              ),
+              Column(
+                children: <Widget>[
+                  Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        GestureDetector(behavior: HitTestBehavior.opaque,onTap: (){},child: Row(
+                          children: <Widget>[
+                            Container(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 5),
+                                    child: Text(
+                                      '本轮离成交剩',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  ),
+                                  Text.rich(
+                                    TextSpan(
+                                      text: '¥',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.red,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: '382.34',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.only(
+                                      left: 5,
+                                    ),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Container(
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding:
+                                                EdgeInsets.only(right: 5),
+                                                child: Text(
+                                                  '买单',
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                  ),
+                                                ),
+                                              ),
+                                              Text.rich(
+                                                TextSpan(
+                                                  text: '423',
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                    color: Colors.red,
+                                                  ),
+                                                  children: [],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding:
+                                                EdgeInsets.only(right: 5),
+                                                child: Text(
+                                                  '卖单',
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                  ),
+                                                ),
+                                              ),
+                                              Text.rich(
+                                                TextSpan(
+                                                  text: '428',
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                    color: Colors.red,
+                                                  ),
+                                                  children: [],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    right: 5,
+                                  ),
+                                  child: Text(
+                                    '下单',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 16,
+                                  color: Colors.grey[400],
+                                ),
+                              ],
+                            ),
+                          ],
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        ),),
+                        Container(
+                          padding: EdgeInsets.only(
+                            top: 3,
+                            bottom: 3,
+                          ),
+                          child: Divider(
+                            height: 1,
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Wrap(
+                            spacing: 10,
+                            alignment: WrapAlignment.end,
+                            children: <Widget>[
+                              Container(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 5),
+                                      child: Text(
+                                        '实时现价',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                    Text.rich(
+                                      TextSpan(
+                                        text: '¥',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: Colors.blueGrey[800],
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text: '4382.34',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              color: Colors.blueGrey[800],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 5),
+                                      child: Text(
+                                        '商开均价',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                    Text.rich(
+                                      TextSpan(
+                                        text: '¥',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text: '5999.00',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              color: Colors.blueGrey[800],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 5),
+                                      child: Text(
+                                        '成交轮次',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                    Text.rich(
+                                      TextSpan(
+                                        text: '243',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: Colors.blueGrey[800],
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text: '万',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(
+                      top: 5,
+                      bottom: 5,
+                    ),
+                    alignment: Alignment.centerLeft,
+                    child: Text.rich(
+                      TextSpan(
+                        text: widget.merchandise.name ?? '',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            setState(() {
+                              if (title_maxLines == 2) {
+                                title_maxLines = 10;
+                              } else {
+                                title_maxLines = 2;
+                              }
+                            });
+                          },
+                      ),
+                      maxLines: title_maxLines,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      bottom: 5,
+                    ),
+                    child: Text.rich(
+                      TextSpan(
+                        text: widget.merchandise.desc ?? '',
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            setState(() {
+                              if (desc_maxLines == 3) {
+                                desc_maxLines = 10;
+                              } else {
+                                desc_maxLines = 3;
+                              }
+                            });
+                          },
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      maxLines: desc_maxLines,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
               Container(
-                child: Text.rich(
-                  TextSpan(
-                    text: widget.merchandise.desc ?? '',
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        setState(() {
-                          if (maxLines == 2) {
-                            maxLines = 100;
-                          } else {
-                            maxLines = 2;
-                          }
-                        });
-                      },
-                  ),
-                  maxLines: maxLines,
-                  overflow: TextOverflow.ellipsis,
+                padding: EdgeInsets.only(
+                  top: 5,
+                  bottom: 5,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Wrap(
+                          spacing: 5,
+                          runSpacing: 5,
+                          children: widget.merchandise.sites.map((site) {
+                            return Image.network(
+                              site.siteAvatar,
+                              fit: BoxFit.fitHeight,
+                              height: 20,
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      fit: FlexFit.loose,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 5,
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                              right: 0,
+                            ),
+                            child: Text(
+                              '125个商家 上货1003个',
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.grey[600],
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                            color: Colors.grey[400],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -602,6 +999,51 @@ class __MerchandiseRegionState extends State<_MerchandiseRegion> {
         ),
         Container(
           height: 10,
+        ),
+      ],
+    );
+  }
+}
+
+//注意：一定要放在 DefaultTabController(的child内
+class _PageSelector extends StatelessWidget {
+  List<String> images;
+
+  _PageSelector({this.images}) {
+    if (images == null) {
+      this.images = [];
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var _controller = DefaultTabController.of(context);
+
+    return Stack(
+      children: <Widget>[
+        SizedBox(
+          height: 150,
+          child: TabBarView(
+            controller: _controller,
+            children: this.images.map((img) {
+              return Container(
+                child: Image.network(
+                  img,
+                  fit: BoxFit.fitHeight,
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+        Positioned(
+          top: 0,
+          left: 0,
+          child: TabPageSelector(
+            controller: _controller,
+            color: Colors.white,
+            selectedColor: Colors.green,
+            indicatorSize: 5,
+          ),
         ),
       ],
     );
