@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/util.dart';
+import 'package:gbera/portals/gbera/parts/parts.dart';
 
 class ChannelPortal extends StatefulWidget {
   PageContext context;
@@ -253,8 +254,15 @@ class _MessageCard extends StatefulWidget {
 }
 
 class __MessageCardState extends State<_MessageCard> {
+  int maxlines = 4;
+
   @override
   Widget build(BuildContext context) {
+    var images = [
+      'https://img10.360buyimg.com/n1/jfs/t1/38567/16/12388/130326/5d395d2fEe96dc911/6dab21a2e90fa6cc.jpg',
+      'https://img10.360buyimg.com/n1/jfs/t1/73939/39/6972/87180/5d511125Eb7307102/48b4456cf64402ea.jpg',
+      'https://img10.360buyimg.com/n1/jfs/t1/78996/4/5354/106075/5d395d1bE465f0117/59c1c3608f69bded.jpg',
+    ];
     return Card(
       shape: OutlineInputBorder(
         borderRadius: BorderRadius.all(
@@ -318,108 +326,38 @@ class __MessageCardState extends State<_MessageCard> {
                     //内容区
                     padding: EdgeInsets.only(top: 10, bottom: 10),
                     alignment: Alignment.topLeft,
-                    child: Text(
-                      '据香港商报网官博消息，11日，马鞍山一男子疑因政见不同，遭暴徒泼易燃液体点火，造成四成皮肤二级烧伤。由全国政协副主席、前行政长官梁振英发起和成立的803基金，旗下悬红爆料网站803.hk，悬赏30万港币缉拿凶手。                      此外，还有四个新增悬赏案件分别为：11.11在葵芳站运作中的港铁车厢纵火，造成乘客惊恐走避，悬赏30万港币;11.11在路面纵火和向行驶中校巴掷汽油弹，学童和乘客受惊，悬赏30万港币;11.11向行驶中港铁列车及铁轨掷铁枝及单车，险酿意外，悬赏30万港币;11.10沙田美心皇宫被严重“装修”，继续破坏不支持暴行的商户和食肆，悬赏20万港币。',
-                      style: TextStyle(
-                        fontSize: 15,
+                    child: Text.rich(
+                      TextSpan(
+                        text:
+                            '据香港商报网官博消息，11日，马鞍山一男子疑因政见不同，遭暴徒泼易燃液体点火，造成四成皮肤二级烧伤。由全国政协副主席、前行政长官梁振英发起和成立的803基金，旗下悬红爆料网站803.hk，悬赏30万港币缉拿凶手。                      此外，还有四个新增悬赏案件分别为：11.11在葵芳站运作中的港铁车厢纵火，造成乘客惊恐走避，悬赏30万港币;11.11在路面纵火和向行驶中校巴掷汽油弹，学童和乘客受惊，悬赏30万港币;11.11向行驶中港铁列车及铁轨掷铁枝及单车，险酿意外，悬赏30万港币;11.10沙田美心皇宫被严重“装修”，继续破坏不支持暴行的商户和食肆，悬赏20万港币。',
+                        style: TextStyle(
+                          fontSize: 15,
+                        ),
+                        recognizer: TapGestureRecognizer()..onTap=(){
+                          setState(() {
+                            if(maxlines==4) {
+                              maxlines=100;
+                            }else{
+                              maxlines=4;
+                            }
+                          });
+                        },
                       ),
+                      maxLines: maxlines,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Container(
-                    child: LayoutBuilder(
-                      builder: (context, constraint) {
-                        return Wrap(
-                          //多媒体区
-                          children: <Widget>[
-                            GestureDetector(
-                              onTap: () {
-                                widget.context.forward(
-                                  '/images/viewer',
-                                  arguments: {
-                                    'imgSrc':
-                                        'http://www.zdyrs.com/uploadfile/2015/1205/20151205012936705.jpg',
-                                    'text':
-                                        '【#越南偷渡幸存者曾被发刀片#，随时准备逃生：为谋生要接受死亡】11月1日，英国警方发表声明称，早前死亡#货车内39名遇难者均为越南人#。越南方面称具体身份仍需查清，这是一场严重的人道惨剧。越南人Tran Khanh Toan2006年曾藏身集装箱偷渡到英国，但到了英国后因无法维持生计，又回到越南。他对梨视频拍客讲述了自己偷渡时有人在跳下集装箱时被卷入车轮，不幸遇难。而且藏身帆布货车的偷渡者，往往会被发刀片随时用来划开帆布跳车逃生',
-                                  },
-                                ).then((value) {
-                                  print('--------');
-                                });
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Image(
-                                  image: NetworkImage(
-                                      'http://www.zdyrs.com/uploadfile/2015/1205/20151205012936705.jpg'),
-                                  width: (constraint.biggest.width / 2) - 20,
-                                  fit: BoxFit.fitWidth,
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                widget.context.forward(
-                                  '/images/viewer',
-                                  arguments: {
-                                    'imgSrc':
-                                        'http://cms-bucket.ws.126.net/2019/11/11/5f8050a570554d2688a673d30477da92.png?imageView&thumbnail=550x0',
-                                    'text':
-                                        '据英国天空新闻报道，埃塞克斯警方发表声明称，早些时候集装箱货车内发现的39具遗体应全为越南公民。声明称，警方正与越南政府联系，并“直接联系”一些越南遇难者家属。另据越通社11月1日报道，越南中部河静省公安部门已拘捕两名涉嫌组织介绍他人非法出境或在境外非法滞留的人员。',
-                                  },
-                                );
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Image(
-                                  image: NetworkImage(
-                                      'http://cms-bucket.ws.126.net/2019/11/11/5f8050a570554d2688a673d30477da92.png?imageView&thumbnail=550x0'),
-                                  width: (constraint.biggest.width / 2) - 20,
-                                  fit: BoxFit.fitWidth,
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                widget.context.forward(
-                                  '/images/viewer',
-                                  arguments: {
-                                    'imgSrc':
-                                        'http://pic1.win4000.com/mobile/2019-03-20/5c91fe81d2606.jpg',
-                                    'text':
-                                        '近年来，小珍（化名）一直以吸收社会大量资金，“拆东墙补西墙”，吸收的资金一度高达5亿余元，资金缺口达1亿余元，一直到资金链断裂才主动自首，自首时账面上只剩下一千多元。',
-                                  },
-                                );
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Image(
-                                  image: NetworkImage(
-                                      'http://pic1.win4000.com/mobile/2019-03-20/5c91fe81d2606.jpg'),
-                                  width: (constraint.biggest.width / 2) - 20,
-                                  fit: BoxFit.fitWidth,
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                widget.context.forward(
-                                  '/images/viewer',
-                                  arguments: {
-                                    'imgSrc':
-                                        'http://pic1.win4000.com/mobile/5/557802a8d8569.jpg',
-                                  },
-                                );
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Image(
-                                  image: NetworkImage(
-                                      'http://pic1.win4000.com/mobile/5/557802a8d8569.jpg'),
-                                  width: (constraint.biggest.width / 2) - 20,
-                                  fit: BoxFit.fitWidth,
-                                ),
-                              ),
-                            ),
-                          ],
+                  DefaultTabController(
+                    length: images.length,
+                    child: PageSelector(
+                      images: images,
+                      onImageTap: (url) {
+                        widget.context.forward(
+                          '/images/viewer',
+                          arguments: {
+                            'imgSrc': url,
+                            'text': '',
+                          },
                         );
                       },
                     ),

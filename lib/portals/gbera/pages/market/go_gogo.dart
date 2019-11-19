@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/util.dart';
+import 'package:gbera/portals/gbera/parts/parts.dart';
 
 class Gogogo extends StatefulWidget {
   PageContext context;
@@ -450,6 +451,7 @@ class __PageRegionState extends State<_PageRegion> {
                 pageid: widget.page.id,
                 category: category,
                 merchandises: merchandises,
+                context: widget.context,
               );
             }
             if (widget.filter == category) {
@@ -460,6 +462,7 @@ class __PageRegionState extends State<_PageRegion> {
                 }
               });
               return _CategoryRegion(
+                context: widget.context,
                 pageid: widget.page.id,
                 category: category,
                 merchandises: merchandises,
@@ -507,8 +510,8 @@ class _CategoryRegion extends StatefulWidget {
   String pageid;
   Category category;
   List<_Merchandise> merchandises;
-
-  _CategoryRegion({this.pageid, this.category, this.merchandises});
+  PageContext context;
+  _CategoryRegion({this.context,this.pageid, this.category, this.merchandises});
 
   @override
   __CategoryRegionState createState() => __CategoryRegionState();
@@ -555,6 +558,7 @@ class __CategoryRegionState extends State<_CategoryRegion> {
               case 'goup':
                 return _GoodsRegion(
                   merchandise: merchandise,
+                  context: widget.context,
                 );
               default:
                 return Container(
@@ -600,8 +604,8 @@ class _GodownRegionState extends State<_GodownRegion> {
 ///商品展窗
 class _GoodsRegion extends StatefulWidget {
   _Merchandise merchandise;
-
-  _GoodsRegion({this.merchandise});
+  PageContext context;
+  _GoodsRegion({this.merchandise,this.context});
 
   @override
   _GoodsRegionState createState() => _GoodsRegionState();
@@ -623,8 +627,18 @@ class _GoodsRegionState extends State<_GoodsRegion> {
               Container(
                 child: DefaultTabController(
                   length: widget.merchandise.images.length,
-                  child: _PageSelector(
+                  child: PageSelector(
                     images: widget.merchandise.images,
+                    height: 150,
+                    onImageTap: (url) {
+                      widget.context.forward(
+                        '/images/viewer',
+                        arguments: {
+                          'imgSrc': url,
+                          'text': '',
+                        },
+                      );
+                    },
                   ),
                 ),
                 padding: EdgeInsets.only(
@@ -637,129 +651,133 @@ class _GoodsRegionState extends State<_GoodsRegion> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        GestureDetector(behavior: HitTestBehavior.opaque,onTap: (){},child: Row(
-                          children: <Widget>[
-                            Container(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {},
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 5),
+                                      child: Text(
+                                        '本轮离成交剩',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                    Text.rich(
+                                      TextSpan(
+                                        text: '¥',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.red,
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text: '382.34',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.only(
+                                        left: 5,
+                                      ),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Container(
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding:
+                                                      EdgeInsets.only(right: 5),
+                                                  child: Text(
+                                                    '买单',
+                                                    style: TextStyle(
+                                                      fontSize: 10,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Text.rich(
+                                                  TextSpan(
+                                                    text: '423',
+                                                    style: TextStyle(
+                                                      fontSize: 10,
+                                                      color: Colors.red,
+                                                    ),
+                                                    children: [],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding:
+                                                      EdgeInsets.only(right: 5),
+                                                  child: Text(
+                                                    '卖单',
+                                                    style: TextStyle(
+                                                      fontSize: 10,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Text.rich(
+                                                  TextSpan(
+                                                    text: '428',
+                                                    style: TextStyle(
+                                                      fontSize: 10,
+                                                      color: Colors.red,
+                                                    ),
+                                                    children: [],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Row(
                                 children: <Widget>[
                                   Padding(
-                                    padding: EdgeInsets.only(right: 5),
+                                    padding: EdgeInsets.only(
+                                      right: 5,
+                                    ),
                                     child: Text(
-                                      '本轮离成交剩',
+                                      '下单',
                                       style: TextStyle(
                                         fontSize: 10,
                                       ),
                                     ),
                                   ),
-                                  Text.rich(
-                                    TextSpan(
-                                      text: '¥',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.red,
-                                      ),
-                                      children: [
-                                        TextSpan(
-                                          text: '382.34',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            color: Colors.red,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.only(
-                                      left: 5,
-                                    ),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Container(
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: <Widget>[
-                                              Padding(
-                                                padding:
-                                                EdgeInsets.only(right: 5),
-                                                child: Text(
-                                                  '买单',
-                                                  style: TextStyle(
-                                                    fontSize: 10,
-                                                  ),
-                                                ),
-                                              ),
-                                              Text.rich(
-                                                TextSpan(
-                                                  text: '423',
-                                                  style: TextStyle(
-                                                    fontSize: 10,
-                                                    color: Colors.red,
-                                                  ),
-                                                  children: [],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: <Widget>[
-                                              Padding(
-                                                padding:
-                                                EdgeInsets.only(right: 5),
-                                                child: Text(
-                                                  '卖单',
-                                                  style: TextStyle(
-                                                    fontSize: 10,
-                                                  ),
-                                                ),
-                                              ),
-                                              Text.rich(
-                                                TextSpan(
-                                                  text: '428',
-                                                  style: TextStyle(
-                                                    fontSize: 10,
-                                                    color: Colors.red,
-                                                  ),
-                                                  children: [],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                  Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 16,
+                                    color: Colors.grey[400],
                                   ),
                                 ],
                               ),
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    right: 5,
-                                  ),
-                                  child: Text(
-                                    '下单',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ),
-                                Icon(
-                                  Icons.arrow_forward_ios,
-                                  size: 16,
-                                  color: Colors.grey[400],
-                                ),
-                              ],
-                            ),
-                          ],
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        ),),
+                            ],
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          ),
+                        ),
                         Container(
                           padding: EdgeInsets.only(
                             top: 3,
@@ -1005,47 +1023,3 @@ class _GoodsRegionState extends State<_GoodsRegion> {
   }
 }
 
-//注意：一定要放在 DefaultTabController(的child内
-class _PageSelector extends StatelessWidget {
-  List<String> images;
-
-  _PageSelector({this.images}) {
-    if (images == null) {
-      this.images = [];
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var _controller = DefaultTabController.of(context);
-
-    return Stack(
-      children: <Widget>[
-        SizedBox(
-          height: 150,
-          child: TabBarView(
-            controller: _controller,
-            children: this.images.map((img) {
-              return Container(
-                child: Image.network(
-                  img,
-                  fit: BoxFit.fitHeight,
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-        Positioned(
-          top: 0,
-          left: 0,
-          child: TabPageSelector(
-            controller: _controller,
-            color: Colors.white,
-            selectedColor: Colors.green,
-            indicatorSize: 5,
-          ),
-        ),
-      ],
-    );
-  }
-}

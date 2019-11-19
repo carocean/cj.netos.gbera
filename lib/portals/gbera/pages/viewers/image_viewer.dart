@@ -89,7 +89,7 @@ class _ImageViewerState extends State<ImageViewer> {
                       },
                       child: Image.network(
                         widget.imgSrc,
-                        fit: BoxFit.contain,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),

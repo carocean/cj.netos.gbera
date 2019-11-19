@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/util.dart';
+import 'package:gbera/portals/gbera/parts/parts.dart';
 
 class SitePortal extends StatefulWidget {
   PageContext context;
@@ -238,9 +239,11 @@ class _MessageCard extends StatefulWidget {
 }
 
 class __MessageCardState extends State<_MessageCard> {
-  int _maxLines=4;
+  int _maxLines = 4;
+
   @override
   Widget build(BuildContext context) {
+    var images = ['https://img11.360buyimg.com/n1/s450x450_jfs/t21856/309/486959023/285536/3356dc82/5b0fc33cN898ac257.png'];
     return Card(
       shape: OutlineInputBorder(
         borderRadius: BorderRadius.all(
@@ -308,20 +311,20 @@ class __MessageCardState extends State<_MessageCard> {
                       TextSpan(
                         text:
                             '11月11日晚，在全系统“双11”旺季生产运行的关键时点，集团公司党组书记、董事长刘爱力，副总经理张荣林一行来到北京邮件综合处理中心，了解邮政“双11”生产运行情况，慰问一线干部员工，强调要充分认识做好“双11”服务保障工作的重要意义，按照“争市场、强重点、重体验、保稳定”的总体要求和集团公司的部署安排，坚定信心、铆足干劲，精心组织、全网联动，全力打赢“双11”旺季生产运行攻坚战。',
-                        children: [
-                        ],
-                        recognizer: TapGestureRecognizer()..onTap = () {
-                          print('xxxxx');
-                          if(_maxLines<=4) {
-                            setState(() {
-                              _maxLines = 1000;
-                            });
-                          }else{
-                            setState(() {
-                              _maxLines = 4;
-                            });
-                          }
-                        },
+                        children: [],
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            print('xxxxx');
+                            if (_maxLines <= 4) {
+                              setState(() {
+                                _maxLines = 1000;
+                              });
+                            } else {
+                              setState(() {
+                                _maxLines = 4;
+                              });
+                            }
+                          },
                       ),
                       style: TextStyle(
                         fontSize: 15,
@@ -330,59 +333,17 @@ class __MessageCardState extends State<_MessageCard> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Container(
-                    child: LayoutBuilder(
-                      builder: (context, constraint) {
-                        return Wrap(
-                          //多媒体区
-                          children: <Widget>[
-                            GestureDetector(
-                              onTap: () {
-                                widget.context.forward(
-                                  '/images/viewer',
-                                  arguments: {
-                                    'imgSrc':
-                                        'http://www.chinapost.com.cn/res/ChinaPostJT/1911/19115270.jpg',
-                                    'text':
-                                        '新华社北京11月13日电（记者赵文君）今年“双11”当天，中国邮政订单量超过1亿件，包裹快递收寄量达6668万件。中国邮政EMS提前新建、改建一批重点邮件处理中心，全网日均处理能力新增2600万件。为了提升“双11”配送时效，北京市邮政寄递事业部采用“最后一公里极速前进”模式，将部分预售订单提前包装、提前出库，配送至各网点进行暂存。在“双11”当天，客户支付尾款后，末端网点直接派件。从11月8日至10日，北京市邮政的9.2万件邮件采取了这一模式，快速送至各网点。                                   ',
-                                  },
-                                ).then((value) {
-                                  print('--------');
-                                });
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Image(
-                                  image: NetworkImage(
-                                      'http://www.chinapost.com.cn/res/ChinaPostJT/1911/19115270.jpg'),
-                                  width: (constraint.biggest.width / 2) - 20,
-                                  fit: BoxFit.fitWidth,
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                widget.context.forward(
-                                  '/images/viewer',
-                                  arguments: {
-                                    'imgSrc':
-                                        'http://www.chinapost.com.cn/res/ChinaPostJT/1911/19115273.jpg',
-                                    'text':
-                                        '刘爱力指出，要深入贯彻落实习近平总书记关于关心关爱“快递小哥”重要指示批示精神，切实关心关爱员工。要把吃、住、行等后勤保障措施落实到位，解除员工生产生活的后顾之忧，体现邮政企业的人文关怀。同时，要加强生产安全管理和交通安全教育，确保员工人身安全和邮件安全。。',
-                                  },
-                                );
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Image(
-                                  image: NetworkImage(
-                                      'http://www.chinapost.com.cn/res/ChinaPostJT/1911/19115273.jpg'),
-                                  width: (constraint.biggest.width / 2) - 20,
-                                  fit: BoxFit.fitWidth,
-                                ),
-                              ),
-                            ),
-                          ],
+                  DefaultTabController(
+                    length: images.length,
+                    child: PageSelector(
+                      images: images,
+                      onImageTap: (url) {
+                        widget.context.forward(
+                          '/images/viewer',
+                          arguments: {
+                            'imgSrc': url,
+                            'text': '',
+                          },
                         );
                       },
                     ),

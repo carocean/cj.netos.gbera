@@ -89,3 +89,62 @@ class _CardStoreState extends State<CardStore> {
     );
   }
 }
+
+//微博等内容区的多图展示区
+class PageSelector extends StatelessWidget {
+  List<String> images;
+  Function(String image) onImageTap;
+  BoxFit boxFit;
+  double height;
+  PageSelector({this.images,this.onImageTap,this.boxFit,this.height}) {
+    if (images == null) {
+      this.images = [];
+    }
+    if(boxFit==null) {
+      this.boxFit=BoxFit.fitHeight;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    var _controller = DefaultTabController.of(context);
+
+    return Stack(
+      children: <Widget>[
+        SizedBox(
+          height: height??150,
+          child: TabBarView(
+            controller: _controller,
+            children: this.images.map((img) {
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  if (onImageTap != null) {
+                    onImageTap(img);
+                  }
+                },
+                child: Container(
+                  child: Image.network(
+                    img,
+                    fit: this.boxFit??BoxFit.fitHeight,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+        Positioned(
+          top: 0,
+          left: 0,
+          child: TabPageSelector(
+            controller: _controller,
+            color: Colors.white,
+            selectedColor: Colors.green,
+            indicatorSize: 5,
+          ),
+        ),
+      ],
+    );
+  }
+}

@@ -1,9 +1,11 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/util.dart';
 import 'package:gbera/portals/gbera/parts/CardItem.dart';
+import 'package:gbera/portals/gbera/parts/parts.dart';
 
 class Market extends StatefulWidget {
   final PageContext context;
@@ -304,11 +306,8 @@ class _MarketState extends State<Market> {
           _News(
               title: '佛山王先生开店3个月净赚500万！',
               images: [
-                Image(
-                  image: NetworkImage(
-                      'http://dingyue.nosdn.127.net/vvRjNcu9VBGgAevyEl5kQ0PO4ndOa4p3KJcED=yrAyXUP1529905129060compressflag.jpg'),
-                  fit: BoxFit.fitWidth,
-                ),
+                'https://img20.360buyimg.com/vc/jfs/t9712/323/19330494/133477/712d7d6b/59c3894cN586c7217.jpg',
+                'http://dingyue.nosdn.127.net/vvRjNcu9VBGgAevyEl5kQ0PO4ndOa4p3KJcED=yrAyXUP1529905129060compressflag.jpg',
               ],
               Content:
                   '开始禅城区的地商李明找到我跟我说，快点接上帑指市场，未来10倍，20倍的利都有，我跟李明是多年的交情，想必也不会忽悠我，我就尝试着做了。没想到赚钱原来这么容易，小店现在一个月营业额是25万，发行帑银净赚60万'),
@@ -317,11 +316,7 @@ class _MarketState extends State<Market> {
             Content:
                 '金融界美股讯 摩根大通分析师周五表示，APPle TV+的推出及苹果进军数字服务领域，可能帮助该公司未来六年内广告收入增加逾五倍，达到每年110亿美元。分析师萨米克 查特吉（Samik Chatterjee）上调了苹果的股价目标，认为该公司可以利用每天搜索其应用商店和Safari浏览器的数百万用户来实现类似于Facebook和谷歌近年来强劲的广告增长。',
             images: [
-              Image(
-                image: NetworkImage(
-                    'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573935907335&di=7e2eb6de84a234ce122dd0d9c87dd33e&imgtype=0&src=http%3A%2F%2Fi0.hdslb.com%2Fbfs%2Farticle%2Ffdf4d59b8564a9435df039cf2764ee54136405c6.jpg'),
-                fit: BoxFit.fitWidth,
-              ),
+              'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573935907335&di=7e2eb6de84a234ce122dd0d9c87dd33e&imgtype=0&src=http%3A%2F%2Fi0.hdslb.com%2Fbfs%2Farticle%2Ffdf4d59b8564a9435df039cf2764ee54136405c6.jpg',
             ],
           ),
           _News(
@@ -367,6 +362,9 @@ class _PlatformNewsDay extends StatefulWidget {
 }
 
 class __PlatformNewsDayState extends State<_PlatformNewsDay> {
+  var maxLines=4;
+
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -444,52 +442,44 @@ class __PlatformNewsDayState extends State<_PlatformNewsDay> {
                       ),
                     ),
                   ),
-                  Container(
-                    child: LayoutBuilder(
-                      builder: (context, constraint) {
-                        return Wrap(
-                          //多媒体区
-                          children: news.images.map((img) {
-                            return GestureDetector(
-                              onTap: () {
-                                widget.context.forward(
-                                  '/images/viewer',
-                                  arguments: {
-                                    'imgSrc':
-                                        'http://www.zdyrs.com/uploadfile/2015/1205/20151205012936705.jpg',
-                                    'text':
-                                        '【#越南偷渡幸存者曾被发刀片#，随时准备逃生：为谋生要接受死亡】11月1日，英国警方发表声明称，早前死亡#货车内39名遇难者均为越南人#。越南方面称具体身份仍需查清，这是一场严重的人道惨剧。越南人Tran Khanh Toan2006年曾藏身集装箱偷渡到英国，但到了英国后因无法维持生计，又回到越南。他对梨视频拍客讲述了自己偷渡时有人在跳下集装箱时被卷入车轮，不幸遇难。而且藏身帆布货车的偷渡者，往往会被发刀片随时用来划开帆布跳车逃生',
-                                  },
-                                ).then((value) {
-                                  print('--------');
-                                });
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(5),
-                                child: news.images.length == 1
-                                    ? SizedBox(
-                                        width: double.maxFinite,
-                                        child: img,
-                                      )
-                                    : SizedBox(
-                                        width:
-                                            (constraint.biggest.width / 2) - 20,
-                                        child: img,
-                                      ),
-                              ),
-                            );
-                          }).toList(),
-                        );
-                      },
-                    ),
-                  ),
+                  news.images.length == 0
+                      ? Container(
+                          height: 0,
+                          width: 0,
+                        )
+                      : DefaultTabController(
+                          length: news.images.length,
+                          child: PageSelector(
+                            images: news.images,
+                            onImageTap: (url) {
+                              widget.context.forward(
+                                '/images/viewer',
+                                arguments: {
+                                  'imgSrc': url,
+                                  'text': '',
+                                },
+                              );
+                            },
+                            height: 200,
+                            boxFit: BoxFit.fitHeight,
+                          ),
+                        ),
                   Container(
                     child: Text.rich(
                       TextSpan(
                         text: news.Content,
                         children: [],
+                        recognizer: TapGestureRecognizer()..onTap=(){
+                          setState(() {
+                            if(maxLines==4){
+                              maxLines=100;
+                            }else{
+                              maxLines=4;
+                            }
+                          });
+                        },
                       ),
-                      maxLines: 4,
+                      maxLines: maxLines,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -506,11 +496,11 @@ class __PlatformNewsDayState extends State<_PlatformNewsDay> {
 class _News {
   String title;
   String Content;
-  List<Widget> images;
+  List<String> images;
 
   _News({this.title, this.Content, this.images}) {
     if (this.images == null) {
-      this.images = <Widget>[];
+      this.images = <String>[];
     }
   }
 }

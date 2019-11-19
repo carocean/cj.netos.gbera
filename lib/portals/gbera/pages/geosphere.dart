@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/parts/CardItem.dart';
+import 'package:gbera/portals/gbera/parts/parts.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'netflow/channel.dart';
@@ -21,7 +22,6 @@ class _GeosphereState extends State<Geosphere> {
   var _controller;
   var _backgroud_transparent = true;
   bool use_wallpapper = false;
-
 
   @override
   void initState() {
@@ -640,8 +640,15 @@ class _MessageCard extends StatefulWidget {
 }
 
 class __MessageCardState extends State<_MessageCard> {
+  var maxLines = 4;
+
   @override
   Widget build(BuildContext context) {
+    var images = [
+      'https://img12.360buyimg.com/n1/jfs/t1/64956/8/15150/216341/5dcbfa37Ec377dabf/b37dc8a39696eadb.jpg',
+      'https://img12.360buyimg.com/n1/jfs/t30010/114/1514509429/178688/f90faa12/5ce22d74N5a7de92f.jpg',
+      'https://img14.360buyimg.com/n5/s75x75_jfs/t21145/102/253959384/30146/76597635/5b07771aNbbad67a3.jpg',
+    ];
     return Card(
       shape: Border(),
       elevation: 0,
@@ -728,109 +735,41 @@ class __MessageCardState extends State<_MessageCard> {
                     //内容区
                     padding: EdgeInsets.only(top: 5, bottom: 10),
                     alignment: Alignment.topLeft,
-                    child: Text(
-                      '不走形式，研发中心月度实现目标，由上级主管给出几个目标维度，被考核人自已填本月实际目标，并由主管审核下级目标，最终呈给人事部。工作态度：考核项固定',
-                      style: TextStyle(
-                        fontSize: 15,
+                    child: Text.rich(
+                      TextSpan(
+                        text:
+                            '不走形式，研发中心月度实现目标，由上级主管给出几个目标维度，不走形式，研发中心月度实现目标，由上级主管给出几个目标维度，被考核人自已填本月实际目标，并由主管审核下级目标，最终呈给人事部。工作态度：考核项固定',
+                        style: TextStyle(
+                          fontSize: 15,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            setState(() {
+                              if (maxLines == 4) {
+                                maxLines = 100;
+                              } else {
+                                maxLines = 4;
+                              }
+                            });
+                          },
                       ),
-                      maxLines: 4,
+                      maxLines: maxLines,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Container(
-                    child: LayoutBuilder(
-                      builder: (context, constraint) {
-                        return Wrap(
-                          //多媒体区
-                          children: <Widget>[
-                            GestureDetector(
-                              onTap: () {
-                                widget.context.forward(
-                                  '/images/viewer',
-                                  arguments: {
-                                    'imgSrc':
-                                        'http://www.zdyrs.com/uploadfile/2015/1205/20151205012936705.jpg',
-                                    'text':
-                                        '【#越南偷渡幸存者曾被发刀片#，随时准备逃生：为谋生要接受死亡】11月1日，英国警方发表声明称，早前死亡#货车内39名遇难者均为越南人#。越南方面称具体身份仍需查清，这是一场严重的人道惨剧。越南人Tran Khanh Toan2006年曾藏身集装箱偷渡到英国，但到了英国后因无法维持生计，又回到越南。他对梨视频拍客讲述了自己偷渡时有人在跳下集装箱时被卷入车轮，不幸遇难。而且藏身帆布货车的偷渡者，往往会被发刀片随时用来划开帆布跳车逃生',
-                                  },
-                                ).then((value) {
-                                  print('--------');
-                                });
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Image(
-                                  image: NetworkImage(
-                                      'http://www.zdyrs.com/uploadfile/2015/1205/20151205012936705.jpg'),
-                                  width: (constraint.biggest.width / 2) - 20,
-                                  fit: BoxFit.fitWidth,
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                widget.context.forward(
-                                  '/images/viewer',
-                                  arguments: {
-                                    'imgSrc':
-                                        'http://dingyue.nosdn.127.net/vvRjNcu9VBGgAevyEl5kQ0PO4ndOa4p3KJcED=yrAyXUP1529905129060compressflag.jpg',
-                                    'text':
-                                        '据英国天空新闻报道，埃塞克斯警方发表声明称，早些时候集装箱货车内发现的39具遗体应全为越南公民。声明称，警方正与越南政府联系，并“直接联系”一些越南遇难者家属。另据越通社11月1日报道，越南中部河静省公安部门已拘捕两名涉嫌组织介绍他人非法出境或在境外非法滞留的人员。',
-                                  },
-                                );
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Image(
-                                  image: NetworkImage(
-                                      'http://dingyue.nosdn.127.net/vvRjNcu9VBGgAevyEl5kQ0PO4ndOa4p3KJcED=yrAyXUP1529905129060compressflag.jpg'),
-                                  width: (constraint.biggest.width / 2) - 20,
-                                  fit: BoxFit.fitWidth,
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                widget.context.forward(
-                                  '/images/viewer',
-                                  arguments: {
-                                    'imgSrc':
-                                        'http://pic1.win4000.com/mobile/2019-03-20/5c91fe81d2606.jpg',
-                                    'text':
-                                        '近年来，小珍（化名）一直以吸收社会大量资金，“拆东墙补西墙”，吸收的资金一度高达5亿余元，资金缺口达1亿余元，一直到资金链断裂才主动自首，自首时账面上只剩下一千多元。',
-                                  },
-                                );
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Image(
-                                  image: NetworkImage(
-                                      'http://pic1.win4000.com/mobile/2019-03-20/5c91fe81d2606.jpg'),
-                                  width: (constraint.biggest.width / 2) - 20,
-                                  fit: BoxFit.fitWidth,
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                widget.context.forward(
-                                  '/images/viewer',
-                                  arguments: {
-                                    'imgSrc':
-                                        'http://pic1.win4000.com/mobile/5/557802a8d8569.jpg',
-                                  },
-                                );
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Image(
-                                  image: NetworkImage(
-                                      'http://pic1.win4000.com/mobile/5/557802a8d8569.jpg'),
-                                  width: (constraint.biggest.width / 2) - 20,
-                                  fit: BoxFit.fitWidth,
-                                ),
-                              ),
-                            ),
-                          ],
+                  DefaultTabController(
+                    length: images.length,
+                    child: PageSelector(
+                      images: images,
+                      onImageTap: (url) {
+                        widget.context.forward(
+                          '/images/viewer',
+                          arguments: {
+                            'imgSrc':
+                            url,
+                            'text':
+                            '',
+                          },
                         );
                       },
                     ),
