@@ -569,27 +569,29 @@ class __ContentState extends State<_Content> {
               top: 5,
               bottom: 5,
             ),
-            child: Text.rich(
-              TextSpan(
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    if (widget.onTapMarchant != null) {
-                      widget.onTapMarchant({"uid": '出租车王师傅'});
-                    }
-                  },
-                children: [
-                  TextSpan(
-                    text: '出租车王师傅',
-                    style: TextStyle(
-                      color: Colors.blueGrey,
-                      fontWeight: FontWeight.w800,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                if (widget.onTapMarchant != null) {
+                  widget.onTapMarchant({"uid": '出租车王师傅'});
+                }
+              },
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '出租车王师傅',
+                      style: TextStyle(
+                        color: Colors.blueGrey,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
+                    TextSpan(text: ':'),
+                    TextSpan(text: '进入您的地圈'),
+                  ],
+                  style: TextStyle(
+                    fontSize: 12,
                   ),
-                  TextSpan(text: ':'),
-                  TextSpan(text: '进入您的地圈'),
-                ],
-                style: TextStyle(
-                  fontSize: 12,
                 ),
               ),
             ),
@@ -765,10 +767,8 @@ class __MessageCardState extends State<_MessageCard> {
                         widget.context.forward(
                           '/images/viewer',
                           arguments: {
-                            'imgSrc':
-                            url,
-                            'text':
-                            '',
+                            'imgSrc': url,
+                            'text': '',
                           },
                         );
                       },

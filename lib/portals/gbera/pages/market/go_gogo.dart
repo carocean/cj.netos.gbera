@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/netos/common.dart' as prefix0;
 import 'package:gbera/portals/common/util.dart';
 import 'package:gbera/portals/gbera/parts/parts.dart';
 
@@ -160,78 +161,97 @@ class _GogogoState extends State<Gogogo> with SingleTickerProviderStateMixin {
             title: '招商',
           ),
         ],
-        merchandises: [
-          _Merchandise(
-              name:
-                  '华为 HUAWEI Mate 30 Pro 5G 麒麟990 OLED环幕屏双4000万徕卡电影四摄8GB+256GB丹霞橙5G全网通版',
-              category: 'liuxing',
-              price: '99.00',
-              images: [
-                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG',
-                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG'
-              ],
-              desc:
-                  '腊肉肠、香肠、火腿、牛肉，搭配菠萝、蘑菇、洋葱、青椒等蔬菜水果，如此丰盛馅料，口口都是令人满足的好滋味。主要原料:面团、牛肉粒、猪肉粒、火腿、腊肉肠、芝士、蔬菜、菠萝、黑橄榄。铁盘个人装250克建议1人用，铁盘普通装440克建议2-3人用，铁盘大装880克建议3-4人用，芝心普通装570克建议2-3人用，大方薄底普通装390克建议2-3人用。'),
-          _Merchandise(
-              name: '超级至尊比萨1',
-              category: 'liuxing',
-              price: '82.25',
-              images: [
-                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG'
-              ],
-              desc:
-                  '腊肉肠、香肠、火腿、牛肉，搭配菠萝、蘑菇、洋葱、青椒等蔬菜水果，如此丰盛馅料，口口都是令人满足的好滋味。主要原料:面团、牛肉粒、猪肉粒、火腿、腊肉肠、芝士、蔬菜、菠萝、黑橄榄。铁盘个人装250克建议1人用，铁盘普通装440克建议2-3人用，铁盘大装880克建议3-4人用，芝心普通装570克建议2-3人用，大方薄底普通装390克建议2-3人用。'),
-          _Merchandise(
-              name: '超级至尊比萨2',
-              category: 'zhaoshang',
-              images: [
-                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG'
-              ],
-              desc:
-                  '腊肉肠、香肠、火腿、牛肉，搭配菠萝、蘑菇、洋葱、青椒等蔬菜水果，如此丰盛馅料，口口都是令人满足的好滋味。主要原料:面团、牛肉粒、猪肉粒、火腿、腊肉肠、芝士、蔬菜、菠萝、黑橄榄。铁盘个人装250克建议1人用，铁盘普通装440克建议2-3人用，铁盘大装880克建议3-4人用，芝心普通装570克建议2-3人用，大方薄底普通装390克建议2-3人用。'),
-        ],
       ),
       _Page(
         id: 'godown',
         title: 'GoDOWN',
         categories: [
           Category(
-            id: 'liuxing',
-            title: '餐饮',
+            id: 'meishi',
+            title: '美食',
           ),
           Category(
-            id: 'zhaoshang',
-            title: '休闲',
+            id: 'shuiguo',
+            title: '水果',
           ),
         ],
-        merchandises: [
-          _Merchandise(
-              name: '北味川菜馆',
-              category: 'liuxing',
-              price: '99.00',
-              images: [
-                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG',
-                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG'
-              ],
-              desc:
-                  '腊肉肠、香肠、火腿、牛肉，搭配菠萝、蘑菇、洋葱、青椒等蔬菜水果，如此丰盛馅料，口口都是令人满足的好滋味。主要原料:面团、牛肉粒、猪肉粒、火腿、腊肉肠、芝士、蔬菜、菠萝、黑橄榄。铁盘个人装250克建议1人用，铁盘普通装440克建议2-3人用，铁盘大装880克建议3-4人用，芝心普通装570克建议2-3人用，大方薄底普通装390克建议2-3人用。'),
-          _Merchandise(
-              name: '超级至尊比萨1',
-              category: 'liuxing',
-              price: '82.25',
-              images: [
-                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG'
-              ],
-              desc:
-                  '腊肉肠、香肠、火腿、牛肉，搭配菠萝、蘑菇、洋葱、青椒等蔬菜水果，如此丰盛馅料，口口都是令人满足的好滋味。主要原料:面团、牛肉粒、猪肉粒、火腿、腊肉肠、芝士、蔬菜、菠萝、黑橄榄。铁盘个人装250克建议1人用，铁盘普通装440克建议2-3人用，铁盘大装880克建议3-4人用，芝心普通装570克建议2-3人用，大方薄底普通装390克建议2-3人用。'),
-          _Merchandise(
-              name: '超级至尊比萨2',
-              category: 'zhaoshang',
-              images: [
-                'https://img.4008123123.com/resource/VersionP/phdi/3_348.JPG'
-              ],
-              desc:
-                  '腊肉肠、香肠、火腿、牛肉，搭配菠萝、蘑菇、洋葱、青椒等蔬菜水果，如此丰盛馅料，口口都是令人满足的好滋味。主要原料:面团、牛肉粒、猪肉粒、火腿、腊肉肠、芝士、蔬菜、菠萝、黑橄榄。铁盘个人装250克建议1人用，铁盘普通装440克建议2-3人用，铁盘大装880克建议3-4人用，芝心普通装570克建议2-3人用，大方薄底普通装390克建议2-3人用。'),
+        items: [
+          _Merchant(
+            title: '鲜又多水果超市',
+            subtitle: '',
+            leading:
+                'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574359278193&di=99db9dbac1d7cdda741bff962e52f29b&imgtype=0&src=http%3A%2F%2Fhiphotos.baidu.com%2Flbsugc%2Fpic%2Fitem%2Fd01373f082025aaf958ff123feedab64024f1a9c.jpg',
+            distance: '2.1',
+            category: 'shuiguo',
+            issueTYAmount: '123万张',
+            issueWYAmount: '540元',
+            peratio: '5.8',
+            whiteStartDeliveringAmount: '20',
+            nightStartDeliveringAmount: '4',
+            discountRules: {
+              "1": '27减8',
+              "2": '35减10',
+              "3": '45减15',
+              "4": '55减25',
+            },
+          ),
+          _Merchant(
+            title: '惠多水果店',
+            subtitle: '',
+            leading:
+            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574356459814&di=755102298867f501dabdc15c3a75deed&imgtype=0&src=http%3A%2F%2Fe.hiphotos.baidu.com%2Fnuomi%2Fpic%2Fitem%2F00e93901213fb80e32247a5d31d12f2eb8389446.jpg',
+            distance: '2.1',
+            category: 'shuiguo',
+            issueTYAmount: '123万张',
+            issueWYAmount: '540元',
+            peratio: '5.8',
+            whiteStartDeliveringAmount: '20',
+            nightStartDeliveringAmount: '4',
+            discountRules: {
+              "1": '27减8',
+              "2": '35减10',
+              "3": '45减15',
+              "4": '55减25',
+            },
+          ),
+          _Merchant(
+            title: 'G哥炸汉堡',
+            subtitle: '东站店',
+            distance: '1.1',
+            category: 'meishi',
+            leading:
+                'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574359247474&di=31782a29844c1637371b5225919115c6&imgtype=0&src=http%3A%2F%2Fpic45.huitu.com%2Fres%2F20151222%2F80430_20151222012130354200_1.jpg',
+            issueTYAmount: '123万张',
+            issueWYAmount: '230元',
+            peratio: '9.8',
+            whiteStartDeliveringAmount: '20',
+            nightStartDeliveringAmount: '4',
+            discountRules: {
+              "1": '27减8',
+              "2": '35减10',
+              "3": '45减15',
+              "4": '55减25',
+            },
+          ),
+          _Merchant(
+            title: '老上海馄饨粥味多',
+            subtitle: '沧头店',
+            distance: '3.1',
+            category: 'meishi',
+            leading:
+            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574356459814&di=808610c075ef8102534abeba312a8453&imgtype=0&src=http%3A%2F%2Fimg002.hc360.cn%2Fm8%2FM0B%2F22%2F14%2FwKhQplctq32EDs3kAAAAANGZPJI665.JPG',
+            issueTYAmount: '123万张',
+            issueWYAmount: '540元',
+            peratio: '5.8',
+            whiteStartDeliveringAmount: '20',
+            nightStartDeliveringAmount: '4',
+            discountRules: {
+              "1": '27减8',
+              "2": '35减10',
+              "3": '45减15',
+              "4": '55减25',
+            },
+          ),
         ],
       ),
       _Page(
@@ -247,7 +267,7 @@ class _GogogoState extends State<Gogogo> with SingleTickerProviderStateMixin {
             title: '女装卖场',
           ),
         ],
-        merchandises: [
+        items: [
           _Merchandise(
               name:
                   '华为 HUAWEI Mate 30 Pro 5G 麒麟990 OLED环幕屏双4000万徕卡电影四摄8GB+256GB丹霞橙5G全网通版',
@@ -355,13 +375,13 @@ class _Page {
   String title;
   String id;
   List<Category> categories;
-  List<_Merchandise> merchandises;
+  List<dynamic> items;
 
-  _Page({this.id, this.title, this.categories, this.merchandises}) {
+  _Page({this.id, this.title, this.categories, this.items}) {
     if (this.categories == null) {
       this.categories = [];
     }
-    if (this.merchandises == null) this.merchandises = [];
+    if (this.items == null) this.items = [];
   }
 }
 
@@ -416,6 +436,37 @@ class Category {
   Category({this.id, this.title});
 }
 
+class _Merchant {
+  String title;
+  String subtitle;
+  String leading;
+  String category;
+  String issueTYAmount;
+  String peratio;
+  String issueWYAmount;
+  String whiteStartDeliveringAmount;
+  String nightStartDeliveringAmount;
+  String distance;
+  Map<String, String> discountRules;
+
+  _Merchant(
+      {this.title,
+      this.subtitle,
+      this.leading,
+      this.category,
+      this.issueTYAmount,
+      this.peratio,
+      this.issueWYAmount,
+      this.whiteStartDeliveringAmount,
+      this.nightStartDeliveringAmount,
+      this.distance,
+      this.discountRules}) {
+    if (discountRules == null) {
+      this.discountRules = {};
+    }
+  }
+}
+
 class _PageRegion extends StatefulWidget {
   PageContext context;
   _Page page;
@@ -424,10 +475,10 @@ class _PageRegion extends StatefulWidget {
   _PageRegion({this.context, this.page, this.filter});
 
   @override
-  __PageRegionState createState() => __PageRegionState();
+  _PageRegionState createState() => _PageRegionState();
 }
 
-class __PageRegionState extends State<_PageRegion> {
+class _PageRegionState extends State<_PageRegion> {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -441,31 +492,31 @@ class __PageRegionState extends State<_PageRegion> {
                     Category(
                       id: 'all',
                     )) {
-              List<_Merchandise> merchandises = [];
-              widget?.page?.merchandises?.forEach((m) {
+              List<dynamic> items = [];
+              widget?.page?.items?.forEach((m) {
                 if (m?.category == category?.id) {
-                  merchandises.add(m);
+                  items.add(m);
                 }
               });
               return _CategoryRegion(
                 pageid: widget.page.id,
                 category: category,
-                merchandises: merchandises,
+                items: items,
                 context: widget.context,
               );
             }
             if (widget.filter == category) {
-              List<_Merchandise> merchandises = [];
-              widget?.page?.merchandises?.forEach((m) {
+              List<dynamic> items = [];
+              widget?.page?.items?.forEach((m) {
                 if (m?.category == category?.id) {
-                  merchandises.add(m);
+                  items.add(m);
                 }
               });
               return _CategoryRegion(
                 context: widget.context,
                 pageid: widget.page.id,
                 category: category,
-                merchandises: merchandises,
+                items: items,
               );
             }
             return Container(
@@ -509,9 +560,10 @@ class __PageRegionState extends State<_PageRegion> {
 class _CategoryRegion extends StatefulWidget {
   String pageid;
   Category category;
-  List<_Merchandise> merchandises;
+  List<dynamic> items;
   PageContext context;
-  _CategoryRegion({this.context,this.pageid, this.category, this.merchandises});
+
+  _CategoryRegion({this.context, this.pageid, this.category, this.items});
 
   @override
   __CategoryRegionState createState() => __CategoryRegionState();
@@ -520,7 +572,7 @@ class _CategoryRegion extends StatefulWidget {
 class __CategoryRegionState extends State<_CategoryRegion> {
   @override
   Widget build(BuildContext context) {
-    if (widget.merchandises.isEmpty) {
+    if (widget.items.isEmpty) {
       return Container(
         height: 0,
         width: 0,
@@ -548,16 +600,19 @@ class __CategoryRegionState extends State<_CategoryRegion> {
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: widget.merchandises?.map((merchandise) {
+          children: widget.items?.map((item) {
 //                          return _CategoryRegion(merchandise);
             switch (widget.pageid) {
               case 'home':
                 return _HomeRegion();
               case 'godown':
-                return _GodownRegion();
+                return _GodownRegion(
+                  merchant: item,
+                  context: widget.context,
+                );
               case 'goup':
                 return _GoodsRegion(
-                  merchandise: merchandise,
+                  merchandise: item,
                   context: widget.context,
                 );
               default:
@@ -590,6 +645,11 @@ class _HomeRegionState extends State<_HomeRegion> {
 
 ///商家展窗
 class _GodownRegion extends StatefulWidget {
+  _Merchant merchant;
+  PageContext context;
+
+  _GodownRegion({this.merchant, this.context});
+
   @override
   _GodownRegionState createState() => _GodownRegionState();
 }
@@ -597,7 +657,204 @@ class _GodownRegion extends StatefulWidget {
 class _GodownRegionState extends State<_GodownRegion> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      margin: EdgeInsets.only(
+        bottom: 10,
+      ),
+      padding: EdgeInsets.only(
+        left: 10,
+        right: 10,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(
+              right: 10,
+            ),
+            child: SizedBox(
+              width: 100,
+              child: Image.network(
+                widget.merchant.leading ?? '',
+                fit: BoxFit.fitWidth,
+              ),
+            ),
+          ),
+          Flexible(
+            fit: FlexFit.loose,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 10,
+                  ),
+                  child: Text.rich(
+                    TextSpan(
+                      text: widget.merchant.title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: widget.merchant.subtitle == null
+                              ? ''
+                              : '(${widget.merchant.subtitle})',
+                        ),
+                      ],
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 10,
+                  ),
+                  child: Wrap(
+                    children: <Widget>[
+                      Text.rich(
+                        TextSpan(
+                          text: '月发帑',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey[600],
+                          ),
+                          children: [
+                            TextSpan(
+                              text: widget.merchant.issueTYAmount,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text.rich(
+                        TextSpan(
+                          text: '市盈率',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey[600],
+                          ),
+                          children: [
+                            TextSpan(
+                              text: widget.merchant.peratio,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text.rich(
+                        TextSpan(
+                          text: '月发纹',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey[600],
+                          ),
+                          children: [
+                            TextSpan(
+                              text: widget.merchant.issueWYAmount,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    spacing: 5,
+                    runSpacing: 5,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 10,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Wrap(
+                        children: <Widget>[
+                          Text.rich(
+                            TextSpan(
+                              text: '起送',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[600],
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: widget
+                                      .merchant.whiteStartDeliveringAmount,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text.rich(
+                            TextSpan(
+                              text: '夜间配送',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[600],
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: widget
+                                      .merchant.nightStartDeliveringAmount,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        spacing: 5,
+                        runSpacing: 5,
+                      ),
+                      Text(
+                        '${widget.merchant.distance}km',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 10,
+                  ),
+                  child: Wrap(
+                    children: widget.merchant.discountRules.values.map((v) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Colors.grey[300],
+                              width: 1.0,
+                              style: BorderStyle.solid),
+                        ),
+                        padding: EdgeInsets.only(
+                          left: 2,
+                          right: 2,
+                        ),
+                        child: Text.rich(
+                          TextSpan(
+                            text: v,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.redAccent,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    spacing: 5,
+                    runSpacing: 5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -605,7 +862,8 @@ class _GodownRegionState extends State<_GodownRegion> {
 class _GoodsRegion extends StatefulWidget {
   _Merchandise merchandise;
   PageContext context;
-  _GoodsRegion({this.merchandise,this.context});
+
+  _GoodsRegion({this.merchandise, this.context});
 
   @override
   _GoodsRegionState createState() => _GoodsRegionState();
@@ -1022,4 +1280,3 @@ class _GoodsRegionState extends State<_GoodsRegion> {
     );
   }
 }
-
