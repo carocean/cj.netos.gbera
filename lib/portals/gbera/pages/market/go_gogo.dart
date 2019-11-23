@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/netos/common.dart' as prefix0;
 import 'package:gbera/portals/common/util.dart';
+import 'package:gbera/portals/gbera/parts/CardItem.dart';
 import 'package:gbera/portals/gbera/parts/parts.dart';
 
 class Gogogo extends StatefulWidget {
@@ -65,7 +66,7 @@ class _GogogoState extends State<Gogogo> with SingleTickerProviderStateMixin {
                         value: 'myorders',
                       ),
                       PopupMenuItem(
-                        child: Text('我的收藏'),
+                        child: Text('我的关注'),
                         value: 'mycollects',
                       ),
                     ];
@@ -153,13 +154,98 @@ class _GogogoState extends State<Gogogo> with SingleTickerProviderStateMixin {
             title: '全部',
           ),
           Category(
-            id: 'liuxing',
-            title: '流行',
+            id: 'myorders',
+            title: '我的订单',
           ),
           Category(
-            id: 'zhaoshang',
-            title: '招商',
+            id: 'recommends',
+            title: '推荐',
           ),
+        ],
+        items: [
+          _MyGoDownOrder(
+            marchant: '老上海馄饨粥味多(沧头店)',
+            contractNo: '00388283747477474',
+            category: 'myorders',
+            contractState: '派送中',
+            type: 'GoDOWN',
+            tyIndexMarket: '宏生帑指交易市场',
+            tyIndexPrice: '5.89',
+            amount: '93.50',
+            wyAmount: '28.32',
+            contractAmount: '69.80',
+            total: '5',
+            items: [
+              _MemuItem(
+                avatar:
+                    'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3740417280,4055785255&fm=26&gp=0.jpg',
+                title: '空心菜',
+                price: '13.50',
+                qty: '1',
+              ),
+              _MemuItem(
+                avatar:
+                    'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574497085432&di=07dc8a52f06f8070ee69e387841249bc&imgtype=0&src=http%3A%2F%2Fcp2.douguo.net%2Fupload%2Fcaiku%2F7%2F4%2F2%2F600x400_74ee3e1d09b6e79165de00d73bc41f42.jpeg',
+                title: '牛腩萝卜汤',
+                price: '24.00',
+                qty: '1',
+              ),
+              _MemuItem(
+                avatar:
+                    'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574497085432&di=daa2dfa9d9526ca42dadf3e7db7293de&imgtype=0&src=http%3A%2F%2Fcp1.douguo.net%2Fupload%2Fcaiku%2F6%2Fa%2F1%2Fyuan_6a3a1eef62d8c21a651db0892a59a3c1.jpg',
+                title: '凉拌油麦菜',
+                price: '11.50',
+                qty: '2',
+              ),
+            ],
+          ),
+          _MyGoUPOrder(
+            category: 'myorders',
+            contractNo: '003838727766216611882',
+            contractMerchandisePrice: 8723,
+            contractScale: 0.10,
+            contractState: '交易中',
+            highestBuyBillAmount: 8610,
+            lowestMerchandisePrice: 9876.00,
+            reducePoolAmount: 1256.32,
+            maybeMerchant: '广州丰力华为专营店',
+            storeAvatar:
+                'https://img11.360buyimg.com/n1/s450x450_jfs/t1/81012/28/13665/159765/5dafcdf7Eb247ff7f/c516fc4de783079c.jpg',
+            storeTitle:
+                '华为 HUAWEI Mate 30 Pro 5G 麒麟990 OLED环幕屏双4000万徕卡电影四摄8GB+256GB丹霞橙5G全网通版',
+            wyPrice: 0.00123837774747,
+            wyQTY: 82837,
+          ),
+          _Merchant(
+            title: '鲜又多水果超市',
+            subtitle: '',
+            leading:
+                'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574359278193&di=99db9dbac1d7cdda741bff962e52f29b&imgtype=0&src=http%3A%2F%2Fhiphotos.baidu.com%2Flbsugc%2Fpic%2Fitem%2Fd01373f082025aaf958ff123feedab64024f1a9c.jpg',
+            distance: '2.1',
+            contractscale: '40%',
+            category: 'recommends',
+            issueTYAmount: '123万',
+            issueWYAmount: '540',
+            peratio: '5.8',
+            whiteStartDeliveringAmount: '20',
+            nightStartDeliveringAmount: '4',
+            discountRules: {
+              "1": '27返8',
+              "2": '35返10',
+              "3": '45返15',
+              "4": '55返25',
+              "5": '23返12',
+              "6": '58返15',
+            },
+          ),
+          _Merchandise(
+              name: 'Apple iPhone 11 (A2223) 128GB 黑色 移动联通电信4G手机 双卡双待',
+              category: 'recommends',
+              images: [
+                'https://img12.360buyimg.com/n1/s450x450_jfs/t1/59022/28/10293/141808/5d78088fEf6e7862d/68836f52ffaaad96.jpg',
+                'https://img12.360buyimg.com/n1/s450x450_jfs/t1/61588/10/9949/164377/5d7808a1E6c3615dd/7c45f7039b9cbae8.jpg',
+              ],
+              desc: 'iPhoneXS系列性能强劲，样样出色，现特惠来袭，低至5599元。'),
         ],
       ),
       _Page(
@@ -182,74 +268,80 @@ class _GogogoState extends State<Gogogo> with SingleTickerProviderStateMixin {
             leading:
                 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574359278193&di=99db9dbac1d7cdda741bff962e52f29b&imgtype=0&src=http%3A%2F%2Fhiphotos.baidu.com%2Flbsugc%2Fpic%2Fitem%2Fd01373f082025aaf958ff123feedab64024f1a9c.jpg',
             distance: '2.1',
+            contractscale: '40%',
             category: 'shuiguo',
-            issueTYAmount: '123万张',
-            issueWYAmount: '540元',
+            issueTYAmount: '123万',
+            issueWYAmount: '540',
             peratio: '5.8',
             whiteStartDeliveringAmount: '20',
             nightStartDeliveringAmount: '4',
             discountRules: {
-              "1": '27减8',
-              "2": '35减10',
-              "3": '45减15',
-              "4": '55减25',
+              "1": '27返8',
+              "2": '35返10',
+              "3": '45返15',
+              "4": '55返25',
+              "5": '23返12',
+              "6": '58返15',
             },
           ),
           _Merchant(
             title: '惠多水果店',
             subtitle: '',
             leading:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574356459814&di=755102298867f501dabdc15c3a75deed&imgtype=0&src=http%3A%2F%2Fe.hiphotos.baidu.com%2Fnuomi%2Fpic%2Fitem%2F00e93901213fb80e32247a5d31d12f2eb8389446.jpg',
+                'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574356459814&di=755102298867f501dabdc15c3a75deed&imgtype=0&src=http%3A%2F%2Fe.hiphotos.baidu.com%2Fnuomi%2Fpic%2Fitem%2F00e93901213fb80e32247a5d31d12f2eb8389446.jpg',
             distance: '2.1',
+            contractscale: '35%',
             category: 'shuiguo',
-            issueTYAmount: '123万张',
-            issueWYAmount: '540元',
+            issueTYAmount: '9382',
+            issueWYAmount: '540',
             peratio: '5.8',
             whiteStartDeliveringAmount: '20',
             nightStartDeliveringAmount: '4',
             discountRules: {
-              "1": '27减8',
-              "2": '35减10',
-              "3": '45减15',
-              "4": '55减25',
+              "1": '27返8',
+              "2": '35返10',
+              "3": '45返15',
+              "4": '55返25',
             },
           ),
           _Merchant(
             title: 'G哥炸汉堡',
             subtitle: '东站店',
+            contractscale: '20%',
             distance: '1.1',
             category: 'meishi',
             leading:
                 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574359247474&di=31782a29844c1637371b5225919115c6&imgtype=0&src=http%3A%2F%2Fpic45.huitu.com%2Fres%2F20151222%2F80430_20151222012130354200_1.jpg',
-            issueTYAmount: '123万张',
-            issueWYAmount: '230元',
+            issueTYAmount: '123万',
+            issueWYAmount: '230',
             peratio: '9.8',
             whiteStartDeliveringAmount: '20',
             nightStartDeliveringAmount: '4',
             discountRules: {
-              "1": '27减8',
-              "2": '35减10',
-              "3": '45减15',
-              "4": '55减25',
+              "1": '27返8',
+              "2": '35返10',
+              "3": '45返15',
+              "4": '55返25',
             },
           ),
           _Merchant(
             title: '老上海馄饨粥味多',
             subtitle: '沧头店',
             distance: '3.1',
+            contractscale: '100%',
             category: 'meishi',
             leading:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574356459814&di=808610c075ef8102534abeba312a8453&imgtype=0&src=http%3A%2F%2Fimg002.hc360.cn%2Fm8%2FM0B%2F22%2F14%2FwKhQplctq32EDs3kAAAAANGZPJI665.JPG',
-            issueTYAmount: '123万张',
-            issueWYAmount: '540元',
+                'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574356459814&di=808610c075ef8102534abeba312a8453&imgtype=0&src=http%3A%2F%2Fimg002.hc360.cn%2Fm8%2FM0B%2F22%2F14%2FwKhQplctq32EDs3kAAAAANGZPJI665.JPG',
+            issueTYAmount: '2034',
+            issueWYAmount: '540',
             peratio: '5.8',
             whiteStartDeliveringAmount: '20',
             nightStartDeliveringAmount: '4',
             discountRules: {
-              "1": '27减8',
-              "2": '35减10',
-              "3": '45减15',
-              "4": '55减25',
+              "1": '27返8',
+              "2": '35返10',
+              "3": '45返15',
+              "4": '55返25',
             },
           ),
         ],
@@ -312,6 +404,79 @@ class _GogogoState extends State<Gogogo> with SingleTickerProviderStateMixin {
       ),
     ];
   }
+}
+
+class _MyGoUPOrder {
+  String contractNo;
+  String contractState;
+  String category;
+  String storeAvatar;
+  String storeTitle;
+  double lowestMerchandisePrice;
+  double reducePoolAmount;
+  double highestBuyBillAmount;
+  double contractMerchandisePrice;
+  double contractScale;
+  int wyQTY;
+  double wyPrice;
+  String maybeMerchant;
+
+  _MyGoUPOrder(
+      {this.contractNo,
+      this.contractState,
+      this.category,
+      this.maybeMerchant,
+      this.storeAvatar,
+      this.storeTitle,
+      this.lowestMerchandisePrice,
+      this.reducePoolAmount,
+      this.highestBuyBillAmount,
+      this.contractMerchandisePrice,
+      this.contractScale,
+      this.wyQTY,
+      this.wyPrice});
+}
+
+class _MyGoDownOrder {
+  String contractNo;
+  String marchant;
+  String contractAmount;
+  String wyAmount;
+  String type = 'GoDOWN';
+  String contractState;
+  String amount;
+  String total;
+  String category;
+  String tyIndexMarket;
+  String tyIndexPrice;
+  List<_MemuItem> items;
+
+  _MyGoDownOrder(
+      {this.contractNo,
+      this.marchant,
+      this.contractAmount,
+      this.wyAmount,
+      this.tyIndexMarket,
+      this.tyIndexPrice,
+      this.type,
+      this.contractState,
+      this.amount,
+      this.total,
+      this.category,
+      this.items}) {
+    if (items == null) {
+      this.items = [];
+    }
+  }
+}
+
+class _MemuItem {
+  String avatar;
+  String title;
+  String qty;
+  String price;
+
+  _MemuItem({this.avatar, this.title, this.qty, this.price});
 }
 
 class _ShoppingCartBar extends StatefulWidget {
@@ -443,6 +608,7 @@ class _Merchant {
   String category;
   String issueTYAmount;
   String peratio;
+  String contractscale;
   String issueWYAmount;
   String whiteStartDeliveringAmount;
   String nightStartDeliveringAmount;
@@ -455,6 +621,7 @@ class _Merchant {
       this.leading,
       this.category,
       this.issueTYAmount,
+      this.contractscale,
       this.peratio,
       this.issueWYAmount,
       this.whiteStartDeliveringAmount,
@@ -482,6 +649,7 @@ class _PageRegionState extends State<_PageRegion> {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      fit: StackFit.expand,
       children: <Widget>[
         ListView(
           padding: EdgeInsets.all(0),
@@ -604,14 +772,50 @@ class __CategoryRegionState extends State<_CategoryRegion> {
 //                          return _CategoryRegion(merchandise);
             switch (widget.pageid) {
               case 'home':
-                return _HomeRegion();
+                if (item.category == 'myorders') {
+                  if (item is _MyGoDownOrder) {
+                    return _MyGoDownOrderOnHomeCard(
+                      item: item,
+                      context: widget.context,
+                    );
+                  }
+                  if (item is _MyGoUPOrder) {
+                    return _MyGoUPOrderOnHomeCard(
+                      item: item,
+                      context: widget.context,
+                    );
+                  }
+                }
+                if (item.category == 'recommends') {
+                  if (item is _Merchant) {
+                    return Container(
+                      color: Colors.white,
+                      margin: EdgeInsets.only(bottom: 10,),
+                      padding: EdgeInsets.only(top: 10,),
+                      child: _GodownCard(
+                        merchant: item,
+                        context: widget.context,
+                      ),
+                    );
+                  }
+                  if (item is _Merchandise) {
+                    return _GoupCard(
+                      merchandise: item,
+                      context: widget.context,
+                    );
+                  }
+                }
+                return Container(
+                  height: 0,
+                  width: 0,
+                );
               case 'godown':
-                return _GodownRegion(
+                return _GodownCard(
                   merchant: item,
                   context: widget.context,
                 );
               case 'goup':
-                return _GoodsRegion(
+                return _GoupCard(
                   merchandise: item,
                   context: widget.context,
                 );
@@ -631,30 +835,1161 @@ class __CategoryRegionState extends State<_CategoryRegion> {
   }
 }
 
-class _HomeRegion extends StatefulWidget {
+class _MyGoUPOrderOnHomeCard extends StatefulWidget {
+  _MyGoUPOrder item;
+  PageContext context;
+
+  _MyGoUPOrderOnHomeCard({this.item, this.context});
+
   @override
-  _HomeRegionState createState() => _HomeRegionState();
+  __MyGoUPOrderOnHomeCardState createState() => __MyGoUPOrderOnHomeCardState();
 }
 
-class _HomeRegionState extends State<_HomeRegion> {
+class __MyGoUPOrderOnHomeCardState extends State<_MyGoUPOrderOnHomeCard> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      padding: EdgeInsets.only(
+        top: 10,
+        left: 10,
+        right: 10,
+        bottom: 10,
+      ),
+      color: Colors.white,
+      margin: EdgeInsets.only(
+        bottom: 10,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Padding(
+                      child: Text(
+                        '合约号',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: Colors.black,
+                        ),
+                      ),
+                      padding: EdgeInsets.only(
+                        right: 2,
+                      ),
+                    ),
+                    Text(
+                      widget.item.contractNo ?? '',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      widget.item.contractState,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 5,
+                      ),
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 18,
+                        color: Colors.grey[300],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            crossAxisAlignment: CrossAxisAlignment.end,
+          ),
+          Container(
+            height: 10,
+          ),
+          Container(
+            padding: EdgeInsets.only(
+              left: 10,
+              right: 10,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 5,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Expanded(
+                        child: Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: SizedBox(
+                                width: 50,
+                                child: Image.network(
+                                  widget.item.storeAvatar ?? '',
+                                  fit: BoxFit.fitWidth,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Text.rich(
+                                TextSpan(
+                                  text: widget.item.storeTitle ?? '',
+                                ),
+                                softWrap: true,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: 5,
+                        ),
+                        child: Icon(
+                          Icons.arrow_forward_ios,
+                          size: 14,
+                          color: Colors.grey[300],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 5,
+                            top: 5,
+                          ),
+                          child: Wrap(
+                            spacing: 5,
+                            alignment: WrapAlignment.start,
+                            children: <Widget>[
+                              Text.rich(
+                                TextSpan(
+                                  text: '现市价',
+                                  children: [
+                                    TextSpan(text: ' ¥'),
+                                    TextSpan(
+                                      text:
+                                          '${widget.item.lowestMerchandisePrice - widget.item.reducePoolAmount}',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 5,
+                            left: 30,
+                          ),
+                          child: Wrap(
+                            spacing: 5,
+                            alignment: WrapAlignment.start,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: <Widget>[
+                              Text.rich(
+                                TextSpan(
+                                  text: '=',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ),
+                              Text.rich(
+                                TextSpan(
+                                  text: '当前最低现货价',
+                                  children: [
+                                    TextSpan(text: ' ¥'),
+                                    TextSpan(
+                                      text:
+                                          '${widget.item.lowestMerchandisePrice}',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 10,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                              ),
+                              Text.rich(
+                                TextSpan(
+                                  text: '-',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ),
+                              Text.rich(
+                                TextSpan(
+                                  text: '当前降价金',
+                                  children: [
+                                    TextSpan(text: ' ¥'),
+                                    TextSpan(
+                                      text: '${widget.item.reducePoolAmount}',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 10,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 5,
+                          ),
+                          child: Wrap(
+                            spacing: 5,
+                            alignment: WrapAlignment.start,
+                            children: <Widget>[
+                              Text.rich(
+                                TextSpan(
+                                  text: '本轮成交差',
+                                  children: [
+                                    TextSpan(text: ' ¥'),
+                                    TextSpan(
+                                      text:
+                                          '${((widget.item.lowestMerchandisePrice - widget.item.reducePoolAmount) - widget.item.highestBuyBillAmount).toStringAsFixed(2)}',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 5,
+                            left: 30,
+                          ),
+                          child: Wrap(
+                            spacing: 5,
+                            alignment: WrapAlignment.start,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: <Widget>[
+                              Text.rich(
+                                TextSpan(
+                                  text: '=',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ),
+                              Text.rich(
+                                TextSpan(
+                                  text: '现市价',
+                                  children: [
+                                    TextSpan(text: ' ¥'),
+                                    TextSpan(
+                                      text:
+                                          '${(widget.item.lowestMerchandisePrice - widget.item.reducePoolAmount)}',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 10,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                              ),
+                              Text.rich(
+                                TextSpan(
+                                  text: '-',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ),
+                              Text.rich(
+                                TextSpan(
+                                  text: '最高买单',
+                                  children: [
+                                    TextSpan(text: ' ¥'),
+                                    TextSpan(
+                                      text:
+                                          '${widget.item.highestBuyBillAmount}',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 10,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: EdgeInsets.only(
+                    bottom: 10,
+                    top: 5,
+                  ),
+                  child: Divider(
+                    height: 1,
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.only(
+                    bottom: 10,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Text.rich(
+                        TextSpan(
+                          text: '合约货价',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          children: [
+                            TextSpan(text: ' '),
+                            TextSpan(
+                              text: '¥${widget.item.contractMerchandisePrice}',
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text.rich(
+                        TextSpan(
+                          text: '合约比',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          children: [
+                            TextSpan(text: ' '),
+                            TextSpan(
+                              text: '${widget.item.contractScale * 100}%',
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 5,
+                          ),
+                          child: Wrap(
+                            spacing: 5,
+                            alignment: WrapAlignment.start,
+                            children: <Widget>[
+                              Text.rich(
+                                TextSpan(
+                                  text: '您离成交差',
+                                  children: [
+                                    TextSpan(text: ' ¥'),
+                                    TextSpan(
+                                      text:
+                                          '${widget.item.lowestMerchandisePrice - widget.item.reducePoolAmount - widget.item.contractMerchandisePrice * widget.item.contractScale}',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 5,
+                            left: 30,
+                          ),
+                          child: Wrap(
+                            spacing: 5,
+                            alignment: WrapAlignment.start,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: <Widget>[
+                              Text.rich(
+                                TextSpan(
+                                  text: '=',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ),
+                              Text.rich(
+                                TextSpan(
+                                  text: '现市价',
+                                  children: [
+                                    TextSpan(text: ' ¥'),
+                                    TextSpan(
+                                      text:
+                                          '${widget.item.lowestMerchandisePrice - widget.item.reducePoolAmount}',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 10,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                              ),
+                              Text.rich(
+                                TextSpan(
+                                  text: '-',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ),
+                              Text.rich(
+                                TextSpan(
+                                  text: '合约金额',
+                                  children: [
+                                    TextSpan(text: ' ¥'),
+                                    TextSpan(
+                                      text:
+                                          '${(widget.item.contractMerchandisePrice * widget.item.contractScale).toStringAsFixed(2)}',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 10,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Text.rich(
+                          TextSpan(
+                            text: '追加买入',
+                            style: TextStyle(
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: 5,
+                          ),
+                          child: Icon(
+                            Icons.arrow_forward_ios,
+                            size: 12,
+                            color: Colors.grey[300],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: EdgeInsets.only(
+                    bottom: 5,
+                    top: 5,
+                  ),
+                  child: Divider(
+                    height: 1,
+                    indent: 30,
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 5,
+                          ),
+                          child: Wrap(
+                            spacing: 5,
+                            alignment: WrapAlignment.start,
+                            children: <Widget>[
+                              Text.rich(
+                                TextSpan(
+                                  text: '合约纹银',
+                                  children: [
+                                    TextSpan(text: ' WY'),
+                                    TextSpan(
+                                      text: '${widget.item.wyQTY}',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 5,
+                            left: 30,
+                          ),
+                          child: Wrap(
+                            spacing: 5,
+                            alignment: WrapAlignment.start,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: <Widget>[
+                              Text.rich(
+                                TextSpan(
+                                  text: '=',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ),
+                              Text.rich(
+                                TextSpan(
+                                  text: '现市值',
+                                  children: [
+                                    TextSpan(text: ' ¥'),
+                                    TextSpan(
+                                      text:
+                                          '${(widget.item.wyQTY * widget.item.wyPrice).toStringAsFixed(2)}',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 10,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Text.rich(
+                          TextSpan(
+                            text: '承兑',
+                            style: TextStyle(
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: 5,
+                          ),
+                          child: Icon(
+                            Icons.arrow_forward_ios,
+                            size: 12,
+                            color: Colors.grey[300],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Container(
+                  height: 5,
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          Text.rich(
+                            TextSpan(
+                              text: 'GoUP: ',
+                              style: TextStyle(
+                                color: Colors.black26,
+                                fontSize: 12,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: '目前可能交易的商家 ',
+                                  style: TextStyle(
+                                    color: Colors.black26,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: widget.item.maybeMerchant ?? '',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: 5,
+                            ),
+                            child: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 14,
+                              color: Colors.grey[300],
+                            ),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(
+                          top: 10,
+                          bottom: 10,
+                        ),
+                        child: Divider(
+                          height: 1,
+                          indent: 50,
+                        ),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Flexible(
+                            child: Wrap(
+                              runSpacing: 4,
+                              textDirection: TextDirection.rtl,
+                              children: <Widget>[
+                                Text.rich(
+                                  TextSpan(
+                                    text: '委托商家理财: ',
+                                    style: TextStyle(
+                                      color: Colors.black26,
+                                      fontSize: 12,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: '旺生堂纹银银行',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text: '  ',
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Text.rich(
+                                  TextSpan(
+                                    text: '现价 ',
+                                    style: TextStyle(
+                                      color: Colors.black26,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: '¥${widget.item.wyPrice}',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: 5,
+                            ),
+                            child: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 14,
+                              color: Colors.grey[300],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MyGoDownOrderOnHomeCard extends StatefulWidget {
+  _MyGoDownOrder item;
+  PageContext context;
+
+  _MyGoDownOrderOnHomeCard({this.item, this.context});
+
+  @override
+  _MyGoDownOrderOnHomeCardState createState() =>
+      _MyGoDownOrderOnHomeCardState();
+}
+
+class _MyGoDownOrderOnHomeCardState extends State<_MyGoDownOrderOnHomeCard> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(
+        top: 10,
+        left: 10,
+        right: 10,
+        bottom: 10,
+      ),
+      color: Colors.white,
+      margin: EdgeInsets.only(
+        bottom: 10,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Padding(
+                      child: Text(
+                        '合约号',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: Colors.black,
+                        ),
+                      ),
+                      padding: EdgeInsets.only(
+                        right: 2,
+                      ),
+                    ),
+                    Text(
+                      widget.item.contractNo ?? '',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      widget.item.contractState ?? '',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 5,
+                      ),
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 18,
+                        color: Colors.grey[300],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            crossAxisAlignment: CrossAxisAlignment.end,
+          ),
+          Container(
+            height: 10,
+          ),
+          Container(
+            padding: EdgeInsets.only(
+              left: 10,
+              right: 10,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 5,
+                  ),
+                  child: Wrap(
+                    spacing: 5,
+                    alignment: WrapAlignment.start,
+                    children: <Widget>[
+                      Text.rich(
+                        TextSpan(
+                          text: '金额',
+                          children: [
+                            TextSpan(text: ' ¥'),
+                            TextSpan(
+                              text: widget.item.amount ?? '',
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                            color: Colors.grey[500],
+                          ),
+                        ),
+                      ),
+                      Text.rich(
+                        TextSpan(
+                          text: '数量',
+                          children: [
+                            TextSpan(text: ' '),
+                            TextSpan(
+                              text: widget.item.total ?? '',
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                            color: Colors.grey[500],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Divider(
+                  height: 1,
+                ),
+                Column(
+                  children: widget.item.items.map((item) {
+                    return Column(
+                      children: <Widget>[
+                        CardItem(
+                          leading: Image.network(
+                            item.avatar ?? '',
+                            fit: BoxFit.fitWidth,
+                            width: 40,
+                          ),
+                          title: item.title ?? '',
+                          paddingBottom: 10,
+                          paddingTop: 10,
+                          tipsText: '${item.qty}  ¥${item.price}',
+                          tail: Icon(
+                            Icons.arrow_forward_ios,
+                            size: 14,
+                            color: Colors.grey[300],
+                          ),
+                        ),
+                        Divider(
+                          height: 1,
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 10,
+                    top: 3,
+                  ),
+                  child: Wrap(
+                    spacing: 5,
+                    alignment: WrapAlignment.start,
+                    children: <Widget>[
+                      Text.rich(
+                        TextSpan(
+                          text: '支付合约市值',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black26,
+                          ),
+                          children: [
+                            TextSpan(text: ' '),
+                            TextSpan(
+                              text: '¥${widget.item.contractAmount ?? ''}',
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text.rich(
+                        TextSpan(
+                          text: '返纹现市值',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black26,
+                          ),
+                          children: [
+                            TextSpan(text: ' '),
+                            TextSpan(
+                              text: '¥${widget.item.wyAmount ?? ''}',
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          Text.rich(
+                            TextSpan(
+                              text: 'GoDOWN: ',
+                              style: TextStyle(
+                                color: Colors.black26,
+                                fontSize: 12,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: widget.item.marchant ?? '',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: 5,
+                            ),
+                            child: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 14,
+                              color: Colors.grey[300],
+                            ),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(
+                          top: 10,
+                          bottom: 10,
+                        ),
+                        child: Divider(
+                          height: 1,
+                          indent: 50,
+                        ),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          Text.rich(
+                            TextSpan(
+                              text: '委托店家理财: ',
+                              style: TextStyle(
+                                color: Colors.black26,
+                                fontSize: 12,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: widget.item.tyIndexMarket ?? '',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: '  ',
+                                    ),
+                                  ],
+                                ),
+                                TextSpan(
+                                  text: '现价 ',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text:
+                                          '¥${widget.item.tyIndexPrice ?? ''}',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: 5,
+                            ),
+                            child: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 14,
+                              color: Colors.grey[300],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
 ///商家展窗
-class _GodownRegion extends StatefulWidget {
+class _GodownCard extends StatefulWidget {
   _Merchant merchant;
   PageContext context;
 
-  _GodownRegion({this.merchant, this.context});
+  _GodownCard({this.merchant, this.context});
 
   @override
-  _GodownRegionState createState() => _GodownRegionState();
+  _GodownCardState createState() => _GodownCardState();
 }
 
-class _GodownRegionState extends State<_GodownRegion> {
+class _GodownCardState extends State<_GodownCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -696,11 +2031,12 @@ class _GodownRegionState extends State<_GodownRegion> {
                       text: widget.merchant.title,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        fontSize: 16,
+                        fontSize: 18,
                       ),
                       children: [
                         TextSpan(
-                          text: widget.merchant.subtitle == null
+                          text: prefix0.StringUtil.isEmpty(
+                                  widget.merchant.subtitle)
                               ? ''
                               : '(${widget.merchant.subtitle})',
                         ),
@@ -718,6 +2054,20 @@ class _GodownRegionState extends State<_GodownRegion> {
                     children: <Widget>[
                       Text.rich(
                         TextSpan(
+                          text: '合约比',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey[600],
+                          ),
+                          children: [
+                            TextSpan(
+                              text: '${widget.merchant.contractscale ?? '0'}',
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text.rich(
+                        TextSpan(
                           text: '月发帑',
                           style: TextStyle(
                             fontSize: 11,
@@ -725,7 +2075,7 @@ class _GodownRegionState extends State<_GodownRegion> {
                           ),
                           children: [
                             TextSpan(
-                              text: widget.merchant.issueTYAmount,
+                              text: '${widget.merchant.issueTYAmount}张',
                             ),
                           ],
                         ),
@@ -740,20 +2090,6 @@ class _GodownRegionState extends State<_GodownRegion> {
                           children: [
                             TextSpan(
                               text: widget.merchant.peratio,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Text.rich(
-                        TextSpan(
-                          text: '月发纹',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.grey[600],
-                          ),
-                          children: [
-                            TextSpan(
-                              text: widget.merchant.issueWYAmount,
                             ),
                           ],
                         ),
@@ -821,32 +2157,52 @@ class _GodownRegionState extends State<_GodownRegion> {
                   padding: EdgeInsets.only(
                     bottom: 10,
                   ),
-                  child: Wrap(
-                    children: widget.merchant.discountRules.values.map((v) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.grey[300],
-                              width: 1.0,
-                              style: BorderStyle.solid),
-                        ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Wrap(
+                        children: widget.merchant.discountRules.values.map((v) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Colors.grey[300],
+                                  width: 1.0,
+                                  style: BorderStyle.solid),
+                            ),
+                            padding: EdgeInsets.only(
+                              left: 2,
+                              right: 2,
+                            ),
+                            child: Text.rich(
+                              TextSpan(
+                                text: v,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.redAccent,
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                        spacing: 5,
+                        runSpacing: 5,
+                      ),
+                      Padding(
                         padding: EdgeInsets.only(
-                          left: 2,
-                          right: 2,
+                          top: 5,
                         ),
                         child: Text.rich(
                           TextSpan(
-                            text: v,
+                            text: '该商家收取纹银,并接受纹银现价支付',
                             style: TextStyle(
-                              fontSize: 11,
-                              color: Colors.redAccent,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[400],
                             ),
                           ),
                         ),
-                      );
-                    }).toList(),
-                    spacing: 5,
-                    runSpacing: 5,
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -859,17 +2215,17 @@ class _GodownRegionState extends State<_GodownRegion> {
 }
 
 ///商品展窗
-class _GoodsRegion extends StatefulWidget {
+class _GoupCard extends StatefulWidget {
   _Merchandise merchandise;
   PageContext context;
 
-  _GoodsRegion({this.merchandise, this.context});
+  _GoupCard({this.merchandise, this.context});
 
   @override
-  _GoodsRegionState createState() => _GoodsRegionState();
+  _GoupCardState createState() => _GoupCardState();
 }
 
-class _GoodsRegionState extends State<_GoodsRegion> {
+class _GoupCardState extends State<_GoupCard> {
   int title_maxLines = 2;
   int desc_maxLines = 3;
 
@@ -921,7 +2277,7 @@ class _GoodsRegionState extends State<_GoodsRegion> {
                                     Padding(
                                       padding: EdgeInsets.only(right: 5),
                                       child: Text(
-                                        '本轮离成交剩',
+                                        '本轮成交差',
                                         style: TextStyle(
                                           fontSize: 10,
                                         ),
@@ -950,6 +2306,8 @@ class _GoodsRegionState extends State<_GoodsRegion> {
                                         left: 5,
                                       ),
                                       child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: <Widget>[
                                           Container(
                                             child: Row(
@@ -986,7 +2344,7 @@ class _GoodsRegionState extends State<_GoodsRegion> {
                                                   padding:
                                                       EdgeInsets.only(right: 5),
                                                   child: Text(
-                                                    '卖单',
+                                                    '最高',
                                                     style: TextStyle(
                                                       fontSize: 10,
                                                     ),
@@ -994,7 +2352,34 @@ class _GoodsRegionState extends State<_GoodsRegion> {
                                                 ),
                                                 Text.rich(
                                                   TextSpan(
-                                                    text: '428',
+                                                    text: '¥4300.00',
+                                                    style: TextStyle(
+                                                      fontSize: 10,
+                                                      color: Colors.red,
+                                                    ),
+                                                    children: [],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding:
+                                                      EdgeInsets.only(right: 5),
+                                                  child: Text(
+                                                    '降价金',
+                                                    style: TextStyle(
+                                                      fontSize: 10,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Text.rich(
+                                                  TextSpan(
+                                                    text: '¥1823.00',
                                                     style: TextStyle(
                                                       fontSize: 10,
                                                       color: Colors.red,
@@ -1050,15 +2435,17 @@ class _GoodsRegionState extends State<_GoodsRegion> {
                           child: Wrap(
                             spacing: 10,
                             alignment: WrapAlignment.end,
+                            runSpacing: 3,
                             children: <Widget>[
                               Container(
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: <Widget>[
                                     Padding(
-                                      padding: EdgeInsets.only(right: 5),
+                                      padding:
+                                          EdgeInsets.only(left: 10, right: 2),
                                       child: Text(
-                                        '实时现价',
+                                        '现市价',
                                         style: TextStyle(
                                           fontSize: 10,
                                         ),
@@ -1076,7 +2463,7 @@ class _GoodsRegionState extends State<_GoodsRegion> {
                                             text: '4382.34',
                                             style: TextStyle(
                                               fontSize: 10,
-                                              color: Colors.blueGrey[800],
+                                              color: Colors.red,
                                             ),
                                           ),
                                         ],
@@ -1090,9 +2477,9 @@ class _GoodsRegionState extends State<_GoodsRegion> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: <Widget>[
                                     Padding(
-                                      padding: EdgeInsets.only(right: 5),
+                                      padding: EdgeInsets.only(right: 2),
                                       child: Text(
-                                        '商开均价',
+                                        '最低现货价',
                                         style: TextStyle(
                                           fontSize: 10,
                                         ),
@@ -1123,7 +2510,7 @@ class _GoodsRegionState extends State<_GoodsRegion> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: <Widget>[
                                     Padding(
-                                      padding: EdgeInsets.only(right: 5),
+                                      padding: EdgeInsets.only(right: 2),
                                       child: Text(
                                         '成交轮次',
                                         style: TextStyle(

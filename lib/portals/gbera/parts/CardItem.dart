@@ -12,6 +12,7 @@ class CardItem extends StatefulWidget {
   double paddingTop;
   double paddingBottom;
   Function() onItemTap;
+
   CardItem({
     this.title,
     this.subtitle,
@@ -69,13 +70,18 @@ class CardItemState extends State<CardItem> {
                     padding: EdgeInsets.only(
                       right: 10,
                     ),
-                    child: Text(
-                      widget.title,
-                      style: TextStyle(
-                        color: widget.titleColor,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15,
+                    child: Text.rich(
+                      TextSpan(
+                        text: widget.title,
+                        style: TextStyle(
+                          color: widget.titleColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                        ),
                       ),
+                      softWrap: true,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   )
                 : Flexible(
