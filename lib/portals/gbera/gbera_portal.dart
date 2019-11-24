@@ -19,6 +19,8 @@ import 'package:gbera/portals/gbera/pages/market.dart';
 import 'package:gbera/portals/gbera/pages/market/go_gogo.dart';
 import 'package:gbera/portals/gbera/pages/market/go_shopping_cart.dart';
 import 'package:gbera/portals/gbera/pages/market/select_gogogo_category.dart';
+import 'package:gbera/portals/gbera/pages/market/ty_list.dart';
+import 'package:gbera/portals/gbera/pages/market/tz_list.dart';
 import 'package:gbera/portals/gbera/pages/netflow.dart';
 import 'package:gbera/portals/gbera/pages/netflow/activies_channels.dart';
 import 'package:gbera/portals/gbera/pages/netflow/activies_gateway_settings.dart';
@@ -1021,7 +1023,28 @@ class GberaPortal {
           buildPage: (PageContext pageContext) => ShoppingCartPage(
             context: pageContext,
           ),
-        ),Page(
+        ),
+        Page(
+          title: '帑指行情',
+          subtitle: '',
+          desc: '',
+          icon: GalleryIcons.shrine,
+          url: '/market/tz_list',
+          buildPage: (PageContext pageContext) => TZList(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '帑银行情',
+          subtitle: '',
+          desc: '',
+          icon: GalleryIcons.shrine,
+          url: '/market/ty_list',
+          buildPage: (PageContext pageContext) => TYList(
+            context: pageContext,
+          ),
+        ),
+        Page(
           title: '选择分类',
           subtitle: '',
           desc: '平台购物商城',

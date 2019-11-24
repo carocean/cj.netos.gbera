@@ -125,46 +125,58 @@ class _MarketState extends State<Market> {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          Container(
-            child: Column(
-              children: <Widget>[
-                Icon(
-                  IconData(0xe659, fontFamily: 'market'),
-                  size: 30,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: 5,
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              widget.context.forward('/market/tz_list');
+            },
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                  Icon(
+                    IconData(0xe659, fontFamily: 'market'),
+                    size: 30,
                   ),
-                  child: Text(
-                    '帑指行情',
-                    style: TextStyle(
-                      fontSize: 12,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: 5,
+                    ),
+                    child: Text(
+                      '帑指行情',
+                      style: TextStyle(
+                        fontSize: 12,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-          Container(
-            child: Column(
-              children: <Widget>[
-                Icon(
-                  IconData(0xe52a, fontFamily: 'market'),
-                  size: 30,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: 5,
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              widget.context.forward('/market/ty_list');
+            },
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                  Icon(
+                    IconData(0xe52a, fontFamily: 'market'),
+                    size: 30,
                   ),
-                  child: Text(
-                    '帑银行情',
-                    style: TextStyle(
-                      fontSize: 12,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: 5,
+                    ),
+                    child: Text(
+                      '帑银行情',
+                      style: TextStyle(
+                        fontSize: 12,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
@@ -175,25 +187,9 @@ class _MarketState extends State<Market> {
   List<Widget> _platformServices() {
     var services = <_PlatformService>[
       _PlatformService(
-        name: '我要开实体店',
-        icon: Icon(
-          Icons.store,
-          size: 30,
-          color: Colors.grey[600],
-        ),
-      ),
-      _PlatformService(
-        name: '我要开线上卖场',
+        name: '我要做商家',
         icon: Icon(
           Icons.shop,
-          size: 30,
-          color: Colors.grey[600],
-        ),
-      ),
-      _PlatformService(
-        name: '我要开服务厅',
-        icon: Icon(
-          Icons.local_laundry_service,
           size: 30,
           color: Colors.grey[600],
         ),
@@ -362,8 +358,7 @@ class _PlatformNewsDay extends StatefulWidget {
 }
 
 class __PlatformNewsDayState extends State<_PlatformNewsDay> {
-  var maxLines=4;
-
+  var maxLines = 4;
 
   @override
   Widget build(BuildContext context) {
@@ -469,15 +464,16 @@ class __PlatformNewsDayState extends State<_PlatformNewsDay> {
                       TextSpan(
                         text: news.Content,
                         children: [],
-                        recognizer: TapGestureRecognizer()..onTap=(){
-                          setState(() {
-                            if(maxLines==4){
-                              maxLines=100;
-                            }else{
-                              maxLines=4;
-                            }
-                          });
-                        },
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            setState(() {
+                              if (maxLines == 4) {
+                                maxLines = 100;
+                              } else {
+                                maxLines = 4;
+                              }
+                            });
+                          },
                       ),
                       maxLines: maxLines,
                       overflow: TextOverflow.ellipsis,
