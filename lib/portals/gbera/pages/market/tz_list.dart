@@ -141,30 +141,30 @@ class _TZListState extends State<TZList> {
         avatar:
             'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2873093951,318547924&fm=26&gp=0.jpg',
         subtitle: '广东·帑指交易所',
-        zd: -18.35,
-        zf: -0.63,
-        zx: 2885.29,
-        bd: '元丰',
+        zd: 24.12,
+        zf: 0.84,
+        bdTYMarketZX: 2885.29,
+        bdTYMarketName: '元丰',
       ),
       _TYMarket(
         title: '卓玛',
         avatar:
             'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574586017963&di=93ba1695e47be69c6aaf6d83359f05de&imgtype=0&src=http%3A%2F%2Fpic34.nipic.com%2F20131023%2F13997442_154947337000_2.jpg',
         subtitle: '北京·帑指交易所',
-        zd: 16.88,
-        zf: 0.98,
-        zx: 2897.64,
-        bd: '马恩河谷',
+        zd: -11.31,
+        zf: -0.64,
+        bdTYMarketZX: 2897.64,
+        bdTYMarketName: '马恩河谷',
       ),
       _TYMarket(
         title: '谷元春',
         avatar:
             'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574586324784&di=fd32ca70cc438a9f5814b4ee6fdaee70&imgtype=0&src=http%3A%2F%2Fpic31.nipic.com%2F20130710%2F12886433_124405333000_2.jpg',
         subtitle: '湖南·帑指交易所',
-        zd: 9.34,
-        zf: 0.21,
-        zx: 1923.11,
-        bd: '德怀天下',
+        zd: 2.98,
+        zf: 0.37,
+        bdTYMarketZX: 1923.11,
+        bdTYMarketName: '德怀天下',
       ),
     ];
   }
@@ -174,12 +174,12 @@ class _TYMarket {
   String title;
   String subtitle;
   String avatar;
-  String bd;
+  String bdTYMarketName;
   double zf;
   double zd;
-  double zx;
+  double bdTYMarketZX;
   _TYMarket(
-      {this.title, this.subtitle, this.avatar, this.bd, this.zf, this.zd,this.zx});
+      {this.title, this.subtitle, this.avatar, this.bdTYMarketName, this.zf, this.zd,this.bdTYMarketZX});
 }
 
 class _TYMarketRowView extends StatefulWidget {
@@ -250,7 +250,7 @@ class _TYMarketRowViewState extends State<_TYMarketRowView> {
                 width: widget.zxWidth,
                 child: Text.rich(
                   TextSpan(
-                    text: '${widget.tyMarket.zx.toStringAsFixed(2)}',
+                    text: '${widget.tyMarket.bdTYMarketZX.toStringAsFixed(2)}',
                     style: TextStyle(
                       color: _getColor(),
                     ),
@@ -259,7 +259,7 @@ class _TYMarketRowViewState extends State<_TYMarketRowView> {
                         text: '\r\n',
                       ),
                       TextSpan(
-                        text: '${widget.tyMarket.bd ?? ''}·帑指',
+                        text: '${widget.tyMarket.bdTYMarketName ?? ''}·帑指',
                         style: TextStyle(
                           fontSize: 8,
                         ),
