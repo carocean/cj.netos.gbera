@@ -218,7 +218,7 @@ class GberaPortal {
           ),
         ),
         Page(
-          title: '小信',
+          title: '大时代',
           subtitle: '',
           icon: GalleryIcons.shrine,
           url: '/scaffold/withbottombar',

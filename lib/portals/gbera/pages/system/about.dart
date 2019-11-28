@@ -29,7 +29,7 @@ class About extends StatelessWidget {
             padding: EdgeInsets.only(
               bottom: 2,
             ),
-            child: Text('小信'),
+            child: Text('大时代'),
           ),
           Text(
             '广州点背科技有限公司',
@@ -177,7 +177,7 @@ class About extends StatelessWidget {
                       Container(
                         width: 70,
                         child: Text(
-                          '小信号',
+                          '大时代号',
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
                             color: Colors.grey[600],
