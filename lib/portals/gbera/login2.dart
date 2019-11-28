@@ -428,6 +428,7 @@ class LoginAction {
     });
     UserPrincipal userPrincipal = UserPrincipal(
       uid: map['uid'],
+      accessToken: map['accessToken'],
       accountid: map['accountid'],
       accountName: map['accountName'],
       appid: map['appid'],

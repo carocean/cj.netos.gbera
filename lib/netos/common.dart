@@ -184,10 +184,13 @@ class UserPrincipal {
   final List<Map> tenantRoles;
   final List<Map> appRoles;
 
+  final String accessToken;
+
   const UserPrincipal({
     this.uid,
     this.accountid,
     this.accountName,
+    this.accessToken,
     this.appid,
     this.tenantid,
     this.ucRoles,

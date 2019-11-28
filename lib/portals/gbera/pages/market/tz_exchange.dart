@@ -1,53 +1,70 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/diagnostics.dart';
 import 'package:gbera/netos/common.dart';
 
-class TZList extends StatefulWidget {
+class TZExchange extends StatefulWidget {
   PageContext context;
 
-  TZList({this.context});
+  TZExchange({this.context});
 
   @override
-  _TZListState createState() => _TZListState();
+  _TZExchangeState createState() => _TZExchangeState();
 }
 
-class _TZListState extends State<TZList> {
+class _TZExchangeState extends State<TZExchange> {
   double zxWidth = 70;
   double zfWidth = 60;
   double zdWidth = 50;
-  List<_TZMarket> _marketList = [];
+  List<_LandAgent> _landAgentList = [];
 
   @override
   void initState() {
     super.initState();
-    _marketList = _allMarkets();
+    _landAgentList = _allLandAgents();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _marketList.clear();
+    _landAgentList.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        titleSpacing: 0,
-        centerTitle: true,
-        title: Text(
-          widget.context.page.title,
+        title: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.only(
+                right: 10,
+              ),
+              height: 30,
+              child: Image.network(
+                'http://47.105.165.186:7100/public/market/tz_dfzz_exchange.jpg?App-ID=${widget.context.userPrincipal.appid}&Access-Token=${widget.context.userPrincipal.accessToken}',
+                fit: BoxFit.fitHeight,
+              ),
+            ),
+            Text.rich(
+              TextSpan(
+                text: '东方之珠',
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+                children: [
+                  TextSpan(text: '\r\n'),
+                  TextSpan(
+                    text: '广东·帑指交易所',
+                    style: TextStyle(
+                      fontSize: 10,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
         elevation: 0,
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: Icon(
-            Icons.clear,
-          ),
-          onPressed: () {
-            widget.context.backward();
-          },
-        ),
+        titleSpacing: 0,
       ),
       body: Container(
         color: Colors.white,
@@ -64,9 +81,11 @@ class _TZListState extends State<TZList> {
                 children: <Widget>[
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.only(left: 45),
+                      padding: EdgeInsets.only(
+                        left: 45,
+                      ),
                       child: Text(
-                        '帑指交易所',
+                        '地商',
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           color: Colors.black87,
@@ -75,9 +94,9 @@ class _TZListState extends State<TZList> {
                     ),
                   ),
                   SizedBox(
-                    width: zfWidth,
+                    width: zxWidth,
                     child: Text(
-                      '换手率',
+                      '最新',
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: Colors.black87,
@@ -87,7 +106,7 @@ class _TZListState extends State<TZList> {
                   SizedBox(
                     width: zfWidth,
                     child: Text(
-                      '成交量',
+                      '涨幅',
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: Colors.black87,
@@ -97,7 +116,7 @@ class _TZListState extends State<TZList> {
                   SizedBox(
                     width: zdWidth,
                     child: Text(
-                      '持仓量',
+                      '涨跌',
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: Colors.black87,
@@ -121,13 +140,13 @@ class _TZListState extends State<TZList> {
                 padding: EdgeInsets.only(
                   top: 10,
                 ),
-                children: _marketList.map((item) {
+                children: _landAgentList.map((item) {
                   return GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: () {
-                      widget.context.forward('/market/exchange/tz');
+                      widget.context.forward('/market/exchange/tz/land_agent');
                     },
-                    child: _TYMarketRowView(
+                    child: _LandAgentView(
                       zdWidth: zdWidth,
                       zfWidth: zfWidth,
                       zxWidth: zxWidth,
@@ -143,73 +162,69 @@ class _TZListState extends State<TZList> {
     );
   }
 
-  List<_TZMarket> _allMarkets() {
+  List<_LandAgent> _allLandAgents() {
     return [
-      _TZMarket(
-        title: '东方之珠',
+      _LandAgent(
+        title: '迅凯电力',
         avatar:
-            'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2873093951,318547924&fm=26&gp=0.jpg',
-        subtitle: '广东·帑指交易所',
-        tzMarketTurnoverRate: 0.21,
-        tzMarketOpenInterest: 1383,
-        tzMarketVolume: 2885,
-        tzMarketName: '元丰',
+            'http://47.105.165.186:7100/public/market/timg-2.jpeg?App-ID=${widget.context.userPrincipal.appid}&Access-Token=${widget.context.userPrincipal.accessToken}',
+        subtitle: '广州市',
+        zd: 24.12,
+        zf: 0.84,
+        nowprice: 6.28,
       ),
-      _TZMarket(
-        title: '卓玛',
+      _LandAgent(
+        title: '德宝科技',
         avatar:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574586017963&di=93ba1695e47be69c6aaf6d83359f05de&imgtype=0&src=http%3A%2F%2Fpic34.nipic.com%2F20131023%2F13997442_154947337000_2.jpg',
-        subtitle: '北京·帑指交易所',
-        tzMarketTurnoverRate: 0.83,
-        tzMarketOpenInterest: 2382,
-        tzMarketVolume: 2897,
-        tzMarketName: '马恩河谷',
+            'http://47.105.165.186:7100/public/market/timg-3.jpeg?App-ID=${widget.context.userPrincipal.appid}&Access-Token=${widget.context.userPrincipal.accessToken}',
+        subtitle: '东莞市',
+        zd: -11.31,
+        zf: -0.64,
+        nowprice: 5.23,
       ),
-      _TZMarket(
-        title: '谷元春',
+      _LandAgent(
+        title: '欣网',
         avatar:
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574586324784&di=fd32ca70cc438a9f5814b4ee6fdaee70&imgtype=0&src=http%3A%2F%2Fpic31.nipic.com%2F20130710%2F12886433_124405333000_2.jpg',
-        subtitle: '湖南·帑指交易所',
-        tzMarketTurnoverRate: 0.34,
-        tzMarketOpenInterest: 2844,
-        tzMarketVolume: 1923,
-        tzMarketName: '德怀天下',
+            'http://47.105.165.186:7100/public/market/timg.jpeg?App-ID=${widget.context.userPrincipal.appid}&Access-Token=${widget.context.userPrincipal.accessToken}',
+        subtitle: '佛山市',
+        zd: 2.98,
+        zf: 0.37,
+        nowprice: 13.85,
       ),
     ];
   }
 }
 
-class _TZMarket {
+class _LandAgent {
   String title;
   String subtitle;
   String avatar;
-  String tzMarketName;
-  int tzMarketOpenInterest;
-  int tzMarketVolume;
-  double tzMarketTurnoverRate;
-  _TZMarket(
+  double zf;
+  double zd;
+  double nowprice;
+
+  _LandAgent(
       {this.title,
       this.subtitle,
       this.avatar,
-      this.tzMarketName,
-        this.tzMarketTurnoverRate,
-      this.tzMarketOpenInterest,
-      this.tzMarketVolume});
+      this.zf,
+      this.zd,
+      this.nowprice});
 }
 
-class _TYMarketRowView extends StatefulWidget {
+class _LandAgentView extends StatefulWidget {
   double zxWidth = 70;
-  double zfWidth = 70;
-  double zdWidth = 70;
-  _TZMarket tzMarket;
+  double zfWidth = 60;
+  double zdWidth = 50;
+  _LandAgent tzMarket;
 
-  _TYMarketRowView({this.zxWidth, this.zfWidth, this.zdWidth, this.tzMarket});
+  _LandAgentView({this.zxWidth, this.zfWidth, this.zdWidth, this.tzMarket});
 
   @override
-  _TYMarketRowViewState createState() => _TYMarketRowViewState();
+  _LandAgentViewState createState() => _LandAgentViewState();
 }
 
-class _TYMarketRowViewState extends State<_TYMarketRowView> {
+class _LandAgentViewState extends State<_LandAgentView> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -262,24 +277,32 @@ class _TYMarketRowViewState extends State<_TYMarketRowView> {
                 ),
               ),
               SizedBox(
-                width: widget.zfWidth,
-                child: Text(
-                  '${widget.tzMarket.tzMarketTurnoverRate}',
-                  style: TextStyle(),
+                width: widget.zxWidth,
+                child: Text.rich(
+                  TextSpan(
+                    text: '${widget.tzMarket.nowprice}',
+                    style: TextStyle(
+                      color: _getColor(),
+                    ),
+                  ),
                 ),
               ),
               SizedBox(
                 width: widget.zfWidth,
                 child: Text(
-                  '${widget.tzMarket.tzMarketVolume}',
-                  style: TextStyle(),
+                  '${widget.tzMarket.zf.toStringAsFixed(2)}%',
+                  style: TextStyle(
+                    color: _getColor(),
+                  ),
                 ),
               ),
               SizedBox(
                 width: widget.zdWidth,
                 child: Text(
-                  '${widget.tzMarket.tzMarketOpenInterest}',
-                  style: TextStyle(),
+                  '${widget.tzMarket.zd.toStringAsFixed(2)}',
+                  style: TextStyle(
+                    color: _getColor(),
+                  ),
                 ),
               ),
             ],
@@ -298,5 +321,16 @@ class _TYMarketRowViewState extends State<_TYMarketRowView> {
         ),
       ],
     );
+  }
+
+  _getColor() {
+    double zf = widget.tzMarket.zf;
+    if (zf == 0) {
+      return Colors.black;
+    }
+    if (zf < 0) {
+      return Colors.green;
+    }
+    return Colors.red;
   }
 }

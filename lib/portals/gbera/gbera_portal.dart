@@ -20,6 +20,8 @@ import 'package:gbera/portals/gbera/pages/market/go_gogo.dart';
 import 'package:gbera/portals/gbera/pages/market/go_shopping_cart.dart';
 import 'package:gbera/portals/gbera/pages/market/select_gogogo_category.dart';
 import 'package:gbera/portals/gbera/pages/market/ty_list.dart';
+import 'package:gbera/portals/gbera/pages/market/tz_exchange.dart';
+import 'package:gbera/portals/gbera/pages/market/tz_land_agent.dart';
 import 'package:gbera/portals/gbera/pages/market/tz_list.dart';
 import 'package:gbera/portals/gbera/pages/netflow.dart';
 import 'package:gbera/portals/gbera/pages/netflow/activies_channels.dart';
@@ -1041,6 +1043,26 @@ class GberaPortal {
           icon: GalleryIcons.shrine,
           url: '/market/ty_list',
           buildPage: (PageContext pageContext) => TYList(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '帑指交易所',
+          subtitle: '',
+          desc: '',
+          icon: GalleryIcons.shrine,
+          url: '/market/exchange/tz',
+          buildPage: (PageContext pageContext) => TZExchange(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '期货·地商',
+          subtitle: '',
+          desc: '',
+          icon: GalleryIcons.shrine,
+          url: '/market/exchange/tz/land_agent',
+          buildPage: (PageContext pageContext) => LandAgentFutrue(
             context: pageContext,
           ),
         ),
