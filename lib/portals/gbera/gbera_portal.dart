@@ -218,7 +218,7 @@ class GberaPortal {
           ),
         ),
         Page(
-          title: '大时代',
+          title: '金证时代',
           subtitle: '',
           icon: GalleryIcons.shrine,
           url: '/scaffold/withbottombar',

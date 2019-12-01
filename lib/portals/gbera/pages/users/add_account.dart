@@ -24,7 +24,7 @@ class AddAccount extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.all(5),
-            child: Text('大时代'),
+            child: Text('金证时代'),
           ),
           Padding(
             padding: EdgeInsets.only(
