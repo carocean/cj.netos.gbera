@@ -23,7 +23,7 @@ class _LandAgentFutrueState extends State<LandAgentFutrue>
   @override
   void initState() {
     super.initState();
-    this.tabController = TabController(length: 2, vsync: this);
+    this.tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -38,10 +38,10 @@ class _LandAgentFutrueState extends State<LandAgentFutrue>
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
+            backgroundColor: Colors.white,
             pinned: true,
             titleSpacing: 0,
             elevation: 0,
-            backgroundColor: Colors.white,
             title: Row(
               children: [
                 Container(
@@ -83,7 +83,9 @@ class _LandAgentFutrueState extends State<LandAgentFutrue>
             ),
           ),
           SliverToBoxAdapter(
-            child: _KChartCard(context: widget.context,),
+            child: _KChartCard(
+              context: widget.context,
+            ),
           ),
           SliverToBoxAdapter(
             child: Container(
@@ -97,17 +99,20 @@ class _LandAgentFutrueState extends State<LandAgentFutrue>
                 labelColor: Colors.black,
                 controller: this.tabController,
                 tabs: <Widget>[
+                  Tab(text: '简介'),
                   Tab(text: '盘口'),
                   Tab(text: '成交明细'),
+                  Tab(text: '资讯'),
                 ],
               ),
             ),
           ),
-
           SliverFillRemaining(
             child: TabBarView(
               controller: this.tabController,
               children: <Widget>[
+                Center(child: Text('Content of Home')),
+                Center(child: Text('Content of Profile')),
                 Center(child: Text('Content of Home')),
                 Center(child: Text('Content of Profile')),
               ],
@@ -155,34 +160,209 @@ class __HeaderCardState extends State<_HeaderCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
+      height: 80,
       color: Colors.white,
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
+      alignment: Alignment.center,
+      padding: EdgeInsets.all(10),
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(
-              bottom: 5,
+              right: 10,
             ),
-            child: Text('5.23'),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 5,
+                  ),
+                  child: Text(
+                    '12355',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 5,
+                  ),
+                  child: Text.rich(
+                    TextSpan(
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                      ),
+                      text: '-85',
+                      children: [
+                        TextSpan(
+                          text: '   ',
+                        ),
+                        TextSpan(
+                          text: '-0.68%',
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           Padding(
             padding: EdgeInsets.only(
-              bottom: 5,
+              right: 10,
             ),
-            child: Text.rich(
-              TextSpan(
-                text: '-0.78',
-                children: [
-                  TextSpan(
-                    text: '   ',
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 5,
                   ),
-                  TextSpan(
-                    text: '-0.36%',
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: 5,
+                        ),
+                        child: Text(
+                          '高',
+                          style: TextStyle(
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: 5,
+                        ),
+                        child: Text(
+                          '12415',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 5,
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: 5,
+                        ),
+                        child: Text(
+                          '低',
+                          style: TextStyle(
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: 5,
+                        ),
+                        child: Text(
+                          '12300',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              right: 10,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 5,
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: 5,
+                        ),
+                        child: Text(
+                          '持仓',
+                          style: TextStyle(
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: 5,
+                        ),
+                        child: Text(
+                          '17.71万',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 5,
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: 5,
+                        ),
+                        child: Text(
+                          '成交',
+                          style: TextStyle(
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: 5,
+                        ),
+                        child: Text(
+                          '45158',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -204,9 +384,12 @@ class _KChartCardState extends State<_KChartCard> {
   List<KLineEntity> datas;
   bool showLoading = true;
   MainState _mainState = MainState.MA;
-  SecondaryState _secondaryState = SecondaryState.MACD;
+  SecondaryState _secondaryState = SecondaryState.NONE;
+  bool isSecondaryStateClosed = true;
   bool isLine = true;
+  bool isShowDepthChart = false;
   List<DepthEntity> _bids, _asks;
+
   @override
   void initState() {
     super.initState();
@@ -214,8 +397,14 @@ class _KChartCardState extends State<_KChartCard> {
     rootBundle.loadString('lib/portals/gbera/data/depth.json').then((result) {
       final parseJson = json.decode(result);
       Map tick = parseJson['tick'];
-      var bids = tick['bids'].map((item) => DepthEntity(item[0], item[1])).toList().cast<DepthEntity>();
-      var asks = tick['asks'].map((item) => DepthEntity(item[0], item[1])).toList().cast<DepthEntity>();
+      var bids = tick['bids']
+          .map((item) => DepthEntity(item[0], item[1]))
+          .toList()
+          .cast<DepthEntity>();
+      var asks = tick['asks']
+          .map((item) => DepthEntity(item[0], item[1]))
+          .toList()
+          .cast<DepthEntity>();
       initDepth(bids, asks);
     });
   }
@@ -243,82 +432,438 @@ class _KChartCardState extends State<_KChartCard> {
     });
     setState(() {});
   }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Stack(children: <Widget>[
-          Container(
-            height: 350,
-            width: double.infinity,
-            child: KChartWidget(
-              datas,
-              isLine: isLine,
-              mainState: _mainState,
-              secondaryState: _secondaryState,
-              volState: VolState.VOL,
-              fractionDigits: 4,
-            ),
-          ),
-          if (showLoading)
-            Container(
-                width: double.infinity, height: 350, alignment: Alignment.center, child: CircularProgressIndicator()),
-        ]),
-        buildButtons(),
         Container(
-          height: 130,
-          width: double.infinity,
-          child: DepthChart(_bids, _asks),
-        )
-      ],
-    );
-  }
-  Widget buildButtons() {
-    return Wrap(
-      alignment: WrapAlignment.spaceEvenly,
-      children: <Widget>[
-        button("分时", onPressed: () => isLine = true),
-        button("k线", onPressed: () => isLine = false),
-        button("MA", onPressed: () => _mainState = MainState.MA),
-        button("BOLL", onPressed: () => _mainState = MainState.BOLL),
-        button("隐藏", onPressed: () => _mainState = MainState.NONE),
-        button("MACD", onPressed: () => _secondaryState = SecondaryState.MACD),
-        button("KDJ", onPressed: () => _secondaryState = SecondaryState.KDJ),
-        button("RSI", onPressed: () => _secondaryState = SecondaryState.RSI),
-        button("WR", onPressed: () => _secondaryState = SecondaryState.WR),
-        button("隐藏副视图", onPressed: () => _secondaryState = SecondaryState.NONE),
-        button("update", onPressed: (){
-          //更新最后一条数据
-          datas.last.close += (Random().nextInt(100)-50).toDouble();
-          datas.last.high=max(datas.last.high,datas.last.close );
-          datas.last.low=min(datas.last.low,datas.last.close );
-          DataUtil.updateLastData(datas);
-        }),
-        button("addData", onPressed: () {
-          //拷贝一个对象，修改数据
-          var kLineEntity = KLineEntity.fromJson(datas.last.toJson());
-          kLineEntity.id += 60*60*24;
-          kLineEntity.open = kLineEntity.close;
-          kLineEntity.close += (Random().nextInt(100)-50).toDouble();
-          datas.last.high=max(datas.last.high,datas.last.close );
-          datas.last.low=min(datas.last.low,datas.last.close );
-          DataUtil.addLastData(datas,kLineEntity);
-        }),
+          color: Colors.white,
+          padding: EdgeInsets.only(
+            left: 10,
+            right: 10,
+            top: 4,
+            bottom: 4,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isLine = true;
+                  });
+                },
+                behavior: HitTestBehavior.opaque,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: 5,
+                    right: 5,
+                    top: 0,
+                    bottom: 0,
+                  ),
+                  child: Text('分时'),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: 5,
+                  right: 5,
+                  top: 0,
+                  bottom: 0,
+                ),
+                child: PopupMenuButton(
+                  child: Text(
+                    'K线...',
+                  ),
+                  onSelected: (value) {
+                    isLine = false;
+                    _mainState = value;
+                    setState(() {});
+                    return _mainState;
+                  },
+                  offset: Offset(
+                    0,
+                    40,
+                  ),
+                  itemBuilder: (context) {
+                    return [
+                      PopupMenuItem(
+                        child: Text('标准'),
+                        value: MainState.NONE,
+                      ),
+                      PopupMenuItem(
+                        child: Text('MA'),
+                        value: MainState.MA,
+                      ),
+                      PopupMenuItem(
+                        child: Text('BOLL'),
+                        value: MainState.BOLL,
+                      ),
+                    ];
+                  },
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: 5,
+                  right: 5,
+                  top: 0,
+                  bottom: 0,
+                ),
+                child: PopupMenuButton(
+                  child: Text(
+                    '买卖...',
+                  ),
+                  onSelected: (value) {
+                    isShowDepthChart = value;
+                    setState(() {});
+                    return isShowDepthChart;
+                  },
+                  offset: Offset(
+                    0,
+                    40,
+                  ),
+                  itemBuilder: (context) {
+                    return [
+                      PopupMenuItem(
+                        child: Text('深度'),
+                        value: true,
+                      ),
+                      PopupMenuItem(
+                        child: Text('隐藏'),
+                        value: false,
+                      ),
+                    ];
+                  },
+                ),
+              ),
+              Container(
+                height: 14,
+                child: VerticalDivider(
+                  width: 1,
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isSecondaryStateClosed = false;
+                    _secondaryState = SecondaryState.MACD;
+                  });
+                },
+                behavior: HitTestBehavior.opaque,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: 5,
+                    right: 5,
+                    top: 0,
+                    bottom: 0,
+                  ),
+                  child: Text('MACD'),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isSecondaryStateClosed = false;
+                    _secondaryState = SecondaryState.KDJ;
+                  });
+                },
+                behavior: HitTestBehavior.opaque,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: 5,
+                    right: 5,
+                    top: 0,
+                    bottom: 0,
+                  ),
+                  child: Text('KDJ'),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isSecondaryStateClosed = false;
+                    _secondaryState = SecondaryState.RSI;
+                  });
+                },
+                behavior: HitTestBehavior.opaque,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: 5,
+                    right: 5,
+                    top: 0,
+                    bottom: 0,
+                  ),
+                  child: Text('RSI'),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isSecondaryStateClosed = false;
+                    _secondaryState = SecondaryState.WR;
+                  });
+                },
+                behavior: HitTestBehavior.opaque,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: 5,
+                    right: 5,
+                    top: 0,
+                    bottom: 0,
+                  ),
+                  child: Text('WR'),
+                ),
+              ),
+              isSecondaryStateClosed
+                  ? Container(
+                      width: 0,
+                      height: 0,
+                    )
+                  : GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _secondaryState = SecondaryState.NONE;
+                          isSecondaryStateClosed = !isSecondaryStateClosed;
+                        });
+                      },
+                      behavior: HitTestBehavior.opaque,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          left: 5,
+                          right: 5,
+                          top: 0,
+                          bottom: 0,
+                        ),
+                        child: Icon(
+                          Icons.close,
+                          size: 16,
+                        ),
+                      ),
+                    ),
+            ],
+          ),
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Expanded(
+              child: Column(
+                children: <Widget>[
+                  Stack(children: <Widget>[
+                    Container(
+                      height: 400,
+                      width: double.infinity,
+                      child: KChartWidget(
+                        datas,
+                        isLine: isLine,
+                        mainState: _mainState,
+                        secondaryState: _secondaryState,
+                        volState: VolState.VOL,
+                        fractionDigits: 4,
+                      ),
+                    ),
+                    if (showLoading)
+                      Container(
+                          width: double.infinity,
+                          height: 400,
+                          alignment: Alignment.center,
+                          child: CircularProgressIndicator()),
+                  ]),
+                  if (isShowDepthChart)
+                    Container(
+                      height: 230,
+                      width: double.infinity,
+                      child: DepthChart(_bids, _asks),
+                    ),
+                ],
+              ),
+            ),
+            Container(
+              width: 100,
+              color: Colors.white,
+              height: 400,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: 5,
+                      right: 5,
+                      top: 5,
+                      bottom: 5,
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 5,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                '卖价',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                ),
+                              ),
+                              Text(
+                                '12425',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                ),
+                              ),
+                              Text(
+                                '45',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              '买价',
+                              style: TextStyle(
+                                fontSize: 12,
+                              ),
+                            ),
+                            Text(
+                              '12420',
+                              style: TextStyle(
+                                fontSize: 12,
+                              ),
+                            ),
+                            Text(
+                              '6',
+                              style: TextStyle(
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(
+                      bottom: 5,
+                      top: 5,
+                      left: 5,
+                      right: 5,
+                    ),
+                    color: Colors.grey[100],
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          '时间',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          '价格',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          '现手',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.only(
+                        left: 5,
+                        right: 5,
+                        bottom: 5,
+                      ),
+                      children: <Widget>[
+                        _BidsItemView(),
+                        _BidsItemView(),
+                        _BidsItemView(),
+                        _BidsItemView(),
+                        _BidsItemView(),
+                        _BidsItemView(),
+                        _BidsItemView(),
+                        _BidsItemView(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
 
-  Widget button(String text, {VoidCallback onPressed}) {
-    return FlatButton(
-        onPressed: () {
-          if (onPressed != null) {
-            onPressed();
-            setState(() {});
-          }
-        },
-        child: Text("$text"),
-        color: Colors.blue);
-  }
+//  Widget buildButtons() {
+//    return Wrap(
+//      alignment: WrapAlignment.spaceEvenly,
+//      children: <Widget>[
+//        button("分时", onPressed: () => isLine = true),
+//        button("k线", onPressed: () => isLine = false),
+//        button("MA", onPressed: () => _mainState = MainState.MA),
+//        button("BOLL", onPressed: () => _mainState = MainState.BOLL),
+//        button("隐藏", onPressed: () => _mainState = MainState.NONE),
+//        button("MACD", onPressed: () => _secondaryState = SecondaryState.MACD),
+//        button("KDJ", onPressed: () => _secondaryState = SecondaryState.KDJ),
+//        button("RSI", onPressed: () => _secondaryState = SecondaryState.RSI),
+//        button("WR", onPressed: () => _secondaryState = SecondaryState.WR),
+//        button("隐藏副视图", onPressed: () => _secondaryState = SecondaryState.NONE),
+//        button("update", onPressed: () {
+//          //更新最后一条数据
+//          datas.last.close += (Random().nextInt(100) - 50).toDouble();
+//          datas.last.high = max(datas.last.high, datas.last.close);
+//          datas.last.low = min(datas.last.low, datas.last.close);
+//          DataUtil.updateLastData(datas);
+//        }),
+//        button("addData", onPressed: () {
+//          //拷贝一个对象，修改数据
+//          var kLineEntity = KLineEntity.fromJson(datas.last.toJson());
+//          kLineEntity.id += 60 * 60 * 24;
+//          kLineEntity.open = kLineEntity.close;
+//          kLineEntity.close += (Random().nextInt(100) - 50).toDouble();
+//          datas.last.high = max(datas.last.high, datas.last.close);
+//          datas.last.low = min(datas.last.low, datas.last.close);
+//          DataUtil.addLastData(datas, kLineEntity);
+//        }),
+//      ],
+//    );
+//  }
+//
+//  Widget button(String text, {VoidCallback onPressed}) {
+//    return FlatButton(
+//        onPressed: () {
+//          if (onPressed != null) {
+//            onPressed();
+//            setState(() {});
+//          }
+//        },
+//        child: Text("$text"),
+//        color: Colors.blue);
+//  }
 
   void getData(String period) async {
     String result;
@@ -326,13 +871,110 @@ class _KChartCardState extends State<_KChartCard> {
       result = await rootBundle.loadString('lib/portals/gbera/data/kline.json');
     } catch (e) {
       print('获取数据失败,获取本地数据');
-    }finally{
+    } finally {
       Map parseJson = json.decode(result);
       List list = parseJson['data'];
-      datas = list.map((item) => KLineEntity.fromJson(item)).toList().reversed.toList().cast<KLineEntity>();
+      datas = list
+          .map((item) => KLineEntity.fromJson(item))
+          .toList()
+          .reversed
+          .toList()
+          .cast<KLineEntity>();
       DataUtil.calculate(datas);
       showLoading = false;
       setState(() {});
     }
+  }
+}
+
+class _BidsItemView extends StatefulWidget {
+  @override
+  _BidsItemViewState createState() => _BidsItemViewState();
+}
+
+class _BidsItemViewState extends State<_BidsItemView> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(
+        top: 5,
+        bottom: 5,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(
+              right: 5,
+            ),
+            child: Text(
+              '22:59',
+              style: TextStyle(
+                fontSize: 12,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 5,
+                    left: 1,
+                    right: 1,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        '12420',
+                        style: TextStyle(
+                          fontSize: 12,
+                        ),
+                      ),
+                      Text(
+                        '2',
+                        style: TextStyle(
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  color: Colors.grey[200],
+                  padding: EdgeInsets.only(
+                    left: 1,
+                    right: 1,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        '空开',
+                        style: TextStyle(
+                          fontSize: 12,
+                        ),
+                      ),
+                      Text(
+                        '2',
+                        style: TextStyle(
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
