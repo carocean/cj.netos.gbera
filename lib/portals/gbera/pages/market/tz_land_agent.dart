@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:flutter_k_chart/flutter_k_chart.dart';
 import 'package:flutter_k_chart/k_chart_widget.dart';
+import 'package:gbera/portals/gbera/pages/market/tab_page.dart';
 
 class LandAgentFutrue extends StatefulWidget {
   PageContext context;
@@ -19,17 +20,36 @@ class LandAgentFutrue extends StatefulWidget {
 class _LandAgentFutrueState extends State<LandAgentFutrue>
     with SingleTickerProviderStateMixin {
   TabController tabController;
+  List<TabPageView> tabPageViews;
 
   @override
   void initState() {
     super.initState();
-    this.tabController = TabController(length: 4, vsync: this);
+
+    this.tabPageViews = [
+      TabPageView(
+        title: '简介',
+        view: ContractDescPageView(),
+      ),
+      TabPageView(
+        title: '盘口',
+      ),
+      TabPageView(
+        title: '成交明细',
+      ),
+      TabPageView(
+        title: '资讯',
+      ),
+    ];
+    this.tabController =
+        TabController(length: tabPageViews.length, vsync: this);
   }
 
   @override
   void dispose() {
     super.dispose();
     this.tabController.dispose();
+    this.tabPageViews.clear();
   }
 
   @override
@@ -94,28 +114,30 @@ class _LandAgentFutrueState extends State<LandAgentFutrue>
           ),
           SliverPersistentHeader(
             pinned: true,
+            floating: false,
             delegate: StickyTabBarDelegate(
               child: TabBar(
                 labelColor: Colors.black,
                 controller: this.tabController,
-                tabs: <Widget>[
-                  Tab(text: '简介'),
-                  Tab(text: '盘口'),
-                  Tab(text: '成交明细'),
-                  Tab(text: '资讯'),
-                ],
+                tabs: tabPageViews.map((v) {
+                  return Tab(text: v.title);
+                }).toList(),
               ),
             ),
           ),
           SliverFillRemaining(
             child: TabBarView(
               controller: this.tabController,
-              children: <Widget>[
-                Center(child: Text('Content of Home')),
-                Center(child: Text('Content of Profile')),
-                Center(child: Text('Content of Home')),
-                Center(child: Text('Content of Profile')),
-              ],
+              children: tabPageViews.map((v) {
+                if (v.view == null) {
+                  return Container(
+                    width: 0,
+                    height: 0,
+                  );
+                }
+
+                return v.view;
+              }).toList(),
             ),
           ),
         ],
@@ -186,6 +208,7 @@ class __HeaderCardState extends State<_HeaderCard> {
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w500,
+                      color: Colors.green,
                     ),
                   ),
                 ),
@@ -197,6 +220,7 @@ class __HeaderCardState extends State<_HeaderCard> {
                     TextSpan(
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
+                        color: Colors.green,
                       ),
                       text: '-85',
                       children: [
@@ -389,6 +413,7 @@ class _KChartCardState extends State<_KChartCard> {
   bool isLine = true;
   bool isShowDepthChart = false;
   List<DepthEntity> _bids, _asks;
+  double _rightHeight = 400;
 
   @override
   void initState() {
@@ -435,6 +460,11 @@ class _KChartCardState extends State<_KChartCard> {
 
   @override
   Widget build(BuildContext context) {
+    if (isShowDepthChart == true) {
+      _rightHeight += 212;
+    } else {
+      _rightHeight = 400;
+    }
     return Column(
       children: <Widget>[
         Container(
@@ -453,90 +483,100 @@ class _KChartCardState extends State<_KChartCard> {
                 onTap: () {
                   setState(() {
                     isLine = true;
+                    _mainState = MainState.NONE;
+                    isShowDepthChart = false;
                   });
                 },
                 behavior: HitTestBehavior.opaque,
-                child: Padding(
+                child: Container(
                   padding: EdgeInsets.only(
                     left: 5,
                     right: 5,
                     top: 0,
                     bottom: 0,
                   ),
-                  child: Text('分时'),
+                  child: Text(
+                    '分时',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
               ),
-              Padding(
+              Container(
                 padding: EdgeInsets.only(
                   left: 5,
                   right: 5,
-                  top: 0,
-                  bottom: 0,
                 ),
-                child: PopupMenuButton(
-                  child: Text(
-                    'K线...',
-                  ),
-                  onSelected: (value) {
+                child: DropdownButton(
+                  value: _mainState,
+                  onChanged: (value) {
                     isLine = false;
                     _mainState = value;
                     setState(() {});
                     return _mainState;
                   },
-                  offset: Offset(
-                    0,
-                    40,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.black,
                   ),
-                  itemBuilder: (context) {
-                    return [
-                      PopupMenuItem(
-                        child: Text('标准'),
-                        value: MainState.NONE,
-                      ),
-                      PopupMenuItem(
-                        child: Text('MA'),
-                        value: MainState.MA,
-                      ),
-                      PopupMenuItem(
-                        child: Text('BOLL'),
-                        value: MainState.BOLL,
-                      ),
-                    ];
-                  },
+                  elevation: 0,
+                  iconSize: 14,
+                  isDense: true,
+                  underline: Container(
+                    width: 0,
+                    height: 0,
+                  ),
+                  items: [
+                    DropdownMenuItem(
+                      child: Text('K线'),
+                      value: MainState.NONE,
+                    ),
+                    DropdownMenuItem(
+                      child: Text('MA'),
+                      value: MainState.MA,
+                    ),
+                    DropdownMenuItem(
+                      child: Text('BOLL'),
+                      value: MainState.BOLL,
+                    ),
+                  ],
                 ),
               ),
-              Padding(
+              Container(
                 padding: EdgeInsets.only(
                   left: 5,
                   right: 5,
-                  top: 0,
-                  bottom: 0,
                 ),
-                child: PopupMenuButton(
-                  child: Text(
-                    '买卖...',
-                  ),
-                  onSelected: (value) {
+                child: DropdownButton(
+                  value: isShowDepthChart,
+                  onChanged: (value) {
                     isShowDepthChart = value;
                     setState(() {});
                     return isShowDepthChart;
                   },
-                  offset: Offset(
-                    0,
-                    40,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.black,
                   ),
-                  itemBuilder: (context) {
-                    return [
-                      PopupMenuItem(
-                        child: Text('深度'),
-                        value: true,
-                      ),
-                      PopupMenuItem(
-                        child: Text('隐藏'),
-                        value: false,
-                      ),
-                    ];
-                  },
+                  elevation: 0,
+                  iconSize: 14,
+                  isDense: true,
+                  underline: Container(
+                    width: 0,
+                    height: 0,
+                  ),
+                  items: [
+                    DropdownMenuItem(
+                      child: Text('深度'),
+                      value: true,
+                    ),
+                    DropdownMenuItem(
+                      child: Text('隐藏'),
+                      value: false,
+                    ),
+                  ],
                 ),
               ),
               Container(
@@ -553,14 +593,20 @@ class _KChartCardState extends State<_KChartCard> {
                   });
                 },
                 behavior: HitTestBehavior.opaque,
-                child: Padding(
+                child: Container(
                   padding: EdgeInsets.only(
                     left: 5,
                     right: 5,
                     top: 0,
                     bottom: 0,
                   ),
-                  child: Text('MACD'),
+                  child: Text(
+                    'MACD',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
               ),
               GestureDetector(
@@ -571,14 +617,20 @@ class _KChartCardState extends State<_KChartCard> {
                   });
                 },
                 behavior: HitTestBehavior.opaque,
-                child: Padding(
+                child: Container(
                   padding: EdgeInsets.only(
                     left: 5,
                     right: 5,
                     top: 0,
                     bottom: 0,
                   ),
-                  child: Text('KDJ'),
+                  child: Text(
+                    'KDJ',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
               ),
               GestureDetector(
@@ -589,14 +641,20 @@ class _KChartCardState extends State<_KChartCard> {
                   });
                 },
                 behavior: HitTestBehavior.opaque,
-                child: Padding(
+                child: Container(
                   padding: EdgeInsets.only(
                     left: 5,
                     right: 5,
                     top: 0,
                     bottom: 0,
                   ),
-                  child: Text('RSI'),
+                  child: Text(
+                    'RSI',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
               ),
               GestureDetector(
@@ -607,14 +665,20 @@ class _KChartCardState extends State<_KChartCard> {
                   });
                 },
                 behavior: HitTestBehavior.opaque,
-                child: Padding(
+                child: Container(
                   padding: EdgeInsets.only(
                     left: 5,
                     right: 5,
                     top: 0,
                     bottom: 0,
                   ),
-                  child: Text('WR'),
+                  child: Text(
+                    'WR',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
               ),
               isSecondaryStateClosed
@@ -630,7 +694,7 @@ class _KChartCardState extends State<_KChartCard> {
                         });
                       },
                       behavior: HitTestBehavior.opaque,
-                      child: Padding(
+                      child: Container(
                         padding: EdgeInsets.only(
                           left: 5,
                           right: 5,
@@ -649,6 +713,7 @@ class _KChartCardState extends State<_KChartCard> {
         Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Expanded(
               child: Column(
@@ -685,7 +750,7 @@ class _KChartCardState extends State<_KChartCard> {
             Container(
               width: 100,
               color: Colors.white,
-              height: 400,
+              height: _rightHeight,
               child: Column(
                 children: <Widget>[
                   Padding(
