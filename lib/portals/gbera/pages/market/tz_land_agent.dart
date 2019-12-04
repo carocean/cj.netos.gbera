@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gbera/netos/common.dart';
@@ -33,12 +34,15 @@ class _LandAgentFutrueState extends State<LandAgentFutrue>
       ),
       TabPageView(
         title: '盘口',
+        view: PositionPageView(),
       ),
       TabPageView(
         title: '成交明细',
+        view: ClosingDetailsPageView(),
       ),
       TabPageView(
         title: '资讯',
+        view: NewsPageView(),
       ),
     ];
     this.tabController =
@@ -116,11 +120,14 @@ class _LandAgentFutrueState extends State<LandAgentFutrue>
             pinned: true,
             floating: false,
             delegate: StickyTabBarDelegate(
+              color: Colors.white,
               child: TabBar(
                 labelColor: Colors.black,
                 controller: this.tabController,
                 tabs: tabPageViews.map((v) {
-                  return Tab(text: v.title);
+                  return Tab(
+                    text: v.title,
+                  );
                 }).toList(),
               ),
             ),
@@ -152,13 +159,17 @@ class _LandAgentFutrueState extends State<LandAgentFutrue>
 
 class StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
   final TabBar child;
+  final Color color;
 
-  StickyTabBarDelegate({@required this.child});
+  StickyTabBarDelegate({@required this.child, @required this.color});
 
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return this.child;
+    return Container(
+      child: this.child,
+      color: color,
+    );
   }
 
   @override
