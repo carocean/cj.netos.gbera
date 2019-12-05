@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
 
-class TZExchange extends StatefulWidget {
+class TYExchange extends StatefulWidget {
   PageContext context;
 
-  TZExchange({this.context});
+  TYExchange({this.context});
 
   @override
-  _TZExchangeState createState() => _TZExchangeState();
+  _TYExchangeState createState() => _TYExchangeState();
 }
 
-class _TZExchangeState extends State<TZExchange> {
+class _TYExchangeState extends State<TYExchange> {
   double zxWidth = 70;
   double zfWidth = 60;
   double zdWidth = 50;
@@ -40,20 +40,20 @@ class _TZExchangeState extends State<TZExchange> {
               ),
               height: 30,
               child: Image.network(
-                'http://47.105.165.186:7100/public/market/tz_dfzz_exchange.jpg?App-ID=${widget.context.userPrincipal.appid}&Access-Token=${widget.context.userPrincipal.accessToken}',
+                'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574586324784&di=fd32ca70cc438a9f5814b4ee6fdaee70&imgtype=0&src=http%3A%2F%2Fpic31.nipic.com%2F20130710%2F12886433_124405333000_2.jpg',
                 fit: BoxFit.fitHeight,
               ),
             ),
             Text.rich(
               TextSpan(
-                text: '东方之珠',
+                text: '德怀天下',
                 style: TextStyle(
                   fontSize: 18,
                 ),
                 children: [
                   TextSpan(text: '\r\n'),
                   TextSpan(
-                    text: '广东·帑指交易所',
+                    text: '广东·帑银交易所',
                     style: TextStyle(
                       fontSize: 10,
                     ),
@@ -144,7 +144,7 @@ class _TZExchangeState extends State<TZExchange> {
                   return GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: () {
-                      widget.context.forward('/market/exchange/tz/land_agent');
+                      widget.context.forward('/market/exchange/ty/land_agent');
                     },
                     child: _LandAgentView(
                       zdWidth: zdWidth,
@@ -165,7 +165,7 @@ class _TZExchangeState extends State<TZExchange> {
   List<_LandAgent> _allLandAgents() {
     return [
       _LandAgent(
-        title: '迅凯电力',
+        title: '晶贵',
         avatar:
             'http://47.105.165.186:7100/public/market/timg-2.jpeg?App-ID=${widget.context.userPrincipal.appid}&Access-Token=${widget.context.userPrincipal.accessToken}',
         subtitle: '广州市',
@@ -174,7 +174,7 @@ class _TZExchangeState extends State<TZExchange> {
         nowprice: 6.28,
       ),
       _LandAgent(
-        title: '德宝科技',
+        title: '中凯',
         avatar:
             'http://47.105.165.186:7100/public/market/timg-3.jpeg?App-ID=${widget.context.userPrincipal.appid}&Access-Token=${widget.context.userPrincipal.accessToken}',
         subtitle: '东莞市',
@@ -183,7 +183,7 @@ class _TZExchangeState extends State<TZExchange> {
         nowprice: 5.23,
       ),
       _LandAgent(
-        title: '欣网',
+        title: '亨同',
         avatar:
             'http://47.105.165.186:7100/public/market/timg.jpeg?App-ID=${widget.context.userPrincipal.appid}&Access-Token=${widget.context.userPrincipal.accessToken}',
         subtitle: '佛山市',

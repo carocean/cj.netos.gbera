@@ -48,6 +48,25 @@ class _TZListState extends State<TZList> {
             widget.context.backward();
           },
         ),
+        actions: <Widget>[
+          PopupMenuButton(
+            onSelected: (v) {},
+            offset: Offset.fromDirection(
+              40,
+              60,
+            ),
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
+                  child: Text('我的持仓'),
+                ),
+                PopupMenuItem(
+                  child: Text('我关注的'),
+                ),
+              ];
+            },
+          ),
+        ],
       ),
       body: Container(
         color: Colors.white,
@@ -187,12 +206,13 @@ class _TZMarket {
   int tzMarketOpenInterest;
   int tzMarketVolume;
   double tzMarketTurnoverRate;
+
   _TZMarket(
       {this.title,
       this.subtitle,
       this.avatar,
       this.tzMarketName,
-        this.tzMarketTurnoverRate,
+      this.tzMarketTurnoverRate,
       this.tzMarketOpenInterest,
       this.tzMarketVolume});
 }

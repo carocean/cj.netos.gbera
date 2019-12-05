@@ -48,6 +48,25 @@ class _TYListState extends State<TYList> {
             widget.context.backward();
           },
         ),
+        actions: <Widget>[
+          PopupMenuButton(
+            onSelected: (v) {},
+            offset: Offset.fromDirection(
+              40,
+              60,
+            ),
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
+                  child: Text('我的持仓'),
+                ),
+                PopupMenuItem(
+                  child: Text('我关注的'),
+                ),
+              ];
+            },
+          ),
+        ],
       ),
       body: Container(
         color: Colors.white,
@@ -63,11 +82,14 @@ class _TYListState extends State<TYList> {
                 direction: Axis.horizontal,
                 children: <Widget>[
                   Expanded(
-                    child: Text(
-                      '帑银交易所',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black87,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 45),
+                      child: Text(
+                        '帑银交易所',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black87,
+                        ),
                       ),
                     ),
                   ),
@@ -119,11 +141,17 @@ class _TYListState extends State<TYList> {
                   top: 10,
                 ),
                 children: _marketList.map((item) {
-                  return _TYMarketRowView(
-                    zdWidth: zdWidth,
-                    zfWidth: zfWidth,
-                    zxWidth: zxWidth,
-                    tyMarket: item,
+                  return GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      widget.context.forward('/market/exchange/ty');
+                    },
+                    child: _TYMarketRowView(
+                      zdWidth: zdWidth,
+                      zfWidth: zfWidth,
+                      zxWidth: zxWidth,
+                      tyMarket: item,
+                    ),
                   );
                 }).toList(),
               ),

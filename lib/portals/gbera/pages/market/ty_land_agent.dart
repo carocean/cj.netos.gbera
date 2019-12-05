@@ -9,16 +9,16 @@ import 'package:flutter_k_chart/flutter_k_chart.dart';
 import 'package:flutter_k_chart/k_chart_widget.dart';
 import 'package:gbera/portals/gbera/pages/market/tab_page.dart';
 
-class LandAgentFutrue extends StatefulWidget {
+class LandAgentStock extends StatefulWidget {
   PageContext context;
 
-  LandAgentFutrue({this.context});
+  LandAgentStock({this.context});
 
   @override
-  _LandAgentFutrueState createState() => _LandAgentFutrueState();
+  _LandAgentStockState createState() => _LandAgentStockState();
 }
 
-class _LandAgentFutrueState extends State<LandAgentFutrue>
+class _LandAgentStockState extends State<LandAgentStock>
     with SingleTickerProviderStateMixin {
   TabController tabController;
   List<TabPageView> tabPageViews;
@@ -74,20 +74,20 @@ class _LandAgentFutrueState extends State<LandAgentFutrue>
                   ),
                   height: 30,
                   child: Image.network(
-                    'http://47.105.165.186:7100/public/market/timg-3.jpeg?App-ID=${widget.context.userPrincipal.appid}&Access-Token=${widget.context.userPrincipal.accessToken}',
+                    'http://47.105.165.186:7100/public/market/timg.jpeg?App-ID=${widget.context.userPrincipal.appid}&Access-Token=${widget.context.userPrincipal.accessToken}',
                     fit: BoxFit.fitHeight,
                   ),
                 ),
                 Text.rich(
                   TextSpan(
-                    text: '德宝科技',
+                    text: '亨同',
                     style: TextStyle(
                       fontSize: 18,
                     ),
                     children: [
                       TextSpan(text: '\r\n'),
                       TextSpan(
-                        text: '东莞市·F00038',
+                        text: '佛山·S00004',
                         style: TextStyle(
                           fontSize: 10,
                         ),

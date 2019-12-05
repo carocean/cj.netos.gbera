@@ -34,13 +34,15 @@ class _NewsPageViewState extends State<NewsPageView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
       child: ListView(
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
+        padding: EdgeInsets.all(0),
         children: timelifeList.map((life) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Container(
                 constraints: BoxConstraints.tightForFinite(
@@ -52,7 +54,6 @@ class _NewsPageViewState extends State<NewsPageView> {
                   bottom: 4,
                   top: 10,
                 ),
-                color: Theme.of(context).backgroundColor,
                 child: Text(
                   life.title,
                   style: TextStyle(
@@ -62,6 +63,7 @@ class _NewsPageViewState extends State<NewsPageView> {
                 ),
               ),
               ListView(
+                padding: EdgeInsets.all(0),
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 children: life.newsList.map((news) {
@@ -73,6 +75,7 @@ class _NewsPageViewState extends State<NewsPageView> {
                       top: 10,
                     ),
                     decoration: BoxDecoration(
+                      color: Colors.white,
                       border: Border.all(
                         color: Colors.grey[100],
                         style: BorderStyle.solid,
@@ -81,6 +84,7 @@ class _NewsPageViewState extends State<NewsPageView> {
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.only(
@@ -193,57 +197,270 @@ class ClosingDetailsPageView extends StatefulWidget {
 }
 
 class _ClosingDetailsPageViewState extends State<ClosingDetailsPageView> {
+  List<_Closing> _closingDetails;
+  double timeWidth = 70;
+  double nowHandWidth = 50;
+  double largerWidth = 50;
+  double actionWidth = 50;
+  @override
+  void initState() {
+    super.initState();
+    _closingDetails = _allClosingDetails();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _closingDetails.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      child: Stack(
-        fit: StackFit.expand,
+      child: Column(
         children: <Widget>[
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Row(
+          Container(
+            padding: EdgeInsets.only(
+              left: 10,
+              right: 10,
+              top: 10,
+            ),
+            child: Flex(
+              direction: Axis.horizontal,
               children: <Widget>[
-                Text('xxx'),
-                Text('xxx'),
-                Text('xxx'),
+                SizedBox(
+                  width: timeWidth,
+                  child: Text(
+                    '时间',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      left: 45,
+                    ),
+                    child: Text(
+                      '价格',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: nowHandWidth,
+                  child: Text(
+                    '现手',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: largerWidth,
+                  child: Text(
+                    '增仓',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: actionWidth,
+                  child: Text(
+                    '开平',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
               ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(
+              top: 10,
+            ),
+            child: Divider(
+              height: 1,
+            ),
+          ),
+          Expanded(
+            child: ListView(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.only(
+                top: 10,
+              ),
+              children: _closingDetails.map((item) {
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {},
+                  child: _ClosingDetailsView(
+                    closing: item,
+                    actionWidth: actionWidth,
+                    largerWidth: largerWidth,
+                    nowHandWidth: nowHandWidth,
+                    timeWidth: timeWidth,
+                  ),
+                );
+              }).toList(),
             ),
           ),
         ],
       ),
     );
   }
+
+  List<_Closing> _allClosingDetails() {
+    return [
+      _Closing(
+        time: '15:00:00',
+        price: 3880.0,
+        nowhand: 9,
+        larger: -1,
+        action: '空平',
+      ),
+      _Closing(
+        time: '14:59:59',
+        price: 3879.8,
+        nowhand: 7,
+        larger: 5,
+        action: '空开',
+      ),
+      _Closing(
+        time: '14:59:59',
+        price: 3880.0,
+        nowhand: 12,
+        larger: 3,
+        action: '多开',
+      ),
+      _Closing(
+        time: '14:59:58',
+        price: 3879.2,
+        nowhand: 17,
+        larger: 8,
+        action: '空开',
+      ),
+      _Closing(
+        time: '14:59:56',
+        price: 3880.0,
+        nowhand: 5,
+        larger: 0,
+        action: '空换',
+      ),
+    ];
+  }
 }
 
-class TablePersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final Widget child;
-  final Color color;
-  double height = 40;
+class _Closing {
+  String time;
+  double price;
+  int nowhand; //现手
+  int larger; //增仓
+  String action; //开平操作
 
-  TablePersistentHeaderDelegate(
-      {@required this.child, @required this.color, this.height});
+  _Closing({
+    this.time,
+    this.price,
+    this.nowhand,
+    this.larger,
+    this.action,
+  });
+}
+
+class _ClosingDetailsView extends StatefulWidget {
+  double timeWidth = 70;
+  double nowHandWidth = 50;
+  double largerWidth = 50;
+  double actionWidth = 50;
+  _Closing closing;
+
+  _ClosingDetailsView({this.timeWidth, this.nowHandWidth, this.largerWidth,this.actionWidth, this.closing});
 
   @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      child: this.child,
-      color: color,
+  _ClosingDetailsViewState createState() => _ClosingDetailsViewState();
+}
+
+class _ClosingDetailsViewState extends State<_ClosingDetailsView> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(
+            left: 10,
+            right: 10,
+          ),
+          child: Flex(
+            direction: Axis.horizontal,
+            children: <Widget>[
+              SizedBox(
+                width: widget.timeWidth,
+                child: Text.rich(
+                  TextSpan(
+                    text: '${widget.closing.time ?? ''}',
+                    style: TextStyle(),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child:
+                          Text(widget.closing.price.toStringAsFixed(2) ?? ''),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: widget.nowHandWidth,
+                child: Text(
+                  '${widget.closing.nowhand.toStringAsFixed(2) ?? ''}',
+                  style: TextStyle(),
+                ),
+              ),
+              SizedBox(
+                width: widget.largerWidth,
+                child: Text(
+                  '${widget.closing.larger.toStringAsFixed(2)}',
+                  style: TextStyle(),
+                ),
+              ),
+              SizedBox(
+                width: widget.actionWidth,
+                child: Text(
+                  '${widget.closing.action}',
+                  style: TextStyle(),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.only(
+            top: 10,
+            bottom: 10,
+          ),
+          child: Divider(
+            height: 1,
+            indent: 10,
+            endIndent: 10,
+            color: Colors.black12,
+          ),
+        ),
+      ],
     );
-  }
-
-  @override
-  double get maxExtent => height;
-
-  @override
-  double get minExtent => height;
-
-  @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
-    return true;
   }
 }
 
