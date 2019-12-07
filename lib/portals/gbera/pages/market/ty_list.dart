@@ -85,7 +85,7 @@ class _TYListState extends State<TYList> {
                     child: Padding(
                       padding: EdgeInsets.only(left: 45),
                       child: Text(
-                        '帑银交易所',
+                        '交易所',
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           color: Colors.black87,

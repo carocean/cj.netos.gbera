@@ -1029,7 +1029,7 @@ class GberaPortal {
           ),
         ),
         Page(
-          title: '帑指行情',
+          title: '帑指交易所',
           subtitle: '',
           desc: '',
           icon: GalleryIcons.shrine,
@@ -1039,7 +1039,7 @@ class GberaPortal {
           ),
         ),
         Page(
-          title: '帑银行情',
+          title: '帑银交易所',
           subtitle: '',
           desc: '',
           icon: GalleryIcons.shrine,
