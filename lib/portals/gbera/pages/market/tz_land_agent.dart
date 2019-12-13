@@ -29,15 +29,15 @@ class _LandAgentFutrueState extends State<LandAgentFutrue>
     this.tabPageViews = [
       TabPageView(
         title: '简介',
-        view: ContractDescPageView(),
+        view: TzContractDescPageView(),
       ),
       TabPageView(
         title: '盘口',
-        view: PositionPageView(),
+        view: TzPositionPageView(),
       ),
       TabPageView(
         title: '成交明细',
-        view: ClosingDetailsPageView(),
+        view: TzClosingDetailsPageView(),
       ),
       TabPageView(
         title: '资讯',

@@ -191,12 +191,12 @@ class TimeLife {
   TimeLife({this.newsList, this.title});
 }
 
-class ClosingDetailsPageView extends StatefulWidget {
+class TzClosingDetailsPageView extends StatefulWidget {
   @override
-  _ClosingDetailsPageViewState createState() => _ClosingDetailsPageViewState();
+  _TzClosingDetailsPageViewState createState() => _TzClosingDetailsPageViewState();
 }
 
-class _ClosingDetailsPageViewState extends State<ClosingDetailsPageView> {
+class _TzClosingDetailsPageViewState extends State<TzClosingDetailsPageView> {
   List<_Closing> _closingDetails;
   double timeWidth = 70;
   double nowHandWidth = 50;
@@ -240,16 +240,11 @@ class _ClosingDetailsPageViewState extends State<ClosingDetailsPageView> {
                   ),
                 ),
                 Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      left: 45,
-                    ),
-                    child: Text(
-                      '价格',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black87,
-                      ),
+                  child: Text(
+                    '价格',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
                     ),
                   ),
                 ),
@@ -426,7 +421,7 @@ class _ClosingDetailsViewState extends State<_ClosingDetailsView> {
               SizedBox(
                 width: widget.nowHandWidth,
                 child: Text(
-                  '${widget.closing.nowhand.toStringAsFixed(2) ?? ''}',
+                  '${widget.closing.nowhand.toStringAsFixed(0) ?? ''}',
                   style: TextStyle(),
                 ),
               ),
@@ -465,12 +460,12 @@ class _ClosingDetailsViewState extends State<_ClosingDetailsView> {
 }
 
 ///盘口
-class PositionPageView extends StatefulWidget {
+class TzPositionPageView extends StatefulWidget {
   @override
-  _PositionPageViewState createState() => _PositionPageViewState();
+  _TzPositionPageViewState createState() => _TzPositionPageViewState();
 }
 
-class _PositionPageViewState extends State<PositionPageView> {
+class _TzPositionPageViewState extends State<TzPositionPageView> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1116,12 +1111,12 @@ class _PositionPageViewState extends State<PositionPageView> {
 }
 
 ///合约简介
-class ContractDescPageView extends StatefulWidget {
+class TzContractDescPageView extends StatefulWidget {
   @override
-  _ContractDescPageViewState createState() => _ContractDescPageViewState();
+  _TzContractDescPageViewState createState() => _TzContractDescPageViewState();
 }
 
-class _ContractDescPageViewState extends State<ContractDescPageView> {
+class _TzContractDescPageViewState extends State<TzContractDescPageView> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1232,6 +1227,752 @@ class __ContractItemViewState extends State<_ContractItemView> {
           ),
         ],
       ),
+    );
+  }
+}
+
+
+///盘口
+class TyPositionPageView extends StatefulWidget {
+  @override
+  _TyPositionPageViewState createState() => _TyPositionPageViewState();
+}
+
+class _TyPositionPageViewState extends State<TyPositionPageView> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      child: SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
+        padding: EdgeInsets.all(10),
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: 10,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: 5,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '最高',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '5.34',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: 5,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '最低',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '5.32',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: 10,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: 5,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '均价',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '5.34',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: 5,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '总手',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '20475',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: 10,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: 5,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '金额',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '1093.4万',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: 5,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '换手率',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '0.38%',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Container(
+              height: 20,
+              child: Divider(
+                height: 1,
+              ),
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: 10,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: 5,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '流通帑',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '5.38亿',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: 5,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '市盈率',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '36.16',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: 10,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: 5,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '流通值',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '28.74亿',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: 5,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '总帑本',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '5.45亿',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: 10,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: 5,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '总市值',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '29.08亿',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: 5,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '市净率',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Text(
+                                '2.84',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+class TyClosingDetailsPageView extends StatefulWidget {
+  @override
+  _TyClosingDetailsPageViewState createState() => _TyClosingDetailsPageViewState();
+}
+
+class _TyClosingDetailsPageViewState extends State<TyClosingDetailsPageView> {
+  List<_TyClosing> _closingDetails;
+  double timeWidth = 70;
+  double nowHandWidth = 50;
+  double largerWidth = 50;
+  double actionWidth = 50;
+  @override
+  void initState() {
+    super.initState();
+    _closingDetails = _allClosingDetails();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _closingDetails.clear();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      child: Column(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(
+              left: 10,
+              right: 10,
+              top: 10,
+            ),
+            child: Flex(
+              direction: Axis.horizontal,
+              children: <Widget>[
+                SizedBox(
+                  width: timeWidth,
+                  child: Text(
+                    '时间',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    '价格',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: nowHandWidth,
+                  child: Text(
+                    '现手',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: actionWidth,
+                  child: Text(
+                    '',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(
+              top: 10,
+            ),
+            child: Divider(
+              height: 1,
+            ),
+          ),
+          Expanded(
+            child: ListView(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.only(
+                top: 10,
+              ),
+              children: _closingDetails.map((item) {
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {},
+                  child: _TyClosingDetailsView(
+                    closing: item,
+                    actionWidth: actionWidth,
+                    largerWidth: largerWidth,
+                    nowHandWidth: nowHandWidth,
+                    timeWidth: timeWidth,
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<_TyClosing> _allClosingDetails() {
+    return [
+      _TyClosing(
+        time: '15:00:00',
+        price: 5.32,
+        nowhand: 9,
+        action: '卖',
+      ),
+      _TyClosing(
+        time: '14:59:59',
+        price: 5.33,
+        nowhand: 7,
+        action: '买',
+      ),
+      _TyClosing(
+        time: '14:59:59',
+        price: 5.35,
+        nowhand: 12,
+        action: '买',
+      ),
+      _TyClosing(
+        time: '14:59:58',
+        price: 5.31,
+        nowhand: 17,
+        action: '卖',
+      ),
+      _TyClosing(
+        time: '14:59:56',
+        price: 5.33,
+        nowhand: 5,
+        action: '买',
+      ),
+    ];
+  }
+}
+
+class _TyClosing {
+  String time;
+  double price;
+  int nowhand; //现手
+  String action; //方向
+
+  _TyClosing({
+    this.time,
+    this.price,
+    this.nowhand,
+    this.action,
+  });
+}
+
+class _TyClosingDetailsView extends StatefulWidget {
+  double timeWidth = 70;
+  double nowHandWidth = 50;
+  double largerWidth = 50;
+  double actionWidth = 50;
+  _TyClosing closing;
+
+  _TyClosingDetailsView({this.timeWidth, this.nowHandWidth, this.largerWidth,this.actionWidth, this.closing});
+
+  @override
+  _TyClosingDetailsViewState createState() => _TyClosingDetailsViewState();
+}
+
+class _TyClosingDetailsViewState extends State<_TyClosingDetailsView> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(
+            left: 10,
+            right: 10,
+          ),
+          child: Flex(
+            direction: Axis.horizontal,
+            children: <Widget>[
+              SizedBox(
+                width: widget.timeWidth,
+                child: Text.rich(
+                  TextSpan(
+                    text: '${widget.closing.time ?? ''}',
+                    style: TextStyle(),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child:
+                      Text(widget.closing.price.toStringAsFixed(2) ?? ''),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: widget.nowHandWidth,
+                child: Text(
+                  '${widget.closing.nowhand.toStringAsFixed(0) ?? ''}',
+                  style: TextStyle(),
+                ),
+              ),
+              SizedBox(
+                width: widget.actionWidth,
+                child: Text(
+                  '${widget.closing.action}',
+                  style: TextStyle(),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.only(
+            top: 10,
+            bottom: 10,
+          ),
+          child: Divider(
+            height: 1,
+            indent: 10,
+            endIndent: 10,
+            color: Colors.black12,
+          ),
+        ),
+      ],
     );
   }
 }

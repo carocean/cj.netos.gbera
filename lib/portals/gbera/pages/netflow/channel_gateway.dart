@@ -155,6 +155,18 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                     operator: _MySwitch(),
                     onItemTap: () {},
                   ),
+                  _CardItem(
+                    title: '微信朋友圈',
+                    tipsText: '是否充许本管道的信息推送到我的微信朋友圈',
+                    operator: _MySwitch(),
+                    onItemTap: () {},
+                  ),
+                  _CardItem(
+                    title: '微信用户',
+                    tipsText: '是否充许本管道的信息推送到我的微信用户',
+                    operator: _MySwitch(),
+                    onItemTap: () {},
+                  ),
                 ],
               ),
             ),

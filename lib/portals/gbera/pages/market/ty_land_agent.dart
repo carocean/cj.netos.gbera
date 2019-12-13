@@ -28,16 +28,12 @@ class _LandAgentStockState extends State<LandAgentStock>
     super.initState();
     this.tabPageViews = [
       TabPageView(
-        title: '简介',
-        view: ContractDescPageView(),
-      ),
-      TabPageView(
         title: '盘口',
-        view: PositionPageView(),
+        view: TyPositionPageView(),
       ),
       TabPageView(
         title: '成交明细',
-        view: ClosingDetailsPageView(),
+        view: TyClosingDetailsPageView(),
       ),
       TabPageView(
         title: '资讯',
@@ -344,7 +340,7 @@ class __HeaderCardState extends State<_HeaderCard> {
                           right: 5,
                         ),
                         child: Text(
-                          '换',
+                          '换手',
                           style: TextStyle(
                             color: Colors.black54,
                             fontWeight: FontWeight.w500,
@@ -376,6 +372,82 @@ class __HeaderCardState extends State<_HeaderCard> {
                           right: 5,
                         ),
                         child: Text(
+                          '市盈率',
+                          style: TextStyle(
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: 5,
+                        ),
+                        child: Text(
+                          '12.3',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              right: 10,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 5,
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: 5,
+                        ),
+                        child: Text(
+                          '总手',
+                          style: TextStyle(
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: 5,
+                        ),
+                        child: Text(
+                          '118万',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: 5,
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: 5,
+                        ),
+                        child: Text(
                           '金额',
                           style: TextStyle(
                             color: Colors.black54,
@@ -388,7 +460,7 @@ class __HeaderCardState extends State<_HeaderCard> {
                           right: 5,
                         ),
                         child: Text(
-                          '1.06亿',
+                          '1.18亿',
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
                           ),
@@ -774,458 +846,478 @@ class _KChartCardState extends State<_KChartCard> {
                         fontSize: 12,
                       ),
                     ),
-                    color: Colors.grey[100],
+                    color: Colors.grey[200],
                     padding: EdgeInsets.only(
-                      top: 5,
-                      bottom: 5,
+                      top: 2,
+                      bottom: 2,
                       left: 3,
                     ),
                   ),
-                  Flexible(
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        left: 3,
-                        right: 3,
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                              bottom: 5,
-                              top: 5,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 22,
-                                  child: Text(
-                                    '卖5',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 37,
-                                  child: Text(
-                                    '3.96',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    '180',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              bottom: 5,
-                              top: 5,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 22,
-                                  child: Text(
-                                    '卖4',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 37,
-                                  child: Text(
-                                    '3.95',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    '27',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              bottom: 5,
-                              top: 5,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 22,
-                                  child: Text(
-                                    '卖3',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 37,
-                                  child: Text(
-                                    '3.94',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    '10',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              bottom: 5,
-                              top: 5,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 22,
-                                  child: Text(
-                                    '卖2',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 37,
-                                  child: Text(
-                                    '3.93',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    '356',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              bottom: 5,
-                              top: 5,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 22,
-                                  child: Text(
-                                    '卖1',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 37,
-                                  child: Text(
-                                    '3.92',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    '53.6万',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
                   Container(
-                    padding: EdgeInsets.only(
-                      top: 10,
-                      bottom: 10,
-                    ),
-                    child: Divider(
-                      height: 1,
+                    height: 200,
+                    child: Column(
+                      children: <Widget>[
+                        Flexible(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              left: 3,
+                              right: 3,
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: 22,
+                                      child: Text(
+                                        '卖5',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 37,
+                                      child: Text(
+                                        '3.96',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        '180',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: 22,
+                                      child: Text(
+                                        '卖4',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 37,
+                                      child: Text(
+                                        '3.95',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        '27',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: 22,
+                                      child: Text(
+                                        '卖3',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 37,
+                                      child: Text(
+                                        '3.94',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        '10',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: 22,
+                                      child: Text(
+                                        '卖2',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 37,
+                                      child: Text(
+                                        '3.93',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        '356',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: 22,
+                                      child: Text(
+                                        '卖1',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 37,
+                                      child: Text(
+                                        '3.92',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        '53.6万',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(
+                            top: 5,
+                            bottom: 5,
+                          ),
+                          child: Divider(
+                            height: 1,
+                          ),
+                        ),
+                        Flexible(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              left: 3,
+                              right: 3,
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: 22,
+                                      child: Text(
+                                        '买1',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 37,
+                                      child: Text(
+                                        '3.91',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        '2838',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: 22,
+                                      child: Text(
+                                        '买2',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 37,
+                                      child: Text(
+                                        '3.90',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        '882',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: 22,
+                                      child: Text(
+                                        '买3',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 37,
+                                      child: Text(
+                                        '3.89',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        '5.2万',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: 22,
+                                      child: Text(
+                                        '买4',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 37,
+                                      child: Text(
+                                        '3.88',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        '356',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: 22,
+                                      child: Text(
+                                        '买5',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 37,
+                                      child: Text(
+                                        '3.87',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        '2.6万',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  Flexible(
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        left: 3,
-                        right: 3,
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                              bottom: 5,
-                              top: 5,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 22,
-                                  child: Text(
-                                    '买1',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 37,
-                                  child: Text(
-                                    '3.91',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    '2838',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                  Expanded(
+                    ///可以放成交明细
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(
+                            bottom: 5,
+                            top: 5,
+                            left: 5,
+                            right: 5,
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              bottom: 5,
-                              top: 5,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 22,
-                                  child: Text(
-                                    '买2',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
+                          color: Colors.grey[100],
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                '时间',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
                                 ),
-                                SizedBox(
-                                  width: 37,
-                                  child: Text(
-                                    '3.90',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                  ),
+                              ),
+                              Text(
+                                '价格',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
                                 ),
-                                Expanded(
-                                  child: Text(
-                                    '882',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  ),
+                              ),
+                              Text(
+                                '现手',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                          Padding(
+                        ),
+                        Expanded(
+                          child: ListView(
+                            shrinkWrap: true,
                             padding: EdgeInsets.only(
+                              left: 5,
+                              right: 5,
                               bottom: 5,
-                              top: 5,
                             ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 22,
-                                  child: Text(
-                                    '买3',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 37,
-                                  child: Text(
-                                    '3.89',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    '5.2万',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                            children: <Widget>[
+                              _BidsItemView(),
+                              _BidsItemView(),
+                              _BidsItemView(),
+                              _BidsItemView(),
+                              _BidsItemView(),
+                              _BidsItemView(),
+                              _BidsItemView(),
+                              _BidsItemView(),
+                            ],
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              bottom: 5,
-                              top: 5,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 22,
-                                  child: Text(
-                                    '买4',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 37,
-                                  child: Text(
-                                    '3.88',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    '356',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              bottom: 5,
-                              top: 5,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 22,
-                                  child: Text(
-                                    '买5',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 37,
-                                  child: Text(
-                                    '3.87',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    '2.6万',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -1341,7 +1433,6 @@ class _BidsItemViewState extends State<_BidsItemView> {
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.only(
-                    bottom: 5,
                     left: 1,
                     right: 1,
                   ),
@@ -1350,32 +1441,7 @@ class _BidsItemViewState extends State<_BidsItemView> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        '12420',
-                        style: TextStyle(
-                          fontSize: 12,
-                        ),
-                      ),
-                      Text(
-                        '2',
-                        style: TextStyle(
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  color: Colors.grey[200],
-                  padding: EdgeInsets.only(
-                    left: 1,
-                    right: 1,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        '空开',
+                        '3.92',
                         style: TextStyle(
                           fontSize: 12,
                         ),

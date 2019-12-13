@@ -66,16 +66,6 @@ class _MarketState extends State<Market> {
           elevation: 0,
           automaticallyImplyLeading: false,
           backgroundColor: showAppBar ? Colors.white : Colors.transparent,
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                FontAwesomeIcons.userCircle,
-              ),
-              onPressed: () {
-                widget.context.forward("/market/mine");
-              },
-            ),
-          ],
         ),
         SliverToBoxAdapter(
           child: _renderDealmarketRegion(),
@@ -142,7 +132,7 @@ class _MarketState extends State<Market> {
                       top: 5,
                     ),
                     child: Text(
-                      '帑指行情',
+                      '帑指期货',
                       style: TextStyle(
                         fontSize: 12,
                       ),
@@ -169,7 +159,7 @@ class _MarketState extends State<Market> {
                       top: 5,
                     ),
                     child: Text(
-                      '帑银行情',
+                      '帑银交易',
                       style: TextStyle(
                         fontSize: 12,
                       ),
@@ -198,6 +188,14 @@ class _MarketState extends State<Market> {
         name: '我要做地商',
         icon: Icon(
           IconData(0xe62d, fontFamily: 'geo_locations'),
+          size: 30,
+          color: Colors.grey[600],
+        ),
+      ),
+      _PlatformService(
+        name: '我要做市商',
+        icon: Icon(
+          IconData(0xe676, fontFamily: 'market_shishang'),
           size: 30,
           color: Colors.grey[600],
         ),

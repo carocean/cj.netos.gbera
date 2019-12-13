@@ -120,3 +120,6 @@ flutter:
     - family: market
       fonts:
         - asset: lib/portals/gbera/fonts/market.ttf
+    - family: market_shishang
+      fonts:
+        - asset: lib/portals/gbera/fonts/market_shishang.ttf
