@@ -46,16 +46,16 @@ class NetosSharedPreferences {
 
 //当多用户切换时以/框架/用户号/当前登录账号/作为key持久化前缀，如: /gbera/00200202002/cj/，用于持久账号私有信息，而以/Shared/ 作为多用户的共享目录
   String _getStoreKey(String key,
-      {String portal, bool sharedDir, bool portalDir}) {
+      {String portal, bool sharedDir=false, bool portalDir=false}) {
     Environment environment = _site.getService('@.environment');
     UserPrincipal _principal = environment?.userPrincipal;
-    if ((sharedDir != null && sharedDir) || _principal == null) {
+    if (( sharedDir) || _principal == null) {
       return '/Shared/$key';
     }
 
     String theportal =
         StringUtil.isEmpty(portal) ? environment?.currentPortal : portal;
-    if (portalDir != null && portalDir) {
+    if (portalDir) {
       return "/$theportal/${StringUtil.isEmpty(key) ? '' : key}";
     }
     String thekey =
