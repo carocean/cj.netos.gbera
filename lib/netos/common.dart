@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_k_chart/utils/date_format_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'errors.dart';
@@ -46,16 +47,16 @@ class NetosSharedPreferences {
 
 //当多用户切换时以/框架/用户号/当前登录账号/作为key持久化前缀，如: /gbera/00200202002/cj/，用于持久账号私有信息，而以/Shared/ 作为多用户的共享目录
   String _getStoreKey(String key,
-      {String portal, bool sharedDir=false, bool portalDir=false}) {
-    if(sharedDir==null) {
-      sharedDir=false;
+      {String portal, bool sharedDir = false, bool portalDir = false}) {
+    if (sharedDir == null) {
+      sharedDir = false;
     }
-    if(portalDir==null) {
-      portalDir=false;
+    if (portalDir == null) {
+      portalDir = false;
     }
     Environment environment = _site.getService('@.environment');
     UserPrincipal _principal = environment?.userPrincipal;
-    if (( sharedDir) || _principal == null) {
+    if ((sharedDir) || _principal == null) {
       return '/Shared/$key';
     }
 
@@ -215,6 +216,24 @@ class Security {
   }
 }
 
+class ServiceSite implements IServiceProvider {
+  IServiceProvider parent;
+  Map<String, dynamic> services;
+
+  ServiceSite({this.parent});
+
+  @override
+  getService(String name) {
+    if (name.startsWith("/")) {
+      return parent?.getService(name);
+    }
+    if(services==null) {
+      return null;
+    }
+    return services[name];
+  }
+}
+
 class Portal {
   const Portal({
     @required this.id,
@@ -223,8 +242,10 @@ class Portal {
     @required this.buildDesklets,
     @required this.buildPages,
     @required this.buildThemes,
+    @required this.buildServices,
   });
 
+  final BuildServices buildServices;
   final BuildDesklets buildDesklets;
   final BuildThemes buildThemes;
   final BuildPages buildPages;
@@ -870,6 +891,7 @@ typedef BuildPage = Widget Function(PageContext pageContext);
 typedef BuildRoute = ModalRoute Function(
     RouteSettings settings, Page page, IServiceProvider site);
 typedef BuildPortal = Portal Function(IServiceProvider site);
+typedef BuildServices = Map<String,dynamic> Function(Portal protal, IServiceProvider site);
 typedef BuildPages = List<Page> Function(Portal protal, IServiceProvider site);
 typedef BuildThemes = List<ThemeStyle> Function(
     Portal protal, IServiceProvider site);

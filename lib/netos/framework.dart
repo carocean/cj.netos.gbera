@@ -11,6 +11,7 @@ import 'errors.dart';
 
 OnFrameworkEvents onFrameworkEvents; //用于内核刷新整个UI
 Map<String, Portal> _allPortals = Map(); //key是portalid
+Map<String, ServiceSite> _allServiceSites = Map(); //key是 portalid
 Map<String, Page> _allPages = Map(); //key是全路径
 Map<String, ThemeStyle> _allThemes = Map(); //key是全路径
 Map<String, Style> _allStyles = Map(); //key是全路径
@@ -65,6 +66,12 @@ _buildPortals(BuildContext context) {
       throw FlutterErrorDetails(exception: Exception('已存在框架:${portal.id}'));
     }
     _allPortals[portal.id] = portal;
+
+    ServiceSite site=ServiceSite(parent: _site);
+    var services=portal.buildServices(portal,site);
+    site.services=services??{};
+    _allServiceSites[portal.id]=site;
+
     var pages = portal.buildPages(portal, _site);
     for (Page page in pages) {
       if (page.url == null ||
@@ -239,13 +246,14 @@ Route onGenerateRoute(RouteSettings routeSettings) {
   if (buildPage == null) {
     return null;
   }
+  var site=_allServiceSites[page.portal];
   return MaterialPageRoute(
     settings: routeSettings.copyWith(
         name: fullUrl, arguments: args, isInitialRoute: false),
     builder: (BuildContext buildContext) {
       PageContext pageContext = PageContext(
         page: page,
-        site: _site,
+        site: site,
         context: buildContext,
       );
       return buildPage(pageContext);

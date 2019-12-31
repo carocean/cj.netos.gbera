@@ -86,6 +86,7 @@ import 'package:gbera/portals/gbera/pages/wallet/receivables.dart';
 import 'package:gbera/portals/gbera/pages/wallet/ty.dart';
 import 'package:gbera/portals/gbera/pages/wallet/wy.dart';
 import 'package:gbera/portals/gbera/scaffolds.dart';
+import 'package:gbera/portals/gbera/services/test.dart';
 
 import 'desklets/desklets.dart';
 import 'login.dart';
@@ -105,6 +106,9 @@ class GberaPortal {
       id: 'gbera',
       icon: GalleryIcons.shrine,
       name: '金证时代官方框架',
+      buildServices: (Portal portal, IServiceProvider site) => {
+        "/test":TestService(),
+      },
       buildThemes: (Portal portal, IServiceProvider site) => [
         ThemeStyle(
           title: '灰色',

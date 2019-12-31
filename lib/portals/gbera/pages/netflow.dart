@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -59,6 +60,7 @@ class _NetflowState extends State<Netflow> {
 
   @override
   Widget build(BuildContext context) {
+    widget.context.site.getService('@.services.name1');
     use_wallpapper = widget.context.parameters['use_wallpapper'];
     var activities = <Activity>[
       Activity(
