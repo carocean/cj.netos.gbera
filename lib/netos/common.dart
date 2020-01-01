@@ -224,13 +224,14 @@ class ServiceSite implements IServiceProvider {
 
   @override
   getService(String name) {
-    if (name.startsWith("/")) {
-      return parent?.getService(name);
-    }
     if(services==null) {
       return null;
     }
-    return services[name];
+    var obj= services[name];
+    if(obj!=null) {
+      return obj;
+    }
+    return parent?.getService(name);
   }
 }
 

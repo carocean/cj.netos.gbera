@@ -60,7 +60,6 @@ class _NetflowState extends State<Netflow> {
 
   @override
   Widget build(BuildContext context) {
-    widget.context.site.getService('@.services.name1');
     use_wallpapper = widget.context.parameters['use_wallpapper'];
     var activities = <Activity>[
       Activity(

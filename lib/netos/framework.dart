@@ -40,13 +40,13 @@ run(Widget app) async {
     );
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
+  runApp(app);
 
   _sharedPreferences = await NetosSharedPreferences().init(_site);
   ErrorWidget.builder = (FlutterErrorDetails flutterErrorDetails) {
     return RuntimeErrorWidget(flutterErrorDetails: flutterErrorDetails);
   };
 
-  runApp(app);
 
   if (onFrameworkEvents == null) {
     throw FlutterError('客户程序必须实现onFrameworkRefresh事件');
@@ -55,6 +55,7 @@ run(Widget app) async {
 
 _buildPortals(BuildContext context) {
   _allPortals.clear();
+  _allServiceSites.clear();
   _allPages.clear();
   _allThemes.clear();
   _allStyles.clear();
@@ -67,11 +68,12 @@ _buildPortals(BuildContext context) {
     }
     _allPortals[portal.id] = portal;
 
-    ServiceSite site=ServiceSite(parent: _site);
-    var services=portal.buildServices(portal,site);
-    site.services=services??{};
-    _allServiceSites[portal.id]=site;
-
+    if(portal.buildServices!=null) {
+      ServiceSite site = ServiceSite(parent: _site);
+      var services = portal.buildServices(portal, site);
+      site.services = services ?? {};
+      _allServiceSites[portal.id] = site;
+    }
     var pages = portal.buildPages(portal, _site);
     for (Page page in pages) {
       if (page.url == null ||
