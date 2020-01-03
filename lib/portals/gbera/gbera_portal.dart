@@ -34,21 +34,21 @@ import 'package:gbera/portals/gbera/pages/netflow/avatar.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_gateway.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_popularize.dart';
+import 'package:gbera/portals/gbera/pages/netflow/channel_portal.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_qrcode.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_rename.dart';
-import 'package:gbera/portals/gbera/pages/netflow/channel_portal.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channels_of_user.dart';
 import 'package:gbera/portals/gbera/pages/netflow/create_channel.dart';
+import 'package:gbera/portals/gbera/pages/netflow/insite_publics.dart';
 import 'package:gbera/portals/gbera/pages/netflow/outsite_publics.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publics_activities.dart';
-import 'package:gbera/portals/gbera/pages/netflow/insite_publics.dart';
-import 'package:gbera/portals/gbera/pages/netflow/publics_for_activies.dart';
+import 'package:gbera/portals/gbera/pages/netflow/publics_for_down_activies.dart';
+import 'package:gbera/portals/gbera/pages/netflow/publics_for_up_activies.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publics_settings.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publish_article.dart';
 import 'package:gbera/portals/gbera/pages/netflow/scan_channel.dart';
 import 'package:gbera/portals/gbera/pages/netflow/search_channel.dart';
 import 'package:gbera/portals/gbera/pages/netflow/service_menu.dart';
-import 'package:gbera/portals/gbera/pages/site/site_portal.dart';
 import 'package:gbera/portals/gbera/pages/profile.dart';
 import 'package:gbera/portals/gbera/pages/profile/edit_sex.dart';
 import 'package:gbera/portals/gbera/pages/profile/edit_username.dart';
@@ -86,7 +86,8 @@ import 'package:gbera/portals/gbera/pages/wallet/receivables.dart';
 import 'package:gbera/portals/gbera/pages/wallet/ty.dart';
 import 'package:gbera/portals/gbera/pages/wallet/wy.dart';
 import 'package:gbera/portals/gbera/scaffolds.dart';
-import 'package:gbera/portals/gbera/services/test.dart';
+import 'package:gbera/portals/gbera/store/dao/database.dart';
+import 'package:gbera/portals/gbera/store/services/upstream_persons.dart';
 
 import 'desklets/desklets.dart';
 import 'login.dart';
@@ -106,9 +107,17 @@ class GberaPortal {
       id: 'gbera',
       icon: GalleryIcons.shrine,
       name: '金证时代官方框架',
-      buildServices: (Portal portal, IServiceProvider site) => {
-        "/test":TestService(),
-      },
+      buildPortalStore: (Portal portal, IServiceProvider site) => PortalStore(
+        services: {
+          "/upstream/persons": UpstreamPersonService(site: site),
+        },
+        loadDatabase: () async {
+          final database = await $FloorAppDatabase
+              .databaseBuilder('app_database.db')
+              .build();
+          return database;
+        },
+      ),
       buildThemes: (Portal portal, IServiceProvider site) => [
         ThemeStyle(
           title: '灰色',
@@ -377,11 +386,20 @@ class GberaPortal {
           ),
         ),
         Page(
-          title: '活动设置中的公众列表',
+          title: '上游公众',
           subtitle: '',
           icon: Icons.settings_input_composite,
-          url: '/netflow/channel/publics/list_for_activies',
-          buildPage: (PageContext pageContext) => PublicsForActivies(
+          url: '/netflow/channel/publics/list_for_up_activies',
+          buildPage: (PageContext pageContext) => UpPublicsForActivies(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '下游公众',
+          subtitle: '',
+          icon: Icons.settings_input_composite,
+          url: '/netflow/channel/publics/list_for_down_activies',
+          buildPage: (PageContext pageContext) => DownPublicsForActivies(
             context: pageContext,
           ),
         ),

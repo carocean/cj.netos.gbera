@@ -11,6 +11,7 @@ import 'errors.dart';
 
 OnFrameworkEvents onFrameworkEvents; //用于内核刷新整个UI
 Map<String, Portal> _allPortals = Map(); //key是portalid
+Map<String, PortalStore> _allPortalStores = Map(); //key是 portalid
 Map<String, ServiceSite> _allServiceSites = Map(); //key是 portalid
 Map<String, Page> _allPages = Map(); //key是全路径
 Map<String, ThemeStyle> _allThemes = Map(); //key是全路径
@@ -40,9 +41,27 @@ run(Widget app) async {
     );
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
+
   runApp(app);
 
   _sharedPreferences = await NetosSharedPreferences().init(_site);
+
+  for(int i=0;i<_allPortals.keys.length;i++){
+    var portalid=_allPortals.keys.elementAt(i);
+    var portal=_allPortals[portalid];
+    if(portal.buildPortalStore==null) {
+      continue;
+    }
+    ServiceSite site = _allServiceSites[portalid];
+    var pstore = portal.buildPortalStore(portal, site);
+    var db=await pstore?.loadDatabase();
+    var services=pstore?.services;
+    site.services=services??{};
+    site.database=db;
+    if(site.onready!=null){
+      site.onready();
+    }
+  }
   ErrorWidget.builder = (FlutterErrorDetails flutterErrorDetails) {
     return RuntimeErrorWidget(flutterErrorDetails: flutterErrorDetails);
   };
@@ -56,6 +75,7 @@ run(Widget app) async {
 _buildPortals(BuildContext context) {
   _allPortals.clear();
   _allServiceSites.clear();
+  _allPortalStores.clear();
   _allPages.clear();
   _allThemes.clear();
   _allStyles.clear();
@@ -68,12 +88,9 @@ _buildPortals(BuildContext context) {
     }
     _allPortals[portal.id] = portal;
 
-    if(portal.buildServices!=null) {
-      ServiceSite site = ServiceSite(parent: _site);
-      var services = portal.buildServices(portal, site);
-      site.services = services ?? {};
-      _allServiceSites[portal.id] = site;
-    }
+    ServiceSite site = ServiceSite(parent: _site);
+    _allServiceSites[portal.id]=site;
+
     var pages = portal.buildPages(portal, _site);
     for (Page page in pages) {
       if (page.url == null ||

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:floor/floor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_k_chart/utils/date_format_util.dart';
@@ -219,17 +220,18 @@ class Security {
 class ServiceSite implements IServiceProvider {
   IServiceProvider parent;
   Map<String, dynamic> services;
+  FloorDatabase database;
+  void Function() onready;
 
-  ServiceSite({this.parent});
+  ServiceSite({this.parent, this.services, this.database});
 
   @override
   getService(String name) {
-    if(services==null) {
-      return null;
-    }
-    var obj= services[name];
-    if(obj!=null) {
-      return obj;
+    if (services != null) {
+      var obj = services[name];
+      if (obj != null) {
+        return obj;
+      }
     }
     return parent?.getService(name);
   }
@@ -243,10 +245,10 @@ class Portal {
     @required this.buildDesklets,
     @required this.buildPages,
     @required this.buildThemes,
-    @required this.buildServices,
+    @required this.buildPortalStore,
   });
 
-  final BuildServices buildServices;
+  final BuildPortalStore buildPortalStore;
   final BuildDesklets buildDesklets;
   final BuildThemes buildThemes;
   final BuildPages buildPages;
@@ -888,11 +890,19 @@ class Portlet {
   }
 }
 
+class PortalStore {
+  Map<String, dynamic> services;
+  Future<FloorDatabase> Function() loadDatabase;
+
+  PortalStore({this.services, this.loadDatabase});
+}
+
 typedef BuildPage = Widget Function(PageContext pageContext);
 typedef BuildRoute = ModalRoute Function(
     RouteSettings settings, Page page, IServiceProvider site);
 typedef BuildPortal = Portal Function(IServiceProvider site);
-typedef BuildServices = Map<String,dynamic> Function(Portal protal, IServiceProvider site);
+typedef BuildPortalStore = PortalStore Function(
+    Portal protal, IServiceProvider site);
 typedef BuildPages = List<Page> Function(Portal protal, IServiceProvider site);
 typedef BuildThemes = List<ThemeStyle> Function(
     Portal protal, IServiceProvider site);

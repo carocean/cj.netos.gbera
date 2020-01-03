@@ -39,10 +39,17 @@ class _PublicsSettingsState extends State<PublicsSettings> {
             child: _Card(
               items: <Widget>[
                 CardItem(
-                  title: '公众',
+                  title: '上游公众',
                   onItemTap: () {
                     widget.context
-                        .forward('/netflow/channel/publics/list_for_activies');
+                        .forward('/netflow/channel/publics/list_for_up_activies');
+                  },
+                ),
+                CardItem(
+                  title: '下游公众',
+                  onItemTap: () {
+                    widget.context
+                        .forward('/netflow/channel/publics/list_for_down_activies');
                   },
                 ),
                 CardItem(
