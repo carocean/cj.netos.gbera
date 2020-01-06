@@ -52,12 +52,7 @@ class _PublicsSettingsState extends State<PublicsSettings> {
                         .forward('/netflow/channel/publics/list_for_down_activies');
                   },
                 ),
-                CardItem(
-                  title: '管道',
-                  onItemTap: () {
-                    widget.context.forward('/netflow/activies/channels');
-                  },
-                ),
+
               ],
             ),
           ),

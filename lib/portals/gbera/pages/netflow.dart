@@ -1,3 +1,4 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,8 @@ import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel.dart';
+import 'package:gbera/portals/gbera/store/entities.dart';
+import 'package:gbera/portals/gbera/store/services.dart';
 
 import '../parts/headers.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
@@ -60,71 +63,6 @@ class _NetflowState extends State<Netflow> {
   @override
   Widget build(BuildContext context) {
     use_wallpapper = widget.context.parameters['use_wallpapper'];
-    var activities = <Activity>[
-      Activity(
-        who: '大理-家丽',
-        money: '6.25',
-        picCount: 1,
-        time: '1分钟前',
-        channel: '随便漫谈',
-        content: '人间忽晚   山河已秋～        今晚大理的云，是哪位大神飞升上仙了吧...          晚安。',
-        onTap: () {
-          showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return widget.context.part('/site/insite/request', context);
-              });
-        },
-      ),
-      Activity(
-        who: 'YouTube精彩视频',
-        money: '50.32',
-        picCount: 1,
-        time: '3分钟前',
-        channel: '我的油管',
-        onTap: () {
-          showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return widget.context.part('/site/insite/request', context);
-              });
-        },
-        content:
-            '【#把做菜拍出恐怖大片效果#】镜头的快速切换、食材的超近距离特写、阴暗的光线、急促的喘息声，都营造出一种令人窒息的感觉...最后那一刻真的被吓到！（cr：Insolence Productions）',
-      ),
-      Activity(
-        who: '通信老柳',
-        money: '50.32',
-        picCount: 1,
-        time: '15分钟前',
-        channel: '中国联通',
-        onTap: () {
-          showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return widget.context.part('/site/insite/request', context);
-              });
-        },
-        content:
-            '【业绩暴增374%不算啥，联通后面还有大招】​​​2018年可谓是中国联通混改见效年，从公布的一季度业绩来看，整体主营业务收入为人民币666.09亿元，比去年同期上升8.4%。移动主营业务收入达到人民币415.11亿元，比去年同期上升11.6%。利润总额为人民币39.78亿元，归属于母公司净利润为人民币13.02亿元，比去年同期明显上升374.8%',
-      ),
-      Activity(
-        who: '乐播足球',
-        money: '50.32',
-        picCount: 8,
-        time: '15分钟前',
-        channel: '精彩集锦',
-        onTap: () {
-          showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return widget.context.part('/site/insite/request', context);
-              });
-        },
-        content:
-            '#广域星空杯# 决赛—中国足球小将红队4：0浙江绿城[星星]吕孟洋爆射首开记录，高中锋赵松源展现灵活的脚下技巧用脚后跟穿裆过人贡献助攻，邝兆镭梅开二度当选本届赛事MVP和最佳射手！',
-      ),
-    ];
     return CustomScrollView(
       controller: _controller,
       slivers: <Widget>[
@@ -297,13 +235,40 @@ class _NetflowState extends State<Netflow> {
         ),
         SliverToBoxAdapter(
           child: Container(
-            child: activities.length > 0
-                ? _ActivitiesRegion(
-                    context: widget.context, activities: activities)
-                : Container(
-                    width: 0,
-                    height: 0,
-                  ),
+            child: FutureBuilder<List<Activity>>(
+              future: _getMessages(),
+              builder: (ctx, snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: CircularProgressIndicator(
+//                    value: 0.3,
+                        backgroundColor: Colors.grey[300],
+                        valueColor:
+                            new AlwaysStoppedAnimation<Color>(Colors.grey[600]),
+                      ),
+                    ),
+                  );
+                }
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text(
+                      snapshot.error?.toString(),
+                    ),
+                  );
+                }
+                var activities = snapshot.data;
+
+                return activities.length > 0
+                    ? _ActivitiesRegion(
+                        context: widget.context, activities: activities)
+                    : Container(
+                        width: 0,
+                        height: 0,
+                      );
+              },
+            ),
           ),
         ),
         SliverToBoxAdapter(
@@ -397,6 +362,9 @@ class _NetflowState extends State<Netflow> {
               case '/netflow/manager/search_channel':
                 widget.context.forward(value, arguments: arguments);
                 break;
+              case '/test/services':
+                widget.context.forward(value, arguments: arguments);
+                break;
             }
           },
           itemBuilder: (context) => <PopupMenuEntry<String>>[
@@ -479,12 +447,80 @@ class _NetflowState extends State<Netflow> {
                 ],
               ),
             ),
+            PopupMenuDivider(),
+            PopupMenuItem(
+              value: '/test/services',
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: 10,
+                    ),
+                    child: Icon(
+                      widget.context.findPage('/test/services')?.icon,
+                      color: Colors.grey[500],
+                      size: 15,
+                    ),
+                  ),
+                  Text(
+                    '测试网流服务',
+                    style: TextStyle(
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ],
       backgroundColor:
           use_wallpapper && _backgroud_transparent ? Colors.transparent : null,
     );
+  }
+
+  Future<List<Activity>> _getMessages() async {
+    IInsiteMessageService messageService =
+        widget.context.site.getService('/insite/messages');
+    IUpstreamPersonService personService =
+        widget.context.site.getService('/upstream/persons');
+    IExternalChannelService channelService =
+        widget.context.site.getService('/external/channels');
+    var messages = await messageService.pageMessage(4, 0);
+    var activities = <Activity>[];
+    for (var msg in messages) {
+      var person = await personService.getPerson(msg.creator);
+      var timeText = TimelineUtil.formatByDateTime(
+              DateTime.fromMillisecondsSinceEpoch(msg.ctime),
+              locale: 'zh',
+              dayFormat: DayFormat.Full)
+          .toString();
+      var channel = await channelService.getChannel(msg.upstreamChannel);
+      var act = Activity(
+        who: person.accountName,
+        channel: channel?.name,
+        content: msg.digests,
+        money: ((msg.wy ?? 0) * 0.00012837277272).toStringAsFixed(2),
+        time: timeText,
+        picCount: 0,
+        isPublic: channel.isPublic,
+        onTap: () {
+          showModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return widget.context
+                    .part('/site/insite/request', context, arguments: {
+                  'message': msg,
+                  'channel': channel,
+                  'person': person,
+                });
+              });
+        },
+      );
+      activities.add(act);
+    }
+    return activities;
   }
 }
 
@@ -493,6 +529,7 @@ class Activity {
   final String content;
   final String money;
   final int picCount;
+  final bool isPublic;
   final String time;
   final String channel;
   final Function() onTap;
@@ -502,6 +539,7 @@ class Activity {
     this.content,
     this.money,
     this.picCount,
+    this.isPublic,
     this.time,
     this.channel,
     this.onTap,
@@ -567,7 +605,7 @@ class _ActivitiesRegionState extends State<_ActivitiesRegion> {
                               TextSpan(
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
-                                  color: Colors.black,
+                                  color: Colors.grey[900],
                                 ),
                                 text: '${v.content}',
                               ),
@@ -582,10 +620,11 @@ class _ActivitiesRegionState extends State<_ActivitiesRegion> {
                         ),
                       ),
                       Container(
-                        alignment: Alignment.centerLeft,
+                        alignment: Alignment.centerRight,
                         padding: EdgeInsets.only(
                           right: 10,
                           left: 10,
+                          top: 6,
                         ),
                         child: Text.rich(
                           TextSpan(
@@ -597,7 +636,9 @@ class _ActivitiesRegionState extends State<_ActivitiesRegion> {
                                   ? TextSpan(
                                       text: '',
                                       children: [
-                                        TextSpan(text: '  来自管道:'),
+                                        TextSpan(
+                                            text:
+                                                '  ${v.isPublic ? '来自开放管道:' : '来自私有管道:'}'),
                                         TextSpan(
                                           text: '${v.channel}',
                                           style: TextStyle(
@@ -628,7 +669,7 @@ class _ActivitiesRegionState extends State<_ActivitiesRegion> {
                             ],
                             style: TextStyle(
                               color: Colors.grey[700],
-                              fontSize: 12,
+                              fontSize: 10,
                             ),
                           ),
                         ),

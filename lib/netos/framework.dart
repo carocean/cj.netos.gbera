@@ -18,6 +18,7 @@ Map<String, ThemeStyle> _allThemes = Map(); //key是全路径
 Map<String, Style> _allStyles = Map(); //key是全路径
 Map<String, Desklet> _allDesklets = Map(); //桌面栏目,key是全路径
 NetosSharedPreferences _sharedPreferences = null; //本地存储
+Map<String, dynamic> _props;
 IServiceProvider _site = GberaServiceProvider();
 
 ///上下文环境
@@ -32,7 +33,11 @@ Environment _environment = Environment();
 var loadStep =
     0; //1为执行了onGenerateThemeStyle方法；2为执行了buildRoutes法；3是执行了onGenerateRoute方法。后者检查前序方法是否被执行，否则报错。
 
-run(Widget app) async {
+run(Widget app, {Map<String, dynamic> props}) async {
+  if (props == null) {
+    props = {};
+  }
+  _props = props;
   if (Platform.isAndroid) {
     SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -46,26 +51,9 @@ run(Widget app) async {
 
   _sharedPreferences = await NetosSharedPreferences().init(_site);
 
-  for(int i=0;i<_allPortals.keys.length;i++){
-    var portalid=_allPortals.keys.elementAt(i);
-    var portal=_allPortals[portalid];
-    if(portal.buildPortalStore==null) {
-      continue;
-    }
-    ServiceSite site = _allServiceSites[portalid];
-    var pstore = portal.buildPortalStore(portal, site);
-    var db=await pstore?.loadDatabase();
-    var services=pstore?.services;
-    site.services=services??{};
-    site.database=db;
-    if(site.onready!=null){
-      site.onready();
-    }
-  }
   ErrorWidget.builder = (FlutterErrorDetails flutterErrorDetails) {
     return RuntimeErrorWidget(flutterErrorDetails: flutterErrorDetails);
   };
-
 
   if (onFrameworkEvents == null) {
     throw FlutterError('客户程序必须实现onFrameworkRefresh事件');
@@ -89,7 +77,8 @@ _buildPortals(BuildContext context) {
     _allPortals[portal.id] = portal;
 
     ServiceSite site = ServiceSite(parent: _site);
-    _allServiceSites[portal.id]=site;
+    site.init(portal);
+    _allServiceSites[portal.id] = site;
 
     var pages = portal.buildPages(portal, _site);
     for (Page page in pages) {
@@ -265,11 +254,12 @@ Route onGenerateRoute(RouteSettings routeSettings) {
   if (buildPage == null) {
     return null;
   }
-  var site=_allServiceSites[page.portal];
+
   return MaterialPageRoute(
     settings: routeSettings.copyWith(
         name: fullUrl, arguments: args, isInitialRoute: false),
     builder: (BuildContext buildContext) {
+      var site = _allServiceSites[page.portal];
       PageContext pageContext = PageContext(
         page: page,
         site: site,
@@ -328,6 +318,9 @@ class GberaServiceProvider implements IServiceProvider {
     if ('@.sharedPreferences' == name) {
       return _sharedPreferences;
     }
+    if (name.startsWith('@.prop.')) {
+      return _props[name];
+    }
     return null;
   }
 }
@@ -339,7 +332,7 @@ class FrameworkNavigatorObserver extends NavigatorObserver {
 //    print('.......$route.....$previousRoute......');
     super.didPop(route, previousRoute);
     String fullUrl = route.settings.name;
-    if(fullUrl==null){
+    if (fullUrl == null) {
       return;
     }
     String prevFullUrl = previousRoute.settings.name;
@@ -349,12 +342,13 @@ class FrameworkNavigatorObserver extends NavigatorObserver {
       //同一框架则不切换
       return;
     }
-    if(onFrameworkEvents==null){
+    if (onFrameworkEvents == null) {
       return;
     }
     //跳转总是前后页间跳，由于每次都在跳入之前记录了前次所以返回时下次的portal一定与previousPortal相同
-    var _storeThemeUrl=_sharedPreferences.getString(KEY_THEME_SET,portal: portal);
-    if(StringUtil.isEmpty(_storeThemeUrl)) {
+    var _storeThemeUrl =
+        _sharedPreferences.getString(KEY_THEME_SET, portal: portal);
+    if (StringUtil.isEmpty(_storeThemeUrl)) {
       onFrameworkEvents(OnFrameworkEvent(
         cmd: 'switchTheme',
         parameters: {
@@ -362,7 +356,7 @@ class FrameworkNavigatorObserver extends NavigatorObserver {
           'themeUrl': _environment.previousThemeUrl,
         },
       ));
-    }else{
+    } else {
       onFrameworkEvents(OnFrameworkEvent(
         cmd: 'switchTheme',
         parameters: {
@@ -377,11 +371,11 @@ class FrameworkNavigatorObserver extends NavigatorObserver {
   void didPush(Route route, Route previousRoute) {
     // TODO: implement didPush
     super.didPush(route, previousRoute);
-    if(previousRoute==null){
+    if (previousRoute == null) {
       return;
     }
     String fullUrl = route.settings.name;
-    if(fullUrl==null){
+    if (fullUrl == null) {
       return;
     }
     String prevFullUrl = previousRoute.settings.name;
@@ -391,27 +385,26 @@ class FrameworkNavigatorObserver extends NavigatorObserver {
       //同一框架则不切换
       return;
     }
-    if(onFrameworkEvents==null){
+    if (onFrameworkEvents == null) {
       return;
     }
-    if(route.settings.arguments==null){
+    if (route.settings.arguments == null) {
       return;
     }
-    var themeUrl=(route.settings.arguments as Map)['themeUrl'];
-    if(StringUtil.isEmpty(themeUrl)){
-      themeUrl=_sharedPreferences.getString(KEY_THEME_SET,portal:portal );
-      if(StringUtil.isEmpty(themeUrl)) {
-        if(_environment.previousPortal==portal){
-          themeUrl=_environment.previousThemeUrl;
+    var themeUrl = (route.settings.arguments as Map)['themeUrl'];
+    if (StringUtil.isEmpty(themeUrl)) {
+      themeUrl = _sharedPreferences.getString(KEY_THEME_SET, portal: portal);
+      if (StringUtil.isEmpty(themeUrl)) {
+        if (_environment.previousPortal == portal) {
+          themeUrl = _environment.previousThemeUrl;
         }
-        if(StringUtil.isEmpty(themeUrl)) {
+        if (StringUtil.isEmpty(themeUrl)) {
           return;
         }
       }
     }
     //如果不是当前的框架则切换框架,而且在跳转后再切换
-    onFrameworkEvents(
-        OnFrameworkEvent(
+    onFrameworkEvents(OnFrameworkEvent(
       cmd: 'switchTheme',
       parameters: {'themeUrl': themeUrl, 'portal': portal},
     ));

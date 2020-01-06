@@ -3,12 +3,17 @@ import 'package:gbera/netos/common.dart';
 import 'package:gbera/netos/framework.dart' as framework;
 
 void main() {
-  framework.run(MyApp(
-    portal: 'gbera',
-    title: 'gbera',
-    themeUrl: '/grey',
-    welcomeUrl: '/login2',
-  ));
+  framework.run(
+    MyApp(
+      portal: 'gbera',
+      title: 'gbera',
+      themeUrl: '/grey',
+      welcomeUrl: '/login2',
+    ),
+    props: {
+      '@.prop.isTest': true,
+    },
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -47,13 +52,11 @@ class _MyAppState extends State<MyApp> {
       switch (event.cmd) {
         case 'switchTheme':
           setState(() {
-            widget.portal=event.parameters['portal'];
-            widget.themeUrl=event.parameters['themeUrl'];
+            widget.portal = event.parameters['portal'];
+            widget.themeUrl = event.parameters['themeUrl'];
           });
           break;
       }
     };
   }
-
 }
-

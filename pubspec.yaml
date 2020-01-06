@@ -43,6 +43,7 @@ dependencies:
   flutter_k_chart:
     path: flutter_k_chart
   floor: ^0.9.0
+  common_utils: ^1.1.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -109,6 +110,8 @@ flutter:
     - lib/portals/gbera/wallpapers/6.png
     - lib/portals/gbera/data/depth.json
     - lib/portals/gbera/data/kline.json
+    - model/upstream_persons.json
+    - model/insite_messages.json
   fonts:
     - family: geo_discovery
       fonts:

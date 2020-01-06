@@ -64,6 +64,9 @@ import 'package:gbera/portals/gbera/pages/site/site_channelsite.dart';
 import 'package:gbera/portals/gbera/pages/system/about.dart';
 import 'package:gbera/portals/gbera/pages/system/contract.dart';
 import 'package:gbera/portals/gbera/pages/system/themes.dart';
+import 'package:gbera/portals/gbera/pages/tests/test_insite_messages.dart';
+import 'package:gbera/portals/gbera/pages/tests/test_services.dart';
+import 'package:gbera/portals/gbera/pages/tests/test_upstream_persons.dart';
 import 'package:gbera/portals/gbera/pages/users/account_login.dart';
 import 'package:gbera/portals/gbera/pages/users/accounts.dart';
 import 'package:gbera/portals/gbera/pages/users/add_account.dart';
@@ -87,6 +90,8 @@ import 'package:gbera/portals/gbera/pages/wallet/ty.dart';
 import 'package:gbera/portals/gbera/pages/wallet/wy.dart';
 import 'package:gbera/portals/gbera/scaffolds.dart';
 import 'package:gbera/portals/gbera/store/dao/database.dart';
+import 'package:gbera/portals/gbera/store/services/external_channels.dart';
+import 'package:gbera/portals/gbera/store/services/insite_messages.dart';
 import 'package:gbera/portals/gbera/store/services/upstream_persons.dart';
 
 import 'desklets/desklets.dart';
@@ -110,6 +115,8 @@ class GberaPortal {
       buildPortalStore: (Portal portal, IServiceProvider site) => PortalStore(
         services: {
           "/upstream/persons": UpstreamPersonService(site: site),
+          '/external/channels':ExternalChannelService(site:site),
+          '/insite/messages':InsiteMessageService(site:site),
         },
         loadDatabase: () async {
           final database = await $FloorAppDatabase
@@ -238,6 +245,33 @@ class GberaPortal {
           icon: GalleryIcons.shrine,
           url: '/scaffold/withbottombar',
           buildPage: (PageContext pageContext) => WithBottomScaffold(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '测试服务',
+          subtitle: '',
+          icon: GalleryIcons.shrine,
+          url: '/test/services',
+          buildPage: (PageContext pageContext) => TestServices(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '上游公众',
+          subtitle: '',
+          icon: GalleryIcons.shrine,
+          url: '/test/services/upstream/persons',
+          buildPage: (PageContext pageContext) => TestUpstreamPersonService(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '摸拟消息入站',
+          subtitle: '',
+          icon: GalleryIcons.shrine,
+          url: '/test/services/insite/messages',
+          buildPage: (PageContext pageContext) => TestInsiteMessages(
             context: pageContext,
           ),
         ),

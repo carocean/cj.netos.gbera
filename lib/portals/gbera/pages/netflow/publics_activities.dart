@@ -43,11 +43,12 @@ class _PublicActiviesState extends State<PublicActivies>
             showModalBottomSheet(
                 context: context,
                 builder: (context) {
-                  return widget.pageContext.part('/site/insite/request', context);
+                  return widget.pageContext
+                      .part('/site/insite/request', context);
                 });
           },
           content:
-          '【业绩暴增374%不算啥，联通后面还有大招】​​​2018年可谓是中国联通混改见效年，从公布的一季度业绩来看，整体主营业务收入为人民币666.09亿元，比去年同期上升8.4%。移动主营业务收入达到人民币415.11亿元，比去年同期上升11.6%。利润总额为人民币39.78亿元，归属于母公司净利润为人民币13.02亿元，比去年同期明显上升374.8%',
+              '【业绩暴增374%不算啥，联通后面还有大招】​​​2018年可谓是中国联通混改见效年，从公布的一季度业绩来看，整体主营业务收入为人民币666.09亿元，比去年同期上升8.4%。移动主营业务收入达到人民币415.11亿元，比去年同期上升11.6%。利润总额为人民币39.78亿元，归属于母公司净利润为人民币13.02亿元，比去年同期明显上升374.8%',
         ),
       );
     }
@@ -86,11 +87,12 @@ class _PublicActiviesState extends State<PublicActivies>
             showModalBottomSheet(
                 context: context,
                 builder: (context) {
-                  return widget.pageContext.part('/site/insite/request', context);
+                  return widget.pageContext
+                      .part('/site/insite/request', context);
                 });
           },
           content:
-          '#广域星空杯# 决赛—中国足球小将红队4：0浙江绿城[星星]吕孟洋爆射首开记录，高中锋赵松源展现灵活的脚下技巧用脚后跟穿裆过人贡献助攻，邝兆镭梅开二度当选本届赛事MVP和最佳射手！',
+              '#广域星空杯# 决赛—中国足球小将红队4：0浙江绿城[星星]吕孟洋爆射首开记录，高中锋赵松源展现灵活的脚下技巧用脚后跟穿裆过人贡献助攻，邝兆镭梅开二度当选本届赛事MVP和最佳射手！',
         ),
       );
     }
@@ -100,12 +102,12 @@ class _PublicActiviesState extends State<PublicActivies>
             activities: _allAct,
           ),
           _Page(
-            text: '私信',
-            activities: _privAct,
+            text: '普通',
+            activities: _commAct,
           ),
           _Page(
-            text: '其它',
-            activities: _commAct,
+            text: '私信',
+            activities: _privAct,
           ),
         ];
 

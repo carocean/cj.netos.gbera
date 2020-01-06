@@ -221,7 +221,7 @@ class ServiceSite implements IServiceProvider {
   IServiceProvider parent;
   Map<String, dynamic> services;
   FloorDatabase database;
-  void Function() onready;
+  List<Onready> onready = [];
 
   ServiceSite({this.parent, this.services, this.database});
 
@@ -234,6 +234,20 @@ class ServiceSite implements IServiceProvider {
       }
     }
     return parent?.getService(name);
+  }
+
+  Future<void> init(Portal portal) async {
+    if (portal.buildPortalStore == null) {
+      return;
+    }
+    var pstore = portal.buildPortalStore(portal, this);
+    var db = await pstore?.loadDatabase();
+    var services = pstore?.services;
+    this.services = services ?? {};
+    this.database = db;
+    this.onready.forEach((v) {
+      v();
+    });
   }
 }
 
@@ -910,3 +924,4 @@ typedef BuildDesklets = List<Desklet> Function(
     Portal protal, IServiceProvider site);
 typedef BuildDesklet = Widget Function(
     Portlet portlet, Desklet desklet, PageContext desktopContext);
+typedef Onready = Function();

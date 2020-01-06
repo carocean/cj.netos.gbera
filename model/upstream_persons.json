@@ -1,0 +1,52 @@
+[
+  {
+    "id": "cj@gbera.netos",
+    "uid": "0019101312524102",
+    "accountid": "0019101312524176",
+    "accountName": "cj",
+    "appid": "gbera",
+    "tenantid": "netos",
+    "avatar": "http://47.105.165.186:7100/public/8d1db39600c6a2b8b784d28f22a9bc58.jpg",
+    "channels": [
+      {
+        "id": "91FA4506-7BDB-43D7-82D3-4DA78D9653E0",
+        "name": "Java编程",
+        "owner": "cj@gbera.netos",
+        "isPublic": true,
+        "leading": "http://47.105.165.186:7100/public/market/timg-3.jpeg"
+      },
+      {
+        "id": "0929122D-FB4A-4BC8-BF5E-510F254FCD15",
+        "name": "Flutter交流",
+        "owner": "cj@gbera.netos",
+        "isPublic": true,
+        "leading": "http://47.105.165.186:7100/public/market/timg-2.jpeg"
+      }
+    ]
+  },
+  {
+    "id": "tom@gbera.netos",
+    "uid": "0019101308235520",
+    "accountid": "0019101308235587",
+    "accountName": "tom",
+    "appid": "gbera",
+    "tenantid": "netos",
+    "avatar": "http://47.105.165.186:7100/public/8d1db39600c6a2b8b784d28f22a9bc58.jpg",
+    "channels": [
+      {
+        "id": "3FD24493-4BB4-43C6-A731-FF00375EDA9F",
+        "name": "中国投资协会",
+        "owner": "tom@gbera.netos",
+        "isPublic": true,
+        "leading": "http://47.105.165.186:7100/public/market/timg-1.jpeg"
+      },
+      {
+        "id": "6EF3B666-A33F-46A9-BC6D-0537A12AFF4B",
+        "name": "汉服园",
+        "owner": "tom@gbera.netos",
+        "isPublic": false,
+        "leading": "http://47.105.165.186:7100/public/market/timg-4.jpeg"
+      }
+    ]
+  }
+]
