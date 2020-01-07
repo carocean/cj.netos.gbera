@@ -12,6 +12,8 @@ import 'package:gbera/portals/gbera/store/services.dart';
 import '../parts/headers.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 
+import 'netflow/message_views.dart';
+
 class Netflow extends StatefulWidget {
   PageContext context;
 
@@ -124,6 +126,7 @@ class _NetflowState extends State<Netflow> {
                                     text: '全屏',
                                     style: TextStyle(
                                       fontSize: 16,
+                                      color: Colors.black87,
                                     ),
                                     children: [
                                       TextSpan(text: '\r\n'),
@@ -138,61 +141,19 @@ class _NetflowState extends State<Netflow> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  Navigator.pop(context, 'Profiteroles');
+                                  widget.context.backward();
+                                  widget.context.forward('/netflow/publics/activities',
+                                      arguments: {'title': '公众活动'});
                                 },
                               ),
+
                               CupertinoActionSheetAction(
                                 child: const Text.rich(
                                   TextSpan(
-                                    text: '私信',
+                                    text: '取消',
                                     style: TextStyle(
                                       fontSize: 16,
-                                    ),
-                                    children: [
-                                      TextSpan(text: '\r\n'),
-                                      TextSpan(
-                                        text: '仅列出标为私信的活动',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Navigator.pop(context, 'Profiteroles');
-                                },
-                              ),
-                              CupertinoActionSheetAction(
-                                child: const Text.rich(
-                                  TextSpan(
-                                    text: '其它',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                    children: [
-                                      TextSpan(text: '\r\n'),
-                                      TextSpan(
-                                        text: '仅列出标为普通信的活动',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Navigator.pop(context, 'Profiteroles');
-                                },
-                              ),
-                              CupertinoActionSheetAction(
-                                child: const Text.rich(
-                                  TextSpan(
-                                    text: '全部',
-                                    style: TextStyle(
-                                      fontSize: 16,
+                                      color: Colors.black87,
                                     ),
                                     children: [
                                       TextSpan(text: '\r\n'),
@@ -235,7 +196,7 @@ class _NetflowState extends State<Netflow> {
         ),
         SliverToBoxAdapter(
           child: Container(
-            child: FutureBuilder<List<Activity>>(
+            child: FutureBuilder<List<MessageView>>(
               future: _getMessages(),
               builder: (ctx, snapshot) {
                 if (snapshot.connectionState != ConnectionState.done) {
@@ -258,11 +219,10 @@ class _NetflowState extends State<Netflow> {
                     ),
                   );
                 }
-                var activities = snapshot.data;
+                var msgviews = snapshot.data;
 
-                return activities.length > 0
-                    ? _ActivitiesRegion(
-                        context: widget.context, activities: activities)
+                return msgviews.length > 0
+                    ? _MessagesRegion(context: widget.context, views: msgviews)
                     : Container(
                         width: 0,
                         height: 0,
@@ -480,7 +440,7 @@ class _NetflowState extends State<Netflow> {
     );
   }
 
-  Future<List<Activity>> _getMessages() async {
+  Future<List<MessageView>> _getMessages() async {
     IInsiteMessageService messageService =
         widget.context.site.getService('/insite/messages');
     IUpstreamPersonService personService =
@@ -488,7 +448,7 @@ class _NetflowState extends State<Netflow> {
     IExternalChannelService channelService =
         widget.context.site.getService('/external/channels');
     var messages = await messageService.pageMessage(4, 0);
-    var activities = <Activity>[];
+    var msgviews = <MessageView>[];
     for (var msg in messages) {
       var person = await personService.getPerson(msg.creator);
       var timeText = TimelineUtil.formatByDateTime(
@@ -497,7 +457,7 @@ class _NetflowState extends State<Netflow> {
               dayFormat: DayFormat.Full)
           .toString();
       var channel = await channelService.getChannel(msg.upstreamChannel);
-      var act = Activity(
+      var act = MessageView(
         who: person.accountName,
         channel: channel?.name,
         content: msg.digests,
@@ -518,45 +478,23 @@ class _NetflowState extends State<Netflow> {
               });
         },
       );
-      activities.add(act);
+      msgviews.add(act);
     }
-    return activities;
+    return msgviews;
   }
 }
 
-class Activity {
-  final String who;
-  final String content;
-  final String money;
-  final int picCount;
-  final bool isPublic;
-  final String time;
-  final String channel;
-  final Function() onTap;
-
-  const Activity({
-    this.who,
-    this.content,
-    this.money,
-    this.picCount,
-    this.isPublic,
-    this.time,
-    this.channel,
-    this.onTap,
-  });
-}
-
-class _ActivitiesRegion extends StatefulWidget {
-  List<Activity> activities = [];
+class _MessagesRegion extends StatefulWidget {
+  List<MessageView> views = [];
   PageContext context;
 
-  _ActivitiesRegion({this.activities, this.context});
+  _MessagesRegion({this.views, this.context});
 
   @override
-  _ActivitiesRegionState createState() => _ActivitiesRegionState();
+  _MessagesRegionState createState() => _MessagesRegionState();
 }
 
-class _ActivitiesRegionState extends State<_ActivitiesRegion> {
+class _MessagesRegionState extends State<_MessagesRegion> {
   var index = 0;
 
   @override
@@ -579,10 +517,10 @@ class _ActivitiesRegionState extends State<_ActivitiesRegion> {
               bottom: 10,
             ),
             child: Column(
-              children: widget.activities.map((v) {
+              children: widget.views.map((v) {
                 index++;
-                bool notBottom = index < widget.activities.length;
-                if (index >= widget.activities.length) {
+                bool notBottom = index < widget.views.length;
+                if (index >= widget.views.length) {
                   index = 0;
                 }
                 return GestureDetector(
@@ -595,13 +533,6 @@ class _ActivitiesRegionState extends State<_ActivitiesRegion> {
                         child: Text.rich(
                           TextSpan(
                             children: [
-                              TextSpan(
-                                text: '${v.who}:  ',
-                                style: TextStyle(
-                                  color: Colors.blueGrey,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
                               TextSpan(
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
@@ -632,26 +563,6 @@ class _ActivitiesRegionState extends State<_ActivitiesRegion> {
                               !StringUtil.isEmpty(v.time)
                                   ? TextSpan(text: '${v.time}')
                                   : TextSpan(text: ''),
-                              !StringUtil.isEmpty(v.channel)
-                                  ? TextSpan(
-                                      text: '',
-                                      children: [
-                                        TextSpan(
-                                            text:
-                                                '  ${v.isPublic ? '来自开放管道:' : '来自私有管道:'}'),
-                                        TextSpan(
-                                          text: '${v.channel}',
-                                          style: TextStyle(
-                                            color: Colors.blueGrey,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  : TextSpan(text: ''),
-                              v.picCount > 0
-                                  ? TextSpan(text: '  图片${v.picCount}个')
-                                  : TextSpan(text: ''),
                               !StringUtil.isEmpty(v.money)
                                   ? TextSpan(
                                       text: '  洇金:¥',
@@ -665,6 +576,36 @@ class _ActivitiesRegionState extends State<_ActivitiesRegion> {
                                         ),
                                       ],
                                     )
+                                  : TextSpan(text: ''),
+                              TextSpan(
+                                text: '  来自:',
+                              ),
+                              TextSpan(
+                                text: '  ${v.who}',
+                                style: TextStyle(
+                                  color: Colors.blueGrey,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              !StringUtil.isEmpty(v.channel)
+                                  ? TextSpan(
+                                      text: '',
+                                      children: [
+                                        TextSpan(
+                                            text:
+                                                '  ${v.isPublic=='true' ? '开放管道:' : '私有管道:'}'),
+                                        TextSpan(
+                                          text: '${v.channel}',
+                                          style: TextStyle(
+                                            color: Colors.blueGrey,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : TextSpan(text: ''),
+                              v.picCount > 0
+                                  ? TextSpan(text: '  图片${v.picCount}个')
                                   : TextSpan(text: ''),
                             ],
                             style: TextStyle(

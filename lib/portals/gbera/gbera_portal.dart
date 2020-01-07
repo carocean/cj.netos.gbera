@@ -41,7 +41,7 @@ import 'package:gbera/portals/gbera/pages/netflow/channels_of_user.dart';
 import 'package:gbera/portals/gbera/pages/netflow/create_channel.dart';
 import 'package:gbera/portals/gbera/pages/netflow/insite_publics.dart';
 import 'package:gbera/portals/gbera/pages/netflow/outsite_publics.dart';
-import 'package:gbera/portals/gbera/pages/netflow/publics_activities.dart';
+import 'package:gbera/portals/gbera/pages/netflow/insite_messages.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publics_for_down_activies.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publics_for_up_activies.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publics_settings.dart';
@@ -442,7 +442,7 @@ class GberaPortal {
           subtitle: '',
           icon: Icons.settings_input_composite,
           url: '/netflow/publics/activities',
-          buildPage: (PageContext pageContext) => PublicActivies(
+          buildPage: (PageContext pageContext) => InsiteMessagePage(
             pageContext: pageContext,
           ),
         ),

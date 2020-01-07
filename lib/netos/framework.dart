@@ -337,7 +337,12 @@ class FrameworkNavigatorObserver extends NavigatorObserver {
     }
     String prevFullUrl = previousRoute.settings.name;
 
-    var portal = prevFullUrl.substring(0, prevFullUrl.indexOf('://'));
+    var portal = '';
+    if(prevFullUrl==null){
+      portal = fullUrl.substring(0, fullUrl.indexOf('://'));
+    }else{
+      portal = prevFullUrl.substring(0, prevFullUrl.indexOf('://'));
+    }
     if (fullUrl.startsWith(portal)) {
       //同一框架则不切换
       return;
@@ -381,7 +386,7 @@ class FrameworkNavigatorObserver extends NavigatorObserver {
     String prevFullUrl = previousRoute.settings.name;
 
     var portal = fullUrl.substring(0, fullUrl.indexOf('://'));
-    if (prevFullUrl.startsWith(portal)) {
+    if (prevFullUrl!=null&&prevFullUrl.startsWith(portal)) {
       //同一框架则不切换
       return;
     }

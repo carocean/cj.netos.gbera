@@ -21,6 +21,9 @@ abstract class IUpstreamPersonDAO {
 
   @Query('SELECT * FROM UpstreamPerson')
   Future<List<UpstreamPerson>> getAllPerson();
+
+  @Query("SELECT * FROM UpstreamPerson")
+  Future<List<UpstreamPerson>> countPersons();
 }
 
 @dao
@@ -81,6 +84,11 @@ abstract class IInsiteMessageDAO {
 
   @Query('SELECT *  FROM InsiteMessage LIMIT :pageSize OFFSET :currPage')
   Future<List<InsiteMessage>> pageMessage(int pageSize, int currPage);
+
+  @Query(
+      'SELECT msg.*  FROM InsiteMessage msg,ExternalChannel ch  WHERE msg.upstreamChannel=ch.id AND ch.isPublic=:isPublic LIMIT :pageSize OFFSET :currPage')
+  Future<List<InsiteMessage>> pageMessageByChannelVisualable(
+      String isPublic, int limit, int offset);
 
   @Query('SELECT * FROM InsiteMessage WHERE id = :id')
   Future<InsiteMessage> getMessage(String id);

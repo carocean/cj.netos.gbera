@@ -98,7 +98,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `MicroApp` (`id` TEXT, `site` TEXT, `leading` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `ExternalChannel` (`id` TEXT, `name` TEXT, `owner` TEXT, `isPublic` INTEGER, `leading` TEXT, `site` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `ExternalChannel` (`id` TEXT, `name` TEXT, `owner` TEXT, `isPublic` TEXT, `leading` TEXT, `site` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `InsiteMessage` (`id` TEXT, `upstreamPerson` TEXT, `upstreamChannel` TEXT, `sourceSite` TEXT, `sourceApp` TEXT, `sourceChannel` TEXT, `creator` TEXT, `ctime` INTEGER, `digests` TEXT, `wy` REAL, PRIMARY KEY (`id`))');
         await database.execute(
@@ -202,10 +202,10 @@ class _$IUpstreamPersonDAO extends IUpstreamPersonDAO {
   }
 
   @override
-  Future<List<UpstreamPerson>> pagePerson(int currPage, int pageSize) async {
+  Future<List<UpstreamPerson>> pagePerson(int pageSize, int currPage) async {
     return _queryAdapter.queryList(
         'SELECT * FROM UpstreamPerson LIMIT ? OFFSET ?',
-        arguments: <dynamic>[currPage, pageSize],
+        arguments: <dynamic>[pageSize, currPage],
         mapper: _upstreamPersonMapper);
   }
 
@@ -217,6 +217,12 @@ class _$IUpstreamPersonDAO extends IUpstreamPersonDAO {
 
   @override
   Future<List<UpstreamPerson>> getAllPerson() async {
+    return _queryAdapter.queryList('SELECT * FROM UpstreamPerson',
+        mapper: _upstreamPersonMapper);
+  }
+
+  @override
+  Future<List<UpstreamPerson>> countPersons() async {
     return _queryAdapter.queryList('SELECT * FROM UpstreamPerson',
         mapper: _upstreamPersonMapper);
   }
@@ -275,10 +281,10 @@ class _$IDownstreamPersonDAO extends IDownstreamPersonDAO {
   }
 
   @override
-  Future<List<DownstreamPerson>> pagePerson(int currPage, int pageSize) async {
+  Future<List<DownstreamPerson>> pagePerson(int pageSize, int currPage) async {
     return _queryAdapter.queryList(
         'SELECT * FROM DownstreamPerson LIMIT ? OFFSET ?',
-        arguments: <dynamic>[currPage, pageSize],
+        arguments: <dynamic>[pageSize, currPage],
         mapper: _downstreamPersonMapper);
   }
 
@@ -335,9 +341,9 @@ class _$IMicroSiteDAO extends IMicroSiteDAO {
   }
 
   @override
-  Future<List<MicroSite>> pageSite(int currPage, int pageSize) async {
+  Future<List<MicroSite>> pageSite(int pageSize, int currPage) async {
     return _queryAdapter.queryList('SELECT * FROM MicroSite LIMIT ? OFFSET ?',
-        arguments: <dynamic>[currPage, pageSize], mapper: _microSiteMapper);
+        arguments: <dynamic>[pageSize, currPage], mapper: _microSiteMapper);
   }
 
   @override
@@ -389,9 +395,9 @@ class _$IMicroAppDAO extends IMicroAppDAO {
   }
 
   @override
-  Future<List<MicroApp>> pageApp(int currPage, int pageSize) async {
+  Future<List<MicroApp>> pageApp(int pageSize, int currPage) async {
     return _queryAdapter.queryList('SELECT * FROM MicroApp LIMIT ? OFFSET ?',
-        arguments: <dynamic>[currPage, pageSize], mapper: _microAppMapper);
+        arguments: <dynamic>[pageSize, currPage], mapper: _microAppMapper);
   }
 
   @override
@@ -423,7 +429,7 @@ class _$IExternalChannelDAO extends IExternalChannelDAO {
                   'id': item.id,
                   'name': item.name,
                   'owner': item.owner,
-                  'isPublic': item.isPublic ? 1 : 0,
+                  'isPublic': item.isPublic,
                   'leading': item.leading,
                   'site': item.site
                 });
@@ -439,7 +445,7 @@ class _$IExternalChannelDAO extends IExternalChannelDAO {
           row['id'] as String,
           row['name'] as String,
           row['owner'] as String,
-          (row['isPublic'] as int) != 0,
+          row['isPublic'] as String,
           row['leading'] as String,
           row['site'] as String);
 
@@ -453,10 +459,10 @@ class _$IExternalChannelDAO extends IExternalChannelDAO {
   }
 
   @override
-  Future<List<ExternalChannel>> pageChannel(int currPage, int pageSize) async {
+  Future<List<ExternalChannel>> pageChannel(int pageSize, int currPage) async {
     return _queryAdapter.queryList(
         'SELECT * FROM ExternalChannel LIMIT ? OFFSET ?',
-        arguments: <dynamic>[currPage, pageSize],
+        arguments: <dynamic>[pageSize, currPage],
         mapper: _externalChannelMapper);
   }
 
@@ -546,10 +552,19 @@ class _$IInsiteMessageDAO extends IInsiteMessageDAO {
   }
 
   @override
-  Future<List<InsiteMessage>> pageMessage(int currPage, int pageSize) async {
+  Future<List<InsiteMessage>> pageMessage(int pageSize, int currPage) async {
     return _queryAdapter.queryList(
         'SELECT * FROM InsiteMessage LIMIT ? OFFSET ?',
-        arguments: <dynamic>[currPage, pageSize],
+        arguments: <dynamic>[pageSize, currPage],
+        mapper: _insiteMessageMapper);
+  }
+
+  @override
+  Future<List<InsiteMessage>> pageMessageByChannelVisualable(
+      String isPublic, int limit, int offset) async {
+    return _queryAdapter.queryList(
+        'SELECT msg.* FROM InsiteMessage msg,ExternalChannel ch WHERE msg.upstreamChannel=ch.id AND ch.isPublic=? LIMIT ? OFFSET ?',
+        arguments: <dynamic>[isPublic, limit, offset],
         mapper: _insiteMessageMapper);
   }
 
@@ -561,8 +576,7 @@ class _$IInsiteMessageDAO extends IInsiteMessageDAO {
 
   @override
   Future<List<InsiteMessage>> getAllMessage() async {
-    return _queryAdapter.queryList(
-        'SELECT * FROM InsiteMessage LIMIT 1 OFFSET 0',
+    return _queryAdapter.queryList('SELECT * FROM InsiteMessage',
         mapper: _insiteMessageMapper);
   }
 

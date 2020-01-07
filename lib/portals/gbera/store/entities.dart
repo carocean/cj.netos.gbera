@@ -51,7 +51,7 @@ class ExternalChannel{
   final String id;
   final String name;
   final String owner;
-  final bool isPublic;
+  final String isPublic;
   final String leading;
   final String site;
 

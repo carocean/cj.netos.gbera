@@ -21,8 +21,15 @@ class InsiteMessageService implements IInsiteMessageService {
   }
 
   @override
-  Future<List<InsiteMessage>> getAllMessage() async{
+  Future<List<InsiteMessage>> getAllMessage() async {
     return await insiteMessageDAO.getAllMessage();
+  }
+
+  @override
+  Future<List<InsiteMessage>> pageMessageByChannelVisualable(
+      int limit, int offset, String isPublic) async {
+    return await insiteMessageDAO.pageMessageByChannelVisualable(isPublic,
+        limit, offset);
   }
 
   @override

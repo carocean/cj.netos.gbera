@@ -2,8 +2,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/common/swipe_refresh.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel.dart';
 import 'package:gbera/portals/gbera/parts/CardItem.dart';
+import 'package:gbera/portals/gbera/store/entities.dart';
+import 'package:gbera/portals/gbera/store/services.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 
 class UpPublicsForActivies extends StatefulWidget {
@@ -16,24 +19,23 @@ class UpPublicsForActivies extends StatefulWidget {
 }
 
 class _UpPublicsForActiviesState extends State<UpPublicsForActivies> {
+  List<CardItem> personCardItems = [];
+  int limit = 20;
+  int offset = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    personCardItems.clear();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    var items = <CardItem>[];
-    for (int i = 0; i < 20; i++) {
-      items.add(
-        CardItem(
-          title: '精灵仔',
-          leading: Image.network(
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573879749787&di=bf912f586fd957b9dd33ba88910a3aae&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201803%2F24%2F20180324081023_8FVre.jpeg',
-            width: 40,
-            height: 40,
-          ),
-          onItemTap: () {
-            widget.context.forward('/site/personal');
-          },
-        ),
-      );
-    }
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.context.page.title),
@@ -45,102 +47,61 @@ class _UpPublicsForActiviesState extends State<UpPublicsForActivies> {
           _getPopupMenu(),
         ],
       ),
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverToBoxAdapter(
-            child: Container(
-              padding: EdgeInsets.only(
-                left: 10,
-                right: 10,
-                bottom: 5,
-              ),
-              child: Row(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: 5,
-                    ),
-                    child: Icon(
-                      Icons.people,
-                      size: 16,
-                      color: Colors.grey[500],
-                    ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(
+              left: 10,
+              right: 10,
+              bottom: 5,
+            ),
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: 5,
                   ),
-                  Text.rich(
-                    TextSpan(
-                      text: '1200人',
-                      style: TextStyle(
-                        color: Colors.grey[500],
+                  child: Icon(
+                    Icons.people,
+                    size: 16,
+                    color: Colors.grey[500],
+                  ),
+                ),
+                FutureBuilder(
+                  future: _onLoadPersonCount(),
+                  builder: (ctx, snapshot) {
+                    return Text.rich(
+                      TextSpan(
+                        text: '${snapshot.data}人',
+                        style: TextStyle(
+                          color: Colors.grey[500],
+                        ),
+                        children: [],
                       ),
-                      children: [
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
-          SliverToBoxAdapter(
-            child: Container(
-              child: Column(
-                children: items.map((v) {
-                  return Column(
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(
-                          left: 10,
-                          right: 10,
-                        ),
-                        color: Colors.white,
-                        child: Dismissible(
-                          key: ObjectKey(v),
-                          child: v,
-                          confirmDismiss: (DismissDirection direction) async {
-                            if (direction == DismissDirection.endToStart) {
-                              return await _showConfirmationDialog(context) ==
-                                  'yes';
-                            }
-                            return false;
-                          },
-                          secondaryBackground: Container(
-                            alignment: Alignment.centerRight,
-                            child: Icon(
-                              Icons.delete_sweep,
-                              size: 16,
-                            ),
-                          ),
-                          background: Container(),
-                          onDismissed: (direction) {
-                            switch (direction) {
-                              case DismissDirection.endToStart:
-                                print('---------do deleted');
-                                break;
-                              case DismissDirection.vertical:
-                                // TODO: Handle this case.
-                                break;
-                              case DismissDirection.horizontal:
-                                // TODO: Handle this case.
-                                break;
-                              case DismissDirection.startToEnd:
-                                // TODO: Handle this case.
-                                break;
-                              case DismissDirection.up:
-                                // TODO: Handle this case.
-                                break;
-                              case DismissDirection.down:
-                                // TODO: Handle this case.
-                                break;
-                            }
-                          },
-                        ),
-                      ),
-                      Container(
-                        height: 10,
-                      ),
-                    ],
+          Expanded(
+            child: FutureBuilder(
+              future: _onLoadPersons('up'),
+              builder: (ctx, snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.grey[300],
+                      valueColor:
+                          new AlwaysStoppedAnimation<Color>(Colors.grey[600]),
+                    ),
                   );
-                }).toList(),
-              ),
+                }
+                return PersonsView(
+                  personCardItems: personCardItems,
+                  onLoadPersons: _onLoadPersons,
+                );
+              },
             ),
           ),
         ],
@@ -148,41 +109,40 @@ class _UpPublicsForActiviesState extends State<UpPublicsForActivies> {
     );
   }
 
-  Future<String> _showConfirmationDialog(BuildContext context) {
-    return showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: Text.rich(
-          TextSpan(
-            text: '是否移除？',
-            children: [
-              TextSpan(text: '\r\n'),
-              TextSpan(
-                text: '从管道移除后可在我的公众中找回',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
-              ),
-            ],
-          ),
+  Future<int> _onLoadPersonCount() async {
+    IUpstreamPersonService personService =
+        widget.context.site.getService('/upstream/persons');
+    return await personService.count();
+  }
+
+  Future<void> _onLoadPersons([String director = 'up']) async {
+    if (director == 'down') {
+      return;
+    }
+    IUpstreamPersonService personService =
+        widget.context.site.getService('/upstream/persons');
+    List<UpstreamPerson> persons =
+        await personService.pagePerson(limit, offset);
+    if (persons.length == 0) {
+      return;
+    }
+    offset += persons.length;
+    for (var person in persons) {
+      print(person);
+      var item = CardItem(
+        title: person.accountName,
+        leading: Image.network(
+          person.avatar,
+          width: 40,
+          height: 40,
         ),
-        actions: <Widget>[
-          FlatButton(
-            child: const Text('取消'),
-            onPressed: () {
-              Navigator.pop(context, 'no');
-            },
-          ),
-          FlatButton(
-            child: const Text('确定'),
-            onPressed: () {
-              Navigator.pop(context, 'yes');
-            },
-          ),
-        ],
-      ),
-    );
+        onItemTap: () {
+          widget.context
+              .forward('/site/personal', arguments: {'person': person});
+        },
+      );
+      this.personCardItems.add(item);
+    }
   }
 
   _getPopupMenu() {
@@ -293,6 +253,126 @@ class _UpPublicsForActiviesState extends State<UpPublicsForActivies> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class PersonsView extends StatefulWidget {
+  List<CardItem> personCardItems;
+  Future<void> Function(String director) onLoadPersons;
+
+  PersonsView({this.personCardItems, this.onLoadPersons});
+
+  @override
+  _PersonsViewState createState() => _PersonsViewState();
+}
+
+class _PersonsViewState extends State<PersonsView> {
+  @override
+  Widget build(BuildContext context) {
+    return SwipeRefreshLayout(
+      onSwipeDown: () async {
+        await widget.onLoadPersons('down');
+      },
+      onSwipeUp: () async {
+        await widget.onLoadPersons('up');
+        setState(() {});
+      },
+      child: ListView(
+        children: widget.personCardItems.map((item) {
+          return Column(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(
+                  left: 10,
+                  right: 10,
+                ),
+                color: Colors.white,
+                child: Dismissible(
+                  key: ObjectKey(item),
+                  child: item,
+                  confirmDismiss: (DismissDirection direction) async {
+                    if (direction == DismissDirection.endToStart) {
+                      return await _showConfirmationDialog(context) == 'yes';
+                    }
+                    return false;
+                  },
+                  secondaryBackground: Container(
+                    alignment: Alignment.centerRight,
+                    child: Icon(
+                      Icons.delete_sweep,
+                      size: 16,
+                    ),
+                  ),
+                  background: Container(),
+                  onDismissed: (direction) {
+                    switch (direction) {
+                      case DismissDirection.endToStart:
+                        print('---------do deleted');
+                        break;
+                      case DismissDirection.vertical:
+                        // TODO: Handle this case.
+                        break;
+                      case DismissDirection.horizontal:
+                        // TODO: Handle this case.
+                        break;
+                      case DismissDirection.startToEnd:
+                        // TODO: Handle this case.
+                        break;
+                      case DismissDirection.up:
+                        // TODO: Handle this case.
+                        break;
+                      case DismissDirection.down:
+                        // TODO: Handle this case.
+                        break;
+                    }
+                  },
+                ),
+              ),
+              Container(
+                height: 10,
+              ),
+            ],
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Future<String> _showConfirmationDialog(BuildContext context) {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text.rich(
+          TextSpan(
+            text: '是否移除？',
+            children: [
+              TextSpan(text: '\r\n'),
+              TextSpan(
+                text: '从管道移除后可在我的公众中找回',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: const Text('取消'),
+            onPressed: () {
+              Navigator.pop(context, 'no');
+            },
+          ),
+          FlatButton(
+            child: const Text('确定'),
+            onPressed: () {
+              Navigator.pop(context, 'yes');
+            },
+          ),
+        ],
+      ),
     );
   }
 }

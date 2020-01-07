@@ -17,13 +17,24 @@ class UpstreamPersonService implements IUpstreamPersonService {
   }
 
   @override
-  Future<UpstreamPerson> getPerson(id) async{
+  Future<int> count() async{
+    var list= await this.upstreamPersonDAO.countPersons();
+    return list.length;
+  }
+
+  @override
+  Future<UpstreamPerson> getPerson(id) async {
     return await this.upstreamPersonDAO.getPerson(id);
   }
 
   @override
-  Future<List<UpstreamPerson>> getAllPerson() async{
+  Future<List<UpstreamPerson>> getAllPerson() async {
     return await this.upstreamPersonDAO.getAllPerson();
+  }
+
+  @override
+  Future<List<UpstreamPerson>> pagePerson(int limit, int offset) async{
+    return await this.upstreamPersonDAO.pagePerson(limit,offset);
   }
 
   @override

@@ -10,6 +10,10 @@ mixin IUpstreamPersonService {
   Future<void> addPerson(UpstreamPerson person);
 
   Future<List<UpstreamPerson>> getAllPerson();
+
+  Future<List<UpstreamPerson>> pagePerson(int limit, int offset);
+
+  Future<int> count();
 }
 mixin IExternalChannelService {
   Future<void> empty();
@@ -22,7 +26,7 @@ mixin IExternalChannelService {
 
   Future<List<ExternalChannel>> getChannelsOfPerson(String personid);
 
-  Future<ExternalChannel> getChannel(String channelid) ;
+  Future<ExternalChannel> getChannel(String channelid);
 }
 mixin IInsiteMessageService {
   Future<void> empty();
@@ -34,4 +38,7 @@ mixin IInsiteMessageService {
   Future<List<InsiteMessage>> pageMessage(int pageSize, int currPage);
 
   Future<List<InsiteMessage>> getAllMessage();
+
+  Future<List<InsiteMessage>> pageMessageByChannelVisualable(
+      int limit, int offset, String isPublic);
 }
