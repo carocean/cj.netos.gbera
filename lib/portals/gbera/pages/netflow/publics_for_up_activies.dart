@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -131,8 +133,8 @@ class _UpPublicsForActiviesState extends State<UpPublicsForActivies> {
       print(person);
       var item = CardItem(
         title: person.accountName,
-        leading: Image.network(
-          person.avatar,
+        leading: Image.file(
+          File(person.avatar),
           width: 40,
           height: 40,
         ),

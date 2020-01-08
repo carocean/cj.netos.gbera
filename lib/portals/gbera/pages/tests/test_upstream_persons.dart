@@ -1,9 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/store/entities.dart';
 import 'package:gbera/portals/gbera/store/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 class TestUpstreamPersonService extends StatefulWidget {
   PageContext context;
@@ -42,13 +46,19 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
                       widget.context.site.getService('/upstream/persons');
                   IExternalChannelService channelService =
                       widget.context.site.getService('/external/channels');
-                  
+                  Dio dio = widget.context.site.getService('@.http');
                   await personService.empty();
                   for (var obj in persons) {
-                    print(obj);
                     if (await personService.existsPerson(obj['id'])) {
                       continue;
                     }
+                    var home = await getApplicationDocumentsDirectory();
+                    var dir = Directory('${home.path}/pictures/share');
+                    if (!dir.existsSync()) {
+                      dir.createSync(recursive: true);
+                    }
+                    var avatar = '${dir.path}/${Uuid().v1()}';
+                    await dio.download(obj['avatar'], avatar);
                     UpstreamPerson person = UpstreamPerson(
                       obj['id'],
                       obj['uid'],
@@ -56,7 +66,7 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
                       obj['accountName'],
                       obj['appid'],
                       obj['tenantid'],
-                      obj['avatar'],
+                      avatar,
                     );
                     await personService.addPerson(person);
                     var objchs = obj['channels'];
