@@ -13,7 +13,7 @@ var buildPortal = (IServiceProvider site) => Portal(
           desc: '呈现淡蓝，接近白',
           url: '/blue',
           iconColor: Colors.blue[500],
-          buildStyle: (context) => blue.buildStyles(context),
+          buildStyle: (portal,site) => blue.buildStyles(portal,site),
           buildTheme: (context) => ThemeData(
             backgroundColor: Color(0xFFF5F5f5),
             scaffoldBackgroundColor: Color(0xFFF5F5f5),

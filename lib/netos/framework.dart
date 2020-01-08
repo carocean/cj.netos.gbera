@@ -24,15 +24,6 @@ IServiceProvider _site = GberaServiceProvider();
 ///上下文环境
 Environment _environment = Environment();
 
-//事件顺序
-//1。先执行onGenerateThemeStyle，如果已绑定的话；
-//2。次执行buildRoutes，如果已绑定的话；
-//3。再执行onGenerateRoute，如果已绑定的话；
-//因此加载顺序为：不论绑定与否，只要3个绑一个就响应框架的加载事件且一次性加载，如果已加载过了则不再加载
-//但要考虑到热调试，当重新过来时清空则加载
-var loadStep =
-    0; //1为执行了onGenerateThemeStyle方法；2为执行了buildRoutes法；3是执行了onGenerateRoute方法。后者检查前序方法是否被执行，否则报错。
-
 run(Widget app, {Map<String, dynamic> props}) async {
   if (props == null) {
     props = {};
@@ -47,20 +38,19 @@ run(Widget app, {Map<String, dynamic> props}) async {
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
 
-  runApp(app);
+  await _init();
 
-  _sharedPreferences = await NetosSharedPreferences().init(_site);
+  runApp(app);
 
   ErrorWidget.builder = (FlutterErrorDetails flutterErrorDetails) {
     return RuntimeErrorWidget(flutterErrorDetails: flutterErrorDetails);
   };
-
-  if (onFrameworkEvents == null) {
-    throw FlutterError('客户程序必须实现onFrameworkRefresh事件');
-  }
 }
 
-_buildPortals(BuildContext context) {
+///仅加载一次，不受hot reload影响，所以不支持热部署，如添加页面等资源时可使用hot restart快速重启应用
+_init() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  _sharedPreferences = await NetosSharedPreferences().init(_site);
   _allPortals.clear();
   _allServiceSites.clear();
   _allPortalStores.clear();
@@ -77,10 +67,10 @@ _buildPortals(BuildContext context) {
     _allPortals[portal.id] = portal;
 
     ServiceSite site = ServiceSite(parent: _site);
-    site.init(portal);
+    await site.init(portal);
     _allServiceSites[portal.id] = site;
 
-    var pages = portal.buildPages(portal, _site);
+    var pages = portal.buildPages(portal, site);
     for (Page page in pages) {
       if (page.url == null ||
           !page.url.startsWith("/") ||
@@ -107,7 +97,7 @@ _buildPortals(BuildContext context) {
       }
       _allPages[fullurl] = page;
     }
-    var themes = portal.buildThemes(portal, _site);
+    var themes = portal.buildThemes(portal, site);
     for (ThemeStyle themeStyle in themes) {
       if (themeStyle.url == null ||
           !themeStyle.url.startsWith("/") ||
@@ -125,7 +115,7 @@ _buildPortals(BuildContext context) {
       if (_allThemes.containsKey(themeurl)) {
         throw FlutterErrorDetails(exception: Exception('已存在主题地址:$themeurl'));
       }
-      List<Style> styles = themeStyle.buildStyle(context);
+      List<Style> styles = themeStyle.buildStyle(portal, site);
       for (Style style in styles) {
         String themeurlSubEndSign = themeurl;
         while (themeurl.endsWith('/')) {
@@ -143,7 +133,7 @@ _buildPortals(BuildContext context) {
       }
       _allThemes[themeurl] = themeStyle;
     }
-    var desklets = portal.buildDesklets(portal, _site);
+    var desklets = portal.buildDesklets(portal, site);
     for (var desklet in desklets) {
       if (desklet.url == null ||
           !desklet.url.startsWith("/") ||
@@ -170,9 +160,6 @@ _buildPortals(BuildContext context) {
 //主题是第一个响应，次是初始化路由表
 ///themeUrl必须是带框架名的全路径
 ThemeData onGenerateThemeStyle(String themeUrl, BuildContext context) {
-  //由于主题是最先加载，因此铁定都要执行初始化。所以在调试时如添加了新的page或主题样式支持reload hot热调试
-  _buildPortals(context);
-  loadStep = 1;
   var fullUrl = themeUrl;
   var pos = fullUrl.indexOf('://');
   if (pos < 0) {
@@ -199,20 +186,7 @@ ThemeData onGenerateThemeStyle(String themeUrl, BuildContext context) {
   return themeStyle.buildTheme(context);
 }
 
-Map<String, Widget Function(BuildContext)> buildRoutes() {
-  if (loadStep < 1) {
-    throw FlutterErrorDetails(
-        exception: Exception('主widget未绑定onGenerateThemeStyle方法'));
-  }
-  loadStep = 2;
-  return {}; //仅仅将它当作初始化事件使用，所以直接返回空map，当然也可以为map添加一些初始化的全局页面，比如错误页面
-}
-
 Route onGenerateRoute(RouteSettings routeSettings) {
-  if (loadStep < 2) {
-    throw FlutterErrorDetails(exception: Exception('主widget未绑定buildRoutes方法'));
-  }
-  loadStep = 3;
   var url = routeSettings.name;
   if ("/" == url) {
     //在指定初始化路由时如果在路由表中未指定，则flutter会采用默认/来搜索路由,因此要求在指定初始化路由时一定保证路由表中有，由于路由为空（buildRoutes方法），所以出现/这种情况
@@ -338,9 +312,9 @@ class FrameworkNavigatorObserver extends NavigatorObserver {
     String prevFullUrl = previousRoute.settings.name;
 
     var portal = '';
-    if(prevFullUrl==null){
+    if (prevFullUrl == null) {
       portal = fullUrl.substring(0, fullUrl.indexOf('://'));
-    }else{
+    } else {
       portal = prevFullUrl.substring(0, prevFullUrl.indexOf('://'));
     }
     if (fullUrl.startsWith(portal)) {
@@ -386,7 +360,7 @@ class FrameworkNavigatorObserver extends NavigatorObserver {
     String prevFullUrl = previousRoute.settings.name;
 
     var portal = fullUrl.substring(0, fullUrl.indexOf('://'));
-    if (prevFullUrl!=null&&prevFullUrl.startsWith(portal)) {
+    if (prevFullUrl != null && prevFullUrl.startsWith(portal)) {
       //同一框架则不切换
       return;
     }

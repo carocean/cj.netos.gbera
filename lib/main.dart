@@ -30,24 +30,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
-  Widget build(BuildContext context) {
-    var fullThemeUrl = '${widget.portal}:/${widget.themeUrl}';
-    var fullWelcomeUrl = '${widget.portal}:/${widget.welcomeUrl}';
-//    debugPaintSizeEnabled = false;
-    return MaterialApp(
-      title: widget.title,
-      navigatorObservers: [
-        framework.navigatorObserver(),
-      ],
-      theme: framework.onGenerateThemeStyle(fullThemeUrl, context),
-      routes: framework.buildRoutes(),
-      onGenerateRoute: framework.onGenerateRoute,
-      onUnknownRoute: framework.onUnknownRoute,
-      initialRoute: fullWelcomeUrl,
-    );
-  }
-
-  _MyAppState() {
+  void initState() {
     framework.onFrameworkEvents = (event) {
       switch (event.cmd) {
         case 'switchTheme':
@@ -58,5 +41,24 @@ class _MyAppState extends State<MyApp> {
           break;
       }
     };
+
+    super.initState();
   }
+  @override
+  Widget build(BuildContext context) {
+    var fullThemeUrl = '${widget.portal}:/${widget.themeUrl}';
+    var fullWelcomeUrl = '${widget.portal}:/${widget.welcomeUrl}';
+//    debugPaintSizeEnabled = false;
+    return MaterialApp(
+      title: widget.title,
+      navigatorObservers: [
+        framework.navigatorObserver(),
+      ],
+      theme: framework.onGenerateThemeStyle(fullThemeUrl, context),
+      onGenerateRoute: framework.onGenerateRoute,
+      onUnknownRoute: framework.onUnknownRoute,
+      initialRoute: fullWelcomeUrl,
+    );
+  }
+
 }

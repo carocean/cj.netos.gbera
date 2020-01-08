@@ -72,6 +72,9 @@ class _UpPublicsForActiviesState extends State<UpPublicsForActivies> {
                 FutureBuilder(
                   future: _onLoadPersonCount(),
                   builder: (ctx, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done) {
+                      return Text('...');
+                    }
                     return Text.rich(
                       TextSpan(
                         text: '${snapshot.data}人',
@@ -114,7 +117,8 @@ class _UpPublicsForActiviesState extends State<UpPublicsForActivies> {
   Future<int> _onLoadPersonCount() async {
     IUpstreamPersonService personService =
         widget.context.site.getService('/upstream/persons');
-    return await personService.count();
+    int count = await personService.count();
+    return count;
   }
 
   Future<void> _onLoadPersons([String director = 'up']) async {
@@ -130,7 +134,6 @@ class _UpPublicsForActiviesState extends State<UpPublicsForActivies> {
     }
     offset += persons.length;
     for (var person in persons) {
-      print(person);
       var item = CardItem(
         title: person.accountName,
         leading: Image.file(

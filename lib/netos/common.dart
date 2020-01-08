@@ -397,7 +397,7 @@ class Page {
 }
 
 typedef BuildTheme = ThemeData Function(BuildContext context);
-typedef BuildStyle = List<Style> Function(BuildContext context);
+typedef BuildStyle = List<Style> Function(Portal portal,IServiceProvider site);
 
 class ThemeStyle {
   final String url;

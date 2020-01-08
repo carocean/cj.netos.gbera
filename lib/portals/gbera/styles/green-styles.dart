@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 
-List<Style> buildGreenStyles(BuildContext context) {
+List<Style> buildGreenStyles(Portal portal,IServiceProvider site) {
   return <Style>[
     Style(
         url: '/desktop/settings/portlet.activeColor',
