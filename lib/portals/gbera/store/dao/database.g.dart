@@ -67,6 +67,14 @@ class _$AppDatabase extends AppDatabase {
 
   IInsiteMessageDAO _insiteMessageDAOInstance;
 
+  IChannelMessageDAO _channelMessageDAOInstance;
+
+  IChannelMediaDAO _channelMediaDAOInstance;
+
+  IChannelLikePersonDAO _channelLikeDAOInstance;
+
+  IChannelCommentDAO _channelCommentDAOInstance;
+
   Future<sqflite.Database> open(String name, List<Migration> migrations,
       [Callback callback]) async {
     final path = join(await sqflite.getDatabasesPath(), name);
@@ -96,11 +104,13 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Channel` (`id` TEXT, `name` TEXT, `owner` TEXT, `loopType` TEXT, `leading` TEXT, `site` TEXT, `tips` TEXT, `ctime` INTEGER, `utime` INTEGER, `unreadMsgCount` INTEGER, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `InsiteMessage` (`id` TEXT, `upstreamPerson` TEXT, `upstreamChannel` TEXT, `sourceSite` TEXT, `sourceApp` TEXT, `sourceChannel` TEXT, `creator` TEXT, `ctime` INTEGER, `digests` TEXT, `wy` REAL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `InsiteMessage` (`id` TEXT, `upstreamPerson` TEXT, `upstreamChannel` TEXT, `sourceSite` TEXT, `sourceApp` TEXT, `sourceChannel` TEXT, `creator` TEXT, `ctime` INTEGER, `digests` TEXT, `wy` REAL, `location` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `ChannelMessage` (`id` TEXT, `upstreamPerson` TEXT, `upstreamChannel` TEXT, `sourceSite` TEXT, `sourceApp` TEXT, `sourceChannel` TEXT, `creator` TEXT, `ctime` INTEGER, `text` TEXT, `wy` REAL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `ChannelMessage` (`id` TEXT, `upstreamPerson` TEXT, `upstreamChannel` TEXT, `sourceSite` TEXT, `sourceApp` TEXT, `sourceChannel` TEXT, `creator` TEXT, `ctime` INTEGER, `text` TEXT, `wy` REAL, `location` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Comment` (`id` TEXT, `person` TEXT, `uid` TEXT, `avatar` TEXT, `msgid` TEXT, `text` TEXT, `ctime` INTEGER, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `ChannelComment` (`id` TEXT, `person` TEXT, `uid` TEXT, `avatar` TEXT, `msgid` TEXT, `text` TEXT, `ctime` INTEGER, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `LikePerson` (`id` TEXT, `person` TEXT, `uid` TEXT, `avatar` TEXT, `msgid` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Media` (`id` TEXT, `type` TEXT, `src` TEXT, `leading` TEXT, `msgid` TEXT, `text` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
@@ -140,6 +150,30 @@ class _$AppDatabase extends AppDatabase {
   IInsiteMessageDAO get insiteMessageDAO {
     return _insiteMessageDAOInstance ??=
         _$IInsiteMessageDAO(database, changeListener);
+  }
+
+  @override
+  IChannelMessageDAO get channelMessageDAO {
+    return _channelMessageDAOInstance ??=
+        _$IChannelMessageDAO(database, changeListener);
+  }
+
+  @override
+  IChannelMediaDAO get channelMediaDAO {
+    return _channelMediaDAOInstance ??=
+        _$IChannelMediaDAO(database, changeListener);
+  }
+
+  @override
+  IChannelLikePersonDAO get channelLikeDAO {
+    return _channelLikeDAOInstance ??=
+        _$IChannelLikePersonDAO(database, changeListener);
+  }
+
+  @override
+  IChannelCommentDAO get channelCommentDAO {
+    return _channelCommentDAOInstance ??=
+        _$IChannelCommentDAO(database, changeListener);
   }
 }
 
@@ -422,6 +456,13 @@ class _$IChannelDAO extends IChannelDAO {
   }
 
   @override
+  Future<void> updateLeading(String path, String channelid) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE Channel SET leading = ? WHERE id = ?',
+        arguments: <dynamic>[path, channelid]);
+  }
+
+  @override
   Future<void> addChannel(Channel channel) async {
     await _channelInsertionAdapter.insert(
         channel, sqflite.ConflictAlgorithm.abort);
@@ -444,7 +485,8 @@ class _$IInsiteMessageDAO extends IInsiteMessageDAO {
                   'creator': item.creator,
                   'ctime': item.ctime,
                   'digests': item.digests,
-                  'wy': item.wy
+                  'wy': item.wy,
+                  'location': item.location
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -464,7 +506,8 @@ class _$IInsiteMessageDAO extends IInsiteMessageDAO {
           row['creator'] as String,
           row['ctime'] as int,
           row['digests'] as String,
-          row['wy'] as double);
+          row['wy'] as double,
+          row['location'] as String);
 
   final InsertionAdapter<InsiteMessage> _insiteMessageInsertionAdapter;
 
@@ -512,5 +555,277 @@ class _$IInsiteMessageDAO extends IInsiteMessageDAO {
   Future<void> addMessage(InsiteMessage message) async {
     await _insiteMessageInsertionAdapter.insert(
         message, sqflite.ConflictAlgorithm.abort);
+  }
+}
+
+class _$IChannelMessageDAO extends IChannelMessageDAO {
+  _$IChannelMessageDAO(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _channelMessageInsertionAdapter = InsertionAdapter(
+            database,
+            'ChannelMessage',
+            (ChannelMessage item) => <String, dynamic>{
+                  'id': item.id,
+                  'upstreamPerson': item.upstreamPerson,
+                  'upstreamChannel': item.upstreamChannel,
+                  'sourceSite': item.sourceSite,
+                  'sourceApp': item.sourceApp,
+                  'sourceChannel': item.sourceChannel,
+                  'creator': item.creator,
+                  'ctime': item.ctime,
+                  'text': item.text,
+                  'wy': item.wy,
+                  'location': item.location
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  static final _channelMessageMapper = (Map<String, dynamic> row) =>
+      ChannelMessage(
+          row['id'] as String,
+          row['upstreamPerson'] as String,
+          row['upstreamChannel'] as String,
+          row['sourceSite'] as String,
+          row['sourceApp'] as String,
+          row['sourceChannel'] as String,
+          row['creator'] as String,
+          row['ctime'] as int,
+          row['text'] as String,
+          row['wy'] as double,
+          row['location'] as String);
+
+  final InsertionAdapter<ChannelMessage> _channelMessageInsertionAdapter;
+
+  @override
+  Future<void> removeMessage(String id) async {
+    await _queryAdapter.queryNoReturn('delete FROM ChannelMessage WHERE id = ?',
+        arguments: <dynamic>[id]);
+  }
+
+  @override
+  Future<List<ChannelMessage>> pageMessage(int pageSize, int currPage) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM ChannelMessage LIMIT ? OFFSET ?',
+        arguments: <dynamic>[pageSize, currPage],
+        mapper: _channelMessageMapper);
+  }
+
+  @override
+  Future<List<ChannelMessage>> pageMessageByChannelLoopType(
+      String loopType, int limit, int offset) async {
+    return _queryAdapter.queryList(
+        'SELECT msg.* FROM ChannelMessage msg,Channel ch WHERE msg.upstreamChannel=ch.id AND ch.loopType=? LIMIT ? OFFSET ?',
+        arguments: <dynamic>[loopType, limit, offset],
+        mapper: _channelMessageMapper);
+  }
+
+  @override
+  Future<ChannelMessage> getMessage(String id) async {
+    return _queryAdapter.query('SELECT * FROM ChannelMessage WHERE id = ?',
+        arguments: <dynamic>[id], mapper: _channelMessageMapper);
+  }
+
+  @override
+  Future<List<ChannelMessage>> getAllMessage() async {
+    return _queryAdapter.queryList('SELECT * FROM ChannelMessage',
+        mapper: _channelMessageMapper);
+  }
+
+  @override
+  Future<void> empty() async {
+    await _queryAdapter.queryNoReturn('delete FROM ChannelMessage');
+  }
+
+  @override
+  Future<void> addMessage(ChannelMessage message) async {
+    await _channelMessageInsertionAdapter.insert(
+        message, sqflite.ConflictAlgorithm.abort);
+  }
+}
+
+class _$IChannelMediaDAO extends IChannelMediaDAO {
+  _$IChannelMediaDAO(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _mediaInsertionAdapter = InsertionAdapter(
+            database,
+            'Media',
+            (Media item) => <String, dynamic>{
+                  'id': item.id,
+                  'type': item.type,
+                  'src': item.src,
+                  'leading': item.leading,
+                  'msgid': item.msgid,
+                  'text': item.text
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  static final _microAppMapper = (Map<String, dynamic> row) => MicroApp(
+      row['id'] as String, row['site'] as String, row['leading'] as String);
+
+  final InsertionAdapter<Media> _mediaInsertionAdapter;
+
+  @override
+  Future<void> removeMedia(String id) async {
+    await _queryAdapter.queryNoReturn('delete FROM Media WHERE id = ?',
+        arguments: <dynamic>[id]);
+  }
+
+  @override
+  Future<List<MicroApp>> pageMedia(int pageSize, int currPage) async {
+    return _queryAdapter.queryList('SELECT * FROM Media LIMIT ? OFFSET ?',
+        arguments: <dynamic>[pageSize, currPage], mapper: _microAppMapper);
+  }
+
+  @override
+  Future<MicroApp> getMedia(String id) async {
+    return _queryAdapter.query('SELECT * FROM Media WHERE id = ?',
+        arguments: <dynamic>[id], mapper: _microAppMapper);
+  }
+
+  @override
+  Future<List<MicroApp>> getAllMedia() async {
+    return _queryAdapter.queryList('SELECT * FROM Media',
+        mapper: _microAppMapper);
+  }
+
+  @override
+  Future<void> addMedia(Media media) async {
+    await _mediaInsertionAdapter.insert(media, sqflite.ConflictAlgorithm.abort);
+  }
+}
+
+class _$IChannelLikePersonDAO extends IChannelLikePersonDAO {
+  _$IChannelLikePersonDAO(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _likePersonInsertionAdapter = InsertionAdapter(
+            database,
+            'LikePerson',
+            (LikePerson item) => <String, dynamic>{
+                  'id': item.id,
+                  'person': item.person,
+                  'uid': item.uid,
+                  'avatar': item.avatar,
+                  'msgid': item.msgid
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  static final _likePersonMapper = (Map<String, dynamic> row) => LikePerson(
+      row['id'] as String,
+      row['person'] as String,
+      row['uid'] as String,
+      row['avatar'] as String,
+      row['msgid'] as String);
+
+  final InsertionAdapter<LikePerson> _likePersonInsertionAdapter;
+
+  @override
+  Future<void> removeLikePerson(String id) async {
+    await _queryAdapter.queryNoReturn('delete FROM LikePerson WHERE id = ?',
+        arguments: <dynamic>[id]);
+  }
+
+  @override
+  Future<List<LikePerson>> pageLikePerson(int pageSize, int currPage) async {
+    return _queryAdapter.queryList('SELECT * FROM LikePerson LIMIT ? OFFSET ?',
+        arguments: <dynamic>[pageSize, currPage], mapper: _likePersonMapper);
+  }
+
+  @override
+  Future<LikePerson> getLikePerson(String id) async {
+    return _queryAdapter.query('SELECT * FROM LikePerson WHERE id = ?',
+        arguments: <dynamic>[id], mapper: _likePersonMapper);
+  }
+
+  @override
+  Future<List<LikePerson>> getAllLikePerson() async {
+    return _queryAdapter.queryList('SELECT * FROM LikePerson',
+        mapper: _likePersonMapper);
+  }
+
+  @override
+  Future<void> addLikePerson(LikePerson likePerson) async {
+    await _likePersonInsertionAdapter.insert(
+        likePerson, sqflite.ConflictAlgorithm.abort);
+  }
+}
+
+class _$IChannelCommentDAO extends IChannelCommentDAO {
+  _$IChannelCommentDAO(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _channelCommentInsertionAdapter = InsertionAdapter(
+            database,
+            'ChannelComment',
+            (ChannelComment item) => <String, dynamic>{
+                  'id': item.id,
+                  'person': item.person,
+                  'uid': item.uid,
+                  'avatar': item.avatar,
+                  'msgid': item.msgid,
+                  'text': item.text,
+                  'ctime': item.ctime
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  static final _channelCommentMapper = (Map<String, dynamic> row) =>
+      ChannelComment(
+          row['id'] as String,
+          row['person'] as String,
+          row['uid'] as String,
+          row['avatar'] as String,
+          row['msgid'] as String,
+          row['text'] as String,
+          row['ctime'] as int);
+
+  final InsertionAdapter<ChannelComment> _channelCommentInsertionAdapter;
+
+  @override
+  Future<void> removeComment(String id) async {
+    await _queryAdapter.queryNoReturn('delete FROM ChannelComment WHERE id = ?',
+        arguments: <dynamic>[id]);
+  }
+
+  @override
+  Future<List<ChannelComment>> pageComment(int pageSize, int currPage) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM ChannelComment LIMIT ? OFFSET ?',
+        arguments: <dynamic>[pageSize, currPage],
+        mapper: _channelCommentMapper);
+  }
+
+  @override
+  Future<ChannelComment> getComment(String id) async {
+    return _queryAdapter.query('SELECT * FROM ChannelComment WHERE id = ?',
+        arguments: <dynamic>[id], mapper: _channelCommentMapper);
+  }
+
+  @override
+  Future<List<ChannelComment>> getAllComment() async {
+    return _queryAdapter.queryList('SELECT * FROM ChannelComment',
+        mapper: _channelCommentMapper);
+  }
+
+  @override
+  Future<void> addComment(ChannelComment comment) async {
+    await _channelCommentInsertionAdapter.insert(
+        comment, sqflite.ConflictAlgorithm.abort);
   }
 }

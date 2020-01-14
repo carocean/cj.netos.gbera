@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/parts/parts.dart';
+import 'package:gbera/portals/gbera/store/entities.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ChannelPage extends StatefulWidget {
@@ -23,6 +24,7 @@ class _ChannelPageState extends State<ChannelPage> {
 
   @override
   Widget build(BuildContext context) {
+    Channel channel=widget.context.parameters['channel'];
     var panel = <Widget>[];
     _buildPlatTab(panel, widget, context, _scaffoldKey);
     return Scaffold(
@@ -30,7 +32,7 @@ class _ChannelPageState extends State<ChannelPage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          widget.context.parameters['channel-name'],
+          channel?.name,
         ),
         titleSpacing: 0,
         elevation: 0,
@@ -40,7 +42,7 @@ class _ChannelPageState extends State<ChannelPage> {
             behavior: HitTestBehavior.opaque,
             onLongPress: () {
               widget.context.forward('/netflow/channel/publish_article',
-                  arguments: {'type': 'text'});
+                  arguments: {'type': 'text','channel':channel});
             },
             child: IconButton(
               icon: Icon(
@@ -89,6 +91,7 @@ class _ChannelPageState extends State<ChannelPage> {
                 ).then<void>((value) {
                   // The value passed to Navigator.pop() or null.
                   if (value != null) {
+                    value['channel']=channel;
                     widget.context.forward('/netflow/channel/publish_article',
                         arguments: value);
                   }

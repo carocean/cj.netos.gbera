@@ -30,6 +30,7 @@ import 'package:gbera/portals/gbera/pages/netflow/activies_channels.dart';
 import 'package:gbera/portals/gbera/pages/netflow/activies_gateway_settings.dart';
 import 'package:gbera/portals/gbera/pages/netflow/activies_microapps.dart';
 import 'package:gbera/portals/gbera/pages/netflow/activies_sites.dart';
+import 'package:gbera/portals/gbera/pages/netflow/article_buywy.dart';
 import 'package:gbera/portals/gbera/pages/netflow/avatar.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_gateway.dart';
@@ -89,6 +90,7 @@ import 'package:gbera/portals/gbera/pages/wallet/ty.dart';
 import 'package:gbera/portals/gbera/pages/wallet/wy.dart';
 import 'package:gbera/portals/gbera/scaffolds.dart';
 import 'package:gbera/portals/gbera/store/dao/database.dart';
+import 'package:gbera/portals/gbera/store/services/channel_messages.dart';
 import 'package:gbera/portals/gbera/store/services/channels.dart';
 import 'package:gbera/portals/gbera/store/services/insite_messages.dart';
 import 'package:gbera/portals/gbera/store/services/persons.dart';
@@ -116,6 +118,7 @@ class GberaPortal {
           "/upstream/persons": PersonService(site: site),
           '/external/channels': ChannelService(site: site),
           '/insite/messages': InsiteMessageService(site: site),
+          '/channel/messages': ChannelMessageService(site: site),
         },
         loadDatabase: () async {
           final database = await $FloorAppDatabase
@@ -316,6 +319,15 @@ class GberaPortal {
           icon: GalleryIcons.shrine,
           url: '/netflow/channel',
           buildPage: (PageContext pageContext) => ChannelPage(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '购买服务',
+          subtitle: '',
+          icon: GalleryIcons.shrine,
+          url: '/channel/article/buywy',
+          buildPage: (PageContext pageContext) => BuyWYArticle(
             context: pageContext,
           ),
         ),

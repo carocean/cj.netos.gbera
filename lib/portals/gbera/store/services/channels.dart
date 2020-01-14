@@ -37,6 +37,11 @@ class ChannelService implements IChannelService {
   }
 
   @override
+  Future<void> updateLeading(String path,String channelid) async{
+    await this.channelDAO.updateLeading(path,channelid);
+  }
+
+  @override
   Future<void> empty() async {
     await this.channelDAO.empty();
   }

@@ -71,6 +71,7 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
                     }
 
                     await channelService.emptyOfPerson(person.id);
+                    await channelService.init(widget.context.userPrincipal);
                     for (var och in objchs) {
                       if (await channelService.existsChannel(och['id'])) {
                         continue;

@@ -68,18 +68,21 @@ class InsiteMessage {
   final int ctime;
   final String digests;
   final double wy;
+  final String location;
 
   InsiteMessage(
-      this.id,
-      this.upstreamPerson,
-      this.upstreamChannel,
-      this.sourceSite,
-      this.sourceApp,
-      this.sourceChannel,
-      this.creator,
-      this.ctime,
-      this.digests,
-      this.wy);
+    this.id,
+    this.upstreamPerson,
+    this.upstreamChannel,
+    this.sourceSite,
+    this.sourceApp,
+    this.sourceChannel,
+    this.creator,
+    this.ctime,
+    this.digests,
+    this.wy,
+    this.location,
+  );
 }
 
 @entity
@@ -95,22 +98,25 @@ class ChannelMessage {
   final int ctime;
   final String text;
   final double wy;
+  final String location;
 
   ChannelMessage(
-      this.id,
-      this.upstreamPerson,
-      this.upstreamChannel,
-      this.sourceSite,
-      this.sourceApp,
-      this.sourceChannel,
-      this.creator,
-      this.ctime,
-      this.text,
-      this.wy);
+    this.id,
+    this.upstreamPerson,
+    this.upstreamChannel,
+    this.sourceSite,
+    this.sourceApp,
+    this.sourceChannel,
+    this.creator,
+    this.ctime,
+    this.text,
+    this.wy,
+    this.location,
+  );
 }
 
 @entity
-class likePerson {
+class LikePerson {
   @primaryKey
   final String id;
   final String person;
@@ -118,11 +124,11 @@ class likePerson {
   final String avatar;
   final String msgid;
 
-  likePerson(this.id, this.person, this.uid, this.avatar, this.msgid);
+  LikePerson(this.id, this.person, this.uid, this.avatar, this.msgid);
 }
 
 @entity
-class Comment {
+class ChannelComment {
   @primaryKey
   final String id;
   final String person;
@@ -132,7 +138,7 @@ class Comment {
   final String text;
   final int ctime;
 
-  Comment(this.id, this.person, this.uid, this.avatar, this.msgid, this.text,
+  ChannelComment(this.id, this.person, this.uid, this.avatar, this.msgid, this.text,
       this.ctime);
 }
 

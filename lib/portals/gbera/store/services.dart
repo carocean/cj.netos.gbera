@@ -34,6 +34,9 @@ mixin IChannelService {
 
   Future<List<Channel>>  getAllChannel() ;
 
+  Future<void> updateLeading(String path,String channelid) ;
+
+
 }
 mixin IInsiteMessageService {
   Future<void> empty();
@@ -49,3 +52,21 @@ mixin IInsiteMessageService {
   Future<List<InsiteMessage>> pageMessageByChannelVisualable(
       int limit, int offset, String loopType);
 }
+
+mixin IChannelMessageService {
+  Future<void> empty();
+
+  Future<bool> existsMessage(id);
+
+  Future<void> addMessage(ChannelMessage message);
+
+  Future<List<ChannelMessage>> pageMessage(int pageSize, int currPage);
+
+  Future<List<ChannelMessage>> getAllMessage();
+
+}
+mixin IChannelMediaService {}
+
+mixin IChannelLikeService {}
+
+mixin IChannelCommentService {}

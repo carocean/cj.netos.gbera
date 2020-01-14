@@ -304,7 +304,7 @@ class _NetflowState extends State<Netflow> {
     IChannelService channelService =
         widget.context.site.getService('/external/channels');
     List<Channel> list = await channelService.getAllChannel();
-    if(list.isEmpty){
+    if (list.isEmpty) {
       await channelService.init(widget.context.userPrincipal);
       list = await channelService.getAllChannel();
     }
@@ -335,14 +335,26 @@ class _NetflowState extends State<Netflow> {
           who: '$who: ',
           loopType: ch.loopType,
           openAvatar: () {
+            //如果不是自己的管道则不能改图标
+            if (widget.context.userPrincipal.person != ch.owner) {
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('不可修改图标！原因：不是您创建的管道'),
+                ),
+              );
+              return;
+            }
             widget.context.forward(
               '/netflow/channel/avatar',
+              arguments: {
+                'channel': ch,
+              },
             );
           },
           openChannel: () {
             widget.context.forward(
               '/netflow/channel',
-              arguments: {'channel-name': '地推'},
+              arguments: {'channel': ch},
             );
           },
         ),
@@ -819,31 +831,41 @@ class _ChannelItem extends StatelessWidget {
                     behavior: HitTestBehavior.opaque,
                     onTap: this.openAvatar,
                     child: Stack(
+                      overflow: Overflow.visible,
                       children: <Widget>[
                         SizedBox(
                           width: 40,
                           height: 40,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(6.0),
+                            child: imgSrc,
+                          ),
+                        ),
+                        Positioned(
+                          top: -10,
+                          right: -3,
                           child: Badge(
                             position: BadgePosition.topRight(
-                              right: 0,
+                              right: -3,
+                              top: 3,
                             ),
                             elevation: 0,
                             showBadge: this.unreadMsgCount != 0,
                             badgeContent: Text(
                               '',
                             ),
-                            child: imgSrc,
+                            child: null,
                           ),
                         ),
                         Positioned(
-                          bottom: 0,
-                          right: 0,
+                          bottom: -3,
+                          right: -3,
                           child: Icon(
                             IconData(
                               this.loopType == 'closeLoop' ? 0xe62f : 0xe604,
                               fontFamily: 'netflow',
                             ),
-                            size: 12,
+                            size: 10,
                             color: Colors.grey[500],
                           ),
                         ),

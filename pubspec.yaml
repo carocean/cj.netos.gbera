@@ -46,6 +46,7 @@ dependencies:
   common_utils: ^1.1.3
   uuid: ^2.0.4
   badges: ^1.1.0
+  amap_all_fluttify: ^0.11.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
