@@ -12,15 +12,18 @@
         "id": "91FA4506-7BDB-43D7-82D3-4DA78D9653E0",
         "name": "Java编程",
         "owner": "cj@gbera.netos",
-        "isPublic": "true",
-        "leading": "http://47.105.165.186:7100/public/market/timg-3.jpeg"
+        "loopType": "openLoop",
+        "leading": "http://47.105.165.186:7100/public/avatar/timg.jpeg",
+        "unreadMsgCount": 0
       },
       {
         "id": "0929122D-FB4A-4BC8-BF5E-510F254FCD15",
         "name": "Flutter交流",
         "owner": "cj@gbera.netos",
-        "isPublic": "true",
-        "leading": "http://47.105.165.186:7100/public/market/timg-2.jpeg"
+        "loopType": "openLoop",
+        "leading": "http://47.105.165.186:7100/public/avatar/1b010adb79a5ed5f9f83cb18d6d07209.jpg",
+        "tips": "简书:>由于是第一次做flutter项目，加上团队小伙伴开发经验不是很足，在满足需求的同时",
+        "unreadMsgCount": 38
       }
     ]
   },
@@ -37,15 +40,19 @@
         "id": "3FD24493-4BB4-43C6-A731-FF00375EDA9F",
         "name": "中国投资协会",
         "owner": "tom@gbera.netos",
-        "isPublic": "true",
-        "leading": "http://47.105.165.186:7100/public/market/timg-1.jpeg"
+        "loopType": "openLoop",
+        "leading": "http://47.105.165.186:7100/public/avatar/04527423f1b29493f99014144361a586.jpg",
+        "tips": "小王:>南航获得中邮投资",
+        "unreadMsgCount": 12
       },
       {
         "id": "6EF3B666-A33F-46A9-BC6D-0537A12AFF4B",
         "name": "汉服园",
         "owner": "tom@gbera.netos",
-        "isPublic": "false",
-        "leading": "http://47.105.165.186:7100/public/market/timg-4.jpeg"
+        "loopType": "closeLoop",
+        "leading": "http://47.105.165.186:7100/public/avatar/28ab4dbc08306fde51923becef0bd721.jpg",
+        "tips": "刘天明:>想问问同袍们，齐胸襦裙一直掉，用了防掉神器一点用都没有，想用一种方法把它缝",
+        "unreadMsgCount": 231
       }
     ]
   }

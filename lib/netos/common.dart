@@ -194,6 +194,10 @@ class UserPrincipal {
 
   final String accessToken;
 
+  String get person {
+    return '$accountName@$appid.$tenantid';
+  }
+
   const UserPrincipal({
     this.uid,
     this.accountid,
@@ -397,7 +401,7 @@ class Page {
 }
 
 typedef BuildTheme = ThemeData Function(BuildContext context);
-typedef BuildStyle = List<Style> Function(Portal portal,IServiceProvider site);
+typedef BuildStyle = List<Style> Function(Portal portal, IServiceProvider site);
 
 class ThemeStyle {
   final String url;

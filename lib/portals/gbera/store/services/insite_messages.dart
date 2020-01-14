@@ -27,8 +27,8 @@ class InsiteMessageService implements IInsiteMessageService {
 
   @override
   Future<List<InsiteMessage>> pageMessageByChannelVisualable(
-      int limit, int offset, String isPublic) async {
-    return await insiteMessageDAO.pageMessageByChannelVisualable(isPublic,
+      int limit, int offset, String loopType) async {
+    return await insiteMessageDAO.pageMessageByChannelLoopType(loopType,
         limit, offset);
   }
 

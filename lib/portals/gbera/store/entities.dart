@@ -1,7 +1,7 @@
 import 'package:floor/floor.dart';
 
 @entity
-class UpstreamPerson{
+class Person {
   @primaryKey
   final String id;
   final String uid;
@@ -9,25 +9,15 @@ class UpstreamPerson{
   final String accountName;
   final String appid;
   final String tenantid;
-  final  String avatar;
+  final String avatar;
+  final String rights;
 
-  UpstreamPerson(this.id,this.uid, this.accountid, this.accountName, this.appid, this.tenantid,this.avatar);
+  Person(this.id, this.uid, this.accountid, this.accountName, this.appid,
+      this.tenantid, this.avatar, this.rights);
 }
-@entity
-class DownstreamPerson{
-  @primaryKey
-  final String id;
-  final String uid;
-  final String accountid;
-  final String accountName;
-  final String appid;
-  final String tenantid;
-  final  String avatar;
 
-  DownstreamPerson(this.id,this.uid, this.accountid, this.accountName, this.appid, this.tenantid,this.avatar);
-}
 @entity
-class MicroSite{
+class MicroSite {
   @primaryKey
   final String id;
   final String name;
@@ -36,8 +26,9 @@ class MicroSite{
 
   MicroSite(this.id, this.name, this.leading, this.desc);
 }
+
 @entity
-class MicroApp{
+class MicroApp {
   @primaryKey
   final String id;
   final String site;
@@ -45,21 +36,27 @@ class MicroApp{
 
   MicroApp(this.id, this.site, this.leading);
 }
+
 @entity
-class ExternalChannel{
+class Channel {
   @primaryKey
   final String id;
   final String name;
   final String owner;
-  final String isPublic;
+  final String loopType;
   final String leading;
   final String site;
+  final String tips;
+  int ctime = DateTime.now().millisecondsSinceEpoch;
+  int utime = DateTime.now().millisecondsSinceEpoch;
+  int unreadMsgCount = 0;
 
-  ExternalChannel(
-      this.id, this.name, this.owner, this.isPublic, this.leading, this.site);
+  Channel(this.id, this.name, this.owner, this.loopType, this.leading,
+      this.site, this.tips, this.ctime, this.utime, this.unreadMsgCount);
 }
+
 @entity
-class InsiteMessage{
+class InsiteMessage {
   @primaryKey
   final String id;
   final String upstreamPerson;
@@ -84,8 +81,9 @@ class InsiteMessage{
       this.digests,
       this.wy);
 }
+
 @entity
-class ChannelMessage{
+class ChannelMessage {
   @primaryKey
   final String id;
   final String upstreamPerson;
@@ -110,6 +108,7 @@ class ChannelMessage{
       this.text,
       this.wy);
 }
+
 @entity
 class likePerson {
   @primaryKey
@@ -121,6 +120,7 @@ class likePerson {
 
   likePerson(this.id, this.person, this.uid, this.avatar, this.msgid);
 }
+
 @entity
 class Comment {
   @primaryKey
@@ -135,6 +135,7 @@ class Comment {
   Comment(this.id, this.person, this.uid, this.avatar, this.msgid, this.text,
       this.ctime);
 }
+
 @entity
 class Media {
   @primaryKey
@@ -147,31 +148,20 @@ class Media {
 
   Media(this.id, this.type, this.src, this.leading, this.msgid, this.text);
 }
-@entity
-class MyChannel{
-  @primaryKey
-  final String id;
-  final String name;
-  final String owner;
-  final bool isPublic;
-  final String leading;
-  final String site;
 
-  MyChannel(
-      this.id, this.name, this.owner, this.isPublic, this.leading, this.site);
-}
 @entity
-class ChannelInput{
+class ChannelInput {
   @primaryKey
   final String id;
-  final String fromChannel;
-  final String fromPerson;
+  final String upstreamPerson;
   final String toChannel;
+  final String rights;
 
-  ChannelInput(this.id, this.fromChannel, this.fromPerson, this.toChannel);
+  ChannelInput(this.id, this.upstreamPerson, this.toChannel, this.rights);
 }
+
 @entity
-class ChannelOutput{
+class ChannelOutput {
   @primaryKey
   final String id;
   final String geoSelector;
@@ -182,12 +172,14 @@ class ChannelOutput{
   ChannelOutput(this.id, this.geoSelector, this.wechatPenYouSelector,
       this.wechatHaoYouSelector, this.contractSelector);
 }
+
 @entity
-class ChannelOutputPerson{
+class ChannelOutputPerson {
   @primaryKey
   final String id;
   final String fromChannel;
   final String toPerson;
+  final String rights;
 
-  ChannelOutputPerson(this.id, this.fromChannel, this.toPerson);
+  ChannelOutputPerson(this.id, this.fromChannel, this.toPerson, this.rights);
 }

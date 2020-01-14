@@ -45,6 +45,7 @@ dependencies:
   floor: ^0.9.0
   common_utils: ^1.1.3
   uuid: ^2.0.4
+  badges: ^1.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -111,7 +112,7 @@ flutter:
     - lib/portals/gbera/wallpapers/6.png
     - lib/portals/gbera/data/depth.json
     - lib/portals/gbera/data/kline.json
-    - model/upstream_persons.json
+    - model/persons.json
     - model/insite_messages.json
   fonts:
     - family: geo_discovery
@@ -129,3 +130,6 @@ flutter:
     - family: market_shishang
       fonts:
         - asset: lib/portals/gbera/fonts/market_shishang.ttf
+    - family: netflow
+      fonts:
+        - asset: lib/portals/gbera/fonts/netflow.ttf

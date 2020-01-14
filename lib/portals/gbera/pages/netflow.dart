@@ -1,3 +1,7 @@
+import 'dart:io';
+import 'dart:ui';
+
+import 'package:badges/badges.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -142,11 +146,11 @@ class _NetflowState extends State<Netflow> {
                                 ),
                                 onPressed: () {
                                   widget.context.backward();
-                                  widget.context.forward('/netflow/publics/activities',
+                                  widget.context.forward(
+                                      '/netflow/publics/activities',
                                       arguments: {'title': '公众活动'});
                                 },
                               ),
-
                               CupertinoActionSheetAction(
                                 child: const Text.rich(
                                   TextSpan(
@@ -224,8 +228,24 @@ class _NetflowState extends State<Netflow> {
                 return msgviews.length > 0
                     ? _MessagesRegion(context: widget.context, views: msgviews)
                     : Container(
-                        width: 0,
-                        height: 0,
+                        height: 40,
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(
+                          left: 10,
+                          right: 10,
+                          top: 5,
+                          bottom: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        child: Text(
+                          '无消息',
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
                       );
               },
             ),
@@ -252,13 +272,83 @@ class _NetflowState extends State<Netflow> {
             ),
           ),
         ),
-        SliverList(
-          delegate: SliverChildListDelegate.fixed(
-            _pipelineContentItemBuilder(widget),
+        SliverToBoxAdapter(
+          child: FutureBuilder<List<_ChannelItem>>(
+            future: _loadChannels(),
+            builder: (ctx, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return Container(
+                  child: SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+              return ListView(
+                shrinkWrap: true,
+                padding: EdgeInsets.all(0),
+                physics: NeverScrollableScrollPhysics(),
+                children: snapshot.data.map((item) {
+                  return item;
+                }).toList(),
+              );
+            },
           ),
         ),
       ],
     );
+  }
+
+  Future<List<_ChannelItem>> _loadChannels() async {
+    IChannelService channelService =
+        widget.context.site.getService('/external/channels');
+    List<Channel> list = await channelService.getAllChannel();
+    if(list.isEmpty){
+      await channelService.init(widget.context.userPrincipal);
+      list = await channelService.getAllChannel();
+    }
+    var items = List<_ChannelItem>();
+    for (var ch in list) {
+      var tips = ch.tips;
+      var who = '';
+      var newest = '';
+      if (tips != null) {
+        int pos = tips.indexOf(':>');
+        if (pos > -1) {
+          who = tips.substring(0, pos);
+          newest = tips.substring(pos + 2, tips.length);
+        }
+      }
+
+      items.add(
+        _ChannelItem(
+          title: ch.name,
+          subtitle: '$newest',
+          showNewest: !StringUtil.isEmpty(tips),
+          leading: ch.leading,
+          time: TimelineUtil.format(
+            ch.utime,
+            dayFormat: DayFormat.Full,
+          ),
+          unreadMsgCount: ch.unreadMsgCount ?? 0,
+          who: '$who: ',
+          loopType: ch.loopType,
+          openAvatar: () {
+            widget.context.forward(
+              '/netflow/channel/avatar',
+            );
+          },
+          openChannel: () {
+            widget.context.forward(
+              '/netflow/channel',
+              arguments: {'channel-name': '地推'},
+            );
+          },
+        ),
+      );
+    }
+    return items;
   }
 
   _sliverAppBar() {
@@ -286,23 +376,31 @@ class _NetflowState extends State<Netflow> {
                         title: Text('选择管道类型'),
                         children: <Widget>[
                           DialogItem(
-                            text: '开放管道',
-                            icon: Icons.invert_colors,
+                            text: '开环管道',
+                            icon: IconData(
+                              0xe604,
+                              fontFamily: 'netflow',
+                            ),
                             color: Colors.grey[500],
-                            subtext: '管道动态及管道出入站联系人对他人可见',
+                            subtext: '适用于无穷级网络。自行添加管道出入口的公众',
                             onPressed: () {
                               widget.context.backward(
-                                  result: <String, Object>{'type': '开放'});
+                                  result: <String, Object>{'type': 'openLoop'});
                             },
                           ),
                           DialogItem(
-                            text: '私有管道',
-                            icon: Icons.invert_colors_off,
+                            text: '闭环管道',
+                            icon: IconData(
+                              0xe62f,
+                              fontFamily: 'netflow',
+                            ),
                             color: Colors.grey[500],
-                            subtext: '管道动态及管道出入站联系人对他人不可见',
+                            subtext:
+                                '适用于：点对点聊天、群聊。管道的入口公众全是出口公众，自行添加出口公众同时也会被添加到入口',
                             onPressed: () {
-                              widget.context.backward(
-                                  result: <String, Object>{'type': '私有'});
+                              widget.context.backward(result: <String, Object>{
+                                'type': 'closeLoop'
+                              });
                             },
                           ),
                         ],
@@ -443,9 +541,9 @@ class _NetflowState extends State<Netflow> {
   Future<List<MessageView>> _getMessages() async {
     IInsiteMessageService messageService =
         widget.context.site.getService('/insite/messages');
-    IUpstreamPersonService personService =
+    IPersonService personService =
         widget.context.site.getService('/upstream/persons');
-    IExternalChannelService channelService =
+    IChannelService channelService =
         widget.context.site.getService('/external/channels');
     var messages = await messageService.pageMessage(4, 0);
     var msgviews = <MessageView>[];
@@ -464,7 +562,7 @@ class _NetflowState extends State<Netflow> {
         money: ((msg.wy ?? 0) * 0.00012837277272).toStringAsFixed(2),
         time: timeText,
         picCount: 0,
-        isPublic: channel.isPublic,
+        loopType: channel.loopType,
         onTap: () {
           showModalBottomSheet(
               context: context,
@@ -593,7 +691,7 @@ class _MessagesRegionState extends State<_MessagesRegion> {
                                       children: [
                                         TextSpan(
                                             text:
-                                                '  ${v.isPublic=='true' ? '开放管道:' : '私有管道:'}'),
+                                                '  ${v.loopType == 'true' ? '开环管道:' : '闭环管道:'}'),
                                         TextSpan(
                                           text: '${v.channel}',
                                           style: TextStyle(
@@ -641,142 +739,57 @@ class _MessagesRegionState extends State<_MessagesRegion> {
   }
 }
 
-List<Widget> _pipelineContentItemBuilder(widget) {
-  return [
-    _ChannelItem(
-      title: '地推',
-      subtitle: '再到希腊，习近平为何用了这个词？',
-      imgSrc: Icon(
-        Icons.image,
-        color: Colors.grey[500],
-        size: 40,
-      ),
-      time: '12:32',
-      who: '主席: ',
-      openAvatar: () {
-        widget.context.forward(
-          '/netflow/channel/avatar',
-        );
-      },
-      openChannel: () {
-        widget.context.forward(
-          '/netflow/channel',
-          arguments: {'channel-name': '地推'},
-        );
-      },
-    ),
-    _ChannelItem(
-      title: '中国邮政',
-      subtitle: '女网红进客机驾驶舱后续 民航局：将依法依规处理',
-      imgSrc: Icon(
-        Icons.image,
-        color: Colors.grey[500],
-        size: 40,
-      ),
-      time: '12:32',
-      who: '客服2: ',
-      openAvatar: () {
-        widget.context.forward(
-          '/netflow/channel/avatar',
-        );
-      },
-      openChannel: () {
-        widget.context.forward(
-          '/netflow/channel',
-          arguments: {'channel-name': '中国邮政'},
-        );
-      },
-    ),
-    _ChannelItem(
-      title: '欣欣',
-      subtitle: '明天你能过来吗？我们谈谈',
-      imgSrc: Image.network(
-        'http://img.go007.com/2017/01/10/3b02d2dbdc8c4882_0.jpg',
-        width: 40,
-        height: 40,
-      ),
-      time: '7:57',
-      who: '她说: ',
-      openAvatar: () {
-        widget.context.forward(
-          '/netflow/channel/avatar',
-        );
-      },
-      openChannel: () {
-        widget.context.forward(
-          '/netflow/channel',
-          arguments: {'channel-name': '欣欣'},
-        );
-      },
-    ),
-    _ChannelItem(
-      title: '东峻广场',
-      subtitle: '十九届四中全会：递补马正武、马伟明为中央委员',
-      imgSrc: Icon(
-        Icons.image,
-        color: Colors.grey[500],
-        size: 40,
-      ),
-      time: '12:32',
-      who: 'wangx: ',
-      openAvatar: () {
-        widget.context.forward(
-          '/netflow/channel/avatar',
-        );
-      },
-      openChannel: () {
-        widget.context.forward(
-          '/netflow/channel',
-          arguments: {'channel-name': '东峻广场'},
-        );
-      },
-    ),
-    _ChannelItem(
-      title: '青年高中',
-      subtitle: '明年高校毕业生预计达874万人 同比增40万',
-      imgSrc: Icon(
-        Icons.image,
-        color: Colors.grey[500],
-        size: 40,
-      ),
-      time: '14:22',
-      who: '教育部: ',
-      openAvatar: () {
-        widget.context.forward(
-          '/netflow/channel/avatar',
-        );
-      },
-      openChannel: () {
-        widget.context.forward(
-          '/netflow/channel',
-          arguments: {'channel-name': '青年高中'},
-        );
-      },
-    ),
-  ];
-}
-
 class _ChannelItem extends StatelessWidget {
-  Widget imgSrc;
+  String leading;
   String title;
   String who;
   String subtitle;
   String time;
+  bool showNewest;
+  String loopType;
+  int unreadMsgCount;
   var openAvatar;
   var openChannel;
 
   _ChannelItem({
-    this.imgSrc,
+    this.leading,
     this.title,
     this.who,
     this.subtitle,
+    this.loopType,
+    this.unreadMsgCount,
     this.time,
+    this.showNewest,
     this.openAvatar,
     this.openChannel,
   });
 
   @override
   Widget build(BuildContext context) {
+    Widget imgSrc = null;
+    if (StringUtil.isEmpty(leading)) {
+      imgSrc = Icon(
+        IconData(
+          0xe606,
+          fontFamily: 'netflow',
+        ),
+        size: 32,
+        color: Colors.grey[500],
+      );
+    } else if (leading.startsWith('/')) {
+      //本地存储
+      imgSrc = Image.file(
+        File(leading),
+        width: 40,
+        height: 40,
+      );
+    } else {
+      imgSrc = Image.network(
+        this.leading,
+        width: 40,
+        height: 40,
+      );
+    }
     return Container(
       decoration: new BoxDecoration(
         color: Colors.white,
@@ -792,7 +805,9 @@ class _ChannelItem extends StatelessWidget {
               top: 15,
             ),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: this.showNewest
+                  ? CrossAxisAlignment.start
+                  : CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
@@ -803,10 +818,36 @@ class _ChannelItem extends StatelessWidget {
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: this.openAvatar,
-                    child: SizedBox(
-                      width: 40,
-                      height: 40,
-                      child: imgSrc,
+                    child: Stack(
+                      children: <Widget>[
+                        SizedBox(
+                          width: 40,
+                          height: 40,
+                          child: Badge(
+                            position: BadgePosition.topRight(
+                              right: 0,
+                            ),
+                            elevation: 0,
+                            showBadge: this.unreadMsgCount != 0,
+                            badgeContent: Text(
+                              '',
+                            ),
+                            child: imgSrc,
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Icon(
+                            IconData(
+                              this.loopType == 'closeLoop' ? 0xe62f : 0xe604,
+                              fontFamily: 'netflow',
+                            ),
+                            size: 12,
+                            color: Colors.grey[500],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -815,6 +856,7 @@ class _ChannelItem extends StatelessWidget {
                     behavior: HitTestBehavior.opaque,
                     onTap: openChannel,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.only(
@@ -823,50 +865,64 @@ class _ChannelItem extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              Text(
-                                this.title,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              Text(
-                                this.time,
-                                style: TextStyle(
-                                  color: Colors.grey[400],
+                              Text.rich(
+                                TextSpan(
+                                  text: this.title,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(
-                                right: 5,
+                        showNewest
+                            ? Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                alignment: WrapAlignment.start,
+                                spacing: 5,
+                                runSpacing: 3,
+                                children: <Widget>[
+                                  Text.rich(
+                                    TextSpan(
+                                      text:
+                                          '[${this.unreadMsgCount != 0 ? this.unreadMsgCount : ''}条]',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey[600],
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: ' ',
+                                        ),
+                                        TextSpan(
+                                          text: '${this.subtitle}',
+                                          style: TextStyle(
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    '${this.time}',
+                                    style: TextStyle(
+                                      color: Colors.grey[500],
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Container(
+                                width: 0,
+                                height: 0,
                               ),
-                              child: Text(
-                                this.who,
-                                style: TextStyle(
-                                  color: Colors.blueGrey,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                this.subtitle,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                softWrap: true,
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
                       ],
                     ),
                   ),

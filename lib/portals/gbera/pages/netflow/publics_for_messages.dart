@@ -11,16 +11,16 @@ import 'package:gbera/portals/gbera/store/entities.dart';
 import 'package:gbera/portals/gbera/store/services.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 
-class UpPublicsForActivies extends StatefulWidget {
+class PublicsForMessages extends StatefulWidget {
   PageContext context;
 
-  UpPublicsForActivies({this.context});
+  PublicsForMessages({this.context});
 
   @override
-  _UpPublicsForActiviesState createState() => _UpPublicsForActiviesState();
+  _PublicsForMessagesState createState() => _PublicsForMessagesState();
 }
 
-class _UpPublicsForActiviesState extends State<UpPublicsForActivies> {
+class _PublicsForMessagesState extends State<PublicsForMessages> {
   List<CardItem> personCardItems = [];
   int limit = 20;
   int offset = 0;
@@ -115,7 +115,7 @@ class _UpPublicsForActiviesState extends State<UpPublicsForActivies> {
   }
 
   Future<int> _onLoadPersonCount() async {
-    IUpstreamPersonService personService =
+    IPersonService personService =
         widget.context.site.getService('/upstream/persons');
     int count = await personService.count();
     return count;
@@ -125,9 +125,9 @@ class _UpPublicsForActiviesState extends State<UpPublicsForActivies> {
     if (director == 'down') {
       return;
     }
-    IUpstreamPersonService personService =
+    IPersonService personService =
         widget.context.site.getService('/upstream/persons');
-    List<UpstreamPerson> persons =
+    List<Person> persons =
         await personService.pagePerson(limit, offset);
     if (persons.length == 0) {
       return;

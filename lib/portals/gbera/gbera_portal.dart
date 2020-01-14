@@ -42,8 +42,7 @@ import 'package:gbera/portals/gbera/pages/netflow/create_channel.dart';
 import 'package:gbera/portals/gbera/pages/netflow/insite_publics.dart';
 import 'package:gbera/portals/gbera/pages/netflow/outsite_publics.dart';
 import 'package:gbera/portals/gbera/pages/netflow/insite_messages.dart';
-import 'package:gbera/portals/gbera/pages/netflow/publics_for_down_activies.dart';
-import 'package:gbera/portals/gbera/pages/netflow/publics_for_up_activies.dart';
+import 'package:gbera/portals/gbera/pages/netflow/publics_for_messages.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publics_settings.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publish_article.dart';
 import 'package:gbera/portals/gbera/pages/netflow/scan_channel.dart';
@@ -66,7 +65,7 @@ import 'package:gbera/portals/gbera/pages/system/contract.dart';
 import 'package:gbera/portals/gbera/pages/system/themes.dart';
 import 'package:gbera/portals/gbera/pages/tests/test_insite_messages.dart';
 import 'package:gbera/portals/gbera/pages/tests/test_services.dart';
-import 'package:gbera/portals/gbera/pages/tests/test_upstream_persons.dart';
+import 'package:gbera/portals/gbera/pages/tests/test_persons.dart';
 import 'package:gbera/portals/gbera/pages/users/account_login.dart';
 import 'package:gbera/portals/gbera/pages/users/accounts.dart';
 import 'package:gbera/portals/gbera/pages/users/add_account.dart';
@@ -90,9 +89,9 @@ import 'package:gbera/portals/gbera/pages/wallet/ty.dart';
 import 'package:gbera/portals/gbera/pages/wallet/wy.dart';
 import 'package:gbera/portals/gbera/scaffolds.dart';
 import 'package:gbera/portals/gbera/store/dao/database.dart';
-import 'package:gbera/portals/gbera/store/services/external_channels.dart';
+import 'package:gbera/portals/gbera/store/services/channels.dart';
 import 'package:gbera/portals/gbera/store/services/insite_messages.dart';
-import 'package:gbera/portals/gbera/store/services/upstream_persons.dart';
+import 'package:gbera/portals/gbera/store/services/persons.dart';
 
 import 'desklets/desklets.dart';
 import 'login.dart';
@@ -114,9 +113,9 @@ class GberaPortal {
       name: '金证时代官方框架',
       buildPortalStore: (Portal portal, IServiceProvider site) => PortalStore(
         services: {
-          "/upstream/persons": UpstreamPersonService(site: site),
-          '/external/channels':ExternalChannelService(site:site),
-          '/insite/messages':InsiteMessageService(site:site),
+          "/upstream/persons": PersonService(site: site),
+          '/external/channels': ChannelService(site: site),
+          '/insite/messages': InsiteMessageService(site: site),
         },
         loadDatabase: () async {
           final database = await $FloorAppDatabase
@@ -258,7 +257,7 @@ class GberaPortal {
           ),
         ),
         Page(
-          title: '上游公众',
+          title: '测试公众',
           subtitle: '',
           icon: GalleryIcons.shrine,
           url: '/test/services/upstream/persons',
@@ -316,7 +315,7 @@ class GberaPortal {
           subtitle: '',
           icon: GalleryIcons.shrine,
           url: '/netflow/channel',
-          buildPage: (PageContext pageContext) => Channel(
+          buildPage: (PageContext pageContext) => ChannelPage(
             context: pageContext,
           ),
         ),
@@ -420,23 +419,15 @@ class GberaPortal {
           ),
         ),
         Page(
-          title: '上游公众',
+          title: '公众',
           subtitle: '',
           icon: Icons.settings_input_composite,
           url: '/netflow/channel/publics/list_for_up_activies',
-          buildPage: (PageContext pageContext) => UpPublicsForActivies(
+          buildPage: (PageContext pageContext) => PublicsForMessages(
             context: pageContext,
           ),
         ),
-        Page(
-          title: '下游公众',
-          subtitle: '',
-          icon: Icons.settings_input_composite,
-          url: '/netflow/channel/publics/list_for_down_activies',
-          buildPage: (PageContext pageContext) => DownPublicsForActivies(
-            context: pageContext,
-          ),
-        ),
+
         Page(
           title: '公众活动',
           subtitle: '',

@@ -3,75 +3,57 @@ import 'package:floor/floor.dart';
 import '../entities.dart';
 
 @dao
-abstract class IUpstreamPersonDAO {
+abstract class IPersonDAO {
   @insert
-  Future<void> addPerson(UpstreamPerson person);
+  Future<void> addPerson(Person person);
 
-  @Query('delete FROM UpstreamPerson WHERE id = :id')
+  @Query('delete FROM Person WHERE id = :id')
   Future<void> removePerson(String id);
 
-  @Query('delete FROM UpstreamPerson')
+  @Query('delete FROM Person')
   Future<void> empty();
 
-  @Query('SELECT *  FROM UpstreamPerson LIMIT :pageSize OFFSET  :currPage')
-  Future<List<UpstreamPerson>> pagePerson(int pageSize, int currPage);
+  @Query('SELECT *  FROM Person LIMIT :pageSize OFFSET  :currPage')
+  Future<List<Person>> pagePerson(int pageSize, int currPage);
 
-  @Query('SELECT * FROM UpstreamPerson WHERE id = :id')
-  Future<UpstreamPerson> getPerson(String id);
+  @Query('SELECT * FROM Person WHERE id = :id')
+  Future<Person> getPerson(String id);
 
-  @Query('SELECT * FROM UpstreamPerson')
-  Future<List<UpstreamPerson>> getAllPerson();
+  @Query('SELECT * FROM Person')
+  Future<List<Person>> getAllPerson();
 
-  @Query("SELECT * FROM UpstreamPerson")
-  Future<List<UpstreamPerson>> countPersons();
+  @Query("SELECT * FROM Person")
+  Future<List<Person>> countPersons();
 }
 
 @dao
-abstract class IDownstreamPersonDAO {
+abstract class IChannelDAO {
   @insert
-  Future<void> addPerson(DownstreamPerson person);
+  Future<void> addChannel(Channel channel);
 
-  @Query('delete FROM DownstreamPerson WHERE id = :id')
-  Future<void> removePerson(String id);
-
-  @Query('delete FROM DownstreamPerson')
-  Future<void> empty();
-
-  @Query('SELECT *  FROM DownstreamPerson LIMIT :pageSize OFFSET  :currPage')
-  Future<List<DownstreamPerson>> pagePerson(int pageSize, int currPage);
-
-  @Query('SELECT * FROM DownstreamPerson WHERE id = :id')
-  Future<DownstreamPerson> getPerson(String id);
-
-  @Query('SELECT * FROM DownstreamPerson')
-  Future<List<DownstreamPerson>> getAllPerson();
-}
-
-@dao
-abstract class IExternalChannelDAO {
-  @insert
-  Future<void> addChannel(ExternalChannel channel);
-
-  @Query('delete FROM ExternalChannel WHERE id = :channelid')
+  @Query('delete FROM Channel WHERE id = :channelid')
   Future<void> removeChannel(String channelid);
 
-  @Query('SELECT *  FROM ExternalChannel LIMIT :pageSize OFFSET  :currPage')
-  Future<List<ExternalChannel>> pageChannel(int pageSize, int currPage);
+  @Query('SELECT *  FROM Channel LIMIT :pageSize OFFSET  :currPage')
+  Future<List<Channel>> pageChannel(int pageSize, int currPage);
 
-  @Query('SELECT * FROM ExternalChannel WHERE id = :channelid')
-  Future<ExternalChannel> getChannel(String channelid);
+  @Query('SELECT * FROM Channel WHERE id = :channelid')
+  Future<Channel> getChannel(String channelid);
 
-  @Query('SELECT * FROM ExternalChannel')
-  Future<List<ExternalChannel>> getAllChannel();
+  @Query('SELECT * FROM Channel ORDER BY utime DESC,ctime DESC')
+  Future<List<Channel>> getAllChannel();
 
-  @Query('delete FROM ExternalChannel')
+  @Query('delete FROM Channel')
   Future<void> empty();
 
-  @Query('delete FROM ExternalChannel WHERE owner = :personid')
+  @Query('delete FROM Channel WHERE owner = :personid')
   Future<void> emptyOfPerson(String personid);
 
-  @Query('SELECT * FROM ExternalChannel WHERE owner = :personid')
-  Future<List<ExternalChannel>> getChannelsOfPerson(String personid);
+  @Query('SELECT * FROM Channel WHERE owner = :personid')
+  Future<List<Channel>> getChannelsOfPerson(String personid);
+
+  @Query('SELECT * FROM Channel WHERE name = :channelName AND owner = :owner')
+  Future<Channel> getChannelByName(String channelName,String owner);
 }
 
 @dao
@@ -86,9 +68,9 @@ abstract class IInsiteMessageDAO {
   Future<List<InsiteMessage>> pageMessage(int pageSize, int currPage);
 
   @Query(
-      'SELECT msg.*  FROM InsiteMessage msg,ExternalChannel ch  WHERE msg.upstreamChannel=ch.id AND ch.isPublic=:isPublic LIMIT :pageSize OFFSET :currPage')
-  Future<List<InsiteMessage>> pageMessageByChannelVisualable(
-      String isPublic, int limit, int offset);
+      'SELECT msg.*  FROM InsiteMessage msg,Channel ch  WHERE msg.upstreamChannel=ch.id AND ch.loopType=:loopType LIMIT :pageSize OFFSET :currPage')
+  Future<List<InsiteMessage>> pageMessageByChannelLoopType(
+      String loopType, int limit, int offset);
 
   @Query('SELECT * FROM InsiteMessage WHERE id = :id')
   Future<InsiteMessage> getMessage(String id);

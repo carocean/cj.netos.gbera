@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/store/entities.dart';
+import 'package:gbera/portals/gbera/store/pics/downloads.dart';
 import 'package:gbera/portals/gbera/store/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
@@ -32,7 +33,7 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('上游公众'),
+        title: Text('公众'),
       ),
       body: CustomScrollView(
         slivers: <Widget>[
@@ -42,9 +43,9 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
                 child: Text('更新'),
                 onPressed: () async {
                   List<dynamic> persons = json.decode(_jsonText.text);
-                  IUpstreamPersonService personService =
+                  IPersonService personService =
                       widget.context.site.getService('/upstream/persons');
-                  IExternalChannelService channelService =
+                  IChannelService channelService =
                       widget.context.site.getService('/external/channels');
                   Dio dio = widget.context.site.getService('@.http');
                   await personService.empty();
@@ -52,14 +53,8 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
                     if (await personService.existsPerson(obj['id'])) {
                       continue;
                     }
-                    var home = await getApplicationDocumentsDirectory();
-                    var dir = Directory('${home.path}/pictures/share');
-                    if (!dir.existsSync()) {
-                      dir.createSync(recursive: true);
-                    }
-                    var avatar = '${dir.path}/${Uuid().v1()}';
-                    await dio.download(obj['avatar'], avatar);
-                    UpstreamPerson person = UpstreamPerson(
+                    var avatar = await Downloads.downloadPersonAvatar(dio: dio,avatarUrl: obj['avatar']);
+                    Person person = Person(
                       obj['id'],
                       obj['uid'],
                       obj['accountid'],
@@ -67,6 +62,7 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
                       obj['appid'],
                       obj['tenantid'],
                       avatar,
+                      obj['rights'],
                     );
                     await personService.addPerson(person);
                     var objchs = obj['channels'];
@@ -79,13 +75,21 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
                       if (await channelService.existsChannel(och['id'])) {
                         continue;
                       }
-                      ExternalChannel ch = ExternalChannel(
+                      String leading=och['leading'];
+                      if(!StringUtil.isEmpty(leading)){
+                        leading=await Downloads.downloadChannelAvatar(dio: dio,avatarUrl: leading);
+                      }
+                      Channel ch = Channel(
                         och['id'],
                         och['name'],
                         och['owner'],
-                        och['isPublic'],
-                        och['leading'],
+                        och['loopType'],
+                        leading,
                         och['site'],
+                        och['tips'],
+                        DateTime.now().millisecondsSinceEpoch,
+                        DateTime.now().millisecondsSinceEpoch,
+                        och['unreadMsgCount']??0,
                       );
                       channelService.addChannel(ch);
                     }
@@ -125,7 +129,7 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
 
   Future<String> _loadUpstreamPersonJson(context) async {
     var json = DefaultAssetBundle.of(context)
-        .loadString('model/upstream_persons.json');
+        .loadString('model/persons.json');
     return json;
   }
 }

@@ -9,30 +9,26 @@ import 'daos.dart';
 part 'database.g.dart';
 
 @Database(version: 1, entities: [
-  UpstreamPerson,
-  DownstreamPerson,
+  Person,
   MicroSite,
   MicroApp,
-  ExternalChannel,
+  Channel,
   InsiteMessage,
   ChannelMessage,
   Comment,
   Media,
-  MyChannel,
   ChannelInput,
   ChannelOutput,
   ChannelOutputPerson,
 ])
 abstract class AppDatabase extends FloorDatabase {
-  IUpstreamPersonDAO get upstreamPersonDAO;
-
-  IDownstreamPersonDAO get downstreamPersonDAO;
+  IPersonDAO get upstreamPersonDAO;
 
   IMicroSiteDAO get microSiteDAO;
 
   IMicroAppDAO get microAppDAO;
 
-  IExternalChannelDAO get externalChannelDAO;
+  IChannelDAO get channelDAO;
 
   IInsiteMessageDAO get insiteMessageDAO;
 }

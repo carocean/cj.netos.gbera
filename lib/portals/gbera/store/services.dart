@@ -1,32 +1,39 @@
+import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/store/entities.dart';
 
-mixin IUpstreamPersonService {
+mixin IPersonService {
   Future<void> empty();
 
   Future<bool> existsPerson(id);
 
-  Future<UpstreamPerson> getPerson(id);
+  Future<Person> getPerson(id);
 
-  Future<void> addPerson(UpstreamPerson person);
+  Future<void> addPerson(Person person);
 
-  Future<List<UpstreamPerson>> getAllPerson();
+  Future<List<Person>> getAllPerson();
 
-  Future<List<UpstreamPerson>> pagePerson(int limit, int offset);
+  Future<List<Person>> pagePerson(int limit, int offset);
 
   Future<int> count();
 }
-mixin IExternalChannelService {
+mixin IChannelService {
+  Future<void> init(UserPrincipal user);
   Future<void> empty();
 
   Future<void> emptyOfPerson(String personid);
 
   Future<bool> existsChannel(channelid);
 
-  Future<void> addChannel(ExternalChannel channel);
+  Future<void> addChannel(Channel channel);
 
-  Future<List<ExternalChannel>> getChannelsOfPerson(String personid);
+  Future<List<Channel>> getChannelsOfPerson(String personid);
 
-  Future<ExternalChannel> getChannel(String channelid);
+  Future<Channel> getChannel(String channelid);
+
+  Future<bool> existsName(String channelName,String owner) ;
+
+  Future<List<Channel>>  getAllChannel() ;
+
 }
 mixin IInsiteMessageService {
   Future<void> empty();
@@ -40,5 +47,5 @@ mixin IInsiteMessageService {
   Future<List<InsiteMessage>> getAllMessage();
 
   Future<List<InsiteMessage>> pageMessageByChannelVisualable(
-      int limit, int offset, String isPublic);
+      int limit, int offset, String loopType);
 }

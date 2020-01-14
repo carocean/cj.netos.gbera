@@ -6,16 +6,16 @@ import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/parts/parts.dart';
 import 'package:image_picker/image_picker.dart';
 
-class Channel extends StatefulWidget {
+class ChannelPage extends StatefulWidget {
   PageContext context;
 
-  Channel({this.context});
+  ChannelPage({this.context});
 
   @override
-  _ChannelState createState() => _ChannelState();
+  _ChannelPageState createState() => _ChannelPageState();
 }
 
-class _ChannelState extends State<Channel> {
+class _ChannelPageState extends State<ChannelPage> {
   //一定不能放在build中，因为build每次页面跳入跳出均会执行，而flutter就是靠key来保持状态的，如果放到build中则页面无状态
   var _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -106,7 +106,7 @@ class _ChannelState extends State<Channel> {
     );
   }
 
-  void _buildPlatTab(List<Widget> panel, Channel widget, BuildContext context,
+  void _buildPlatTab(List<Widget> panel, ChannelPage widget, BuildContext context,
       GlobalKey<ScaffoldState> _scaffoldKey) {
     var header = SliverToBoxAdapter(
       child: Container(

@@ -4,7 +4,7 @@ class MessageView {
   final String content;
   final String money;
   final int picCount;
-  final String isPublic;
+  final String loopType;
   final String time;
   final String channel;
   final Function() onTap;
@@ -14,15 +14,15 @@ class MessageView {
     this.content,
     this.money,
     this.picCount,
-    this.isPublic,
+    this.loopType,
     this.time,
     this.channel,
     this.onTap,
   });
 }
 class MessageTabView {
-  const MessageTabView({this.text, this.isPublic});
+  const MessageTabView({this.text, this.loopType});
 
   final String text;
-  final String isPublic;
+  final String loopType;
 }

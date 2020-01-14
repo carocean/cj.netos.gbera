@@ -26,12 +26,12 @@ class _InsiteMessagePageState extends State<InsiteMessagePage>
 
     _allMessageTabViews = <MessageTabView>[
       MessageTabView(
-        text: '普通',
-        isPublic: 'true',
+        text: '开环',
+        loopType: 'openLoop',
       ),
       MessageTabView(
-        text: '私密',
-        isPublic: 'false',
+        text: '闭环',
+        loopType: 'closeLoop',
       ),
     ];
     _controller =
@@ -135,11 +135,11 @@ class _MessagesRegionState extends State<_MessagesRegion> {
     }
     IInsiteMessageService messageService =
         widget.context.site.getService('/insite/messages');
-    IUpstreamPersonService personService =
+    IPersonService personService =
         widget.context.site.getService('/upstream/persons');
-    IExternalChannelService channelService =
+    IChannelService channelService =
         widget.context.site.getService('/external/channels');
-    var messages = await messageService.pageMessageByChannelVisualable(limit, offset,widget.tabView.isPublic);
+    var messages = await messageService.pageMessageByChannelVisualable(limit, offset,widget.tabView.loopType);
     if (messages.length == 0) {
       return;
     }
@@ -159,7 +159,7 @@ class _MessagesRegionState extends State<_MessagesRegion> {
         money: ((msg.wy ?? 0) * 0.00012837277272).toStringAsFixed(2),
         time: timeText,
         picCount: 0,
-        isPublic: channel.isPublic,
+        loopType: channel.loopType,
         onTap: () {
           showModalBottomSheet(
               context: context,
@@ -291,7 +291,7 @@ class _SwipeableListState extends State<SwipeableList> {
                                   children: [
                                     TextSpan(
                                         text:
-                                        '  ${v.isPublic=='true' ? '开放管道:' : '私有管道:'}'),
+                                        '  ${v.loopType=='true' ? '开放管道:' : '私有管道:'}'),
                                     TextSpan(
                                       text: '${v.channel}',
                                       style: TextStyle(
