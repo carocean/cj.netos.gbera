@@ -17,10 +17,15 @@ class Desktop extends StatefulWidget {
   _DesktopState createState() => _DesktopState();
 }
 
-class _DesktopState extends State<Desktop> {
+class _DesktopState extends State<Desktop> with AutomaticKeepAliveClientMixin{
   var _controller;
   var _backgroud_transparent = true;
   bool use_wallpapper = false;
+
+  @override
+  bool get wantKeepAlive {
+    return true;
+  }
 
   @override
   void dispose() {
@@ -58,6 +63,7 @@ class _DesktopState extends State<Desktop> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return FutureBuilder(
       future: desktopManager.getInstalledPortlets(widget.context),
       builder: (context, snapshot) {

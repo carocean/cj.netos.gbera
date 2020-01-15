@@ -27,7 +27,7 @@ class Netflow extends StatefulWidget {
   _NetflowState createState() => _NetflowState();
 }
 
-class _NetflowState extends State<Netflow> {
+class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin{
   var _controller;
   var _backgroud_transparent = true;
   bool use_wallpapper = false;
@@ -37,6 +37,11 @@ class _NetflowState extends State<Netflow> {
   _NetflowState() {
     _controller = ScrollController(initialScrollOffset: 0.0);
     _controller.addListener(_listener);
+  }
+
+  @override
+  bool get wantKeepAlive {
+    return true;
   }
 
   @override
@@ -79,6 +84,8 @@ class _NetflowState extends State<Netflow> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     use_wallpapper = widget.context.parameters['use_wallpapper'];
 
     return CustomScrollView(

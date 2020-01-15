@@ -16,9 +16,14 @@ class Market extends StatefulWidget {
   _MarketState createState() => _MarketState();
 }
 
-class _MarketState extends State<Market> {
+class _MarketState extends State<Market> with AutomaticKeepAliveClientMixin{
   ScrollController _controller;
   bool showAppBar = false;
+
+  @override
+  bool get wantKeepAlive {
+    return true;
+  }
 
   @override
   void initState() {
@@ -56,6 +61,7 @@ class _MarketState extends State<Market> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return CustomScrollView(
       controller: _controller,
       slivers: [

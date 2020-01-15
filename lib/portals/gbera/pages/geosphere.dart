@@ -18,10 +18,15 @@ class Geosphere extends StatefulWidget {
   _GeosphereState createState() => _GeosphereState();
 }
 
-class _GeosphereState extends State<Geosphere> {
+class _GeosphereState extends State<Geosphere> with AutomaticKeepAliveClientMixin{
   var _controller;
   var _backgroud_transparent = true;
   bool use_wallpapper = false;
+
+  @override
+  bool get wantKeepAlive {
+    return true;
+  }
 
   @override
   void initState() {
@@ -60,6 +65,7 @@ class _GeosphereState extends State<Geosphere> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     use_wallpapper = widget.context.parameters['use_wallpapper'];
     return CustomScrollView(
       controller: _controller,
