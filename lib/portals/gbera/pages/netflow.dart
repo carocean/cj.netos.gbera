@@ -31,12 +31,18 @@ class _NetflowState extends State<Netflow> {
   var _controller;
   var _backgroud_transparent = true;
   bool use_wallpapper = false;
-
+  Future<List<MessageView>> _future_getMessages;
+  Future<List<_ChannelItem>> _future_loadChannels;
   _NetflowState() {
     _controller = ScrollController(initialScrollOffset: 0.0);
     _controller.addListener(_listener);
   }
-
+  @override
+  void initState() {
+    _future_getMessages=_getMessages();
+    _future_loadChannels=_loadChannels();
+    super.initState();
+  }
   @override
   void dispose() {
     super.dispose();
@@ -69,6 +75,7 @@ class _NetflowState extends State<Netflow> {
   @override
   Widget build(BuildContext context) {
     use_wallpapper = widget.context.parameters['use_wallpapper'];
+
     return CustomScrollView(
       controller: _controller,
       slivers: <Widget>[
@@ -201,7 +208,7 @@ class _NetflowState extends State<Netflow> {
         SliverToBoxAdapter(
           child: Container(
             child: FutureBuilder<List<MessageView>>(
-              future: _getMessages(),
+              future: _future_getMessages,
               builder: (ctx, snapshot) {
                 if (snapshot.connectionState != ConnectionState.done) {
                   return Center(
@@ -274,7 +281,7 @@ class _NetflowState extends State<Netflow> {
         ),
         SliverToBoxAdapter(
           child: FutureBuilder<List<_ChannelItem>>(
-            future: _loadChannels(),
+            future: _future_loadChannels,
             builder: (ctx, snapshot) {
               if (snapshot.connectionState != ConnectionState.done) {
                 return Container(
