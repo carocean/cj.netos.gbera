@@ -17,7 +17,6 @@ class _WithBottomScaffoldState extends State<WithBottomScaffold> {
   int selectedIndex = 0;
   var parts = [];
   var wallpaper;
-
   @override
   void initState() {
     super.initState();
@@ -29,7 +28,12 @@ class _WithBottomScaffoldState extends State<WithBottomScaffold> {
     parts.add(widget.context.part('/geosphere', context,arguments:{'From-Page-Url': widget.context.page.url}));
     parts.add(widget.context.part('/market', context,arguments:{'From-Page-Url': widget.context.page.url}));
   }
-
+  @override
+  void dispose() {
+    parts.clear();
+    selectedIndex=0;
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     wallpaper = widget.context.sharedPreferences().getString('@.wallpaper');

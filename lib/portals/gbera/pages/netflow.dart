@@ -33,20 +33,25 @@ class _NetflowState extends State<Netflow> {
   bool use_wallpapper = false;
   Future<List<MessageView>> _future_getMessages;
   Future<List<_ChannelItem>> _future_loadChannels;
+
   _NetflowState() {
     _controller = ScrollController(initialScrollOffset: 0.0);
     _controller.addListener(_listener);
   }
+
   @override
   void initState() {
-    _future_getMessages=_getMessages();
-    _future_loadChannels=_loadChannels();
+    _future_getMessages = _getMessages();
+    _future_loadChannels = _loadChannels();
     super.initState();
   }
+
   @override
   void dispose() {
-    super.dispose();
+    _future_getMessages = null;
+    _future_loadChannels = null;
     _controller?.dispose();
+    super.dispose();
   }
 
   _listener() {
@@ -212,8 +217,9 @@ class _NetflowState extends State<Netflow> {
               builder: (ctx, snapshot) {
                 if (snapshot.connectionState != ConnectionState.done) {
                   return Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(20),
+                    child: SizedBox(
+                      width: 40,
+                      height: 40,
                       child: CircularProgressIndicator(
 //                    value: 0.3,
                         backgroundColor: Colors.grey[300],
@@ -284,11 +290,13 @@ class _NetflowState extends State<Netflow> {
             future: _future_loadChannels,
             builder: (ctx, snapshot) {
               if (snapshot.connectionState != ConnectionState.done) {
-                return Container(
-                  child: SizedBox(
-                    width: 40,
-                    height: 40,
-                    child: CircularProgressIndicator(),
+                return Center(
+                  child: Container(
+                    child: SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: CircularProgressIndicator(),
+                    ),
                   ),
                 );
               }
@@ -305,6 +313,12 @@ class _NetflowState extends State<Netflow> {
         ),
       ],
     );
+  }
+
+  //调用方：创建管道，修改管道图标
+  Future<void> _refreshChannels() async {
+    //该方法导致FutureBuilder的重绘
+    _future_loadChannels = _loadChannels();
   }
 
   Future<List<_ChannelItem>> _loadChannels() async {
@@ -353,8 +367,9 @@ class _NetflowState extends State<Netflow> {
             }
             widget.context.forward(
               '/netflow/channel/avatar',
-              arguments: {
+              arguments: <String, Object>{
                 'channel': ch,
+                'refreshChannels': _refreshChannels,
               },
             );
           },
@@ -427,6 +442,7 @@ class _NetflowState extends State<Netflow> {
                     }).then((v) {
                   print('xxxx-$v');
                   if (v == null) return;
+                  v['refreshChannels'] = _refreshChannels;
                   widget.context.forward(value, arguments: v);
                 });
                 break;

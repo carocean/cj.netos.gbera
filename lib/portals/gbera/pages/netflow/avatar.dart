@@ -104,14 +104,18 @@ class _AvatarState extends State<Avatar> {
                       area: crop.area,
                     );
                     _image = null;
+                    IChannelService channelService =
+                        widget.context.site.getService('/external/channels');
+                    Channel channel = widget.context.parameters['channel'];
+                    await channelService.updateLeading(
+                        _crop_image.path, channel?.id);
+                    var refreshChannels =
+                        widget.context.parameters['refreshChannels'];
+                    if (refreshChannels != null) {
+                      await refreshChannels();
+                    }
                     setState(() {
-                      IChannelService channelService =
-                          widget.context.site.getService('/external/channels');
-                      Channel channel = widget.context.parameters['channel'];
-                      () async {
-                        channelService.updateLeading(
-                            _crop_image.path, channel?.id);
-                      }();
+                      widget.context.backward();
                     });
                   },
                   icon: Icon(Icons.check),
@@ -149,7 +153,7 @@ class _AvatarState extends State<Avatar> {
   getLeading(bb) {
     if (bb == null) return null;
     return IconButton(
-      onPressed: () {
+      onPressed: () async {
         widget.context.backward();
       },
       icon: Icon(

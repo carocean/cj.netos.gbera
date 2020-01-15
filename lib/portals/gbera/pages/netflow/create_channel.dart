@@ -84,6 +84,10 @@ class _CreateChannelState extends State<CreateChannel> {
                 0,
               );
               await channelService.addChannel(channel);
+              var refreshChannels=widget.context.parameters['refreshChannels'];
+              if(refreshChannels!=null){
+                await refreshChannels();
+              }
               widget.context.backward();
             },
           ),
