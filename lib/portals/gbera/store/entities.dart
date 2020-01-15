@@ -99,6 +99,7 @@ class ChannelMessage {
   final String text;
   final double wy;
   final String location;
+  final String onChannel;
 
   ChannelMessage(
     this.id,
@@ -112,6 +113,7 @@ class ChannelMessage {
     this.text,
     this.wy,
     this.location,
+    this.onChannel,
   );
 }
 
@@ -138,8 +140,8 @@ class ChannelComment {
   final String text;
   final int ctime;
 
-  ChannelComment(this.id, this.person, this.uid, this.avatar, this.msgid, this.text,
-      this.ctime);
+  ChannelComment(this.id, this.person, this.uid, this.avatar, this.msgid,
+      this.text, this.ctime);
 }
 
 @entity

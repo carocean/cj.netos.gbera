@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/common/swipe_refresh.dart';
 import 'package:gbera/portals/gbera/parts/parts.dart';
 import 'package:gbera/portals/gbera/store/entities.dart';
+import 'package:gbera/portals/gbera/store/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ChannelPage extends StatefulWidget {
@@ -17,18 +19,28 @@ class ChannelPage extends StatefulWidget {
 }
 
 class _ChannelPageState extends State<ChannelPage> {
-  //一定不能放在build中，因为build每次页面跳入跳出均会执行，而flutter就是靠key来保持状态的，如果放到build中则页面无状态
-  var _scaffoldKey = GlobalKey<ScaffoldState>();
+  List<ChannelMessage> pageMessages;
+  int limit = 10, offset = 0;
+  //这是防止flutterBuilder重绘引起的页面状态无保持，致返回到列表页时总是在滚到顶
+  Future<List<ChannelMessage>>  _onloadFuture;
+  @override
+  void initState() {
+    pageMessages = <ChannelMessage>[];
+    _onloadFuture=_onload();
+    super.initState();
+  }
 
-  var maxLines = 4;
+  @override
+  void dispose() {
+    pageMessages.clear();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    Channel channel=widget.context.parameters['channel'];
-    var panel = <Widget>[];
-    _buildPlatTab(panel, widget, context, _scaffoldKey);
+    Channel channel = widget.context.parameters['channel'];
+
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
         title: Text(
@@ -42,7 +54,11 @@ class _ChannelPageState extends State<ChannelPage> {
             behavior: HitTestBehavior.opaque,
             onLongPress: () {
               widget.context.forward('/netflow/channel/publish_article',
-                  arguments: {'type': 'text','channel':channel});
+                  arguments: <String, dynamic>{
+                    'type': 'text',
+                    'channel': channel,
+                    'refreshMessages': _refreshMessages
+                  });
             },
             child: IconButton(
               icon: Icon(
@@ -61,7 +77,8 @@ class _ChannelPageState extends State<ChannelPage> {
                         icon: Icons.font_download,
                         color: Colors.grey[500],
                         onPressed: () {
-                          widget.context.backward(result: {'type': 'text'});
+                          widget.context.backward(
+                              result: <String, dynamic>{'type': 'text'});
                         },
                       ),
                       DialogItem(
@@ -71,8 +88,10 @@ class _ChannelPageState extends State<ChannelPage> {
                         onPressed: () async {
                           var image = await ImagePicker.pickImage(
                               source: ImageSource.camera);
-                          widget.context.backward(
-                              result: {'type': 'take', 'image': image});
+                          widget.context.backward(result: <String, dynamic>{
+                            'type': 'camera',
+                            'image': image
+                          });
                         },
                       ),
                       DialogItem(
@@ -82,8 +101,10 @@ class _ChannelPageState extends State<ChannelPage> {
                         onPressed: () async {
                           var image = await ImagePicker.pickImage(
                               source: ImageSource.gallery);
-                          widget.context.backward(
-                              result: {'type': 'select', 'image': image});
+                          widget.context.backward(result: <String, dynamic>{
+                            'type': 'gallery',
+                            'image': image
+                          });
                         },
                       ),
                     ],
@@ -91,7 +112,8 @@ class _ChannelPageState extends State<ChannelPage> {
                 ).then<void>((value) {
                   // The value passed to Navigator.pop() or null.
                   if (value != null) {
-                    value['channel']=channel;
+                    value['channel'] = channel;
+                    value['refreshMessages'] = _refreshMessages;
                     widget.context.forward('/netflow/channel/publish_article',
                         arguments: value);
                   }
@@ -101,490 +123,128 @@ class _ChannelPageState extends State<ChannelPage> {
           ),
         ],
       ),
-      body: CustomScrollView(
-        shrinkWrap: true,
-//        controller: ScrollController(keepScrollOffset: true),
-        slivers: panel,
+      body: FutureBuilder<List<ChannelMessage>>(
+        //为了避免不能页面保持，所以赋予future，当future实例相同时FutureBuilder不再重绘
+        future: _onloadFuture,
+        builder: (ctx, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return Center(
+              child: Container(
+                width: 40,
+                height: 40,
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+          if (snapshot.hasError) {
+            return Center(
+              child: Container(
+                width: 40,
+                height: 40,
+                child: Text('${snapshot.error}'),
+              ),
+            );
+          }
+          var slivers = <Widget>[
+            SliverToBoxAdapter(
+              child: _Header(
+                context: widget.context,
+              ),
+            ),
+          ];
+          if (snapshot.data.isEmpty) {
+            slivers.add(
+              SliverFillRemaining(
+                child: Container(
+                  constraints: BoxConstraints.expand(),
+                  alignment: Alignment.topCenter,
+                  padding: EdgeInsets.only(
+                    top: 20,
+                  ),
+                  child: Text('没有活动'),
+                  color: Colors.white,
+                ),
+              ),
+            );
+          }
+          for (var msg in snapshot.data) {
+            slivers.add(
+              SliverToBoxAdapter(
+                child: _MessageCard(
+                  context: widget.context,
+                  message: msg,
+                  channel: channel,
+                ),
+              ),
+            );
+          }
+          return _MySwipeRefresh(
+            onSwipeDown: _onSwipeDown,
+            onSwipeUp: _onSwipeUp,
+            slivers: slivers,
+          );
+        },
       ),
     );
   }
 
-  void _buildPlatTab(List<Widget> panel, ChannelPage widget, BuildContext context,
-      GlobalKey<ScaffoldState> _scaffoldKey) {
-    var header = SliverToBoxAdapter(
-      child: Container(
-        alignment: Alignment.bottomLeft,
-        padding: EdgeInsets.only(
-          top: 20,
-          left: 15,
-          bottom: 10,
-          right: 15,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                widget.context.forward('/netflow/manager/channel_gateway',
-                    arguments: {'title': '公共'});
-              },
-              child: Padding(
-                padding: EdgeInsets.only(
-                  right: 5,
-                ),
-                child: Icon(
-                  widget.context
-                      .findPage('/netflow/manager/channel_gateway')
-                      ?.icon,
-                  size: 18,
-                  color: Colors.grey[600],
-                ),
-              ),
-            ),
-          ],
-        ),
+  _refreshMessages() async {
+    this.offset = 0;
+    this.pageMessages.clear();
+    _onloadFuture=_onload();
+  }
+
+  Future<void> _onSwipeDown() async {}
+
+  Future<void> _onSwipeUp() async {
+    var onchannel = widget.context.parameters['channel']?.id;
+    IChannelMessageService messageService =
+        widget.context.site.getService('/channel/messages');
+    var messages = await messageService.pageMessage(limit, offset, onchannel);
+    if (messages == null || messages.length == 0) {
+      return;
+    }
+    offset += messages.length;
+    for (var msg in messages) {
+      pageMessages.add(msg);
+    }
+  }
+
+  Future<List<ChannelMessage>> _onload() async {
+    await _onSwipeUp();
+    return pageMessages;
+  }
+}
+
+class _MySwipeRefresh extends StatefulWidget {
+  Future<void> Function() onSwipeDown;
+  Future<void> Function() onSwipeUp;
+  List<Widget> slivers;
+
+  _MySwipeRefresh({this.onSwipeDown, this.onSwipeUp, this.slivers});
+
+  @override
+  __MySwipeRefreshState createState() => __MySwipeRefreshState();
+}
+
+class __MySwipeRefreshState extends State<_MySwipeRefresh> {
+  @override
+  Widget build(BuildContext context) {
+    return SwipeRefreshLayout(
+      onSwipeDown: () async {
+        await widget.onSwipeDown();
+        setState(() {});
+      },
+      onSwipeUp: () async {
+        await widget.onSwipeUp();
+        setState(() {});
+      },
+      child: CustomScrollView(
+        shrinkWrap: true,
+//        controller: ScrollController(keepScrollOffset: true),
+        slivers: widget.slivers,
       ),
     );
-    var images=[
-      'https://img13.360buyimg.com/n1/s450x450_jfs/t1/19941/13/11811/62942/5c93524eE2f3ea589/3de7edc227e93cc1.jpg',
-      'https://img13.360buyimg.com/n1/s450x450_jfs/t1/25838/34/11949/63568/5c935252E474ec0fc/e18e4be5fa437998.jpg',
-    ];
-    var item = SliverToBoxAdapter(
-      child: Card(
-        shape: Border(),
-        elevation: 0,
-        margin: EdgeInsets.only(bottom: 15),
-        child: Container(
-          padding: EdgeInsets.only(
-            top: 10,
-            left: 10,
-            right: 10,
-            bottom: 10,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  widget.context.forward('/site/marchant');
-                },
-                child: Padding(
-                  padding: EdgeInsets.only(top: 5, right: 5),
-                  child: ClipOval(
-                    child: Image(
-                      image: NetworkImage(
-                          'https://sjbz-fd.zol-img.com.cn/t_s208x312c5/g5/M00/01/06/ChMkJ1w3FnmIE9dUAADdYQl3C5IAAuTxAKv7x8AAN15869.jpg'),
-                      height: 35,
-                      width: 35,
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            widget.context.forward('/site/marchant');
-                          },
-                          behavior: HitTestBehavior.opaque,
-                          child: Text(
-                            '波涛旅行Hotel',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: IconButton(
-                            padding: EdgeInsets.all(0),
-                            onPressed: () {
-                              showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) {
-                                    return widget.context.part(
-                                        '/netflow/channel/serviceMenu',
-                                        context);
-                                  }).then((value) {
-                                print('-----$value');
-                                if (value == null) return;
-                                widget.context
-                                    .forward('/micro/app', arguments: value);
-                              });
-                            },
-                            icon: Icon(
-                              Icons.art_track,
-                              size: 20,
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      //内容区
-                      padding: EdgeInsets.only(top: 5, bottom: 10),
-                      alignment: Alignment.topLeft,
-                      child: Text.rich(
-                        TextSpan(
-                          text:
-                              '不走形式，研发中心月度实现目标，由上级主管给出几个目标维度，被考核人自已填本月实际目标，并由主管审核下级目标，最终呈给人事部。工作态度：考核项固定',
-                          style: TextStyle(
-                            fontSize: 15,
-                          ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              setState(() {
-                                if (maxLines == 4) {
-                                  maxLines = 100;
-                                } else {
-                                  maxLines = 4;
-                                }
-                              });
-                            },
-                        ),
-                        maxLines: maxLines,
-                      ),
-                    ),
-                    DefaultTabController(
-                      length: images.length,
-                      child: PageSelector(
-                        images: images,
-                        onImageTap: (url) {
-                          widget.context.forward(
-                            '/images/viewer',
-                            arguments: {
-                              'imgSrc': url,
-                              'text': '',
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                    Row(
-                      //内容坠
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Expanded(
-                          child: Text.rich(
-                            TextSpan(
-                              text: '1小时前',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey[400],
-                              ),
-                              children: [
-                                TextSpan(text: '  '),
-                                TextSpan(text: '¥0.24'),
-                                TextSpan(text: '\r\n'),
-                                TextSpan(
-                                  text: '来自',
-                                  children: [
-                                    TextSpan(
-                                      text: '大飞果果',
-                                      style: TextStyle(
-                                        color: Colors.blueGrey,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () {
-                                          widget.context
-                                              .forward("/site/personal");
-                                        },
-                                    ),
-                                    TextSpan(text: '的管道'),
-                                    TextSpan(
-                                      text: '水葫芦凉茶店',
-                                      style: TextStyle(
-                                        color: Colors.blueGrey,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () {
-                                          widget.context
-                                              .forward("/channel/viewer");
-                                        },
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            softWrap: true,
-                          ),
-                        ),
-                        PopupMenuButton<String>(
-                          icon: Icon(
-                            Icons.linear_scale,
-                            size: 14,
-                            color: Colors.grey[600],
-                          ),
-                          offset: Offset(
-                            0,
-                            35,
-                          ),
-                          onSelected: (value) {
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Container(
-                                child: Text('$value'),
-                              ),
-                            ));
-                          },
-                          itemBuilder: (context) => <PopupMenuEntry<String>>[
-                            PopupMenuItem(
-                              value: 'like',
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      right: 10,
-                                    ),
-                                    child: Icon(
-                                      FontAwesomeIcons.thumbsUp,
-                                      color: Colors.grey[500],
-                                      size: 15,
-                                    ),
-                                  ),
-                                  Text(
-                                    '点赞',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            PopupMenuItem(
-                              value: 'comment',
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      right: 10,
-                                    ),
-                                    child: Icon(
-                                      FontAwesomeIcons.comment,
-                                      color: Colors.grey[500],
-                                      size: 15,
-                                    ),
-                                  ),
-                                  Text(
-                                    '评论',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-//                          PopupMenuDivider(),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(4)),
-                        color: Color(0xFFF5F5F5),
-                      ),
-                      padding: EdgeInsets.only(
-                        left: 10,
-                        right: 5,
-                        top: 5,
-                        bottom: 5,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        //相关操作区
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  right: 5,
-                                ),
-                                child: Icon(
-                                  FontAwesomeIcons.thumbsUp,
-                                  color: Colors.grey[500],
-                                  size: 16,
-                                ),
-                              ),
-                              Expanded(
-                                child: Text.rich(
-                                  TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text: '吉儿',
-                                        style: TextStyle(
-                                          color: Colors.blueGrey,
-                                          fontWeight: FontWeight.w600,
-                                          decoration: TextDecoration.underline,
-                                        ),
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () {
-                                            widget.context
-                                                .forward("/site/personal");
-                                          },
-                                      ),
-                                      TextSpan(text: ';  '),
-                                      TextSpan(
-                                        text: '布谷鸟',
-                                        style: TextStyle(
-                                          color: Colors.blueGrey,
-                                          fontWeight: FontWeight.w600,
-                                          decoration: TextDecoration.underline,
-                                        ),
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () {
-                                            widget.context
-                                                .forward("/site/personal");
-                                          },
-                                      ),
-                                      TextSpan(text: ';  '),
-                                      TextSpan(
-                                        text: '大飞果果',
-                                        style: TextStyle(
-                                          color: Colors.blueGrey,
-                                          fontWeight: FontWeight.w600,
-                                          decoration: TextDecoration.underline,
-                                        ),
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () {
-                                            widget.context
-                                                .forward("/site/personal");
-                                          },
-                                      ),
-                                      TextSpan(text: ';  '),
-                                      TextSpan(
-                                        text: '中国好味道',
-                                        style: TextStyle(
-                                          color: Colors.blueGrey,
-                                          fontWeight: FontWeight.w600,
-                                          decoration: TextDecoration.underline,
-                                        ),
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () {
-                                            widget.context
-                                                .forward("/site/personal");
-                                          },
-                                      ),
-                                      TextSpan(text: ';  '),
-                                    ],
-                                  ),
-//                                maxLines: 4,
-//                                overflow: TextOverflow.ellipsis,
-                                  softWrap: true,
-                                ),
-                              ),
-                            ],
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              bottom: 6,
-                              top: 6,
-                            ),
-                            child: Divider(
-                              height: 1,
-                            ),
-                          ),
-                          Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: 5,
-                                ),
-                                child: Text.rich(
-                                  //评论区
-                                  TextSpan(
-                                    text: 'carocean:',
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        widget.context
-                                            .forward("/site/personal");
-                                      },
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.blueGrey,
-                                    ),
-                                    children: [
-                                      TextSpan(
-                                        text: '当实现具备实时性需求时，我们一般会选择长连接的通信方式',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.normal,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  softWrap: true,
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: 5,
-                                ),
-                                child: Text.rich(
-                                  //评论区
-                                  TextSpan(
-                                    text: '天空的云:',
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        widget.context
-                                            .forward("/site/personal");
-                                      },
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.blueGrey,
-                                    ),
-                                    children: [
-                                      TextSpan(
-                                        text:
-                                            '学习一门新的语言，第一个呈现基本都是“hello world”。那么我们知道这个是文本显示的。所以第一个我们学习Text,话不多说，直接上代码',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.normal,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  softWrap: true,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-    panel.add(header);
-    panel.add(item);
-    panel.add(item);
   }
 }
 
@@ -648,5 +308,500 @@ class DialogItem extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _Header extends StatelessWidget {
+  PageContext context;
+
+  _Header({this.context});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.bottomLeft,
+      padding: EdgeInsets.only(
+        top: 20,
+        left: 15,
+        bottom: 10,
+        right: 15,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              this.context.forward('/netflow/manager/channel_gateway',
+                  arguments: {'title': '公共'});
+            },
+            child: Padding(
+              padding: EdgeInsets.only(
+                right: 5,
+              ),
+              child: Icon(
+                this.context.findPage('/netflow/manager/channel_gateway')?.icon,
+                size: 18,
+                color: Colors.grey[600],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MessageCard extends StatefulWidget {
+  PageContext context;
+  ChannelMessage message;
+  Channel channel;
+
+  _MessageCard({
+    this.context,
+    this.channel,
+    this.message,
+  });
+
+  @override
+  __MessageCardState createState() => __MessageCardState();
+}
+
+class __MessageCardState extends State<_MessageCard> {
+  int maxLines = 4;
+
+  @override
+  Widget build(BuildContext context) {
+    var images = [
+      'https://img13.360buyimg.com/n1/s450x450_jfs/t1/19941/13/11811/62942/5c93524eE2f3ea589/3de7edc227e93cc1.jpg',
+      'https://img13.360buyimg.com/n1/s450x450_jfs/t1/25838/34/11949/63568/5c935252E474ec0fc/e18e4be5fa437998.jpg',
+    ];
+    return Card(
+      shape: Border(),
+      elevation: 0,
+      margin: EdgeInsets.only(bottom: 15),
+      child: Container(
+        padding: EdgeInsets.only(
+          top: 10,
+          left: 10,
+          right: 10,
+          bottom: 10,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                widget.context.forward('/site/marchant');
+              },
+              child: Padding(
+                padding: EdgeInsets.only(top: 5, right: 5),
+                child: ClipOval(
+                  child: Image(
+                    image: NetworkImage(
+                        'https://sjbz-fd.zol-img.com.cn/t_s208x312c5/g5/M00/01/06/ChMkJ1w3FnmIE9dUAADdYQl3C5IAAuTxAKv7x8AAN15869.jpg'),
+                    height: 35,
+                    width: 35,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          widget.context.forward('/site/marchant');
+                        },
+                        behavior: HitTestBehavior.opaque,
+                        child: Text(
+                          '${widget.message.creator}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: IconButton(
+                          padding: EdgeInsets.all(0),
+                          onPressed: () {
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return widget.context.part(
+                                      '/netflow/channel/serviceMenu', context);
+                                }).then((value) {
+                              print('-----$value');
+                              if (value == null) return;
+                              widget.context
+                                  .forward('/micro/app', arguments: value);
+                            });
+                          },
+                          icon: Icon(
+                            Icons.art_track,
+                            size: 20,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    //内容区
+                    padding: EdgeInsets.only(top: 5, bottom: 10),
+                    alignment: Alignment.topLeft,
+                    child: Text.rich(
+                      TextSpan(
+                        text: '${widget.message.text}',
+                        style: TextStyle(
+                          fontSize: 15,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            setState(() {
+                              if (maxLines == 4) {
+                                maxLines = 100;
+                              } else {
+                                maxLines = 4;
+                              }
+                            });
+                          },
+                      ),
+                      maxLines: maxLines,
+                    ),
+                  ),
+                  DefaultTabController(
+                    length: images.length,
+                    child: PageSelector(
+                      images: images,
+                      onImageTap: (url) {
+                        widget.context.forward(
+                          '/images/viewer',
+                          arguments: {
+                            'imgSrc': url,
+                            'text': '',
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  Row(
+                    //内容坠
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: Text.rich(
+                          TextSpan(
+                            text: '1小时前',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[400],
+                            ),
+                            children: [
+                              TextSpan(text: '  '),
+                              TextSpan(text: '¥0.24'),
+                              TextSpan(text: '\r\n'),
+                              TextSpan(
+                                text: '来自',
+                                children: [
+                                  TextSpan(
+                                    text: '大飞果果',
+                                    style: TextStyle(
+                                      color: Colors.blueGrey,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        widget.context
+                                            .forward("/site/personal");
+                                      },
+                                  ),
+                                  TextSpan(text: '的管道'),
+                                  TextSpan(
+                                    text: '水葫芦凉茶店',
+                                    style: TextStyle(
+                                      color: Colors.blueGrey,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        widget.context
+                                            .forward("/channel/viewer");
+                                      },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          softWrap: true,
+                        ),
+                      ),
+                      PopupMenuButton<String>(
+                        icon: Icon(
+                          Icons.linear_scale,
+                          size: 14,
+                          color: Colors.grey[600],
+                        ),
+                        offset: Offset(
+                          0,
+                          35,
+                        ),
+                        onSelected: (value) {
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Container(
+                              child: Text('$value'),
+                            ),
+                          ));
+                        },
+                        itemBuilder: (context) => <PopupMenuEntry<String>>[
+                          PopupMenuItem(
+                            value: 'like',
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    right: 10,
+                                  ),
+                                  child: Icon(
+                                    FontAwesomeIcons.thumbsUp,
+                                    color: Colors.grey[500],
+                                    size: 15,
+                                  ),
+                                ),
+                                Text(
+                                  '点赞',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'comment',
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    right: 10,
+                                  ),
+                                  child: Icon(
+                                    FontAwesomeIcons.comment,
+                                    color: Colors.grey[500],
+                                    size: 15,
+                                  ),
+                                ),
+                                Text(
+                                  '评论',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+//                          PopupMenuDivider(),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                      color: Color(0xFFF5F5F5),
+                    ),
+                    padding: EdgeInsets.only(
+                      left: 10,
+                      right: 5,
+                      top: 5,
+                      bottom: 5,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      //相关操作区
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: 5,
+                              ),
+                              child: Icon(
+                                FontAwesomeIcons.thumbsUp,
+                                color: Colors.grey[500],
+                                size: 16,
+                              ),
+                            ),
+                            Expanded(
+                              child: Text.rich(
+                                TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: '吉儿',
+                                      style: TextStyle(
+                                        color: Colors.blueGrey,
+                                        fontWeight: FontWeight.w600,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          widget.context
+                                              .forward("/site/personal");
+                                        },
+                                    ),
+                                    TextSpan(text: ';  '),
+                                    TextSpan(
+                                      text: '布谷鸟',
+                                      style: TextStyle(
+                                        color: Colors.blueGrey,
+                                        fontWeight: FontWeight.w600,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          widget.context
+                                              .forward("/site/personal");
+                                        },
+                                    ),
+                                    TextSpan(text: ';  '),
+                                    TextSpan(
+                                      text: '大飞果果',
+                                      style: TextStyle(
+                                        color: Colors.blueGrey,
+                                        fontWeight: FontWeight.w600,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          widget.context
+                                              .forward("/site/personal");
+                                        },
+                                    ),
+                                    TextSpan(text: ';  '),
+                                    TextSpan(
+                                      text: '中国好味道',
+                                      style: TextStyle(
+                                        color: Colors.blueGrey,
+                                        fontWeight: FontWeight.w600,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          widget.context
+                                              .forward("/site/personal");
+                                        },
+                                    ),
+                                    TextSpan(text: ';  '),
+                                  ],
+                                ),
+//                                maxLines: 4,
+//                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                              ),
+                            ),
+                          ],
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 6,
+                            top: 6,
+                          ),
+                          child: Divider(
+                            height: 1,
+                          ),
+                        ),
+                        Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                bottom: 5,
+                              ),
+                              child: Text.rich(
+                                //评论区
+                                TextSpan(
+                                  text: 'carocean:',
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      widget.context.forward("/site/personal");
+                                    },
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.blueGrey,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: '当实现具备实时性需求时，我们一般会选择长连接的通信方式',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                softWrap: true,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                bottom: 5,
+                              ),
+                              child: Text.rich(
+                                //评论区
+                                TextSpan(
+                                  text: '天空的云:',
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      widget.context.forward("/site/personal");
+                                    },
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.blueGrey,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text:
+                                          '学习一门新的语言，第一个呈现基本都是“hello world”。那么我们知道这个是文本显示的。所以第一个我们学习Text,话不多说，直接上代码',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                softWrap: true,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    ;
   }
 }

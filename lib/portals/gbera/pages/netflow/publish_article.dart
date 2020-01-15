@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,11 +19,13 @@ class PublishArticle extends StatefulWidget {
 }
 
 class _PublishArticleState extends State<PublishArticle> {
-  var shower_key = GlobalKey<__ImageShowerState>();
+  GlobalKey<__ImageShowerState> shower_key;
+
   TextEditingController _contentController;
 
   @override
   void initState() {
+    shower_key = GlobalKey<__ImageShowerState>();
     _contentController = TextEditingController();
     super.initState();
   }
@@ -54,17 +58,22 @@ class _PublishArticleState extends State<PublishArticle> {
         ),
         actions: <Widget>[
           FlatButton(
-            onPressed: () {
+            onPressed: () async {
               UserPrincipal user = widget.context.userPrincipal;
               var content = _contentController.text;
+
+              ///纹银价格从app的更新管理中心或消息中心获取
               double wy = 38388.38827772;
               var images = shower_key.currentState.images;
               var location = null;
               IChannelMessageService channelMessageService =
                   widget.context.site.getService('/channel/messages');
-              channelMessageService.addMessage(
+              IChannelMediaService channelMediaService =
+                  widget.context.site.getService('/channel/messages/medias');
+              var msgid = '${Uuid().v1()}';
+              await channelMessageService.addMessage(
                 ChannelMessage(
-                  '${Uuid().v1()}',
+                  msgid,
                   null,
                   null,
                   null,
@@ -75,9 +84,26 @@ class _PublishArticleState extends State<PublishArticle> {
                   content,
                   wy,
                   location,
+                  _channel.id,
                 ),
               );
-
+              for (File img in images) {
+                await channelMediaService.addMedia(
+                  Media(
+                    '${Uuid().v1()}',
+                    'image',
+                    '${img.path}',
+                    null,
+                    msgid,
+                    null,
+                  ),
+                );
+              }
+              var refreshMessages=widget.context.parameters['refreshMessages'];
+              if(refreshMessages!=null) {
+                await refreshMessages();
+              }
+              widget.context.backward();
             },
             child: Text(
               '发表',
@@ -158,7 +184,7 @@ class _PublishArticleState extends State<PublishArticle> {
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Text(
-                                    '购买服务',
+                                    '购买该服务',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 14,
@@ -278,9 +304,21 @@ class _PublishArticleState extends State<PublishArticle> {
                       ),
                       behavior: HitTestBehavior.opaque,
                       onTap: () async {
+                        String cnt = _contentController.text;
                         var image = await ImagePicker.pickImage(
                             source: ImageSource.camera);
+                        if(image==null) {
+                          return;
+                        }
                         shower_key.currentState.addImage(image);
+                        _contentController.text = cnt;
+                        _contentController.selection =
+                            TextSelection.fromPosition(
+                          TextPosition(
+                            affinity: TextAffinity.downstream,
+                            offset: cnt?.length,
+                          ),
+                        );
                       },
                     ),
                     Divider(
@@ -358,9 +396,21 @@ class _PublishArticleState extends State<PublishArticle> {
                       ),
                       behavior: HitTestBehavior.opaque,
                       onTap: () async {
+                        String cnt = _contentController.text;
                         var image = await ImagePicker.pickImage(
                             source: ImageSource.gallery);
+                        if(image==null) {
+                          return;
+                        }
                         shower_key.currentState.addImage(image);
+                        _contentController.text = cnt;
+                        _contentController.selection =
+                            TextSelection.fromPosition(
+                          TextPosition(
+                            affinity: TextAffinity.downstream,
+                            offset: cnt?.length,
+                          ),
+                        );
                       },
                     ),
                     Divider(
@@ -471,9 +521,56 @@ class __ImageShowerState extends State<_ImageShower> {
         spacing: 10,
         runSpacing: 10,
         children: images.map((v) {
-          return Image.file(
-            v,
-            width: 150,
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onLongPress: () {
+              setState(() {
+                showDialog(
+                  context: context,
+                  barrierDismissible: true, //点击dialog外部 是否可以销毁
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: Text('确认删除？'),
+                      actions: <Widget>[
+                        FlatButton(
+                          child: Text(
+                            '确认',
+                            style: TextStyle(
+                              color: Colors.black87,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop({'action': 'ok'});
+                          },
+                        ),
+                        FlatButton(
+                          child: Text(
+                            '取消',
+                            style: TextStyle(
+                              color: Colors.black87,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop({'action': 'cancel'});
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                ).then((result) {
+                  if (result == null || result['action'] != 'ok') return;
+                  setState(() {
+                    File f=v as File;
+                    f.deleteSync();
+                    images.remove(v);
+                  });
+                });
+              });
+            },
+            child: Image.file(
+              v,
+              width: 150,
+            ),
           );
         }).toList(),
       ),

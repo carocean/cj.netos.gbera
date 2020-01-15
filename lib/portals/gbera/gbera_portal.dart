@@ -90,6 +90,7 @@ import 'package:gbera/portals/gbera/pages/wallet/ty.dart';
 import 'package:gbera/portals/gbera/pages/wallet/wy.dart';
 import 'package:gbera/portals/gbera/scaffolds.dart';
 import 'package:gbera/portals/gbera/store/dao/database.dart';
+import 'package:gbera/portals/gbera/store/services/channel_extra.dart';
 import 'package:gbera/portals/gbera/store/services/channel_messages.dart';
 import 'package:gbera/portals/gbera/store/services/channels.dart';
 import 'package:gbera/portals/gbera/store/services/insite_messages.dart';
@@ -119,6 +120,7 @@ class GberaPortal {
           '/external/channels': ChannelService(site: site),
           '/insite/messages': InsiteMessageService(site: site),
           '/channel/messages': ChannelMessageService(site: site),
+          '/channel/messages/medias': ChannelMediaService(site: site),
         },
         loadDatabase: () async {
           final database = await $FloorAppDatabase

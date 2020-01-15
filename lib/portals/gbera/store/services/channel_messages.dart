@@ -22,13 +22,13 @@ class ChannelMessageService implements IChannelMessageService {
   }
 
   @override
-  Future<List<ChannelMessage>> pageMessage(int pageSize, int currPage) {
-
+  Future<List<ChannelMessage>> pageMessage(int pageSize, int currPage,String onChannel) async{
+   return await channelMessageDAO.pageMessage(onChannel,pageSize, currPage);
   }
 
   @override
   Future<Function> addMessage(ChannelMessage message) {
-
+    channelMessageDAO.addMessage(message);
   }
 
   @override

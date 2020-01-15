@@ -106,7 +106,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `InsiteMessage` (`id` TEXT, `upstreamPerson` TEXT, `upstreamChannel` TEXT, `sourceSite` TEXT, `sourceApp` TEXT, `sourceChannel` TEXT, `creator` TEXT, `ctime` INTEGER, `digests` TEXT, `wy` REAL, `location` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `ChannelMessage` (`id` TEXT, `upstreamPerson` TEXT, `upstreamChannel` TEXT, `sourceSite` TEXT, `sourceApp` TEXT, `sourceChannel` TEXT, `creator` TEXT, `ctime` INTEGER, `text` TEXT, `wy` REAL, `location` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `ChannelMessage` (`id` TEXT, `upstreamPerson` TEXT, `upstreamChannel` TEXT, `sourceSite` TEXT, `sourceApp` TEXT, `sourceChannel` TEXT, `creator` TEXT, `ctime` INTEGER, `text` TEXT, `wy` REAL, `location` TEXT, `onChannel` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `ChannelComment` (`id` TEXT, `person` TEXT, `uid` TEXT, `avatar` TEXT, `msgid` TEXT, `text` TEXT, `ctime` INTEGER, PRIMARY KEY (`id`))');
         await database.execute(
@@ -575,7 +575,8 @@ class _$IChannelMessageDAO extends IChannelMessageDAO {
                   'ctime': item.ctime,
                   'text': item.text,
                   'wy': item.wy,
-                  'location': item.location
+                  'location': item.location,
+                  'onChannel': item.onChannel
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -596,7 +597,8 @@ class _$IChannelMessageDAO extends IChannelMessageDAO {
           row['ctime'] as int,
           row['text'] as String,
           row['wy'] as double,
-          row['location'] as String);
+          row['location'] as String,
+          row['onChannel'] as String);
 
   final InsertionAdapter<ChannelMessage> _channelMessageInsertionAdapter;
 
@@ -607,10 +609,11 @@ class _$IChannelMessageDAO extends IChannelMessageDAO {
   }
 
   @override
-  Future<List<ChannelMessage>> pageMessage(int pageSize, int currPage) async {
+  Future<List<ChannelMessage>> pageMessage(
+      String onChannel, int pageSize, int currPage) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM ChannelMessage LIMIT ? OFFSET ?',
-        arguments: <dynamic>[pageSize, currPage],
+        'SELECT * FROM ChannelMessage WHERE onChannel = ? ORDER BY ctime DESC LIMIT ? OFFSET ?',
+        arguments: <dynamic>[onChannel, pageSize, currPage],
         mapper: _channelMessageMapper);
   }
 

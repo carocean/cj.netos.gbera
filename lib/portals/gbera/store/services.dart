@@ -60,12 +60,14 @@ mixin IChannelMessageService {
 
   Future<void> addMessage(ChannelMessage message);
 
-  Future<List<ChannelMessage>> pageMessage(int pageSize, int currPage);
+  Future<List<ChannelMessage>> pageMessage(int pageSize, int currPage,String onChannel);
 
   Future<List<ChannelMessage>> getAllMessage();
 
 }
-mixin IChannelMediaService {}
+mixin IChannelMediaService {
+  Future<void> addMedia(Media media);
+}
 
 mixin IChannelLikeService {}
 

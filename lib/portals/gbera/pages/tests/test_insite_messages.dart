@@ -58,7 +58,7 @@ class _TestInsiteMessagesState extends State<TestInsiteMessages> {
                       obj['ctime'],
                       obj['digests'],
                       obj['wy'],
-                      obj['location']
+                      obj['location'],
                     );
                     msgService.addMessage(message);
                   }

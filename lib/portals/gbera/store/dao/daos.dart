@@ -1,4 +1,3 @@
-import 'dart:html';
 
 import 'package:floor/floor.dart';
 
@@ -131,8 +130,8 @@ abstract class IChannelMessageDAO {
   @Query('delete FROM ChannelMessage WHERE id = :id')
   Future<void> removeMessage(String id);
 
-  @Query('SELECT *  FROM ChannelMessage LIMIT :pageSize OFFSET :currPage')
-  Future<List<ChannelMessage>> pageMessage(int pageSize, int currPage);
+  @Query('SELECT *  FROM ChannelMessage WHERE onChannel = :onChannel ORDER BY ctime DESC  LIMIT :pageSize OFFSET :currPage')
+  Future<List<ChannelMessage>> pageMessage(String onChannel,int pageSize, int currPage);
 
   @Query(
       'SELECT msg.*  FROM ChannelMessage msg,Channel ch  WHERE msg.upstreamChannel=ch.id AND ch.loopType=:loopType LIMIT :pageSize OFFSET :currPage')
