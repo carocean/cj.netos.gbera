@@ -12,6 +12,7 @@ import 'package:gbera/portals/gbera/store/entities.dart';
 import 'package:gbera/portals/gbera/store/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
+import 'package:w_popup_menu/w_popup_menu.dart';
 
 class ChannelPage extends StatefulWidget {
   PageContext context;
@@ -990,7 +991,7 @@ class __MessageOperatorRegionState extends State<_MessageOperatorRegion> {
           print('${snapshot.error}');
         }
         var rights = snapshot.data;
-
+        WPopupMenu();
         return PopupMenuButton<String>(
           icon: Icon(
             Icons.linear_scale,
