@@ -17,10 +17,11 @@ class PersonService implements IPersonService {
   }
 
   @override
-  Future<int> count() async{
-    var list= await this.personDAO.countPersons();
+  Future<int> count() async {
+    var list = await this.personDAO.countPersons();
     return list.length;
   }
+
 
   @override
   Future<Person> getPerson(id) async {
@@ -33,8 +34,8 @@ class PersonService implements IPersonService {
   }
 
   @override
-  Future<List<Person>> pagePerson(int limit, int offset) async{
-    return await this.personDAO.pagePerson(limit,offset);
+  Future<List<Person>> pagePerson(int limit, int offset) async {
+    return await this.personDAO.pagePerson(limit, offset);
   }
 
   @override

@@ -4,10 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/gbera/pages/viewers/video_view.dart';
 import 'package:gbera/portals/gbera/store/entities.dart';
 import 'package:gbera/portals/gbera/store/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
+import 'package:video_player/video_player.dart';
+
+import 'article_entities.dart';
 
 class PublishArticle extends StatefulWidget {
   PageContext context;
@@ -19,13 +23,13 @@ class PublishArticle extends StatefulWidget {
 }
 
 class _PublishArticleState extends State<PublishArticle> {
-  GlobalKey<__ImageShowerState> shower_key;
+  GlobalKey<_MediaShowerState> shower_key;
 
   TextEditingController _contentController;
 
   @override
   void initState() {
-    shower_key = GlobalKey<__ImageShowerState>();
+    shower_key = GlobalKey<_MediaShowerState>();
     _contentController = TextEditingController();
     super.initState();
   }
@@ -64,7 +68,7 @@ class _PublishArticleState extends State<PublishArticle> {
 
               ///纹银价格从app的更新管理中心或消息中心获取
               double wy = 38388.38827772;
-              var images = shower_key.currentState.images;
+              var images = shower_key.currentState.files;
               var location = null;
               IChannelMessageService channelMessageService =
                   widget.context.site.getService('/channel/messages');
@@ -77,30 +81,40 @@ class _PublishArticleState extends State<PublishArticle> {
                   null,
                   null,
                   null,
-                  null,
                   _channel.id,
                   user.person,
                   DateTime.now().millisecondsSinceEpoch,
                   content,
                   wy,
                   location,
-                  _channel.id,
                 ),
               );
-              for (File img in images) {
+              for (MediaFile file in images) {
+                var type='image';
+                switch(file.type) {
+                  case MediaFileType.image:
+                    break;
+                  case MediaFileType.video:
+                    type='video';
+                    break;
+                  case MediaFileType.audio:
+                    type='audio';
+                    break;
+                }
                 await channelMediaService.addMedia(
                   Media(
                     '${Uuid().v1()}',
-                    'image',
-                    '${img.path}',
+                    type,
+                    '${file.src.path}',
                     null,
                     msgid,
                     null,
                   ),
                 );
               }
-              var refreshMessages=widget.context.parameters['refreshMessages'];
-              if(refreshMessages!=null) {
+              var refreshMessages =
+                  widget.context.parameters['refreshMessages'];
+              if (refreshMessages != null) {
                 await refreshMessages();
               }
               widget.context.backward();
@@ -140,26 +154,222 @@ class _PublishArticleState extends State<PublishArticle> {
               ),
             ),
             SliverToBoxAdapter(
-              child: _ImageShower(
+              child: _MediaShower(
                 key: shower_key,
-                initialImage: widget.context.parameters['image'],
+                initialMedia: widget.context.parameters['mediaFile'],
               ),
             ),
-            SliverToBoxAdapter(
+            SliverFillRemaining(
               child: Container(
                 color: Colors.white,
                 padding: EdgeInsets.only(
                   left: 10,
                   right: 10,
-                  top: 15,
-                  bottom: 15,
+                  top: 5,
+                  bottom: 5,
                 ),
-                child: Column(
+                child: ListView(
+                  physics: NeverScrollableScrollPhysics(),
                   children: <Widget>[
+                    Container(
+                      child: Wrap(
+                        runSpacing: 5,
+                        spacing: 10,
+                        alignment: WrapAlignment.spaceEvenly,
+                        children: <Widget>[
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () async {
+                              String cnt = _contentController.text;
+                              var image = await ImagePicker.pickImage(
+                                  source: ImageSource.gallery);
+                              if (image == null) {
+                                return;
+                              }
+                              shower_key.currentState.addImage(MediaFile(
+                                  src: image, type: MediaFileType.image));
+                              _contentController.text = cnt;
+                              _contentController.selection =
+                                  TextSelection.fromPosition(
+                                TextPosition(
+                                  affinity: TextAffinity.downstream,
+                                  offset: cnt?.length,
+                                ),
+                              );
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                left: 10,
+                                right: 10,
+                                top: 5,
+                                bottom: 5,
+                              ),
+                              child: Column(
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.image,
+                                    size: 30,
+                                    color: Colors.black54,
+                                  ),
+                                  Text(
+                                    '选图片',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () async {
+                              String cnt = _contentController.text;
+                              var image = await ImagePicker.pickVideo(
+                                source: ImageSource.gallery,
+                              );
+                              if (image == null) {
+                                return;
+                              }
+                              shower_key.currentState.addImage(MediaFile(
+                                  src: image, type: MediaFileType.video));
+                              _contentController.text = cnt;
+                              _contentController.selection =
+                                  TextSelection.fromPosition(
+                                TextPosition(
+                                  affinity: TextAffinity.downstream,
+                                  offset: cnt?.length,
+                                ),
+                              );
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                left: 10,
+                                right: 10,
+                                top: 5,
+                                bottom: 5,
+                              ),
+                              child: Column(
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.movie,
+                                    size: 30,
+                                    color: Colors.black54,
+                                  ),
+                                  Text(
+                                    '选视频',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () async {
+                              String cnt = _contentController.text;
+                              var image = await ImagePicker.pickImage(
+                                  source: ImageSource.camera);
+                              if (image == null) {
+                                return;
+                              }
+                              shower_key.currentState.addImage(MediaFile(
+                                  src: image, type: MediaFileType.image));
+                              _contentController.text = cnt;
+                              _contentController.selection =
+                                  TextSelection.fromPosition(
+                                TextPosition(
+                                  affinity: TextAffinity.downstream,
+                                  offset: cnt?.length,
+                                ),
+                              );
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                left: 10,
+                                right: 10,
+                                top: 5,
+                                bottom: 5,
+                              ),
+                              child: Column(
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.camera_enhance,
+                                    size: 30,
+                                    color: Colors.black54,
+                                  ),
+                                  Text(
+                                    '拍照',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () async {
+                              String cnt = _contentController.text;
+                              var image = await ImagePicker.pickVideo(
+                                source: ImageSource.camera,
+                              );
+                              if (image == null) {
+                                return;
+                              }
+                              shower_key.currentState.addImage(MediaFile(
+                                  src: image, type: MediaFileType.video));
+                              _contentController.text = cnt;
+                              _contentController.selection =
+                                  TextSelection.fromPosition(
+                                TextPosition(
+                                  affinity: TextAffinity.downstream,
+                                  offset: cnt?.length,
+                                ),
+                              );
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                left: 10,
+                                right: 10,
+                                top: 5,
+                                bottom: 5,
+                              ),
+                              child: Column(
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.videocam,
+                                    size: 30,
+                                    color: Colors.black54,
+                                  ),
+                                  Text(
+                                    '录视频',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Divider(
+                      height: 1,
+                    ),
                     GestureDetector(
                       child: Padding(
                         padding: EdgeInsets.only(
                           bottom: 15,
+                          top: 15,
                         ),
                         child: Row(
                           children: <Widget>[
@@ -171,7 +381,7 @@ class _PublishArticleState extends State<PublishArticle> {
                                 width: 20,
                                 height: 20,
                                 child: Icon(
-                                  Icons.add,
+                                  Icons.spellcheck,
                                   size: 16,
                                   color: Colors.grey,
                                 ),
@@ -227,190 +437,6 @@ class _PublishArticleState extends State<PublishArticle> {
                       behavior: HitTestBehavior.opaque,
                       onTap: () async {
                         widget.context.forward('/channel/article/buywy');
-                      },
-                    ),
-                    Divider(
-                      height: 1,
-                      indent: 30,
-                    ),
-                    GestureDetector(
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          bottom: 15,
-                          top: 15,
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.only(
-                                right: 10,
-                              ),
-                              child: SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: Icon(
-                                  Icons.add,
-                                  size: 16,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    '拍照',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  Flexible(
-                                    fit: FlexFit.loose,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Flexible(
-                                          fit: FlexFit.loose,
-                                          child: Text(
-                                            '添加图片',
-                                            style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                            left: 10,
-                                          ),
-                                          child: Icon(
-                                            Icons.arrow_forward_ios,
-                                            size: 16,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () async {
-                        String cnt = _contentController.text;
-                        var image = await ImagePicker.pickImage(
-                            source: ImageSource.camera);
-                        if(image==null) {
-                          return;
-                        }
-                        shower_key.currentState.addImage(image);
-                        _contentController.text = cnt;
-                        _contentController.selection =
-                            TextSelection.fromPosition(
-                          TextPosition(
-                            affinity: TextAffinity.downstream,
-                            offset: cnt?.length,
-                          ),
-                        );
-                      },
-                    ),
-                    Divider(
-                      height: 1,
-                      indent: 30,
-                    ),
-                    GestureDetector(
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          bottom: 15,
-                          top: 15,
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.only(
-                                right: 10,
-                              ),
-                              child: SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: Icon(
-                                  Icons.add,
-                                  size: 16,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    '从相册添加',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  Flexible(
-                                    fit: FlexFit.loose,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Flexible(
-                                          fit: FlexFit.loose,
-                                          child: Text(
-                                            '添加图片',
-                                            style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                            left: 10,
-                                          ),
-                                          child: Icon(
-                                            Icons.arrow_forward_ios,
-                                            size: 16,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () async {
-                        String cnt = _contentController.text;
-                        var image = await ImagePicker.pickImage(
-                            source: ImageSource.gallery);
-                        if(image==null) {
-                          return;
-                        }
-                        shower_key.currentState.addImage(image);
-                        _contentController.text = cnt;
-                        _contentController.selection =
-                            TextSelection.fromPosition(
-                          TextPosition(
-                            affinity: TextAffinity.downstream,
-                            offset: cnt?.length,
-                          ),
-                        );
                       },
                     ),
                     Divider(
@@ -478,6 +504,10 @@ class _PublishArticleState extends State<PublishArticle> {
                         ],
                       ),
                     ),
+                    Divider(
+                      height: 1,
+                      indent: 30,
+                    ),
                   ],
                 ),
               ),
@@ -489,27 +519,42 @@ class _PublishArticleState extends State<PublishArticle> {
   }
 }
 
-class _ImageShower extends StatefulWidget {
-  dynamic initialImage;
+class _MediaShower extends StatefulWidget {
+  MediaFile initialMedia;
 
   @override
-  __ImageShowerState createState() => __ImageShowerState(initialImage);
+  _MediaShowerState createState() => _MediaShowerState(initialMedia);
 
-  _ImageShower({this.initialImage, Key key}) : super(key: key);
+  _MediaShower({this.initialMedia, Key key}) : super(key: key);
 }
 
-class __ImageShowerState extends State<_ImageShower> {
-  var images = [];
+class _MediaShowerState extends State<_MediaShower> {
+  var files = <MediaFile>[];
 
-  __ImageShowerState(initialImage) {
-    if (initialImage != null) {
-      images.add(initialImage);
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    files.clear();
+    super.dispose();
+  }
+
+  _MediaShowerState(initialMediaFile) {
+    if (initialMediaFile != null&&initialMediaFile.src!=null) {
+      files.add(initialMediaFile);
     }
   }
 
-  addImage(img) {
+  //type:image|video|audio
+  addImage(MediaFile _media) {
+    if(_media==null||_media.src==null) {
+      return;
+    }
     setState(() {
-      images.add(img);
+      files.add(_media);
     });
   }
 
@@ -520,7 +565,33 @@ class __ImageShowerState extends State<_ImageShower> {
       child: Wrap(
         spacing: 10,
         runSpacing: 10,
-        children: images.map((v) {
+        children: files.map((mediaFile) {
+          Widget mediaRegion;
+          switch (mediaFile.type) {
+            case MediaFileType.image:
+              mediaRegion = Image.file(
+                mediaFile.src,
+                width: 150,
+              );
+              break;
+            case MediaFileType.video:
+              mediaRegion = VideoView(
+                src: mediaFile.src,
+              );
+              break;
+            case MediaFileType.audio:
+              mediaRegion = Container(
+                width: 0,
+                height: 0,
+              );
+              break;
+            default:
+              mediaRegion = Container(
+                width: 0,
+                height: 0,
+              );
+              break;
+          }
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onLongPress: () {
@@ -560,17 +631,13 @@ class __ImageShowerState extends State<_ImageShower> {
                 ).then((result) {
                   if (result == null || result['action'] != 'ok') return;
                   setState(() {
-                    File f=v as File;
-                    f.deleteSync();
-                    images.remove(v);
+                    mediaFile.delete();
+                    files.remove(mediaFile);
                   });
                 });
               });
             },
-            child: Image.file(
-              v,
-              width: 150,
-            ),
+            child: mediaRegion,
           );
         }).toList(),
       ),

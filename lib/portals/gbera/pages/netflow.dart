@@ -596,7 +596,7 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin{
               locale: 'zh',
               dayFormat: DayFormat.Full)
           .toString();
-      var channel = await channelService.getChannel(msg.upstreamChannel);
+      var channel = await channelService.getChannel(msg.onChannel);
       var act = MessageView(
         who: person.accountName,
         channel: channel?.name,
@@ -733,7 +733,7 @@ class _MessagesRegionState extends State<_MessagesRegion> {
                                       children: [
                                         TextSpan(
                                             text:
-                                                '  ${v.loopType == 'true' ? '开环管道:' : '闭环管道:'}'),
+                                                '  ${v.loopType == 'openLoop' ? '开环管道:' : '闭环管道:'}'),
                                         TextSpan(
                                           text: '${v.channel}',
                                           style: TextStyle(

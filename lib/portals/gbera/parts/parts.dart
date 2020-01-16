@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gbera/portals/gbera/pages/viewers/video_view.dart';
+import 'package:gbera/portals/gbera/store/entities.dart';
 
 ///简单的卡片头：图 标题              折叠按钮
 class _CardHeaderBase extends StatelessWidget {
@@ -92,43 +96,70 @@ class _CardStoreState extends State<CardStore> {
 
 //微博等内容区的多图展示区
 class PageSelector extends StatelessWidget {
-  List<String> images;
-  Function(String image) onImageTap;
+  List<Media> medias;
+  Function(Media media) onMediaTap;
   BoxFit boxFit;
   double height;
-  PageSelector({this.images,this.onImageTap,this.boxFit,this.height}) {
-    if (images == null) {
-      this.images = [];
+
+  PageSelector({this.medias, this.onMediaTap, this.boxFit, this.height}) {
+    if (medias == null) {
+      this.medias = [];
     }
-    if(boxFit==null) {
-      this.boxFit=BoxFit.fitHeight;
+    if (boxFit == null) {
+      this.boxFit = BoxFit.fitHeight;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     var _controller = DefaultTabController.of(context);
 
     return Stack(
       children: <Widget>[
         SizedBox(
-          height: height??150,
+          height: height ?? 150,
           child: TabBarView(
             controller: _controller,
-            children: this.images.map((img) {
+            children: this.medias.map((media) {
+              var mediaRender;
+              var src = media?.src;
+              switch (media.type) {
+                case 'image':
+                  mediaRender = src.startsWith('/')
+                      ? Image.file(
+                    File(src),
+                    fit: this.boxFit ?? BoxFit.fitHeight,
+                  )
+                      : Image.network(
+                    src,
+                    fit: this.boxFit ?? BoxFit.fitHeight,
+                  );
+                  break;
+                case 'video':
+                  mediaRender = VideoView(
+                    src: File(src),
+                  );
+                  break;
+                case 'audio':
+                  break;
+                default:
+                  print('unknown media type');
+                  break;
+              }
+              if (mediaRender == null) {
+                return Container(width: 0, height: 0,);
+              }
+
               return GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
-                  if (onImageTap != null) {
-                    onImageTap(img);
+                  if (onMediaTap != null) {
+                    onMediaTap(media);
                   }
                 },
                 child: Container(
-                  child: Image.network(
-                    img,
-                    fit: this.boxFit??BoxFit.fitHeight,
-                  ),
+                  alignment: Alignment.center,
+                    child: mediaRender,
                 ),
               );
             }).toList(),

@@ -50,10 +50,9 @@ class _TestInsiteMessagesState extends State<TestInsiteMessages> {
                     InsiteMessage message = InsiteMessage(
                       obj['id'],
                       obj['upstreamPerson'],
-                      obj['upstreamChannel'],
                       obj['sourceSite'],
                       obj['sourceApp'],
-                      obj['sourceChannel'],
+                      obj['onChannel'],
                       obj['creator'],
                       obj['ctime'],
                       obj['digests'],

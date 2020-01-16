@@ -194,6 +194,8 @@ class UserPrincipal {
 
   final String accessToken;
 
+  final String avatar;
+
   String get person {
     return '$accountName@$appid.$tenantid';
   }
@@ -205,6 +207,7 @@ class UserPrincipal {
     this.accessToken,
     this.appid,
     this.tenantid,
+    this.avatar,
     this.ucRoles,
     this.tenantRoles,
     this.appRoles,

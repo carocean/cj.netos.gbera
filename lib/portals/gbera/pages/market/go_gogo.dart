@@ -7,6 +7,7 @@ import 'package:gbera/netos/common.dart' as prefix0;
 import 'package:gbera/portals/common/util.dart';
 import 'package:gbera/portals/gbera/parts/CardItem.dart';
 import 'package:gbera/portals/gbera/parts/parts.dart';
+import 'package:gbera/portals/gbera/store/entities.dart';
 
 class Gogogo extends StatefulWidget {
   PageContext context;
@@ -2231,6 +2232,10 @@ class _GoupCardState extends State<_GoupCard> {
 
   @override
   Widget build(BuildContext context) {
+    var medias=<Media>[];
+    for(var img in widget.merchandise.images){
+      medias.add(Media(null,'image',img,null,null,null));
+    }
     return Column(
       children: <Widget>[
         Container(
@@ -2242,14 +2247,14 @@ class _GoupCardState extends State<_GoupCard> {
                 child: DefaultTabController(
                   length: widget.merchandise.images.length,
                   child: PageSelector(
-                    images: widget.merchandise.images,
+                    medias: medias,
                     height: 150,
-                    onImageTap: (url) {
+                    onMediaTap: (media) {
                       widget.context.forward(
                         '/images/viewer',
                         arguments: {
-                          'imgSrc': url,
-                          'text': '',
+                          'media': media,
+                          'others': medias,
                         },
                       );
                     },

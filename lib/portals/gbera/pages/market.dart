@@ -1,11 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
-import 'package:gbera/portals/common/util.dart';
 import 'package:gbera/portals/gbera/parts/CardItem.dart';
 import 'package:gbera/portals/gbera/parts/parts.dart';
+import 'package:gbera/portals/gbera/store/entities.dart';
 
 class Market extends StatefulWidget {
   final PageContext context;
@@ -306,8 +305,8 @@ class _MarketState extends State<Market> with AutomaticKeepAliveClientMixin{
           _News(
               title: '佛山王先生开店3个月净赚500万！',
               images: [
-                'https://img20.360buyimg.com/vc/jfs/t9712/323/19330494/133477/712d7d6b/59c3894cN586c7217.jpg',
-                'http://dingyue.nosdn.127.net/vvRjNcu9VBGgAevyEl5kQ0PO4ndOa4p3KJcED=yrAyXUP1529905129060compressflag.jpg',
+                Media(null,'image','https://img20.360buyimg.com/vc/jfs/t9712/323/19330494/133477/712d7d6b/59c3894cN586c7217.jpg',null,null,null),
+                Media(null,'image','http://dingyue.nosdn.127.net/vvRjNcu9VBGgAevyEl5kQ0PO4ndOa4p3KJcED=yrAyXUP1529905129060compressflag.jpg',null,null,null),
               ],
               Content:
                   '开始禅城区的地商李明找到我跟我说，快点接上帑指市场，未来10倍，20倍的利都有，我跟李明是多年的交情，想必也不会忽悠我，我就尝试着做了。没想到赚钱原来这么容易，小店现在一个月营业额是25万，发行帑银净赚60万'),
@@ -316,7 +315,7 @@ class _MarketState extends State<Market> with AutomaticKeepAliveClientMixin{
             Content:
                 '金融界美股讯 摩根大通分析师周五表示，APPle TV+的推出及苹果进军数字服务领域，可能帮助该公司未来六年内广告收入增加逾五倍，达到每年110亿美元。分析师萨米克 查特吉（Samik Chatterjee）上调了苹果的股价目标，认为该公司可以利用每天搜索其应用商店和Safari浏览器的数百万用户来实现类似于Facebook和谷歌近年来强劲的广告增长。',
             images: [
-              'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573935907335&di=7e2eb6de84a234ce122dd0d9c87dd33e&imgtype=0&src=http%3A%2F%2Fi0.hdslb.com%2Fbfs%2Farticle%2Ffdf4d59b8564a9435df039cf2764ee54136405c6.jpg',
+              Media(null,'image','https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573935907335&di=7e2eb6de84a234ce122dd0d9c87dd33e&imgtype=0&src=http%3A%2F%2Fi0.hdslb.com%2Fbfs%2Farticle%2Ffdf4d59b8564a9435df039cf2764ee54136405c6.jpg',null,null,null),
             ],
           ),
           _News(
@@ -449,13 +448,13 @@ class __PlatformNewsDayState extends State<_PlatformNewsDay> {
                       : DefaultTabController(
                           length: news.images.length,
                           child: PageSelector(
-                            images: news.images,
-                            onImageTap: (url) {
+                            medias: news.images,
+                            onMediaTap: (media) {
                               widget.context.forward(
                                 '/images/viewer',
                                 arguments: {
-                                  'imgSrc': url,
-                                  'text': '',
+                                  'media': media,
+                                  'others': news.images,
                                 },
                               );
                             },
@@ -496,11 +495,11 @@ class __PlatformNewsDayState extends State<_PlatformNewsDay> {
 class _News {
   String title;
   String Content;
-  List<String> images;
+  List<Media> images;
 
   _News({this.title, this.Content, this.images}) {
     if (this.images == null) {
-      this.images = <String>[];
+      this.images = <Media>[];
     }
   }
 }

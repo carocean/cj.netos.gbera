@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/util.dart';
 import 'package:gbera/portals/gbera/parts/parts.dart';
+import 'package:gbera/portals/gbera/store/entities.dart';
 
 class SitePortal extends StatefulWidget {
   PageContext context;
@@ -243,7 +244,9 @@ class __MessageCardState extends State<_MessageCard> {
 
   @override
   Widget build(BuildContext context) {
-    var images = ['https://img11.360buyimg.com/n1/s450x450_jfs/t21856/309/486959023/285536/3356dc82/5b0fc33cN898ac257.png'];
+    var images = [
+      Media(null,'image','https://img11.360buyimg.com/n1/s450x450_jfs/t21856/309/486959023/285536/3356dc82/5b0fc33cN898ac257.png',null,null,null),
+    ];
     return Card(
       shape: OutlineInputBorder(
         borderRadius: BorderRadius.all(
@@ -336,13 +339,13 @@ class __MessageCardState extends State<_MessageCard> {
                   DefaultTabController(
                     length: images.length,
                     child: PageSelector(
-                      images: images,
-                      onImageTap: (url) {
+                      medias: images,
+                      onMediaTap: (media) {
                         widget.context.forward(
                           '/images/viewer',
                           arguments: {
-                            'imgSrc': url,
-                            'text': '',
+                            'media': media,
+                            'text': images,
                           },
                         );
                       },

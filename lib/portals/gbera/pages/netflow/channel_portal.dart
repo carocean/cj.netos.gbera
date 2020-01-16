@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/util.dart';
 import 'package:gbera/portals/gbera/parts/parts.dart';
+import 'package:gbera/portals/gbera/store/entities.dart';
 
 class ChannelPortal extends StatefulWidget {
   PageContext context;
@@ -258,10 +259,10 @@ class __MessageCardState extends State<_MessageCard> {
 
   @override
   Widget build(BuildContext context) {
-    var images = [
-      'https://img10.360buyimg.com/n1/jfs/t1/38567/16/12388/130326/5d395d2fEe96dc911/6dab21a2e90fa6cc.jpg',
-      'https://img10.360buyimg.com/n1/jfs/t1/73939/39/6972/87180/5d511125Eb7307102/48b4456cf64402ea.jpg',
-      'https://img10.360buyimg.com/n1/jfs/t1/78996/4/5354/106075/5d395d1bE465f0117/59c1c3608f69bded.jpg',
+    var medias = [
+      Media(null,'image','https://img10.360buyimg.com/n1/jfs/t1/38567/16/12388/130326/5d395d2fEe96dc911/6dab21a2e90fa6cc.jpg',null,null,null),
+      Media(null,'image','https://img10.360buyimg.com/n1/jfs/t1/73939/39/6972/87180/5d511125Eb7307102/48b4456cf64402ea.jpg',null,null,null),
+      Media(null,'image','https://img10.360buyimg.com/n1/jfs/t1/78996/4/5354/106075/5d395d1bE465f0117/59c1c3608f69bded.jpg',null,null,null),
     ];
     return Card(
       shape: OutlineInputBorder(
@@ -348,15 +349,15 @@ class __MessageCardState extends State<_MessageCard> {
                     ),
                   ),
                   DefaultTabController(
-                    length: images.length,
+                    length: medias.length,
                     child: PageSelector(
-                      images: images,
-                      onImageTap: (url) {
+                      medias: medias,
+                      onMediaTap: (media) {
                         widget.context.forward(
                           '/images/viewer',
                           arguments: {
-                            'imgSrc': url,
-                            'text': '',
+                            'media': media,
+                            'others': medias,
                           },
                         );
                       },

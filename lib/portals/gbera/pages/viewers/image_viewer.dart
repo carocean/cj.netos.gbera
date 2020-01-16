@@ -1,20 +1,24 @@
+import 'dart:io';
 import 'dart:math';
 
 ///商户站点
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/gbera/store/entities.dart';
+
+import 'video_view.dart';
 
 class ImageViewer extends StatefulWidget {
   PageContext context;
-  String imgSrc;
-  String text;
+  Media viewMedia;
+  List<Media> others;
 
-  ImageViewer({this.context, this.text, this.imgSrc}) {
-    this.imgSrc = context.parameters['imgSrc'];
-    this.text = context.parameters['text'];
-    if (text == null) {
-      text = '';
+  ImageViewer({this.context, this.viewMedia, this.others}) {
+    this.viewMedia = context.parameters['media'];
+    this.others = context.parameters['others'];
+    if (this.others == null) {
+      this.others = [];
     }
   }
 
@@ -23,12 +27,6 @@ class ImageViewer extends StatefulWidget {
 }
 
 class _ImageViewerState extends State<ImageViewer> {
-  var images = [
-    'http://pic1.win4000.com/mobile/2018-01-17/5a5eea7923906.jpg',
-    'http://pic1.win4000.com/mobile/e/53b6797378bb6.jpg',
-    'http://pic1.win4000.com/mobile/3/547d8348c89bf.jpg',
-    'http://pic1.win4000.com/mobile/b/557fce7f94b9d.jpg'
-  ];
   static var select = 0;
 
   @override
@@ -40,19 +38,21 @@ class _ImageViewerState extends State<ImageViewer> {
         select -= 1;
       }
       if (select < 0) {
-        select = images.length - 1;
+        select = widget.others.length - 1;
       }
-      if (select > images.length - 1) {
+      if (select > widget.others.length - 1) {
         select = 0;
       }
+
       widget.context.forward('/images/viewer', arguments: {
-        'imgSrc': images[select],
-        'text': '这是图-${select + 1}',
+        'media': widget.others[select],
+        'others': widget.others,
       });
     }
 
     int isDemandChangeImage = 0; //0是未改变图片，1是向上，-1是向下
     Offset start;
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -72,6 +72,9 @@ class _ImageViewerState extends State<ImageViewer> {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onVerticalDragUpdate: (DragUpdateDetails details) {
+                        if (widget.others.isEmpty) {
+                          return;
+                        }
                         if (isDemandChangeImage != 0) {
                           return;
                         }
@@ -87,10 +90,7 @@ class _ImageViewerState extends State<ImageViewer> {
                         start = details.localPosition;
                         isDemandChangeImage = 0;
                       },
-                      child: Image.network(
-                        widget.imgSrc,
-                        fit: BoxFit.cover,
-                      ),
+                      child: _getMediaRender(widget.viewMedia),
                     ),
                   ),
                   CustomScrollView(
@@ -105,7 +105,7 @@ class _ImageViewerState extends State<ImageViewer> {
                           ),
                           child: Text.rich(
                             TextSpan(
-                              text: widget.text,
+                              text: '${widget.viewMedia?.text ?? ''}',
                             ),
                             style: TextStyle(
                               color: Colors.white,
@@ -138,5 +138,41 @@ class _ImageViewerState extends State<ImageViewer> {
         ),
       ),
     );
+  }
+
+  Widget _getMediaRender(Media media) {
+    var mediaRender;
+    var src = media?.src;
+    switch (media.type) {
+      case 'image':
+        mediaRender = src.startsWith('/')
+            ? Image.file(
+                File(src),
+                fit: BoxFit.fitHeight,
+              )
+            : Image.network(
+                src,
+                fit: BoxFit.fitHeight,
+              );
+        break;
+      case 'video':
+        mediaRender = VideoView(
+          src: File(src),
+        );
+        break;
+      case 'audio':
+        break;
+      default:
+        print('unknown media type');
+        break;
+    }
+    if (mediaRender == null) {
+      return Container(
+        width: 0,
+        height: 0,
+        alignment: Alignment.center,
+      );
+    }
+    return mediaRender;
   }
 }

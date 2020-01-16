@@ -17,6 +17,11 @@ class ChannelMessageService implements IChannelMessageService {
   }
 
   @override
+  Future<Function> removeMessage(String id)async {
+    await channelMessageDAO.removeMessage(id);
+  }
+
+  @override
   Future<List<ChannelMessage>> getAllMessage() async{
 
   }

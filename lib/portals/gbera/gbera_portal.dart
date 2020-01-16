@@ -121,6 +121,8 @@ class GberaPortal {
           '/insite/messages': InsiteMessageService(site: site),
           '/channel/messages': ChannelMessageService(site: site),
           '/channel/messages/medias': ChannelMediaService(site: site),
+          '/channel/messages/likes': ChannelLikeService(site: site),
+          '/channel/messages/comments': ChannelCommentService(site: site),
         },
         loadDatabase: () async {
           final database = await $FloorAppDatabase

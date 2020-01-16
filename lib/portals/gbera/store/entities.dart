@@ -60,10 +60,9 @@ class InsiteMessage {
   @primaryKey
   final String id;
   final String upstreamPerson;
-  final String upstreamChannel;
   final String sourceSite;
   final String sourceApp;
-  final String sourceChannel;
+  final String onChannel;
   final String creator;
   final int ctime;
   final String digests;
@@ -73,10 +72,9 @@ class InsiteMessage {
   InsiteMessage(
     this.id,
     this.upstreamPerson,
-    this.upstreamChannel,
     this.sourceSite,
     this.sourceApp,
-    this.sourceChannel,
+    this.onChannel,
     this.creator,
     this.ctime,
     this.digests,
@@ -90,30 +88,26 @@ class ChannelMessage {
   @primaryKey
   final String id;
   final String upstreamPerson;
-  final String upstreamChannel;
   final String sourceSite;
   final String sourceApp;
-  final String sourceChannel;
+  final String onChannel;
   final String creator;
   final int ctime;
   final String text;
   final double wy;
   final String location;
-  final String onChannel;
 
   ChannelMessage(
     this.id,
     this.upstreamPerson,
-    this.upstreamChannel,
     this.sourceSite,
     this.sourceApp,
-    this.sourceChannel,
+    this.onChannel,
     this.creator,
     this.ctime,
     this.text,
     this.wy,
     this.location,
-    this.onChannel,
   );
 }
 
@@ -122,11 +116,11 @@ class LikePerson {
   @primaryKey
   final String id;
   final String person;
-  final String uid;
   final String avatar;
   final String msgid;
+  final int ctime;
 
-  LikePerson(this.id, this.person, this.uid, this.avatar, this.msgid);
+  LikePerson(this.id, this.person, this.avatar, this.msgid, this.ctime);
 }
 
 @entity
@@ -134,14 +128,13 @@ class ChannelComment {
   @primaryKey
   final String id;
   final String person;
-  final String uid;
   final String avatar;
   final String msgid;
   final String text;
   final int ctime;
 
-  ChannelComment(this.id, this.person, this.uid, this.avatar, this.msgid,
-      this.text, this.ctime);
+  ChannelComment(
+      this.id, this.person, this.avatar, this.msgid, this.text, this.ctime);
 }
 
 @entity

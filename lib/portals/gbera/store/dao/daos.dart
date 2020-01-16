@@ -1,4 +1,3 @@
-
 import 'package:floor/floor.dart';
 
 import '../entities.dart';
@@ -72,7 +71,7 @@ abstract class IInsiteMessageDAO {
   Future<List<InsiteMessage>> pageMessage(int pageSize, int currPage);
 
   @Query(
-      'SELECT msg.*  FROM InsiteMessage msg,Channel ch  WHERE msg.upstreamChannel=ch.id AND ch.loopType=:loopType LIMIT :pageSize OFFSET :currPage')
+      'SELECT msg.*  FROM InsiteMessage msg,Channel ch  WHERE msg.onChannel=ch.id AND ch.loopType=:loopType LIMIT :pageSize OFFSET :currPage')
   Future<List<InsiteMessage>> pageMessageByChannelLoopType(
       String loopType, int limit, int offset);
 
@@ -130,11 +129,13 @@ abstract class IChannelMessageDAO {
   @Query('delete FROM ChannelMessage WHERE id = :id')
   Future<void> removeMessage(String id);
 
-  @Query('SELECT *  FROM ChannelMessage WHERE onChannel = :onChannel ORDER BY ctime DESC  LIMIT :pageSize OFFSET :currPage')
-  Future<List<ChannelMessage>> pageMessage(String onChannel,int pageSize, int currPage);
+  @Query(
+      'SELECT *  FROM ChannelMessage WHERE onChannel = :onChannel ORDER BY ctime DESC  LIMIT :pageSize OFFSET :currPage')
+  Future<List<ChannelMessage>> pageMessage(
+      String onChannel, int pageSize, int currPage);
 
   @Query(
-      'SELECT msg.*  FROM ChannelMessage msg,Channel ch  WHERE msg.upstreamChannel=ch.id AND ch.loopType=:loopType LIMIT :pageSize OFFSET :currPage')
+      'SELECT msg.*  FROM ChannelMessage msg,Channel ch  WHERE msg.onChannel=ch.id AND ch.loopType=:loopType LIMIT :pageSize OFFSET :currPage')
   Future<List<ChannelMessage>> pageMessageByChannelLoopType(
       String loopType, int limit, int offset);
 
@@ -157,13 +158,16 @@ abstract class IChannelMediaDAO {
   Future<void> removeMedia(String id);
 
   @Query('SELECT *  FROM Media LIMIT :pageSize OFFSET  :currPage')
-  Future<List<MicroApp>> pageMedia(int pageSize, int currPage);
+  Future<List<Media>> pageMedia(int pageSize, int currPage);
 
   @Query('SELECT * FROM Media WHERE id = :id')
-  Future<MicroApp> getMedia(String id);
+  Future<Media> getMedia(String id);
 
   @Query('SELECT * FROM Media')
-  Future<List<MicroApp>> getAllMedia();
+  Future<List<Media>> getAllMedia();
+
+  @Query('SELECT * FROM Media WHERE msgid = :msgid')
+  Future<List<Media>> getMediaByMsgId(String msgid);
 }
 
 @dao
@@ -182,6 +186,12 @@ abstract class IChannelLikePersonDAO {
 
   @Query('SELECT * FROM LikePerson')
   Future<List<LikePerson>> getAllLikePerson();
+
+  @Query('SELECT * FROM LikePerson WHERE msgid = :msgid AND person=:person')
+  Future<List<LikePerson>> getLikePersonBy(String msgid, String person);
+
+  @Query('delete FROM LikePerson WHERE msgid = :msgid AND person=:person')
+  Future<void> removeLikePersonBy(String msgid, String person);
 }
 
 @dao
@@ -200,5 +210,4 @@ abstract class IChannelCommentDAO {
 
   @Query('SELECT * FROM ChannelComment')
   Future<List<ChannelComment>> getAllComment();
-
 }

@@ -151,7 +151,7 @@ class _MessagesRegionState extends State<_MessagesRegion> {
               locale: 'zh',
               dayFormat: DayFormat.Full)
           .toString();
-      var channel = await channelService.getChannel(msg.upstreamChannel);
+      var channel = await channelService.getChannel(msg.onChannel);
       var view = MessageView(
         who: person.accountName,
         channel: channel?.name,
@@ -291,7 +291,7 @@ class _SwipeableListState extends State<SwipeableList> {
                                   children: [
                                     TextSpan(
                                         text:
-                                        '  ${v.loopType=='true' ? '开放管道:' : '私有管道:'}'),
+                                        '  ${v.loopType=='openLoop' ? '开环管道:' : '闭环管道:'}'),
                                     TextSpan(
                                       text: '${v.channel}',
                                       style: TextStyle(

@@ -104,13 +104,13 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Channel` (`id` TEXT, `name` TEXT, `owner` TEXT, `loopType` TEXT, `leading` TEXT, `site` TEXT, `tips` TEXT, `ctime` INTEGER, `utime` INTEGER, `unreadMsgCount` INTEGER, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `InsiteMessage` (`id` TEXT, `upstreamPerson` TEXT, `upstreamChannel` TEXT, `sourceSite` TEXT, `sourceApp` TEXT, `sourceChannel` TEXT, `creator` TEXT, `ctime` INTEGER, `digests` TEXT, `wy` REAL, `location` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `InsiteMessage` (`id` TEXT, `upstreamPerson` TEXT, `sourceSite` TEXT, `sourceApp` TEXT, `onChannel` TEXT, `creator` TEXT, `ctime` INTEGER, `digests` TEXT, `wy` REAL, `location` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `ChannelMessage` (`id` TEXT, `upstreamPerson` TEXT, `upstreamChannel` TEXT, `sourceSite` TEXT, `sourceApp` TEXT, `sourceChannel` TEXT, `creator` TEXT, `ctime` INTEGER, `text` TEXT, `wy` REAL, `location` TEXT, `onChannel` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `ChannelMessage` (`id` TEXT, `upstreamPerson` TEXT, `sourceSite` TEXT, `sourceApp` TEXT, `onChannel` TEXT, `creator` TEXT, `ctime` INTEGER, `text` TEXT, `wy` REAL, `location` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `ChannelComment` (`id` TEXT, `person` TEXT, `uid` TEXT, `avatar` TEXT, `msgid` TEXT, `text` TEXT, `ctime` INTEGER, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `ChannelComment` (`id` TEXT, `person` TEXT, `avatar` TEXT, `msgid` TEXT, `text` TEXT, `ctime` INTEGER, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `LikePerson` (`id` TEXT, `person` TEXT, `uid` TEXT, `avatar` TEXT, `msgid` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `LikePerson` (`id` TEXT, `person` TEXT, `avatar` TEXT, `msgid` TEXT, `ctime` INTEGER, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Media` (`id` TEXT, `type` TEXT, `src` TEXT, `leading` TEXT, `msgid` TEXT, `text` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
@@ -478,10 +478,9 @@ class _$IInsiteMessageDAO extends IInsiteMessageDAO {
             (InsiteMessage item) => <String, dynamic>{
                   'id': item.id,
                   'upstreamPerson': item.upstreamPerson,
-                  'upstreamChannel': item.upstreamChannel,
                   'sourceSite': item.sourceSite,
                   'sourceApp': item.sourceApp,
-                  'sourceChannel': item.sourceChannel,
+                  'onChannel': item.onChannel,
                   'creator': item.creator,
                   'ctime': item.ctime,
                   'digests': item.digests,
@@ -499,10 +498,9 @@ class _$IInsiteMessageDAO extends IInsiteMessageDAO {
       InsiteMessage(
           row['id'] as String,
           row['upstreamPerson'] as String,
-          row['upstreamChannel'] as String,
           row['sourceSite'] as String,
           row['sourceApp'] as String,
-          row['sourceChannel'] as String,
+          row['onChannel'] as String,
           row['creator'] as String,
           row['ctime'] as int,
           row['digests'] as String,
@@ -529,7 +527,7 @@ class _$IInsiteMessageDAO extends IInsiteMessageDAO {
   Future<List<InsiteMessage>> pageMessageByChannelLoopType(
       String loopType, int limit, int offset) async {
     return _queryAdapter.queryList(
-        'SELECT msg.* FROM InsiteMessage msg,Channel ch WHERE msg.upstreamChannel=ch.id AND ch.loopType=? LIMIT ? OFFSET ?',
+        'SELECT msg.* FROM InsiteMessage msg,Channel ch WHERE msg.onChannel=ch.id AND ch.loopType=? LIMIT ? OFFSET ?',
         arguments: <dynamic>[loopType, limit, offset],
         mapper: _insiteMessageMapper);
   }
@@ -567,16 +565,14 @@ class _$IChannelMessageDAO extends IChannelMessageDAO {
             (ChannelMessage item) => <String, dynamic>{
                   'id': item.id,
                   'upstreamPerson': item.upstreamPerson,
-                  'upstreamChannel': item.upstreamChannel,
                   'sourceSite': item.sourceSite,
                   'sourceApp': item.sourceApp,
-                  'sourceChannel': item.sourceChannel,
+                  'onChannel': item.onChannel,
                   'creator': item.creator,
                   'ctime': item.ctime,
                   'text': item.text,
                   'wy': item.wy,
-                  'location': item.location,
-                  'onChannel': item.onChannel
+                  'location': item.location
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -589,16 +585,14 @@ class _$IChannelMessageDAO extends IChannelMessageDAO {
       ChannelMessage(
           row['id'] as String,
           row['upstreamPerson'] as String,
-          row['upstreamChannel'] as String,
           row['sourceSite'] as String,
           row['sourceApp'] as String,
-          row['sourceChannel'] as String,
+          row['onChannel'] as String,
           row['creator'] as String,
           row['ctime'] as int,
           row['text'] as String,
           row['wy'] as double,
-          row['location'] as String,
-          row['onChannel'] as String);
+          row['location'] as String);
 
   final InsertionAdapter<ChannelMessage> _channelMessageInsertionAdapter;
 
@@ -621,7 +615,7 @@ class _$IChannelMessageDAO extends IChannelMessageDAO {
   Future<List<ChannelMessage>> pageMessageByChannelLoopType(
       String loopType, int limit, int offset) async {
     return _queryAdapter.queryList(
-        'SELECT msg.* FROM ChannelMessage msg,Channel ch WHERE msg.upstreamChannel=ch.id AND ch.loopType=? LIMIT ? OFFSET ?',
+        'SELECT msg.* FROM ChannelMessage msg,Channel ch WHERE msg.onChannel=ch.id AND ch.loopType=? LIMIT ? OFFSET ?',
         arguments: <dynamic>[loopType, limit, offset],
         mapper: _channelMessageMapper);
   }
@@ -671,8 +665,13 @@ class _$IChannelMediaDAO extends IChannelMediaDAO {
 
   final QueryAdapter _queryAdapter;
 
-  static final _microAppMapper = (Map<String, dynamic> row) => MicroApp(
-      row['id'] as String, row['site'] as String, row['leading'] as String);
+  static final _mediaMapper = (Map<String, dynamic> row) => Media(
+      row['id'] as String,
+      row['type'] as String,
+      row['src'] as String,
+      row['leading'] as String,
+      row['msgid'] as String,
+      row['text'] as String);
 
   final InsertionAdapter<Media> _mediaInsertionAdapter;
 
@@ -683,21 +682,26 @@ class _$IChannelMediaDAO extends IChannelMediaDAO {
   }
 
   @override
-  Future<List<MicroApp>> pageMedia(int pageSize, int currPage) async {
+  Future<List<Media>> pageMedia(int pageSize, int currPage) async {
     return _queryAdapter.queryList('SELECT * FROM Media LIMIT ? OFFSET ?',
-        arguments: <dynamic>[pageSize, currPage], mapper: _microAppMapper);
+        arguments: <dynamic>[pageSize, currPage], mapper: _mediaMapper);
   }
 
   @override
-  Future<MicroApp> getMedia(String id) async {
+  Future<Media> getMedia(String id) async {
     return _queryAdapter.query('SELECT * FROM Media WHERE id = ?',
-        arguments: <dynamic>[id], mapper: _microAppMapper);
+        arguments: <dynamic>[id], mapper: _mediaMapper);
   }
 
   @override
-  Future<List<MicroApp>> getAllMedia() async {
-    return _queryAdapter.queryList('SELECT * FROM Media',
-        mapper: _microAppMapper);
+  Future<List<Media>> getAllMedia() async {
+    return _queryAdapter.queryList('SELECT * FROM Media', mapper: _mediaMapper);
+  }
+
+  @override
+  Future<List<Media>> getMediaByMsgId(String msgid) async {
+    return _queryAdapter.queryList('SELECT * FROM Media WHERE msgid = ?',
+        arguments: <dynamic>[msgid], mapper: _mediaMapper);
   }
 
   @override
@@ -715,9 +719,9 @@ class _$IChannelLikePersonDAO extends IChannelLikePersonDAO {
             (LikePerson item) => <String, dynamic>{
                   'id': item.id,
                   'person': item.person,
-                  'uid': item.uid,
                   'avatar': item.avatar,
-                  'msgid': item.msgid
+                  'msgid': item.msgid,
+                  'ctime': item.ctime
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -729,9 +733,9 @@ class _$IChannelLikePersonDAO extends IChannelLikePersonDAO {
   static final _likePersonMapper = (Map<String, dynamic> row) => LikePerson(
       row['id'] as String,
       row['person'] as String,
-      row['uid'] as String,
       row['avatar'] as String,
-      row['msgid'] as String);
+      row['msgid'] as String,
+      row['ctime'] as int);
 
   final InsertionAdapter<LikePerson> _likePersonInsertionAdapter;
 
@@ -760,6 +764,21 @@ class _$IChannelLikePersonDAO extends IChannelLikePersonDAO {
   }
 
   @override
+  Future<List<LikePerson>> getLikePersonBy(String msgid, String person) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM LikePerson WHERE msgid = ? AND person=?',
+        arguments: <dynamic>[msgid, person],
+        mapper: _likePersonMapper);
+  }
+
+  @override
+  Future<void> removeLikePersonBy(String msgid, String person) async {
+    await _queryAdapter.queryNoReturn(
+        'delete FROM LikePerson WHERE msgid = ? AND person=?',
+        arguments: <dynamic>[msgid, person]);
+  }
+
+  @override
   Future<void> addLikePerson(LikePerson likePerson) async {
     await _likePersonInsertionAdapter.insert(
         likePerson, sqflite.ConflictAlgorithm.abort);
@@ -775,7 +794,6 @@ class _$IChannelCommentDAO extends IChannelCommentDAO {
             (ChannelComment item) => <String, dynamic>{
                   'id': item.id,
                   'person': item.person,
-                  'uid': item.uid,
                   'avatar': item.avatar,
                   'msgid': item.msgid,
                   'text': item.text,
@@ -792,7 +810,6 @@ class _$IChannelCommentDAO extends IChannelCommentDAO {
       ChannelComment(
           row['id'] as String,
           row['person'] as String,
-          row['uid'] as String,
           row['avatar'] as String,
           row['msgid'] as String,
           row['text'] as String,

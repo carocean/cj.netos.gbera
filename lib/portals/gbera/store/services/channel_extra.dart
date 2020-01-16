@@ -18,6 +18,11 @@ class ChannelMediaService implements IChannelMediaService {
   Future<Function> addMedia(Media media) async{
    await channelMediaDAO.addMedia(media);
   }
+
+  @override
+  Future<List<Media>> getMedias(String messageid) async{
+    return await channelMediaDAO.getMediaByMsgId(messageid);
+  }
 }
 
 class ChannelLikeService implements IChannelLikeService {
@@ -27,6 +32,22 @@ class ChannelLikeService implements IChannelLikeService {
       AppDatabase db = site.database;
       channelLikeDAO = db.channelLikeDAO;
     });
+  }
+
+  @override
+  Future<bool> isLiked(String msgid, String person) async{
+    var likes=await channelLikeDAO.getLikePersonBy(msgid,person);
+    return likes.isEmpty?false:true;
+  }
+
+  @override
+  Future<Function> unlike(String msgid, String person) async{
+    await channelLikeDAO.removeLikePersonBy(msgid,person);
+  }
+
+  @override
+  Future<Function> like(LikePerson like) async{
+    await channelLikeDAO.addLikePerson(like);
   }
 }
 
