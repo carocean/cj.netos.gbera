@@ -6,13 +6,13 @@ import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/swipe_refresh.dart';
+import 'package:gbera/portals/common/wpopup_menu/w_popup_menu.dart';
 import 'package:gbera/portals/gbera/pages/netflow/article_entities.dart';
 import 'package:gbera/portals/gbera/parts/parts.dart';
 import 'package:gbera/portals/gbera/store/entities.dart';
 import 'package:gbera/portals/gbera/store/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
-import 'package:w_popup_menu/w_popup_menu.dart';
 
 class ChannelPage extends StatefulWidget {
   PageContext context;
@@ -611,19 +611,108 @@ class __MessageCardState extends State<_MessageCard> {
                               );
                             }),
                       ),
-                      _MessageOperatorRegion(
-                        message: widget.message,
-                        context: widget.context,
-                        onDeleted: () {
-                          if (widget.onDeleted != null) {
-                            widget.onDeleted(widget.message);
-                          }
-                        },
-                        onComment: () {
-                          _is_show_comment_editor = true;
-                          setState(() {});
-                        },
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: 4,
+                          bottom: 4,
+                        ),
+                        child: WPopupMenu(
+                          child: Icon(
+                            IconData(
+                              0xe79d,
+                              fontFamily: 'ellipse',
+                            ),
+                            size: 22,
+                          ),
+                          actions: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    right: 2,
+                                  ),
+                                  child: Icon(
+                                    FontAwesomeIcons.thumbsUp,
+                                    color: Colors.white,
+                                    size: 12,
+                                  ),
+                                ),
+                                Text(
+                                  '点赞',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    right: 2,
+                                    top: 2,
+                                  ),
+                                  child: Icon(
+                                    Icons.comment,
+                                    color: Colors.white,
+                                    size: 12,
+                                  ),
+                                ),
+                                Text(
+                                  '评论',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    right: 2,
+                                    top: 1,
+                                  ),
+                                  child: Icon(
+                                    Icons.remove,
+                                    color: Colors.white,
+                                    size: 12,
+                                  ),
+                                ),
+                                Text(
+                                  '删除',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                          pressType: PressType.singleClick,
+                          onValueChanged: (index) {
+                            print('-----${index}');
+                          },
+                        ),
                       ),
+//                      _MessageOperatorRegion(
+//                        message: widget.message,
+//                        context: widget.context,
+//                        onDeleted: () {
+//                          if (widget.onDeleted != null) {
+//                            widget.onDeleted(widget.message);
+//                          }
+//                        },
+//                        onComment: () {
+//                          _is_show_comment_editor = true;
+//                          setState(() {});
+//                        },
+//                      ),
                     ],
                   ),
                   Container(
@@ -991,7 +1080,6 @@ class __MessageOperatorRegionState extends State<_MessageOperatorRegion> {
           print('${snapshot.error}');
         }
         var rights = snapshot.data;
-        WPopupMenu();
         return PopupMenuButton<String>(
           icon: Icon(
             Icons.linear_scale,
@@ -1002,7 +1090,7 @@ class __MessageOperatorRegionState extends State<_MessageOperatorRegion> {
             0,
             35,
           ),
-          onSelected: (value) async{
+          onSelected: (value) async {
             if (StringUtil.isEmpty(value)) {
               return;
             }

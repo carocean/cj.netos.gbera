@@ -48,7 +48,8 @@ dependencies:
   badges: ^1.1.0
   amap_all_fluttify: ^0.11.1
   extended_text_field: ^0.4.8
-  w_popup_menu: ^0.3.0
+  #已将源码拷到工程
+#  w_popup_menu: ^0.3.0
   popup_menu: ^1.0.5
 dev_dependencies:
   flutter_test:
@@ -137,3 +138,6 @@ flutter:
     - family: netflow
       fonts:
         - asset: lib/portals/gbera/fonts/netflow.ttf
+    - family: ellipse
+      fonts:
+        - asset: lib/portals/gbera/fonts/ellipse.ttf
