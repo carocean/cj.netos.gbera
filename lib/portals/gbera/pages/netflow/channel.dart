@@ -397,10 +397,6 @@ class __MessageCardState extends State<_MessageCard> {
 
   @override
   Widget build(BuildContext context) {
-    var images = [
-      'https://img13.360buyimg.com/n1/s450x450_jfs/t1/19941/13/11811/62942/5c93524eE2f3ea589/3de7edc227e93cc1.jpg',
-      'https://img13.360buyimg.com/n1/s450x450_jfs/t1/25838/34/11949/63568/5c935252E474ec0fc/e18e4be5fa437998.jpg',
-    ];
     return Card(
       shape: Border(),
       elevation: 0,
@@ -611,108 +607,19 @@ class __MessageCardState extends State<_MessageCard> {
                               );
                             }),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: 4,
-                          bottom: 4,
-                        ),
-                        child: WPopupMenu(
-                          child: Icon(
-                            IconData(
-                              0xe79d,
-                              fontFamily: 'ellipse',
-                            ),
-                            size: 22,
-                          ),
-                          actions: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    right: 2,
-                                  ),
-                                  child: Icon(
-                                    FontAwesomeIcons.thumbsUp,
-                                    color: Colors.white,
-                                    size: 12,
-                                  ),
-                                ),
-                                Text(
-                                  '点赞',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    right: 2,
-                                    top: 2,
-                                  ),
-                                  child: Icon(
-                                    Icons.comment,
-                                    color: Colors.white,
-                                    size: 12,
-                                  ),
-                                ),
-                                Text(
-                                  '评论',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    right: 2,
-                                    top: 1,
-                                  ),
-                                  child: Icon(
-                                    Icons.remove,
-                                    color: Colors.white,
-                                    size: 12,
-                                  ),
-                                ),
-                                Text(
-                                  '删除',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                          pressType: PressType.singleClick,
-                          onValueChanged: (index) {
-                            print('-----${index}');
-                          },
-                        ),
+                      _MessageOperatesPopupMenu(
+                        message: widget.message,
+                        context: widget.context,
+                        onDeleted: () {
+                          if (widget.onDeleted != null) {
+                            widget.onDeleted(widget.message);
+                          }
+                        },
+                        onComment: () {
+                          _is_show_comment_editor = true;
+                          setState(() {});
+                        },
                       ),
-//                      _MessageOperatorRegion(
-//                        message: widget.message,
-//                        context: widget.context,
-//                        onDeleted: () {
-//                          if (widget.onDeleted != null) {
-//                            widget.onDeleted(widget.message);
-//                          }
-//                        },
-//                        onComment: () {
-//                          _is_show_comment_editor = true;
-//                          setState(() {});
-//                        },
-//                      ),
                     ],
                   ),
                   Container(
@@ -901,6 +808,100 @@ class __MessageCardState extends State<_MessageCard> {
         widget.context.site.getService('/channel/messages/medias');
     return await channelMediaService.getMedias(widget.message.id);
   }
+
+  Future<Map<String, bool>> _getOperatorRights() async {}
+
+  Widget _showOperatesPopupMenu() {
+    return Padding(
+      padding: EdgeInsets.only(
+        top: 4,
+        bottom: 4,
+      ),
+      child: WPopupMenu(
+        child: Icon(
+          IconData(
+            0xe79d,
+            fontFamily: 'ellipse',
+          ),
+          size: 22,
+        ),
+        actions: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(
+                  right: 2,
+                ),
+                child: Icon(
+                  FontAwesomeIcons.thumbsUp,
+                  color: Colors.white,
+                  size: 12,
+                ),
+              ),
+              Text(
+                '点赞',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(
+                  right: 2,
+                  top: 2,
+                ),
+                child: Icon(
+                  Icons.comment,
+                  color: Colors.white,
+                  size: 12,
+                ),
+              ),
+              Text(
+                '评论',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(
+                  right: 2,
+                  top: 1,
+                ),
+                child: Icon(
+                  Icons.remove,
+                  color: Colors.white,
+                  size: 12,
+                ),
+              ),
+              Text(
+                '删除',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ],
+        pressType: PressType.singleClick,
+        onValueChanged: (index) {
+          print('-----${index}');
+        },
+      ),
+    );
+  }
 }
 
 class _CommentEditor extends StatefulWidget {
@@ -996,30 +997,21 @@ class __CommentEditorState extends State<_CommentEditor> {
   }
 }
 
-class _MessageOperatorRegion extends StatefulWidget {
+class _MessageOperatesPopupMenu extends StatefulWidget {
   ChannelMessage message;
   PageContext context;
   void Function() onDeleted;
   void Function() onComment;
 
-  _MessageOperatorRegion(
+  _MessageOperatesPopupMenu(
       {this.message, this.context, this.onDeleted, this.onComment});
 
   @override
-  __MessageOperatorRegionState createState() => __MessageOperatorRegionState();
+  __MessageOperatesPopupMenuState createState() =>
+      __MessageOperatesPopupMenuState();
 }
 
-class __MessageOperatorRegionState extends State<_MessageOperatorRegion> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
+class __MessageOperatesPopupMenuState extends State<_MessageOperatesPopupMenu> {
   Future<Map<String, bool>> _getOperatorRights() async {
     bool isLiked = await _isLiked();
     return {
@@ -1065,150 +1057,140 @@ class __MessageOperatorRegionState extends State<_MessageOperatorRegion> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _getOperatorRights(),
-      builder: (ctx, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
-          return Center(
-            child: SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(),
+        future: _getOperatorRights(),
+        builder: (ctx, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+          if (snapshot.hasError) {
+            print('${snapshot.error}');
+          }
+          var rights = snapshot.data;
+
+          return Padding(
+            padding: EdgeInsets.only(
+              top: 4,
+              bottom: 4,
+            ),
+            child: WPopupMenu(
+              child: Icon(
+                IconData(
+                  0xe79d,
+                  fontFamily: 'ellipse',
+                ),
+                size: 22,
+              ),
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(
+                        right: 2,
+                      ),
+                      child: Icon(
+                        FontAwesomeIcons.thumbsUp,
+                        color: Colors.white,
+                        size: 12,
+                      ),
+                    ),
+                    Text(
+                      rights['isLiked'] ? '取消点赞' : '点赞',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(
+                        right: 2,
+                        top: 2,
+                      ),
+                      child: Icon(
+                        Icons.comment,
+                        color: Colors.white,
+                        size: 12,
+                      ),
+                    ),
+                    Text(
+                      '评论',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+                rights['canDelete']
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                              right: 2,
+                              top: 1,
+                            ),
+                            child: Icon(
+                              Icons.remove,
+                              color: Colors.white,
+                              size: 12,
+                            ),
+                          ),
+                          Text(
+                            '删除',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Container(
+                        width: 0,
+                        height: 0,
+                      ),
+              ],
+              pressType: PressType.singleClick,
+              onValueChanged: (index) {
+                switch (index) {
+                  case 0: //点赞或取消
+                    if (rights['isLiked']) {
+                      _unlike().whenComplete(() {
+                        setState(() {});
+                      });
+                    } else {
+                      _like().whenComplete(() {
+                        setState(() {});
+                      });
+                    }
+                    break;
+                  case 1: //评论
+                    if (widget.onComment != null) {
+                      widget.onComment();
+                    }
+                    break;
+                  case 2: //删除
+                    _deleteMessage().whenComplete(() {
+                      if (widget.onDeleted != null) {
+                        widget.onDeleted();
+                      }
+                    });
+                    break;
+                }
+              },
             ),
           );
-        }
-        if (snapshot.hasError) {
-          print('${snapshot.error}');
-        }
-        var rights = snapshot.data;
-        return PopupMenuButton<String>(
-          icon: Icon(
-            Icons.linear_scale,
-            size: 14,
-            color: Colors.grey[600],
-          ),
-          offset: Offset(
-            0,
-            35,
-          ),
-          onSelected: (value) async {
-            if (StringUtil.isEmpty(value)) {
-              return;
-            }
-            switch (value) {
-              case 'like':
-                _like().whenComplete(() {
-                  setState(() {});
-                });
-                break;
-              case 'unlike':
-                _unlike().whenComplete(() {
-                  setState(() {});
-                });
-                break;
-              case 'comment':
-                if (widget.onComment != null) {
-                  widget.onComment();
-                }
-                break;
-              case 'delete':
-                _deleteMessage().whenComplete(() {
-                  if (widget.onDeleted != null) {
-                    widget.onDeleted();
-                  }
-                });
-                break;
-              default:
-                print('未支付的操作:$value');
-                break;
-            }
-          },
-          itemBuilder: (context) => <PopupMenuEntry<String>>[
-            PopupMenuItem(
-              value: rights['isLiked'] ? 'unlike' : 'like',
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: 10,
-                    ),
-                    child: Icon(
-                      FontAwesomeIcons.thumbsUp,
-                      color: Colors.grey[500],
-                      size: 15,
-                    ),
-                  ),
-                  Text(
-                    rights['isLiked'] ? '取消点赞' : '点赞',
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            PopupMenuItem(
-              value: 'comment',
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: 10,
-                    ),
-                    child: Icon(
-                      FontAwesomeIcons.comment,
-                      color: Colors.grey[500],
-                      size: 15,
-                    ),
-                  ),
-                  Text(
-                    '评论',
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            rights['canDelete']
-                ? PopupMenuDivider()
-                : Container(
-                    height: 0,
-                    width: 0,
-                  ),
-            rights['canDelete']
-                ? PopupMenuItem(
-                    value: 'delete',
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(
-                            right: 10,
-                          ),
-                          child: Icon(
-                            FontAwesomeIcons.comment,
-                            color: Colors.grey[500],
-                            size: 15,
-                          ),
-                        ),
-                        Text(
-                          '删除',
-                          style: TextStyle(
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : Container(
-                    width: 0,
-                    height: 0,
-                  ),
-          ],
-        );
-      },
-    );
+        });
   }
 }
