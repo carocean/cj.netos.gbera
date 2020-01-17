@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:floor/floor.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/store/dao/daos.dart';
@@ -8,27 +10,54 @@ import '../services.dart';
 
 class ChannelMessageService implements IChannelMessageService {
   IChannelMessageDAO channelMessageDAO;
+  IChannelMediaService mediaService;
+  IChannelCommentService commentService;
+  IChannelLikeService likeService;
 
   ChannelMessageService({ServiceSite site}) {
     site.onready.add(() {
       AppDatabase db = site.database;
       channelMessageDAO = db.channelMessageDAO;
+      mediaService = site.getService('/channel/messages/medias');
+      commentService = site.getService('/channel/messages/comments');
+      likeService = site.getService('/channel/messages/likes');
     });
   }
 
+  @transaction
   @override
-  Future<Function> removeMessage(String id)async {
+  Future<Function> removeMessage(String id) async {
     await channelMessageDAO.removeMessage(id);
+    List<Media> medias = await mediaService.getMedias(id);
+    for (var m in medias) {
+      mediaService.remove(m.id);
+      if (StringUtil.isEmpty(m.src)) {
+        continue;
+      }
+      var f = File(m.src);
+      if (f.existsSync()) {
+        f.deleteSync();
+      }
+    }
+    List<ChannelComment> comments =
+        await commentService.pageComments(id, 100000000, 0);
+    for (var m in comments) {
+      await commentService.removeComment(m.id);
+    }
+    List<LikePerson> likes =
+        await likeService.pageLikePersons(id, 100000000, 0);
+    for (var m in likes) {
+      await likeService.remove(m.id);
+    }
   }
 
   @override
-  Future<List<ChannelMessage>> getAllMessage() async{
-
-  }
+  Future<List<ChannelMessage>> getAllMessage() async {}
 
   @override
-  Future<List<ChannelMessage>> pageMessage(int pageSize, int currPage,String onChannel) async{
-   return await channelMessageDAO.pageMessage(onChannel,pageSize, currPage);
+  Future<List<ChannelMessage>> pageMessage(
+      int pageSize, int currPage, String onChannel) async {
+    return await channelMessageDAO.pageMessage(onChannel, pageSize, currPage);
   }
 
   @override
@@ -37,12 +66,8 @@ class ChannelMessageService implements IChannelMessageService {
   }
 
   @override
-  Future<bool> existsMessage(id) {
-
-  }
+  Future<bool> existsMessage(id) {}
 
   @override
-  Future<Function> empty() {
-
-  }
+  Future<Function> empty() {}
 }

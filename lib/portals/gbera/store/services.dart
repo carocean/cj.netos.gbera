@@ -64,13 +64,15 @@ mixin IChannelMessageService {
 
   Future<List<ChannelMessage>> getAllMessage();
 
-  Future<void> removeMessage(String id) ;
-
+  Future<void> removeMessage(String id);
 }
 mixin IChannelMediaService {
   Future<void> addMedia(Media media);
 
-  Future<List<Media>> getMedias(String id);
+  Future<List<Media>> getMedias(String msgid);
+
+  Future<void> remove(String id) ;
+
 }
 
 mixin IChannelLikeService {
@@ -79,6 +81,20 @@ mixin IChannelLikeService {
   Future<void> like(LikePerson likePerson);
 
   Future<void> unlike(String msgid, String person);
+
+  Future<List<LikePerson>> pageLikePersons(
+      String msgid, int pageSize, int offset);
+
+  Future<void> remove(String id) ;
 }
 
-mixin IChannelCommentService {}
+mixin IChannelCommentService {
+  Future<List<ChannelComment>> pageComments(
+      String msgid, int pageSize, int offset);
+
+  Future<void> addComment(ChannelComment channelComment);
+
+  Future<void> removeComment(String id) ;
+
+
+}

@@ -192,6 +192,11 @@ abstract class IChannelLikePersonDAO {
 
   @Query('delete FROM LikePerson WHERE msgid = :msgid AND person=:person')
   Future<void> removeLikePersonBy(String msgid, String person);
+
+  @Query(
+      'SELECT *  FROM LikePerson WHERE msgid=:msgid  LIMIT :pageSize OFFSET  :offset')
+  Future<List<LikePerson>> pageLikePersonBy(
+      String msgid, int pageSize, int offset);
 }
 
 @dao
@@ -210,4 +215,9 @@ abstract class IChannelCommentDAO {
 
   @Query('SELECT * FROM ChannelComment')
   Future<List<ChannelComment>> getAllComment();
+
+  @Query(
+      'SELECT *  FROM ChannelComment WHERE msgid=:msgid  LIMIT :pageSize OFFSET  :offset')
+  Future<List<ChannelComment>> pageLikeCommentBy(
+      String msgid, int pageSize, int offset) {}
 }

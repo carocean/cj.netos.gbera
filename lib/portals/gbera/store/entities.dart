@@ -119,8 +119,8 @@ class LikePerson {
   final String avatar;
   final String msgid;
   final int ctime;
-
-  LikePerson(this.id, this.person, this.avatar, this.msgid, this.ctime);
+  final String nickName;
+  LikePerson(this.id, this.person, this.avatar, this.msgid, this.ctime,this.nickName);
 }
 
 @entity
@@ -132,9 +132,9 @@ class ChannelComment {
   final String msgid;
   final String text;
   final int ctime;
-
+  final String nickName;
   ChannelComment(
-      this.id, this.person, this.avatar, this.msgid, this.text, this.ctime);
+      this.id, this.person, this.avatar, this.msgid, this.text, this.ctime,this.nickName,);
 }
 
 @entity

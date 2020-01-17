@@ -186,6 +186,7 @@ class UserPrincipal {
   final String uid;
   final String accountid;
   final String accountName;
+  final String nickName;
   final String appid;
   final String tenantid;
   final List<Map> ucRoles;
@@ -204,6 +205,7 @@ class UserPrincipal {
     this.uid,
     this.accountid,
     this.accountName,
+    this.nickName,
     this.accessToken,
     this.appid,
     this.tenantid,
