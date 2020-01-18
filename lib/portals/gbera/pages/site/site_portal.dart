@@ -340,7 +340,7 @@ class __MessageCardState extends State<_MessageCard> {
                     length: images.length,
                     child: PageSelector(
                       medias: images,
-                      onMediaTap: (media) {
+                      onMediaLongTap: (media) {
                         widget.context.forward(
                           '/images/viewer',
                           arguments: {

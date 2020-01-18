@@ -230,6 +230,7 @@ class _LoginPage2State extends State<LoginPage2> {
     );
 
     //第三方登录区域
+    /*
     Widget thirdLoginArea = new Container(
       margin: EdgeInsets.only(left: 20, right: 20),
       child: new Column(
@@ -281,14 +282,15 @@ class _LoginPage2State extends State<LoginPage2> {
         ],
       ),
     );
-
+*/
     //忘记密码  立即注册
     Widget bottomArea = new Container(
       margin: EdgeInsets.only(right: 20, left: 30),
       child: new Row(
         mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
+          /*
           FlatButton(
             child: Text(
               "忘记密码?",
@@ -300,6 +302,7 @@ class _LoginPage2State extends State<LoginPage2> {
             //忘记密码按钮，点击执行事件
             onPressed: () {},
           ),
+          */
           FlatButton(
             child: Text(
               "快速注册",
@@ -357,10 +360,12 @@ class _LoginPage2State extends State<LoginPage2> {
             new SizedBox(
               height: ScreenUtil().setHeight(60),
             ),
+            /*
             thirdLoginArea,
             new SizedBox(
               height: ScreenUtil().setHeight(60),
             ),
+             */
             bottomArea,
           ],
         ),

@@ -27,7 +27,7 @@ class ChannelPage extends StatefulWidget {
 
 class _ChannelPageState extends State<ChannelPage> {
   List<ChannelMessage> pageMessages;
-  int limit = 10, offset = 0;
+  int limit = 15, offset = 0;
   GlobalKey<_ChannelPageState> _scaffoldKey;
 
   //这是防止flutterBuilder重绘引起的页面状态无保持，致返回到列表页时总是在滚到顶
@@ -184,8 +184,14 @@ class _ChannelPageState extends State<ChannelPage> {
             );
           }
           return _MySwipeRefresh(
-            onSwipeDown: _onSwipeDown,
-            onSwipeUp: _onSwipeUp,
+            onSwipeDown: () async {
+              await _onSwipeDown();
+              setState(() {});
+            },
+            onSwipeUp: () async {
+              await _onSwipeUp();
+              setState(() {});
+            },
             slivers: slivers,
           );
         },
@@ -508,7 +514,7 @@ class __MessageCardState extends State<_MessageCard> {
                     ),
                   ),
                   FutureBuilder<List<Media>>(
-                    future: _future_getMedias,
+                    future: _getMedias(),
                     builder: (ctx, snapshot) {
                       if (snapshot.connectionState != ConnectionState.done) {
                         return Container(
@@ -533,12 +539,13 @@ class __MessageCardState extends State<_MessageCard> {
                         length: snapshot.data.length,
                         child: PageSelector(
                           medias: snapshot.data,
-                          onMediaTap: (media) {
+                          onMediaLongTap: (media) {
                             widget.context.forward(
                               '/images/viewer',
                               arguments: {
                                 'media': media,
                                 'others': snapshot.data,
+                                'autoPlay':true,
                               },
                             );
                           },
@@ -1076,7 +1083,7 @@ class __InteractiveRegionState extends State<_InteractiveRegion> {
         }
         var comments = snapshot.data['comments'];
         var likePersons = snapshot.data['likePersons'];
-        bool isHide = comments.isEmpty && likePersons.isEmpty;
+        bool isHide = comments.isEmpty && likePersons.isEmpty&&!_isShowCommentEditor;
         if (isHide) {
           return Container(
             width: 0,

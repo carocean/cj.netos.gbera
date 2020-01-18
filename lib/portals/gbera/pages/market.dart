@@ -449,7 +449,7 @@ class __PlatformNewsDayState extends State<_PlatformNewsDay> {
                           length: news.images.length,
                           child: PageSelector(
                             medias: news.images,
-                            onMediaTap: (media) {
+                            onMediaLongTap: (media) {
                               widget.context.forward(
                                 '/images/viewer',
                                 arguments: {

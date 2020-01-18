@@ -36,7 +36,11 @@ class ChannelMessageService implements IChannelMessageService {
       }
       var f = File(m.src);
       if (f.existsSync()) {
-        f.deleteSync();
+        try {
+          f.deleteSync();
+        }catch(e){
+          print('$e');
+        }
       }
     }
     List<ChannelComment> comments =

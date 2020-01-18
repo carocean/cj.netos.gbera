@@ -13,13 +13,14 @@ class ImageViewer extends StatefulWidget {
   PageContext context;
   Media viewMedia;
   List<Media> others;
-
+  bool autoPlay=false;
   ImageViewer({this.context, this.viewMedia, this.others}) {
     this.viewMedia = context.parameters['media'];
     this.others = context.parameters['others'];
     if (this.others == null) {
       this.others = [];
     }
+    autoPlay= context.parameters['autoPlay']??false;
   }
 
   @override
@@ -28,7 +29,17 @@ class ImageViewer extends StatefulWidget {
 
 class _ImageViewerState extends State<ImageViewer> {
   static var select = 0;
-
+  VideoController _controller;
+  @override
+  void initState() {
+    this._controller=VideoController();
+    super.initState();
+  }
+  @override
+  void dispose() {
+    this._controller=null;
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     changeImage(int isUp) {
@@ -43,10 +54,11 @@ class _ImageViewerState extends State<ImageViewer> {
       if (select > widget.others.length - 1) {
         select = 0;
       }
-
+      _controller.stop();
       widget.context.forward('/images/viewer', arguments: {
         'media': widget.others[select],
         'others': widget.others,
+        'autoPlay':widget.context.parameters['autoPlay'],
       });
     }
 
@@ -148,16 +160,18 @@ class _ImageViewerState extends State<ImageViewer> {
         mediaRender = src.startsWith('/')
             ? Image.file(
                 File(src),
-                fit: BoxFit.fitHeight,
+                fit: BoxFit.fitWidth,
               )
             : Image.network(
                 src,
-                fit: BoxFit.fitHeight,
+                fit: BoxFit.fitWidth,
               );
         break;
       case 'video':
         mediaRender = VideoView(
           src: File(src),
+          autoPlay: widget.autoPlay,
+          controller: _controller,
         );
         break;
       case 'audio':

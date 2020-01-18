@@ -95,13 +95,19 @@ class _CardStoreState extends State<CardStore> {
 }
 
 //微博等内容区的多图展示区
-class PageSelector extends StatelessWidget {
+class PageSelector extends StatefulWidget {
   List<Media> medias;
+  Function(Media media) onMediaLongTap;
   Function(Media media) onMediaTap;
   BoxFit boxFit;
   double height;
 
-  PageSelector({this.medias, this.onMediaTap, this.boxFit, this.height}) {
+  PageSelector(
+      {this.medias,
+      this.onMediaLongTap,
+      this.onMediaTap,
+      this.boxFit,
+      this.height}) {
     if (medias == null) {
       this.medias = [];
     }
@@ -111,29 +117,44 @@ class PageSelector extends StatelessWidget {
   }
 
   @override
+  State createState() {
+    return _PageSelectorState();
+  }
+}
+
+class _PageSelectorState extends State<PageSelector> {
+  bool isZoom=false;
+  @override
+  void dispose() {
+    isZoom=false;
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
     var _controller = DefaultTabController.of(context);
 
     return Stack(
       children: <Widget>[
-        SizedBox(
-          height: height ?? 150,
+        ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: widget.height ?? 150,
+          ),
           child: TabBarView(
             controller: _controller,
-            children: this.medias.map((media) {
+            children: widget.medias.map((media) {
               var mediaRender;
               var src = media?.src;
               switch (media.type) {
                 case 'image':
                   mediaRender = src.startsWith('/')
                       ? Image.file(
-                    File(src),
-                    fit: this.boxFit ?? BoxFit.fitHeight,
-                  )
+                          File(src),
+                          fit: widget.boxFit ?? BoxFit.fitWidth,
+                        )
                       : Image.network(
-                    src,
-                    fit: this.boxFit ?? BoxFit.fitHeight,
-                  );
+                          src,
+                          fit: widget.boxFit ?? BoxFit.fitWidth,
+                        );
                   break;
                 case 'video':
                   mediaRender = VideoView(
@@ -147,19 +168,35 @@ class PageSelector extends StatelessWidget {
                   break;
               }
               if (mediaRender == null) {
-                return Container(width: 0, height: 0,);
+                return Container(
+                  width: 0,
+                  height: 0,
+                );
               }
 
               return GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  if (onMediaTap != null) {
-                    onMediaTap(media);
+                onLongPress: () {
+                  if (widget.onMediaLongTap != null) {
+                    widget.onMediaLongTap(media);
                   }
+                },
+                onTap: () {
+                  if(isZoom){
+                    widget.height=150;
+                  }else{
+                    widget.height=500;
+                  }
+                  isZoom=!isZoom;
+                  setState(() {});
+                  if (widget.onMediaTap != null) {
+                    widget.onMediaTap(media);
+                  }
+
                 },
                 child: Container(
                   alignment: Alignment.center,
-                    child: mediaRender,
+                  child: mediaRender,
                 ),
               );
             }).toList(),
