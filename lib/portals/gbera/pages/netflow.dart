@@ -1024,7 +1024,7 @@ class _ChannelItem extends StatelessWidget {
                       )
                     ],
                   ),
-                ) ==
+                ) !=
                 'cancel';
           }
           return false;
