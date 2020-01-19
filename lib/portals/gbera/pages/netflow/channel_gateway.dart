@@ -2,15 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/gbera/store/entities.dart';
 
 class ChannelGateway extends StatefulWidget {
   PageContext context;
-  String title;
 
-  ChannelGateway({this.context, this.title}) {
-    this.title = context.parameters['title'];
-    assert(this.title != null);
-  }
+  ChannelGateway({this.context});
 
   @override
   _ChannelGatewayState createState() => _ChannelGatewayState();
@@ -18,6 +15,19 @@ class ChannelGateway extends StatefulWidget {
 
 class _ChannelGatewayState extends State<ChannelGateway> {
   bool _isInvisualabled = false;
+  Channel _channel;
+
+  @override
+  void initState() {
+    _channel = widget.context.parameters['channel'];
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    this._channel = null;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,20 +60,8 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                 title: '',
                 items: [
                   _CardItem(
-                    title: '管道号',
-                    tipsText: '003838838727272',
-                    onItemTap: () {
-                      widget.context.forward('/netflow/channel/rename');
-                    },
-                    operator: Icon(
-                      Icons.content_copy,
-                      color: Colors.grey[400],
-                      size: 18,
-                    ),
-                  ),
-                  _CardItem(
                     title: '名称',
-                    tipsText: '${widget.title}',
+                    tipsText: '${_channel?.name}',
                     onItemTap: () {
                       widget.context.forward('/netflow/channel/rename');
                     },
@@ -92,27 +90,9 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                       widget.context.forward('/netflow/portal/channel');
                     },
                   ),
-                  _CardItem(
-                    title: '对他人可见',
-                    tipsText: '为完全开放，他人可见公众和地圈',
-                    operator: SizedBox(
-                      height: 20,
-                      child: Switch.adaptive(
-                          value: _isInvisualabled,
-                          onChanged: (v) {
-                            setState(() {
-                              _isInvisualabled = !_isInvisualabled;
-                            });
-                          }),
-                    ),
-                    onItemTap: () {
-                      widget.context.forward('/netflow/channel/rename');
-                    },
-                  ),
                 ],
               ),
             ),
-
             SliverToBoxAdapter(
               child: Container(
                 height: 10,
@@ -126,7 +106,7 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                     title: '公众',
                     tipsText: '如果不愿接收某人的信息可将他移除',
                     onItemTap: () {
-                      widget.context.forward('/netflow/channel/insite/publics');
+                      widget.context.forward('/netflow/channel/insite/persons',arguments: <String,Object>{'channel':_channel});
                     },
                   ),
                 ],
@@ -146,7 +126,7 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                     tipsText: '如果不愿让某人接收信息可将他移除',
                     onItemTap: () {
                       widget.context
-                          .forward('/netflow/channel/outsite/publics');
+                          .forward('/netflow/channel/outsite/persons',arguments: <String,Object>{'channel':_channel});
                     },
                   ),
                   _CardItem(
@@ -165,6 +145,23 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                     title: '微信用户',
                     tipsText: '是否充许本管道的信息推送到我的微信用户',
                     operator: _MySwitch(),
+                    onItemTap: () {},
+                  ),
+                ],
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                height: 10,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: _Card(
+                title: '',
+                items: [
+                  _CardItem(
+                    title: '权限',
+                    tipsText: '管道动态、出入口公众等',
                     onItemTap: () {},
                   ),
                 ],

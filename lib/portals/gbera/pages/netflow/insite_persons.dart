@@ -6,20 +6,20 @@ import 'package:gbera/portals/gbera/pages/netflow/channel.dart';
 import 'package:gbera/portals/gbera/parts/CardItem.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 
-class OutsitePublics extends StatefulWidget {
+class InsitePersons extends StatefulWidget {
   PageContext context;
 
-  OutsitePublics({this.context});
+  InsitePersons({this.context});
 
   @override
-  _OutsitePublicsState createState() => _OutsitePublicsState();
+  _InsitePersonsState createState() => _InsitePersonsState();
 }
 
-class _OutsitePublicsState extends State<OutsitePublics> {
+class _InsitePersonsState extends State<InsitePersons> {
   @override
   Widget build(BuildContext context) {
     var items = <CardItem>[];
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 1; i++) {
       items.add(
         CardItem(
           title: '精灵仔',
@@ -207,39 +207,7 @@ class _OutsitePublicsState extends State<OutsitePublics> {
         var arguments = <String, Object>{};
         switch (value) {
           case '/netflow/manager/create_channel':
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return SimpleDialog(
-                    title: Text('选择管道类型'),
-                    children: <Widget>[
-                      DialogItem(
-                        text: '开放管道',
-                        icon: Icons.invert_colors,
-                        color: Colors.grey[500],
-                        subtext: '管道动态及管道出入站联系人对他人可见',
-                        onPressed: () {
-                          widget.context
-                              .backward(result: <String, Object>{'type': '开放'});
-                        },
-                      ),
-                      DialogItem(
-                        text: '私有管道',
-                        icon: Icons.invert_colors_off,
-                        color: Colors.grey[500],
-                        subtext: '管道动态及管道出入站联系人对他人不可见',
-                        onPressed: () {
-                          widget.context
-                              .backward(result: <String, Object>{'type': '私有'});
-                        },
-                      ),
-                    ],
-                  );
-                }).then((v) {
-              print('xxxx-$v');
-              if (v == null) return;
-              widget.context.forward(value, arguments: v);
-            });
+
             break;
           case '/netflow/manager/scan_channel':
             String cameraScanResult = await scanner.scan();
@@ -251,7 +219,7 @@ class _OutsitePublicsState extends State<OutsitePublics> {
       },
       itemBuilder: (context) => <PopupMenuEntry<String>>[
         PopupMenuItem(
-          value: '/netflow/manager/create_channel',
+          value: '/netflow/channel/insite/persons_settings',
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -261,41 +229,14 @@ class _OutsitePublicsState extends State<OutsitePublics> {
                 ),
                 child: Icon(
                   widget.context
-                      .findPage('/netflow/manager/create_channel')
+                      .findPage('/netflow/channel/insite/persons_settings')
                       ?.icon,
                   color: Colors.grey[500],
                   size: 15,
                 ),
               ),
               Text(
-                '从我的公众添加',
-                style: TextStyle(
-                  fontSize: 14,
-                ),
-              ),
-            ],
-          ),
-        ),
-        PopupMenuDivider(),
-        PopupMenuItem(
-          value: '/netflow/manager/scan_channel',
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(
-                  right: 10,
-                ),
-                child: Icon(
-                  widget.context
-                      .findPage('/netflow/manager/scan_channel')
-                      ?.icon,
-                  color: Colors.grey[500],
-                  size: 15,
-                ),
-              ),
-              Text(
-                '扫码以添加',
+                '进口权限',
                 style: TextStyle(
                   fontSize: 14,
                 ),

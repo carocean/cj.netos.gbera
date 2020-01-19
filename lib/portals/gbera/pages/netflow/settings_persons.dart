@@ -10,17 +10,18 @@ import 'package:gbera/portals/gbera/parts/CardItem.dart';
 import 'package:gbera/portals/gbera/store/entities.dart';
 import 'package:gbera/portals/gbera/store/services.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
+import 'package:uuid/uuid.dart';
 
-class PublicsForMessages extends StatefulWidget {
+class SettingsPersons extends StatefulWidget {
   PageContext context;
 
-  PublicsForMessages({this.context});
+  SettingsPersons({this.context});
 
   @override
-  _PublicsForMessagesState createState() => _PublicsForMessagesState();
+  _SettingsPersonsState createState() => _SettingsPersonsState();
 }
 
-class _PublicsForMessagesState extends State<PublicsForMessages> {
+class _SettingsPersonsState extends State<SettingsPersons> {
   List<CardItem> personCardItems = [];
   int limit = 20;
   int offset = 0;
@@ -127,8 +128,7 @@ class _PublicsForMessagesState extends State<PublicsForMessages> {
     }
     IPersonService personService =
         widget.context.site.getService('/upstream/persons');
-    List<Person> persons =
-        await personService.pagePerson(limit, offset);
+    List<Person> persons = await personService.pagePerson(limit, offset);
     if (persons.length == 0) {
       return;
     }
@@ -160,42 +160,10 @@ class _PublicsForMessagesState extends State<PublicsForMessages> {
         if (value == null) return;
         var arguments = <String, Object>{};
         switch (value) {
-          case '/netflow/manager/create_channel':
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return SimpleDialog(
-                    title: Text('选择管道类型'),
-                    children: <Widget>[
-                      DialogItem(
-                        text: '开放管道',
-                        icon: Icons.invert_colors,
-                        color: Colors.grey[500],
-                        subtext: '管道动态及管道出入站联系人对他人可见',
-                        onPressed: () {
-                          widget.context
-                              .backward(result: <String, Object>{'type': '开放'});
-                        },
-                      ),
-                      DialogItem(
-                        text: '私有管道',
-                        icon: Icons.invert_colors_off,
-                        color: Colors.grey[500],
-                        subtext: '管道动态及管道出入站联系人对他人不可见',
-                        onPressed: () {
-                          widget.context
-                              .backward(result: <String, Object>{'type': '私有'});
-                        },
-                      ),
-                    ],
-                  );
-                }).then((v) {
-              print('xxxx-$v');
-              if (v == null) return;
-              widget.context.forward(value, arguments: v);
-            });
+          case '/netflow/manager/search_person':
+            widget.context.forward(value, arguments: null);
             break;
-          case '/netflow/manager/scan_channel':
+          case '/netflow/manager/scan_person':
             String cameraScanResult = await scanner.scan();
             if (cameraScanResult == null) break;
             arguments['qrcode'] = cameraScanResult;
@@ -205,7 +173,7 @@ class _PublicsForMessagesState extends State<PublicsForMessages> {
       },
       itemBuilder: (context) => <PopupMenuEntry<String>>[
         PopupMenuItem(
-          value: '/netflow/manager/create_channel',
+          value: '/netflow/manager/search_person',
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -215,14 +183,14 @@ class _PublicsForMessagesState extends State<PublicsForMessages> {
                 ),
                 child: Icon(
                   widget.context
-                      .findPage('/netflow/manager/create_channel')
+                      .findPage('/netflow/manager/search_person')
                       ?.icon,
                   color: Colors.grey[500],
                   size: 15,
                 ),
               ),
               Text(
-                '从我的公众添加',
+                '搜索以添加',
                 style: TextStyle(
                   fontSize: 14,
                 ),
@@ -232,7 +200,7 @@ class _PublicsForMessagesState extends State<PublicsForMessages> {
         ),
         PopupMenuDivider(),
         PopupMenuItem(
-          value: '/netflow/manager/scan_channel',
+          value: '/netflow/manager/scan_person',
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -241,9 +209,7 @@ class _PublicsForMessagesState extends State<PublicsForMessages> {
                   right: 10,
                 ),
                 child: Icon(
-                  widget.context
-                      .findPage('/netflow/manager/scan_channel')
-                      ?.icon,
+                  widget.context.findPage('/netflow/manager/scan_person')?.icon,
                   color: Colors.grey[500],
                   size: 15,
                 ),
@@ -294,7 +260,7 @@ class _PersonsViewState extends State<PersonsView> {
                 ),
                 color: Colors.white,
                 child: Dismissible(
-                  key: ObjectKey(item),
+                  key: Key('key_${Uuid().v1()}'),
                   child: item,
                   confirmDismiss: (DismissDirection direction) async {
                     if (direction == DismissDirection.endToStart) {
@@ -365,13 +331,21 @@ class _PersonsViewState extends State<PersonsView> {
         ),
         actions: <Widget>[
           FlatButton(
-            child: const Text('取消'),
+            child: const Text(
+              '取消',
+              style: TextStyle(
+                color: Colors.black87,
+              ),
+            ),
             onPressed: () {
               Navigator.pop(context, 'no');
             },
           ),
           FlatButton(
-            child: const Text('确定'),
+            child: const Text('确定',
+              style: TextStyle(
+                color: Colors.black87,
+              ),),
             onPressed: () {
               Navigator.pop(context, 'yes');
             },

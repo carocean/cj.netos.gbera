@@ -75,6 +75,12 @@ class _$AppDatabase extends AppDatabase {
 
   IChannelCommentDAO _channelCommentDAOInstance;
 
+  IChannelPinDAO _channelPinDAOInstance;
+
+  IChannelInputPersonDAO _channelInputPersonDAOInstance;
+
+  IChannelOutputPersonDAO _channelOutputPersonDAOInstance;
+
   Future<sqflite.Database> open(String name, List<Migration> migrations,
       [Callback callback]) async {
     final path = join(await sqflite.getDatabasesPath(), name);
@@ -96,7 +102,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Person` (`id` TEXT, `uid` TEXT, `accountid` TEXT, `accountName` TEXT, `appid` TEXT, `tenantid` TEXT, `avatar` TEXT, `rights` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Person` (`id` TEXT, `uid` TEXT, `accountid` TEXT, `accountName` TEXT, `appid` TEXT, `tenantid` TEXT, `avatar` TEXT, `rights` TEXT, `nickName` TEXT, `signature` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `MicroSite` (`id` TEXT, `name` TEXT, `leading` TEXT, `desc` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
@@ -114,11 +120,11 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Media` (`id` TEXT, `type` TEXT, `src` TEXT, `leading` TEXT, `msgid` TEXT, `text` TEXT, `onChannel` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `ChannelInput` (`id` TEXT, `upstreamPerson` TEXT, `toChannel` TEXT, `rights` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `ChannelPin` (`id` TEXT, `channel` TEXT, `inPersonSelector` TEXT, `outPersonSelector` TEXT, `outGeoSelector` TEXT, `outWechatPenYouSelector` TEXT, `outWechatHaoYouSelector` TEXT, `outContractSelector` TEXT, `inRights` TEXT, `outRights` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `ChannelOutput` (`id` TEXT, `geoSelector` TEXT, `wechatPenYouSelector` TEXT, `wechatHaoYouSelector` TEXT, `contractSelector` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `ChannelInputPerson` (`id` TEXT, `person` TEXT, `channel` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `ChannelOutputPerson` (`id` TEXT, `fromChannel` TEXT, `toPerson` TEXT, `rights` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `ChannelOutputPerson` (`id` TEXT, `channel` TEXT, `person` TEXT, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -175,6 +181,24 @@ class _$AppDatabase extends AppDatabase {
     return _channelCommentDAOInstance ??=
         _$IChannelCommentDAO(database, changeListener);
   }
+
+  @override
+  IChannelPinDAO get channelPinDAO {
+    return _channelPinDAOInstance ??=
+        _$IChannelPinDAO(database, changeListener);
+  }
+
+  @override
+  IChannelInputPersonDAO get channelInputPersonDAO {
+    return _channelInputPersonDAOInstance ??=
+        _$IChannelInputPersonDAO(database, changeListener);
+  }
+
+  @override
+  IChannelOutputPersonDAO get channelOutputPersonDAO {
+    return _channelOutputPersonDAOInstance ??=
+        _$IChannelOutputPersonDAO(database, changeListener);
+  }
 }
 
 class _$IPersonDAO extends IPersonDAO {
@@ -191,7 +215,9 @@ class _$IPersonDAO extends IPersonDAO {
                   'appid': item.appid,
                   'tenantid': item.tenantid,
                   'avatar': item.avatar,
-                  'rights': item.rights
+                  'rights': item.rights,
+                  'nickName': item.nickName,
+                  'signature': item.signature
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -208,7 +234,9 @@ class _$IPersonDAO extends IPersonDAO {
       row['appid'] as String,
       row['tenantid'] as String,
       row['avatar'] as String,
-      row['rights'] as String);
+      row['rights'] as String,
+      row['nickName'] as String,
+      row['signature'] as String);
 
   final InsertionAdapter<Person> _personInsertionAdapter;
 
@@ -903,4 +931,28 @@ class _$IChannelCommentDAO extends IChannelCommentDAO {
     await _channelCommentInsertionAdapter.insert(
         comment, sqflite.ConflictAlgorithm.abort);
   }
+}
+
+class _$IChannelPinDAO extends IChannelPinDAO {
+  _$IChannelPinDAO(this.database, this.changeListener);
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+}
+
+class _$IChannelInputPersonDAO extends IChannelInputPersonDAO {
+  _$IChannelInputPersonDAO(this.database, this.changeListener);
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+}
+
+class _$IChannelOutputPersonDAO extends IChannelOutputPersonDAO {
+  _$IChannelOutputPersonDAO(this.database, this.changeListener);
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
 }

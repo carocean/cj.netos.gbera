@@ -18,8 +18,8 @@ part 'database.g.dart';
   ChannelComment,
   LikePerson,
   Media,
-  ChannelInput,
-  ChannelOutput,
+  ChannelPin,
+  ChannelInputPerson,
   ChannelOutputPerson,
 ])
 abstract class AppDatabase extends FloorDatabase {
@@ -32,8 +32,18 @@ abstract class AppDatabase extends FloorDatabase {
   IChannelDAO get channelDAO;
 
   IInsiteMessageDAO get insiteMessageDAO;
+
   IChannelMessageDAO get channelMessageDAO;
+
   IChannelMediaDAO get channelMediaDAO;
+
   IChannelLikePersonDAO get channelLikeDAO;
+
   IChannelCommentDAO get channelCommentDAO;
+
+  IChannelPinDAO get channelPinDAO;
+
+  IChannelInputPersonDAO get channelInputPersonDAO;
+
+  IChannelOutputPersonDAO get channelOutputPersonDAO;
 }

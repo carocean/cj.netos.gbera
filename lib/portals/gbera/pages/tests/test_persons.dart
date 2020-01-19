@@ -63,6 +63,8 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
                       obj['tenantid'],
                       avatar,
                       obj['rights'],
+                      obj['nickName'],
+                      obj['signature'],
                     );
                     await personService.addPerson(person);
                     var objchs = obj['channels'];

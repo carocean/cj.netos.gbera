@@ -7,19 +7,35 @@
     "appid": "gbera",
     "tenantid": "netos",
     "avatar": "http://47.105.165.186:7100/public/avatar/24f8e8d3f423d40b5b390691fbbfb5d7.jpg",
+    "nickName": "赵向彬",
+    "signature":"是龙你盘着，是虎你卧着，是狗你轻点跟我得瑟",
+    "channels": [
+
+    ]
+  },
+  {
+    "id": "david@gbera.netos",
+    "uid": "0020011912411634",
+    "accountid": "0020011912411621",
+    "accountName": "david",
+    "appid": "gbera",
+    "tenantid": "netos",
+    "avatar": "http://47.105.165.186:7100/public/avatar/30b6dc2e7040fd5ce9d7d6a86625507a.jpg",
+    "nickName": "David",
+    "signature":"我的爱即使再廉价，也轮不到为你打折",
     "channels": [
       {
         "id": "91FA4506-7BDB-43D7-82D3-4DA78D9653E0",
         "name": "Java编程",
         "owner": "cj@gbera.netos",
-        "loopType": "openLoop",
+        "loopType": "closeLoop",
         "leading": "http://47.105.165.186:7100/public/avatar/timg.jpeg",
         "unreadMsgCount": 0
       },
       {
         "id": "0929122D-FB4A-4BC8-BF5E-510F254FCD15",
         "name": "Flutter交流",
-        "owner": "cj@gbera.netos",
+        "owner": "tom@gbera.netos",
         "loopType": "openLoop",
         "leading": "http://47.105.165.186:7100/public/avatar/1b010adb79a5ed5f9f83cb18d6d07209.jpg",
         "tips": "简书:>由于是第一次做flutter项目，加上团队小伙伴开发经验不是很足，在满足需求的同时",
@@ -34,7 +50,9 @@
     "accountName": "tom",
     "appid": "gbera",
     "tenantid": "netos",
-    "avatar": "http://47.105.165.186:7100/public/avatar/30b6dc2e7040fd5ce9d7d6a86625507a.jpg",
+    "avatar": "http://47.105.165.186:7100/public/avatar/340633c71cfa5ba2e17887e551b02363.jpeg",
+    "nickName": "陈桂娟",
+    "signature": "我是很会考虑别人感受的人，所以一般说话都不会让人难堪，如果哪次我说话让你不舒服了，别多想，我就是故意的",
     "channels": [
       {
         "id": "3FD24493-4BB4-43C6-A731-FF00375EDA9F",

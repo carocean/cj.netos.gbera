@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/parts/CardItem.dart';
 
-class PublicsSettings extends StatefulWidget {
+class SettingsMain extends StatefulWidget {
   PageContext context;
 
-  PublicsSettings({this.context});
+  SettingsMain({this.context});
 
   @override
-  _PublicsSettingsState createState() => _PublicsSettingsState();
+  _SettingsMainState createState() => _SettingsMainState();
 }
 
-class _PublicsSettingsState extends State<PublicsSettings> {
+class _SettingsMainState extends State<SettingsMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,10 +42,9 @@ class _PublicsSettingsState extends State<PublicsSettings> {
                   title: '公众',
                   onItemTap: () {
                     widget.context
-                        .forward('/netflow/channel/publics/list_for_up_activies');
+                        .forward('/netflow/channel/settings/persons');
                   },
                 ),
-
               ],
             ),
           ),
@@ -75,20 +74,6 @@ class _PublicsSettingsState extends State<PublicsSettings> {
           SliverToBoxAdapter(
             child: Container(
               height: 10,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: _Card(
-              items: <Widget>[
-                CardItem(
-                  title: '网关',
-                  tipsText: '用于拒收指定的公众或管道活动',
-                  onItemTap: () {
-                    widget.context
-                        .forward('/netflow/activities/gateway_settings');
-                  },
-                ),
-              ],
             ),
           ),
         ],

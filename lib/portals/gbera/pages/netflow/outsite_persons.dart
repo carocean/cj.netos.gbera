@@ -4,22 +4,35 @@ import 'package:flutter/rendering.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel.dart';
 import 'package:gbera/portals/gbera/parts/CardItem.dart';
+import 'package:gbera/portals/gbera/store/entities.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
+import 'package:uuid/uuid.dart';
 
-class InsitePublics extends StatefulWidget {
+class OutsitePersons extends StatefulWidget {
   PageContext context;
 
-  InsitePublics({this.context});
+  OutsitePersons({this.context});
 
   @override
-  _InsitePublicsState createState() => _InsitePublicsState();
+  _OutsitePersonsState createState() => _OutsitePersonsState();
 }
 
-class _InsitePublicsState extends State<InsitePublics> {
+class _OutsitePersonsState extends State<OutsitePersons> {
+  Channel _channel;
+  @override
+  void initState() {
+    super.initState();
+    _channel=widget.context.parameters['channel'];
+  }
+  @override
+  void dispose() {
+    this._channel=null;
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     var items = <CardItem>[];
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 1; i++) {
       items.add(
         CardItem(
           title: '精灵仔',
@@ -68,22 +81,12 @@ class _InsitePublicsState extends State<InsitePublics> {
                   ),
                   Text.rich(
                     TextSpan(
-                      text: '1200人',
+                      text: '${_channel.name}: ',
                       style: TextStyle(
                         color: Colors.grey[500],
                       ),
                       children: [
-                        TextSpan(text: '  '),
-                        TextSpan(
-                          text: '连结我',
-                          style: TextStyle(
-                            color: Colors.blueGrey,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          recognizer: TapGestureRecognizer()..onTap=(){
-                            print('----关注');
-                          },
-                        ),
+                        TextSpan(text: '${widget.context.userPrincipal.nickName??widget.context.userPrincipal.accountName}>'),
                       ],
                     ),
                   ),
@@ -104,7 +107,7 @@ class _InsitePublicsState extends State<InsitePublics> {
                         ),
                         color: Colors.white,
                         child: Dismissible(
-                          key: ObjectKey(v),
+                          key: ObjectKey(Uuid().v1()),
                           child: v,
                           confirmDismiss: (DismissDirection direction) async {
                             if (direction == DismissDirection.endToStart) {
@@ -206,52 +209,14 @@ class _InsitePublicsState extends State<InsitePublics> {
         if (value == null) return;
         var arguments = <String, Object>{};
         switch (value) {
-          case '/netflow/manager/create_channel':
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return SimpleDialog(
-                    title: Text('选择管道类型'),
-                    children: <Widget>[
-                      DialogItem(
-                        text: '开放管道',
-                        icon: Icons.invert_colors,
-                        color: Colors.grey[500],
-                        subtext: '管道动态及管道出入站联系人对他人可见',
-                        onPressed: () {
-                          widget.context
-                              .backward(result: <String, Object>{'type': '开放'});
-                        },
-                      ),
-                      DialogItem(
-                        text: '私有管道',
-                        icon: Icons.invert_colors_off,
-                        color: Colors.grey[500],
-                        subtext: '管道动态及管道出入站联系人对他人不可见',
-                        onPressed: () {
-                          widget.context
-                              .backward(result: <String, Object>{'type': '私有'});
-                        },
-                      ),
-                    ],
-                  );
-                }).then((v) {
-              print('xxxx-$v');
-              if (v == null) return;
-              widget.context.forward(value, arguments: v);
-            });
-            break;
-          case '/netflow/manager/scan_channel':
-            String cameraScanResult = await scanner.scan();
-            if (cameraScanResult == null) break;
-            arguments['qrcode'] = cameraScanResult;
-            widget.context.forward(value, arguments: arguments);
+          case '/netflow/channel/outsite/persons_settings':
+            widget.context.forward('/netflow/channel/outsite/persons_settings');
             break;
         }
       },
       itemBuilder: (context) => <PopupMenuEntry<String>>[
         PopupMenuItem(
-          value: '/netflow/manager/create_channel',
+          value: '/netflow/channel/outsite/persons_settings',
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -260,42 +225,13 @@ class _InsitePublicsState extends State<InsitePublics> {
                   right: 10,
                 ),
                 child: Icon(
-                  widget.context
-                      .findPage('/netflow/manager/create_channel')
-                      ?.icon,
+                  Icons.settings,
                   color: Colors.grey[500],
                   size: 15,
                 ),
               ),
               Text(
-                '从我的公众添加',
-                style: TextStyle(
-                  fontSize: 14,
-                ),
-              ),
-            ],
-          ),
-        ),
-        PopupMenuDivider(),
-        PopupMenuItem(
-          value: '/netflow/manager/scan_channel',
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(
-                  right: 10,
-                ),
-                child: Icon(
-                  widget.context
-                      .findPage('/netflow/manager/scan_channel')
-                      ?.icon,
-                  color: Colors.grey[500],
-                  size: 15,
-                ),
-              ),
-              Text(
-                '扫码以添加',
+                '出口权限',
                 style: TextStyle(
                   fontSize: 14,
                 ),

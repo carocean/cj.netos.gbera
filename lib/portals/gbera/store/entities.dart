@@ -11,9 +11,11 @@ class Person {
   final String tenantid;
   final String avatar;
   final String rights;
+  final String nickName;
+  final String signature;
 
   Person(this.id, this.uid, this.accountid, this.accountName, this.appid,
-      this.tenantid, this.avatar, this.rights);
+      this.tenantid, this.avatar, this.rights, this.nickName, this.signature);
 }
 
 @entity
@@ -121,7 +123,9 @@ class LikePerson {
   final int ctime;
   final String nickName;
   final String onChannel;
-  LikePerson(this.id, this.person, this.avatar, this.msgid, this.ctime,this.nickName,this.onChannel);
+
+  LikePerson(this.id, this.person, this.avatar, this.msgid, this.ctime,
+      this.nickName, this.onChannel);
 }
 
 @entity
@@ -135,8 +139,9 @@ class ChannelComment {
   final int ctime;
   final String nickName;
   final String onChannel;
-  ChannelComment(
-      this.id, this.person, this.avatar, this.msgid, this.text, this.ctime,this.nickName,this.onChannel);
+
+  ChannelComment(this.id, this.person, this.avatar, this.msgid, this.text,
+      this.ctime, this.nickName, this.onChannel);
 }
 
 @entity
@@ -149,40 +154,58 @@ class Media {
   final String msgid;
   final String text;
   final String onChannel;
-  Media(this.id, this.type, this.src, this.leading, this.msgid, this.text,this.onChannel);
+
+  Media(this.id, this.type, this.src, this.leading, this.msgid, this.text,
+      this.onChannel);
 }
 
 @entity
-class ChannelInput {
+class ChannelPin {
   @primaryKey
   final String id;
-  final String upstreamPerson;
-  final String toChannel;
-  final String rights;
+  final String channel;
+  final String inPersonSelector;
+  final String outPersonSelector;
+  final String outGeoSelector;
+  final String outWechatPenYouSelector;
+  final String outWechatHaoYouSelector;
+  final String outContractSelector;
+  final String inRights;
+  final String outRights;
 
-  ChannelInput(this.id, this.upstreamPerson, this.toChannel, this.rights);
+  ChannelPin(
+      {this.id,
+      this.channel,
+      this.inPersonSelector,
+      this.outPersonSelector,
+      this.outGeoSelector,
+      this.outWechatPenYouSelector,
+      this.outWechatHaoYouSelector,
+      this.outContractSelector,
+      this.inRights,
+      this.outRights});
 }
 
 @entity
-class ChannelOutput {
+class ChannelInputPerson {
   @primaryKey
   final String id;
-  final String geoSelector;
-  final String wechatPenYouSelector;
-  final String wechatHaoYouSelector;
-  final String contractSelector;
+  final String person;
+  final String channel;
 
-  ChannelOutput(this.id, this.geoSelector, this.wechatPenYouSelector,
-      this.wechatHaoYouSelector, this.contractSelector);
+  ChannelInputPerson(
+    this.id,
+    this.person,
+    this.channel,
+  );
 }
 
 @entity
 class ChannelOutputPerson {
   @primaryKey
   final String id;
-  final String fromChannel;
-  final String toPerson;
-  final String rights;
+  final String channel;
+  final String person;
 
-  ChannelOutputPerson(this.id, this.fromChannel, this.toPerson, this.rights);
+  ChannelOutputPerson(this.id, this.channel, this.person);
 }

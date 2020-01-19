@@ -1,9 +1,13 @@
+import 'dart:io';
+
 ///个人站点
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/gbera/store/entities.dart';
+import 'package:gbera/portals/gbera/store/services.dart';
 
 class PersonalSite extends StatefulWidget {
   PageContext context;
@@ -15,14 +19,8 @@ class PersonalSite extends StatefulWidget {
 }
 
 class _PersonalSiteState extends State<PersonalSite> {
-  _PersonalSiteState()
-      : _controller = ScrollController(initialScrollOffset: 0.0),
-        showOnAppbar = false {
-    _controller.addListener(_listener);
-  }
-
   _listener() {
-    if (_controller.offset >= 40) {
+    if (_controller.offset >= 1) {
       if (!showOnAppbar) {
         setState(() {
           showOnAppbar = true;
@@ -30,7 +28,7 @@ class _PersonalSiteState extends State<PersonalSite> {
       }
       return;
     }
-    if (_controller.offset < 40) {
+    if (_controller.offset < 1) {
       if (showOnAppbar) {
         setState(() {
           showOnAppbar = false;
@@ -40,14 +38,39 @@ class _PersonalSiteState extends State<PersonalSite> {
     }
   }
 
-  bool _check_showAssociationWithSuperior = false;
-
-  bool showOnAppbar;
+  bool showOnAppbar = false;
   var _controller;
-  bool _isFollowed = false;
+  Person _person;
+  List<Channel> _myChannels = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = ScrollController(initialScrollOffset: 0.0);
+    _controller.addListener(_listener);
+    _person = widget.context.parameters['person'];
+    _load();
+  }
+
+  @override
+  void dispose() {
+    this._myChannels.clear();
+    this.showOnAppbar = false;
+    this._person = null;
+    super.dispose();
+  }
+
+  _load() async {
+    IChannelService channelService =
+        widget.context.site.getService('/external/channels');
+    _myChannels = await channelService.getChannelsOfPerson(
+        '${_person.accountName}@${_person.appid}.${_person.tenantid}');
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
+    var personName = '${_person.nickName ?? _person.accountName}';
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -63,11 +86,108 @@ class _PersonalSiteState extends State<PersonalSite> {
             Icons.clear,
           ),
         ),
-        title: showOnAppbar ? Text('A-Winnie地空雷') : Text(''),
+        title: showOnAppbar ? Text(personName) : Text(''),
         actions: <Widget>[
           IconButton(
             onPressed: () {
-              widget.context.forward('/site/personal/profile');
+              showCupertinoModalPopup(
+                  context: context,
+                  builder: (ctx) {
+                    return CupertinoActionSheet(
+                      actions: <Widget>[
+                        CupertinoActionSheetAction(
+                          child: Text(
+                            '更多资料',
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 16,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(
+                              ctx,
+                              {'action': 'go_more'},
+                            );
+                          },
+                        ),
+                        CupertinoActionSheetAction(
+                          child: Text(
+                            '权限',
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 16,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(
+                              ctx,
+                              {'action': 'go_rights'},
+                            );
+                          },
+                        ),
+                        CupertinoActionSheetAction(
+                          child: Text(
+                            '发消息',
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 16,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(
+                              ctx,
+                              {'action': 'go_message'},
+                            );
+                          },
+                        ),
+                        CupertinoActionSheetAction(
+                          child: Text(
+                            '删除',
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 16,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(
+                              ctx,
+                              {'action': 'delete'},
+                            );
+                          },
+                        ),
+                      ],
+                      cancelButton: FlatButton(
+                        child: Text(
+                          '取消',
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 20,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(
+                            ctx,
+                            {'action': 'cancel'},
+                          );
+                        },
+                      ),
+                    );
+                  }).then((action) {
+                switch (action) {
+                  case 'go_message':
+                    break;
+                  case 'go_more':
+                    widget.context.forward('/site/personal/profile');
+                    break;
+                  case 'go_rights':
+                    break;
+                  case 'delete':
+                    break;
+                  case 'cancel':
+                    break;
+                }
+              });
+//
             },
             icon: Icon(
               FontAwesomeIcons.ellipsisH,
@@ -77,119 +197,16 @@ class _PersonalSiteState extends State<PersonalSite> {
         ],
       ),
       body: CustomScrollView(
-        shrinkWrap: true,
         controller: _controller,
         slivers: <Widget>[
           SliverToBoxAdapter(
             child: _Header(
-              imgSrc:
-                  'http://b-ssl.duitang.com/uploads/item/201708/24/20170824145045_ujMe5.jpeg',
-              avatar: 'A-Winnie地空雷',
-              uid: '008383827727366',
-              address: '广东 广州',
-              signText: '好的皮千遍一律，有趣的灵魂万里挑一',
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              height: 10,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              color: Colors.white,
-              child: Center(
-                child: FlatButton(
-                  child: Text(
-                    _isFollowed ? '不再关注' : '关注',
-                    style: TextStyle(
-                      color: Colors.blueGrey,
-                    ),
-                  ),
-                  onPressed: () {
-                    showCupertinoModalPopup(
-                        context: context,
-                        builder: (context) {
-                          return CupertinoActionSheet(
-                            actions: <Widget>[
-                              CupertinoActionSheetAction(
-                                onPressed: () {
-                                  widget.context.backward(
-                                      result: <String, Object>{
-                                        'action': 'all_channel'
-                                      });
-                                },
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                    right: 5,
-                                  ),
-                                  child: Text.rich(
-                                    TextSpan(
-                                      text: '关注他所有管道活动',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                      ),
-                                      children: [
-                                        TextSpan(text: '\r\n'),
-                                        TextSpan(
-                                          text: '可以有选择的关注其管道活动->取消此对话框进入他的管道',
-                                          style: TextStyle(
-                                            fontSize: 10,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              CupertinoActionSheetAction(
-                                onPressed: () {
-                                  widget.context.backward();
-                                },
-                                isDestructiveAction: true,
-                                child: Text('取消'),
-                              ),
-                            ],
-                          );
-                        }).then((v) {
-                      if (v == null) {
-                        return;
-                      }
-                      switch (v['action']) {
-                        case 'all_channel':
-                          setState(() {
-                            _isFollowed = !_isFollowed;
-                          });
-                          break;
-                      }
-                    });
-                  },
-                ),
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              height: 10,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: _OperatorCard(
-              operators: [
-                _Operator(
-                  text: '发私信',
-                  iconData: Icons.chat,
-                ),
-                _Operator(
-                  text: '拍照',
-                  iconData: Icons.camera_enhance,
-                ),
-                _Operator(
-                  text: '发图片',
-                  iconData: Icons.picture_in_picture,
-                ),
-              ],
+              imgSrc: _person.avatar,
+              title: personName,
+              uid: '${_person.uid}',
+              person:
+                  '${_person.accountName}@${_person.appid}.${_person.tenantid}',
+              signText: '${_person.signature ?? ''}',
             ),
           ),
           SliverToBoxAdapter(
@@ -222,7 +239,7 @@ class _PersonalSiteState extends State<PersonalSite> {
                     'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
                     'http://cdn.duitang.com/uploads/item/201606/14/20160614002619_WfLXj.jpeg',
                   ],
-                  onTap: (){
+                  onTap: () {
                     widget.context.forward('/site/marchant');
                   },
                 ),
@@ -231,7 +248,7 @@ class _PersonalSiteState extends State<PersonalSite> {
                   images: [
                     'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
                   ],
-                  onTap: (){
+                  onTap: () {
                     widget.context.forward('/site/marchant');
                   },
                 ),
@@ -254,35 +271,8 @@ class _PersonalSiteState extends State<PersonalSite> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(
-                      right: 10,
-                    ),
-                    child: FilterChip(
-                      elevation: 0,
-                      avatar: !_check_showAssociationWithSuperior
-                          ? Icon(
-                              FontAwesomeIcons.filter,
-                              size: 14,
-                              color: Colors.grey[700],
-                            )
-                          : null,
-                      label: Text(''),
-                      padding: EdgeInsets.all(0),
-                      labelPadding: EdgeInsets.all(0),
-                      pressElevation: 0,
-                      tooltip: '选上可以看仅与上级用户相关的管道，即仅为当前用户管道的进口公众里包含上级用户的才列出',
-                      selected: _check_showAssociationWithSuperior,
-                      onSelected: (v) {
-                        setState(() {
-                          _check_showAssociationWithSuperior =
-                              !_check_showAssociationWithSuperior;
-                        });
-                      },
-                    ),
-                  ),
                   Text(
-                    _check_showAssociationWithSuperior ? '仅看与你相关的管道' : '全部管道',
+                    '管道',
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
@@ -293,33 +283,75 @@ class _PersonalSiteState extends State<PersonalSite> {
             ),
           ),
           SliverToBoxAdapter(
-            child: _Body(
-              channelItems: [
-                _ChannelItemInfo(
-                  title: '豫江南',
-                  onTap: () {
-                    widget.context.forward('/channel/viewer',arguments: <String,Object>{'title':'豫江南'});
-                  },
-                ),
-                _ChannelItemInfo(
-                  title: '熟人圈',
-                  onTap: () {
-                    widget.context.forward('/channel/viewer',arguments: <String,Object>{'title':'熟人圈'});
-                  },
-                ),
-                _ChannelItemInfo(
-                  title: '地推',
-                  onTap: () {
-                    widget.context.forward('/channel/viewer',arguments: <String,Object>{'title':'地推'});
-                  },
-                ),
-                _ChannelItemInfo(
-                  title: '中山大学社区',
-                  onTap: () {
-                    widget.context.forward('/channel/viewer',arguments: <String,Object>{'title':'中山大学社区'});
-                  },
-                ),
-              ],
+            child: Container(
+              color: Colors.white,
+              child: ListView(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                children: <Widget>[
+                  Container(
+                    child: _Body(
+                      channelItems: [
+                        _ChannelItemInfo(
+                          title: '全部管道',
+                          onTap: () {},
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text.rich(
+                          TextSpan(
+                            text: '已加管道',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: _myChannels.isEmpty
+                                    ? '(无)'
+                                    : '(${_myChannels.length}个)',
+                                style: TextStyle(
+                                  color: Colors.grey[400],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    padding: EdgeInsets.only(
+                      left: 20,
+                      top: 20,
+                      bottom: 20,
+                      right: 20,
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(
+                      left: 30,
+                    ),
+                    child: _Body(
+                      channelItems: _myChannels.map((channel) {
+                        return _ChannelItemInfo(
+                          title: '${channel.name}',
+                          leading: channel.leading,
+                          onTap: () {
+                            widget.context.forward('/netflow/portal/channel',
+                                arguments: <String, Object>{
+                                  'channel': channel
+                                });
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -413,12 +445,19 @@ class __OperatorCardState extends State<_OperatorCard> {
 
 class _Header extends StatefulWidget {
   String imgSrc;
-  String avatar;
+  String title;
   String uid;
+  String person;
   String address;
   String signText;
 
-  _Header({this.imgSrc, this.uid, this.address, this.signText, this.avatar});
+  _Header(
+      {this.imgSrc,
+      this.uid,
+      this.person,
+      this.address,
+      this.signText,
+      this.title});
 
   @override
   __HeaderState createState() => __HeaderState();
@@ -442,7 +481,7 @@ class __HeaderState extends State<_Header> {
           Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Container(
                 padding: EdgeInsets.only(
@@ -452,10 +491,10 @@ class __HeaderState extends State<_Header> {
                   borderRadius: BorderRadius.all(
                     Radius.circular(6),
                   ),
-                  child: Image.network(
-                    widget.imgSrc,
-                    width: 60,
-                    height: 60,
+                  child: Image.file(
+                    File(widget.imgSrc),
+                    width: 80,
+                    height: 80,
                     fit: BoxFit.fitWidth,
                   ),
                 ),
@@ -469,7 +508,7 @@ class __HeaderState extends State<_Header> {
                         bottom: 5,
                       ),
                       child: Text(
-                        widget.avatar,
+                        widget.title,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -500,52 +539,46 @@ class __HeaderState extends State<_Header> {
                       ),
                       child: Text.rich(
                         TextSpan(
-                          text: '地区: ',
+                          text: '公号: ',
                           style: TextStyle(
                             color: Colors.grey,
                           ),
                           children: [
-                            TextSpan(text: widget.address),
+                            TextSpan(
+                              text: widget.person,
+                            ),
                           ],
                         ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        bottom: 5,
+                      ),
+                      child: Text.rich(
+                        TextSpan(
+                          text: '',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: widget.signText == null
+                                  ? ''
+                                  : "${widget.signText}",
+                            ),
+                          ],
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
                 ),
               ),
             ],
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              top: 20,
-              bottom: 12,
-            ),
-            child: Divider(
-              height: 1,
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(
-              bottom: 5,
-            ),
-            child: Text.rich(
-              TextSpan(
-                text: '个性签名:  ',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
-                ),
-                children: [
-                  TextSpan(
-                    text: widget.signText == null ? '' : "${widget.signText}",
-                  ),
-                ],
-              ),
-              maxLines: 2,
-              textDirection: TextDirection.rtl,
-              overflow: TextOverflow.ellipsis,
-            ),
           ),
         ],
       ),
@@ -554,14 +587,15 @@ class __HeaderState extends State<_Header> {
 }
 
 class _ChannelItemInfo {
+  String leading;
   String title;
   List images;
   Function() onTap;
 
-  _ChannelItemInfo({this.title, this.images, this.onTap}){
-   if(this.images==null) {
-     this.images=[];
-   }
+  _ChannelItemInfo({this.title, this.leading, this.images, this.onTap}) {
+    if (this.images == null) {
+      this.images = [];
+    }
   }
 }
 
@@ -589,6 +623,7 @@ class __BodyState extends State<_Body> {
                 _ChannelItem(
                   title: value.title,
                   images: value.images,
+                  avatar: value.leading,
                 ),
                 Divider(
                   height: 1,
@@ -606,10 +641,11 @@ class __BodyState extends State<_Body> {
 class _ChannelItem extends StatefulWidget {
   List images = [];
   String title;
-
+  String avatar;
   _ChannelItem({
     this.title = '',
     this.images,
+    this.avatar,
   });
 
   @override
@@ -629,6 +665,22 @@ class __ChannelItemState extends State<_ChannelItem> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
+          StringUtil.isEmpty(widget.avatar)
+              ? Container(
+                  width: 0,
+                  height: 0,
+                )
+              : Container(
+                  padding: EdgeInsets.only(
+                    right: 10,
+                  ),
+                  child: Image.file(
+                    File(widget.avatar),
+                    fit: BoxFit.fitWidth,
+                    height: 30,
+                    width: 30,
+                  ),
+                ),
           Container(
             padding: EdgeInsets.only(
               right: 10,

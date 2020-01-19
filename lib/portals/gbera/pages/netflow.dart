@@ -107,7 +107,7 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
-                    widget.context.forward('/netflow/manager/publics',
+                    widget.context.forward('/netflow/manager/settings',
                         arguments: {'title': '公众活动'});
                   },
                   child: Row(

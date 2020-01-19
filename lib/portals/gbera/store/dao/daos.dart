@@ -233,3 +233,15 @@ abstract class IChannelCommentDAO {
   Future<void> removeCommentBy(String channelid) ;
 
 }
+@dao
+abstract class IChannelPinDAO {
+
+}
+@dao
+abstract class IChannelOutputPersonDAO {
+
+}
+@dao
+abstract class IChannelInputPersonDAO {
+
+}

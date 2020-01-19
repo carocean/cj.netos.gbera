@@ -329,6 +329,7 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var _channel=this.context.parameters['channel'];
     return Container(
       alignment: Alignment.bottomLeft,
       padding: EdgeInsets.only(
@@ -346,7 +347,7 @@ class _Header extends StatelessWidget {
             behavior: HitTestBehavior.opaque,
             onTap: () {
               this.context.forward('/netflow/manager/channel_gateway',
-                  arguments: {'title': '公共'});
+                  arguments: <String,dynamic>{'channel': _channel});
             },
             child: Padding(
               padding: EdgeInsets.only(

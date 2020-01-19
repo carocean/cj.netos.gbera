@@ -104,7 +104,7 @@ class _ChannelViewerState extends State<ChannelViewer> {
                   title: '公众',
                   tipsText: '1200人',
                   onTap: () {
-                    widget.context.forward('/netflow/channel/insite/publics');
+                    widget.context.forward('/netflow/channel/insite/persons');
                   },
                 ),
               ],
@@ -123,7 +123,7 @@ class _ChannelViewerState extends State<ChannelViewer> {
                   title: '公众',
                   tipsText: '246.32万个',
                   onTap: () {
-                    widget.context.forward('/netflow/channel/outsite/publics');
+                    widget.context.forward('/netflow/channel/outsite/persons');
                   },
                 ),
               ],

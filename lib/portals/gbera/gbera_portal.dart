@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/icons.dart';
 import 'package:gbera/portals/gbera/errors/errors.dart';
-import 'package:gbera/portals/gbera/pages/contact/contact_list.dart';
 import 'package:gbera/portals/gbera/pages/desktop.dart';
 import 'package:gbera/portals/gbera/pages/desktop/desklets_settings.dart';
 import 'package:gbera/portals/gbera/pages/desktop/desktop_settings.dart';
@@ -40,11 +39,12 @@ import 'package:gbera/portals/gbera/pages/netflow/channel_qrcode.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_rename.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channels_of_user.dart';
 import 'package:gbera/portals/gbera/pages/netflow/create_channel.dart';
-import 'package:gbera/portals/gbera/pages/netflow/insite_publics.dart';
-import 'package:gbera/portals/gbera/pages/netflow/outsite_publics.dart';
+import 'package:gbera/portals/gbera/pages/netflow/insite_persons.dart';
+import 'package:gbera/portals/gbera/pages/netflow/outsite_persons.dart';
 import 'package:gbera/portals/gbera/pages/netflow/insite_messages.dart';
-import 'package:gbera/portals/gbera/pages/netflow/publics_for_messages.dart';
-import 'package:gbera/portals/gbera/pages/netflow/publics_settings.dart';
+import 'package:gbera/portals/gbera/pages/netflow/outsite_persons_settings.dart';
+import 'package:gbera/portals/gbera/pages/netflow/settings_persons.dart';
+import 'package:gbera/portals/gbera/pages/netflow/settings_main.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publish_article.dart';
 import 'package:gbera/portals/gbera/pages/netflow/scan_channel.dart';
 import 'package:gbera/portals/gbera/pages/netflow/search_channel.dart';
@@ -99,7 +99,6 @@ import 'package:gbera/portals/gbera/store/services/persons.dart';
 import 'desklets/desklets.dart';
 import 'login.dart';
 import 'login2.dart';
-import 'pages/contact/contacts_viewer.dart';
 import 'pages/desktop/wallpappers.dart';
 import 'pages/system/gbera_settings.dart';
 import 'pages/users/account_viewer.dart';
@@ -411,8 +410,8 @@ class GberaPortal {
           title: '活动设置',
           subtitle: '',
           icon: Icons.settings_input_composite,
-          url: '/netflow/manager/publics',
-          buildPage: (PageContext pageContext) => PublicsSettings(
+          url: '/netflow/manager/settings',
+          buildPage: (PageContext pageContext) => SettingsMain(
             context: pageContext,
           ),
         ),
@@ -420,8 +419,8 @@ class GberaPortal {
           title: '管道进口公众',
           subtitle: '覆盖我的管道的公众管道、查看他人的管道都是此页面，以权限控制显示',
           icon: Icons.settings_input_composite,
-          url: '/netflow/channel/insite/publics',
-          buildPage: (PageContext pageContext) => InsitePublics(
+          url: '/netflow/channel/insite/persons',
+          buildPage: (PageContext pageContext) => InsitePersons(
             context: pageContext,
           ),
         ),
@@ -429,8 +428,8 @@ class GberaPortal {
           title: '管道出口公众',
           subtitle: '覆盖我的管道的公众管道、查看他人的管道都是此页面，以权限控制显示',
           icon: Icons.settings_input_composite,
-          url: '/netflow/channel/outsite/publics',
-          buildPage: (PageContext pageContext) => OutsitePublics(
+          url: '/netflow/channel/outsite/persons',
+          buildPage: (PageContext pageContext) => OutsitePersons(
             context: pageContext,
           ),
         ),
@@ -438,12 +437,11 @@ class GberaPortal {
           title: '公众',
           subtitle: '',
           icon: Icons.settings_input_composite,
-          url: '/netflow/channel/publics/list_for_up_activies',
-          buildPage: (PageContext pageContext) => PublicsForMessages(
+          url: '/netflow/channel/settings/persons',
+          buildPage: (PageContext pageContext) => SettingsPersons(
             context: pageContext,
           ),
         ),
-
         Page(
           title: '公众活动',
           subtitle: '',
@@ -548,6 +546,16 @@ class GberaPortal {
           icon: Icons.art_track,
           url: '/netflow/activies/channels',
           buildPage: (PageContext pageContext) => ActivitiesChannels(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '出口公众权限设置',
+          subtitle: '',
+          desc: '',
+          icon: Icons.art_track,
+          url: '/netflow/channel/outsite/persons_settings',
+          buildPage: (PageContext pageContext) => OutsitePersonsSettings(
             context: pageContext,
           ),
         ),
@@ -1043,24 +1051,7 @@ class GberaPortal {
             context: pageContext,
           ),
         ),
-        Page(
-          title: '公众',
-          subtitle: '',
-          icon: FontAwesomeIcons.addressBook,
-          url: '/contact/list',
-          buildPage: (PageContext pageContext) => ContactList(
-            context: pageContext,
-          ),
-        ),
-        Page(
-          title: '联系人信息',
-          subtitle: '',
-          icon: GalleryIcons.shrine,
-          url: '/contact/viewer',
-          buildPage: (PageContext pageContext) => ContactsViewer(
-            context: pageContext,
-          ),
-        ),
+
         Page(
           title: '栏目列表',
           subtitle: '',

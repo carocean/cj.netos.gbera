@@ -228,163 +228,23 @@ class Profile extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          //联系人
-          Container(
-            padding: EdgeInsets.only(
-              top: 15,
-              bottom: 15,
-            ),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                this.context.forward('/contact/list');
-              },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: 10,
-                    ),
-                    child: Icon(
-                      this.context.findPage('/contact/list').icon,
-                      size: 30,
-                      color:
-                          this.context.style('/profile/list/item-icon.color'),
-                    ),
-                  ),
-                  Expanded(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          this.context.findPage('/contact/list').title,
-                          style: this
-                              .context
-                              .style('/profile/list/item-title.text'),
-                        ),
-                        Icon(
-                          Icons.keyboard_arrow_right,
-                          size: 20,
-                          color: Colors.grey[400],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Divider(
-            height: 1,
-            indent: 40,
-          ),
-          Container(
-            padding: EdgeInsets.only(
-              top: 15,
-              bottom: 15,
-            ),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-//                this.context.forward('/contact/list');
-              },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: 10,
-                    ),
-                    child: Icon(
-                      this.context.findPage('/contact/list').icon,
-                      size: 30,
-                      color:
-                      this.context.style('/profile/list/item-icon.color'),
-                    ),
-                  ),
-                  Expanded(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          '微站',
-                          style: this
-                              .context
-                              .style('/profile/list/item-title.text'),
-                        ),
-                        Icon(
-                          Icons.keyboard_arrow_right,
-                          size: 20,
-                          color: Colors.grey[400],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Divider(
-            height: 1,
-            indent: 40,
-          ),
-          //安全与隐私
-          Container(
-            padding: EdgeInsets.only(
-              top: 15,
-              bottom: 15,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: 10,
-                  ),
-                  child: Icon(
-                    Icons.security,
-                    size: 30,
-                    color: this.context.style('/profile/list/item-icon.color'),
-                  ),
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        '安全与隐私',
-                        style:
-                            this.context.style('/profile/list/item-title.text'),
-                      ),
-                      Icon(
-                        Icons.keyboard_arrow_right,
-                        size: 20,
-                        color: Colors.grey[400],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Divider(
-            height: 1,
-            indent: 40,
-          ),
-          //安全与隐私
+
+        ],
+      ),
+    );
+    //设置
+    var card_3 = Container(
+      color: Colors.white,
+      padding: EdgeInsets.only(
+        left: 10,
+        right: 10,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          //桌面设置
           Container(
             padding: EdgeInsets.only(
               top: 15,
@@ -408,7 +268,7 @@ class Profile extends StatelessWidget {
                       this.context.findPage('/users/list')?.icon,
                       size: 30,
                       color:
-                          this.context.style('/profile/list/item-icon.color'),
+                      this.context.style('/profile/list/item-icon.color'),
                     ),
                   ),
                   Expanded(
@@ -435,22 +295,12 @@ class Profile extends StatelessWidget {
               ),
             ),
           ),
-        ],
-      ),
-    );
-    //设置
-    var card_3 = Container(
-      color: Colors.white,
-      padding: EdgeInsets.only(
-        left: 10,
-        right: 10,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          //桌面设置
+          Divider(
+            height: 1,
+            indent: 40,
+          ),
+          //安全与隐私
+
           GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
