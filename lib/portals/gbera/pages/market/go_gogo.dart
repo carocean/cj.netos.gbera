@@ -2234,7 +2234,7 @@ class _GoupCardState extends State<_GoupCard> {
   Widget build(BuildContext context) {
     var medias=<Media>[];
     for(var img in widget.merchandise.images){
-      medias.add(Media(null,'image',img,null,null,null));
+      medias.add(Media(null,'image',img,null,null,null,null));
     }
     return Column(
       children: <Widget>[

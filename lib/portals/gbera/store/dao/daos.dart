@@ -147,6 +147,9 @@ abstract class IChannelMessageDAO {
 
   @Query('delete FROM ChannelMessage')
   Future<void> empty();
+
+  @Query('delete FROM ChannelMessage where onChannel=:channelid')
+  Future<void> removeMessagesBy(String channelid) {}
 }
 
 @dao
@@ -168,6 +171,9 @@ abstract class IChannelMediaDAO {
 
   @Query('SELECT * FROM Media WHERE msgid = :msgid')
   Future<List<Media>> getMediaByMsgId(String msgid);
+
+  @Query('SELECT * FROM Media WHERE onChannel = :channelid')
+  Future<List<Media>> getMediaByChannelId(String channelid) ;
 }
 
 @dao
@@ -197,6 +203,9 @@ abstract class IChannelLikePersonDAO {
       'SELECT *  FROM LikePerson WHERE msgid=:msgid  LIMIT :pageSize OFFSET  :offset')
   Future<List<LikePerson>> pageLikePersonBy(
       String msgid, int pageSize, int offset);
+  @Query('delete FROM LikePerson WHERE onChannel = :channelid')
+  Future<void>  removeLikePersonByChannel(String channelid) ;
+
 }
 
 @dao
@@ -220,4 +229,7 @@ abstract class IChannelCommentDAO {
       'SELECT *  FROM ChannelComment WHERE msgid=:msgid  LIMIT :pageSize OFFSET  :offset')
   Future<List<ChannelComment>> pageLikeCommentBy(
       String msgid, int pageSize, int offset) {}
+  @Query('delete FROM ChannelComment WHERE onChannel = :channelid')
+  Future<void> removeCommentBy(String channelid) ;
+
 }

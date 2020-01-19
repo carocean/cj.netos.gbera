@@ -31,17 +31,6 @@ class ChannelMessageService implements IChannelMessageService {
     List<Media> medias = await mediaService.getMedias(id);
     for (var m in medias) {
       mediaService.remove(m.id);
-      if (StringUtil.isEmpty(m.src)) {
-        continue;
-      }
-      var f = File(m.src);
-      if (f.existsSync()) {
-        try {
-          f.deleteSync();
-        }catch(e){
-          print('$e');
-        }
-      }
     }
     List<ChannelComment> comments =
         await commentService.pageComments(id, 100000000, 0);
@@ -53,6 +42,16 @@ class ChannelMessageService implements IChannelMessageService {
     for (var m in likes) {
       await likeService.remove(m.id);
     }
+  }
+
+  @override
+  Future<Function> emptyBy(String channelid) async{
+    //还要清除掉媒体文件
+    await mediaService.removeBy(channelid);
+    await likeService.removeBy(channelid);
+    await commentService.removeBy(channelid);
+    await channelMessageDAO.removeMessagesBy(channelid);
+
   }
 
   @override

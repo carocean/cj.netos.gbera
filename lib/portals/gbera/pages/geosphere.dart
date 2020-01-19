@@ -654,9 +654,9 @@ class __MessageCardState extends State<_MessageCard> {
   @override
   Widget build(BuildContext context) {
     var images = [
-      Media(null,'image','https://img12.360buyimg.com/n1/jfs/t1/64956/8/15150/216341/5dcbfa37Ec377dabf/b37dc8a39696eadb.jpg',null,null,null),
-      Media(null,'image','https://img12.360buyimg.com/n1/jfs/t30010/114/1514509429/178688/f90faa12/5ce22d74N5a7de92f.jpg',null,null,null),
-      Media(null,'image','https://img14.360buyimg.com/n5/s75x75_jfs/t21145/102/253959384/30146/76597635/5b07771aNbbad67a3.jpg',null,null,null),
+      Media(null,'image','https://img12.360buyimg.com/n1/jfs/t1/64956/8/15150/216341/5dcbfa37Ec377dabf/b37dc8a39696eadb.jpg',null,null,null,null),
+      Media(null,'image','https://img12.360buyimg.com/n1/jfs/t30010/114/1514509429/178688/f90faa12/5ce22d74N5a7de92f.jpg',null,null,null,null),
+      Media(null,'image','https://img14.360buyimg.com/n5/s75x75_jfs/t21145/102/253959384/30146/76597635/5b07771aNbbad67a3.jpg',null,null,null,null),
     ];
     return Card(
       shape: Border(),

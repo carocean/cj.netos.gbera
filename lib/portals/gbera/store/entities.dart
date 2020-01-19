@@ -120,7 +120,8 @@ class LikePerson {
   final String msgid;
   final int ctime;
   final String nickName;
-  LikePerson(this.id, this.person, this.avatar, this.msgid, this.ctime,this.nickName);
+  final String onChannel;
+  LikePerson(this.id, this.person, this.avatar, this.msgid, this.ctime,this.nickName,this.onChannel);
 }
 
 @entity
@@ -133,8 +134,9 @@ class ChannelComment {
   final String text;
   final int ctime;
   final String nickName;
+  final String onChannel;
   ChannelComment(
-      this.id, this.person, this.avatar, this.msgid, this.text, this.ctime,this.nickName,);
+      this.id, this.person, this.avatar, this.msgid, this.text, this.ctime,this.nickName,this.onChannel);
 }
 
 @entity
@@ -146,8 +148,8 @@ class Media {
   final String leading;
   final String msgid;
   final String text;
-
-  Media(this.id, this.type, this.src, this.leading, this.msgid, this.text);
+  final String onChannel;
+  Media(this.id, this.type, this.src, this.leading, this.msgid, this.text,this.onChannel);
 }
 
 @entity

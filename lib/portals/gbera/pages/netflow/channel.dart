@@ -839,6 +839,7 @@ class __MessageOperatesPopupMenuState extends State<_MessageOperatesPopupMenu> {
       DateTime.now().millisecondsSinceEpoch,
       widget.context.userPrincipal.nickName ??
           widget.context.userPrincipal.accountName,
+      widget.message.onChannel,
     );
     await likeService.like(likePerson);
   }
@@ -1222,7 +1223,7 @@ class __InteractiveRegionState extends State<_InteractiveRegion> {
                         ),
                       ],
                     ),
-              likePersons.isEmpty
+              likePersons.isEmpty||comments.isEmpty
                   ? Container(
                       width: 0,
                       height: 3,
@@ -1263,6 +1264,7 @@ class __InteractiveRegionState extends State<_InteractiveRegion> {
         DateTime.now().millisecondsSinceEpoch,
         widget.context.userPrincipal.nickName ??
             widget.context.userPrincipal.accountName,
+        widget.message.onChannel,
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:extended_text_field/extended_text_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
@@ -32,7 +33,7 @@ class _CreateChannelState extends State<CreateChannel> {
 
   @override
   Widget build(BuildContext context) {
-    var _globalKey=GlobalKey<ScaffoldState>();
+    var _globalKey = GlobalKey<ScaffoldState>();
     return Scaffold(
       key: _globalKey,
       appBar: AppBar(
@@ -84,8 +85,9 @@ class _CreateChannelState extends State<CreateChannel> {
                 0,
               );
               await channelService.addChannel(channel);
-              var refreshChannels=widget.context.parameters['refreshChannels'];
-              if(refreshChannels!=null){
+              var refreshChannels =
+                  widget.context.parameters['refreshChannels'];
+              if (refreshChannels != null) {
                 await refreshChannels();
               }
               widget.context.backward();

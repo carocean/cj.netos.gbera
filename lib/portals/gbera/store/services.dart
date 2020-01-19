@@ -18,7 +18,9 @@ mixin IPersonService {
 }
 mixin IChannelService {
   Future<void> init(UserPrincipal user);
-
+  bool isSystemChannel(channelid);
+  String getSystemChannel(String channelid);
+  Iterable<String> listSystemChannel();
   Future<void> empty();
 
   Future<void> emptyOfPerson(String personid);
@@ -36,6 +38,9 @@ mixin IChannelService {
   Future<List<Channel>> getAllChannel();
 
   Future<void> updateLeading(String path, String channelid);
+
+  Future<void>  remove(String channelid) ;
+
 }
 mixin IInsiteMessageService {
   Future<void> empty();
@@ -65,6 +70,9 @@ mixin IChannelMessageService {
   Future<List<ChannelMessage>> getAllMessage();
 
   Future<void> removeMessage(String id);
+
+  Future<void>  emptyBy(String channelid) ;
+
 }
 mixin IChannelMediaService {
   Future<void> addMedia(Media media);
@@ -72,6 +80,8 @@ mixin IChannelMediaService {
   Future<List<Media>> getMedias(String msgid);
 
   Future<void> remove(String id) ;
+
+  Future<void> removeBy(String channelid) ;
 
 }
 
@@ -86,6 +96,9 @@ mixin IChannelLikeService {
       String msgid, int pageSize, int offset);
 
   Future<void> remove(String id) ;
+
+  Future<void> removeBy(String channelid) {}
+  
 }
 
 mixin IChannelCommentService {
@@ -95,6 +108,9 @@ mixin IChannelCommentService {
   Future<void> addComment(ChannelComment channelComment);
 
   Future<void> removeComment(String id) ;
+
+  Future<void> removeBy(String channelid) {}
+
 
 
 }

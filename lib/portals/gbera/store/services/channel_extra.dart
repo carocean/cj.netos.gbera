@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/store/dao/daos.dart';
 import 'package:gbera/portals/gbera/store/dao/database.dart';
@@ -16,8 +18,36 @@ class ChannelMediaService implements IChannelMediaService {
   }
 
   @override
-  Future<Function> remove(String id) async {
+  Future<void> remove(String id) async {
+    var m = await channelMediaDAO.getMedia(id);
+    if (m == null) {
+      return;
+    }
+    _deleteFile(m);
     await channelMediaDAO.removeMedia(id);
+  }
+
+  _deleteFile(media) {
+    if (StringUtil.isEmpty(media.src)) {
+      return;
+    }
+    var f = File(media.src);
+    if (f.existsSync()) {
+      try {
+        f.deleteSync();
+      } catch (e) {
+        print('$e');
+      }
+    }
+  }
+
+  @override
+  Future<Function> removeBy(String channelid) async {
+    var list =await getMediasBy(channelid);
+    for (var m in list) {
+      _deleteFile(m);
+    }
+    await channelMediaDAO.removeMedia(channelid);
   }
 
   @override
@@ -29,6 +59,11 @@ class ChannelMediaService implements IChannelMediaService {
   Future<List<Media>> getMedias(String messageid) async {
     return await channelMediaDAO.getMediaByMsgId(messageid);
   }
+  @override
+  Future<List<Media>> getMediasBy(String channelid)async {
+    return await channelMediaDAO.getMediaByChannelId(channelid);
+  }
+
 }
 
 class ChannelLikeService implements IChannelLikeService {
@@ -39,6 +74,11 @@ class ChannelLikeService implements IChannelLikeService {
       AppDatabase db = site.database;
       channelLikeDAO = db.channelLikeDAO;
     });
+  }
+
+  @override
+  Future<Function> removeBy(String channelid) async{
+   await channelLikeDAO.removeLikePersonByChannel(channelid);
   }
 
   @override
@@ -77,6 +117,12 @@ class ChannelCommentService implements IChannelCommentService {
       AppDatabase db = site.database;
       channelCommentDAO = db.channelCommentDAO;
     });
+  }
+
+  @override
+  Future<Function> removeBy(String channelid) async{
+    await channelCommentDAO.removeCommentBy(channelid);
+
   }
 
   @override

@@ -12,6 +12,7 @@ import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel.dart';
 import 'package:gbera/portals/gbera/store/entities.dart';
 import 'package:gbera/portals/gbera/store/services.dart';
+import 'package:uuid/uuid.dart';
 
 import '../parts/headers.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
@@ -27,7 +28,7 @@ class Netflow extends StatefulWidget {
   _NetflowState createState() => _NetflowState();
 }
 
-class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin{
+class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
   var _controller;
   var _backgroud_transparent = true;
   bool use_wallpapper = false;
@@ -351,6 +352,8 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin{
 
       items.add(
         _ChannelItem(
+          context: widget.context,
+          id: ch.id,
           title: ch.name,
           subtitle: '$newest',
           showNewest: !StringUtil.isEmpty(tips),
@@ -386,6 +389,7 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin{
               arguments: {'channel': ch},
             );
           },
+          isSystemChannel: channelService.isSystemChannel(ch.id),
         ),
       );
     }
@@ -782,6 +786,8 @@ class _MessagesRegionState extends State<_MessagesRegion> {
 }
 
 class _ChannelItem extends StatelessWidget {
+  PageContext context;
+  String id;
   String leading;
   String title;
   String who;
@@ -792,8 +798,11 @@ class _ChannelItem extends StatelessWidget {
   int unreadMsgCount;
   var openAvatar;
   var openChannel;
+  bool isSystemChannel;
 
   _ChannelItem({
+    this.context,
+    this.id,
     this.leading,
     this.title,
     this.who,
@@ -804,6 +813,7 @@ class _ChannelItem extends StatelessWidget {
     this.showNewest,
     this.openAvatar,
     this.openChannel,
+    this.isSystemChannel,
   });
 
   @override
@@ -832,7 +842,7 @@ class _ChannelItem extends StatelessWidget {
         height: 40,
       );
     }
-    return Container(
+    var item = Container(
       decoration: new BoxDecoration(
         color: Colors.white,
       ),
@@ -989,5 +999,151 @@ class _ChannelItem extends StatelessWidget {
         ],
       ),
     );
+    if (this.isSystemChannel) {
+      return Dismissible(
+        key: Key('key_${Uuid().v1()}'),
+        child: item,
+        direction: DismissDirection.endToStart,
+        confirmDismiss: (DismissDirection direction) async {
+          if (direction == DismissDirection.endToStart) {
+            return await showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    content: Text('不能删除系统管道！'),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text(
+                          '取消',
+                          style: TextStyle(
+                            color: Colors.black87,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context, 'cancel');
+                        },
+                      )
+                    ],
+                  ),
+                ) ==
+                'cancel';
+          }
+          return false;
+        },
+        secondaryBackground: Container(
+          alignment: Alignment.centerRight,
+          margin: EdgeInsets.only(
+            right: 10,
+          ),
+          child: Icon(
+            Icons.delete_sweep,
+            size: 16,
+          ),
+        ),
+        background: Container(),
+        onDismissed: (direction) {
+          if (direction != DismissDirection.endToStart) {
+            return;
+          }
+        },
+      );
+    }
+    return Dismissible(
+      key: Key('key_${Uuid().v1()}'),
+      child: item,
+      direction: DismissDirection.endToStart,
+      confirmDismiss: (DismissDirection direction) async {
+        if (direction == DismissDirection.endToStart) {
+          return await _showConfirmationDialog(context) == 'yes';
+        }
+        return false;
+      },
+      secondaryBackground: Container(
+        alignment: Alignment.centerRight,
+        margin: EdgeInsets.only(
+          right: 10,
+        ),
+        child: Icon(
+          Icons.delete_sweep,
+          size: 16,
+        ),
+      ),
+      background: Container(),
+      onDismissed: (direction) {
+        switch (direction) {
+          case DismissDirection.endToStart:
+            print('---------do deleted');
+            _deleteChannel(this.id);
+            break;
+          case DismissDirection.vertical:
+            // TODO: Handle this case.
+            break;
+          case DismissDirection.horizontal:
+            // TODO: Handle this case.
+            break;
+          case DismissDirection.startToEnd:
+            // TODO: Handle this case.
+            break;
+          case DismissDirection.up:
+            // TODO: Handle this case.
+            break;
+          case DismissDirection.down:
+            // TODO: Handle this case.
+            break;
+        }
+      },
+    );
+  }
+
+  Future<String> _showConfirmationDialog(BuildContext context) {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text.rich(
+          TextSpan(
+            text: '是否删除该管道？',
+            children: [
+              TextSpan(text: '\r\n'),
+              TextSpan(
+                text: '删除管道同时会删除管道内数据！',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: const Text(
+              '取消',
+              style: TextStyle(
+                color: Colors.black87,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context, 'no');
+            },
+          ),
+          FlatButton(
+            child: const Text(
+              '确定',
+              style: TextStyle(
+                color: Colors.black87,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context, 'yes');
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  _deleteChannel(String channelid) async {
+    IChannelService channelService =
+        this.context.site.getService('/external/channels');
+    await channelService.remove(channelid);
   }
 }

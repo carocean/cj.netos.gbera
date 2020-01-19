@@ -90,15 +90,15 @@ class _PublishArticleState extends State<PublishArticle> {
                 ),
               );
               for (MediaFile file in images) {
-                var type='image';
-                switch(file.type) {
+                var type = 'image';
+                switch (file.type) {
                   case MediaFileType.image:
                     break;
                   case MediaFileType.video:
-                    type='video';
+                    type = 'video';
                     break;
                   case MediaFileType.audio:
-                    type='audio';
+                    type = 'audio';
                     break;
                 }
                 await channelMediaService.addMedia(
@@ -109,6 +109,7 @@ class _PublishArticleState extends State<PublishArticle> {
                     null,
                     msgid,
                     null,
+                    _channel.id,
                   ),
                 );
               }
@@ -543,14 +544,14 @@ class _MediaShowerState extends State<_MediaShower> {
   }
 
   _MediaShowerState(initialMediaFile) {
-    if (initialMediaFile != null&&initialMediaFile.src!=null) {
+    if (initialMediaFile != null && initialMediaFile.src != null) {
       files.add(initialMediaFile);
     }
   }
 
   //type:image|video|audio
   addImage(MediaFile _media) {
-    if(_media==null||_media.src==null) {
+    if (_media == null || _media.src == null) {
       return;
     }
     setState(() {

@@ -8,17 +8,35 @@ import '../entities.dart';
 
 class ChannelService implements IChannelService {
   ///固定地推id，全平台一致
-  static String _GEO_CHANNEL_ID = '4203EC25-1FC8-479D-A78F-74338FC7E769';
+  static Map<String, String> _SYSTEM_CHANNELS = {
+    'geo_channel': '4203EC25-1FC8-479D-A78F-74338FC7E769'
+  };
   IChannelDAO channelDAO;
+  IChannelMessageService messageService;
 
   ChannelService({ServiceSite site}) {
     site.onready.add(() {
       AppDatabase db = site.database;
       channelDAO = db.channelDAO;
+      messageService = site.getService('/channel/messages');
     });
   }
   @override
+   bool isSystemChannel(channelid) {
+    return _SYSTEM_CHANNELS.containsValue(channelid);
+  }
+  @override
+   String getSystemChannel(String channelid) {
+    return _SYSTEM_CHANNELS[channelid];
+  }
+  @override
+   Iterable<String> listSystemChannel() {
+    return _SYSTEM_CHANNELS.values;
+  }
+
+  @override
   Future<void> init(UserPrincipal user) async {
+    var _GEO_CHANNEL_ID=_SYSTEM_CHANNELS['geo_channel'];
     if (await channelDAO.getChannel(_GEO_CHANNEL_ID) == null) {
       await channelDAO.addChannel(
         Channel(
@@ -37,8 +55,8 @@ class ChannelService implements IChannelService {
   }
 
   @override
-  Future<void> updateLeading(String path,String channelid) async{
-    await this.channelDAO.updateLeading(path,channelid);
+  Future<void> updateLeading(String path, String channelid) async {
+    await this.channelDAO.updateLeading(path, channelid);
   }
 
   @override
@@ -59,6 +77,12 @@ class ChannelService implements IChannelService {
   @override
   Future<void> addChannel(Channel channel) async {
     await this.channelDAO.addChannel(channel);
+  }
+
+  @override
+  Future<Function> remove(String channelid) async {
+    await messageService.emptyBy(channelid);
+    await channelDAO.removeChannel(channelid);
   }
 
   @override
