@@ -44,9 +44,9 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
                 onPressed: () async {
                   List<dynamic> persons = json.decode(_jsonText.text);
                   IPersonService personService =
-                      widget.context.site.getService('/upstream/persons');
+                      widget.context.site.getService('/gbera/persons');
                   IChannelService channelService =
-                      widget.context.site.getService('/external/channels');
+                      widget.context.site.getService('/netflow/channels');
                   Dio dio = widget.context.site.getService('@.http');
                   await personService.empty();
                   for (var obj in persons) {

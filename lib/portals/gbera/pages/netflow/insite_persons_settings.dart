@@ -8,17 +8,17 @@ import 'package:gbera/portals/gbera/store/entities.dart';
 import 'package:gbera/portals/gbera/store/services.dart';
 import 'package:uuid/uuid.dart';
 
-class OutsitePersonsSettings extends StatefulWidget {
+class InsitePersonsSettings extends StatefulWidget {
   PageContext context;
 
-  OutsitePersonsSettings({this.context});
+  InsitePersonsSettings({this.context});
 
   @override
-  _OutsitePersonsSettingsState createState() => _OutsitePersonsSettingsState();
+  _InsitePersonsSettingsState createState() => _InsitePersonsSettingsState();
 }
 
-class _OutsitePersonsSettingsState extends State<OutsitePersonsSettings> {
-  PinPersonsSettingsStrategy _selected_outsite_persons_strategy;
+class _InsitePersonsSettingsState extends State<InsitePersonsSettings> {
+  PinPersonsSettingsStrategy _selected_insite_persons_strategy;
   Channel _channel;
   IChannelPinService _pinService;
   int _persons_limit = 20;
@@ -27,8 +27,7 @@ class _OutsitePersonsSettingsState extends State<OutsitePersonsSettings> {
 
   @override
   void initState() {
-    _selected_outsite_persons_strategy =
-        PinPersonsSettingsStrategy.all_except;
+    _selected_insite_persons_strategy = PinPersonsSettingsStrategy.all_except;
     _channel = widget.context.parameters['channel'];
     _pinService = widget.context.site.getService('/channel/pin');
     _load();
@@ -37,24 +36,24 @@ class _OutsitePersonsSettingsState extends State<OutsitePersonsSettings> {
 
   @override
   void dispose() {
-    _selected_outsite_persons_strategy = null;
+    _selected_insite_persons_strategy = null;
     _channel = null;
     _persons_offset = 0;
     super.dispose();
   }
 
   _load() async {
-    _selected_outsite_persons_strategy =
-        await _pinService.getOutputPersonSelector(_channel.id);
-    List<ChannelOutputPerson> outputPersons =
-        await _pinService.listOutputPerson(_channel.id);
+    _selected_insite_persons_strategy =
+        await _pinService.getInputPersonSelector(_channel.id);
+    List<ChannelInputPerson> inputPersons =
+        await _pinService.listInputPerson(_channel.id);
     var personList = <String>[];
-    for (ChannelOutputPerson p in outputPersons) {
+    for (var p in inputPersons) {
       personList.add(p.person);
     }
     IPersonService personService =
         widget.context.site.getService('/gbera/persons');
-    switch (_selected_outsite_persons_strategy) {
+    switch (_selected_insite_persons_strategy) {
       case PinPersonsSettingsStrategy.only_select:
         //求剩余未被选择的公众
         var personObjs = await personService.pagePersonWithout(
@@ -99,75 +98,19 @@ class _OutsitePersonsSettingsState extends State<OutsitePersonsSettings> {
         children: <Widget>[
           Container(
             padding: EdgeInsets.only(
-              top: 15,
-              bottom: 15,
+              left: 15,
+              right: 15,
+              top: 10,
+              bottom: 2,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                GestureDetector(
-                  onTap: () async {
-                    _selected_outsite_persons_strategy =
-                        PinPersonsSettingsStrategy.all_except;
-                    await _pinService.setOutputPersonSelector(
-                        _channel.id, _selected_outsite_persons_strategy);
-                    _persons_offset = 0;
-                    await _reloadPersons();
-                  },
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        '所有公众除了',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: Radio(
-                          value: PinPersonsSettingsStrategy.all_except,
-                          groupValue: _selected_outsite_persons_strategy,
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    _selected_outsite_persons_strategy =
-                        PinPersonsSettingsStrategy.only_select;
-                    await _pinService.setOutputPersonSelector(
-                        _channel.id, _selected_outsite_persons_strategy);
-                    _persons_offset = 0;
-                    await _reloadPersons();
-                  },
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        '仅限选定的公众',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: Radio(
-                          value: PinPersonsSettingsStrategy.only_select,
-                          groupValue: _selected_outsite_persons_strategy,
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+            alignment: Alignment.centerLeft,
+            child: Text(
+              '拒绝从以下公众接收信息',
+              style: TextStyle(
+                color: Colors.grey[500],
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
           Card(
@@ -185,7 +128,7 @@ class _OutsitePersonsSettingsState extends State<OutsitePersonsSettings> {
                       ),
                     ),
                   )
-                : _selected_outsite_persons_strategy ==
+                : _selected_insite_persons_strategy ==
                         PinPersonsSettingsStrategy.only_select
                     ? SwipeRefreshLayout(
                         onSwipeDown: _onSwipeDown,
@@ -213,7 +156,7 @@ class _OutsitePersonsSettingsState extends State<OutsitePersonsSettings> {
         }
         return _SelectPerson(
           person: p,
-          selected_outsite_persons_strategy: _selected_outsite_persons_strategy,
+          selected_insite_persons_strategy: _selected_insite_persons_strategy,
           pageContext: widget.context,
           channel: _channel,
           isBottomPerson: index >= _persons.length,
@@ -227,12 +170,12 @@ class _SelectPerson extends StatefulWidget {
   Person person;
   PageContext pageContext;
   Channel channel;
-  PinPersonsSettingsStrategy selected_outsite_persons_strategy;
+  PinPersonsSettingsStrategy selected_insite_persons_strategy;
   bool isBottomPerson;
 
   _SelectPerson({
     this.person,
-    this.selected_outsite_persons_strategy,
+    this.selected_insite_persons_strategy,
     this.pageContext,
     this.channel,
     this.isBottomPerson,
@@ -290,7 +233,7 @@ class __SelectPersonState extends State<_SelectPerson> {
   }
 
   _getIcon() {
-    switch (widget.selected_outsite_persons_strategy) {
+    switch (widget.selected_insite_persons_strategy) {
       case PinPersonsSettingsStrategy.only_select:
         return _is_seleted
             ? Icon(Icons.check)
@@ -318,16 +261,14 @@ class __SelectPersonState extends State<_SelectPerson> {
     var isSeleted = _is_seleted;
     var personFullName =
         '${widget.person.accountName}@${widget.person.appid}.${widget.person.tenantid}';
-    switch (widget.selected_outsite_persons_strategy) {
+    switch (widget.selected_insite_persons_strategy) {
       case PinPersonsSettingsStrategy.only_select:
         if (isSeleted) {
           //从输出公众表中移除
-          await pinService.removeOutputPerson(
-              personFullName, widget.channel.id);
+          await pinService.removeInputPerson(personFullName, widget.channel.id);
         } else {
-          //添加到输出公众表
-          await pinService.addOutputPerson(
-            ChannelOutputPerson(
+          await pinService.addInputPerson(
+            ChannelInputPerson(
               '${Uuid().v1()}',
               widget.channel.id,
               personFullName,
@@ -337,16 +278,15 @@ class __SelectPersonState extends State<_SelectPerson> {
         break;
       case PinPersonsSettingsStrategy.all_except:
         if (isSeleted) {
-          await pinService.addOutputPerson(
-            ChannelOutputPerson(
+          await pinService.addInputPerson(
+            ChannelInputPerson(
               '${Uuid().v1()}',
               widget.channel.id,
               personFullName,
             ),
           );
         } else {
-          await pinService.removeOutputPerson(
-              personFullName, widget.channel.id);
+          await pinService.removeInputPerson(personFullName, widget.channel.id);
         }
         break;
     }

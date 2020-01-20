@@ -29,12 +29,14 @@ class _ChannelPageState extends State<ChannelPage> {
   List<ChannelMessage> pageMessages;
   int limit = 15, offset = 0;
   GlobalKey<_ChannelPageState> _scaffoldKey;
+  Channel _channel;
 
   //这是防止flutterBuilder重绘引起的页面状态无保持，致返回到列表页时总是在滚到顶
   Future<List<ChannelMessage>> _onloadFuture;
 
   @override
   void initState() {
+    _channel = widget.context.parameters['channel'];
     _scaffoldKey = GlobalKey<_ChannelPageState>();
     pageMessages = <ChannelMessage>[];
     _onloadFuture = _onload();
@@ -43,21 +45,29 @@ class _ChannelPageState extends State<ChannelPage> {
 
   @override
   void dispose() {
+    _channel = null;
     _scaffoldKey = null;
     pageMessages.clear();
     super.dispose();
   }
 
+  _reloadChannel()async {
+    IChannelService channelService =
+    widget.context.site.getService('/netflow/channels');
+    _channel =await channelService.getChannel(_channel.id);
+    setState(() {
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    Channel channel = widget.context.parameters['channel'];
-
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          channel?.name,
+          _channel?.name,
         ),
         titleSpacing: 0,
         elevation: 0,
@@ -69,7 +79,7 @@ class _ChannelPageState extends State<ChannelPage> {
               widget.context.forward('/netflow/channel/publish_article',
                   arguments: <String, dynamic>{
                     'type': 'text',
-                    'channel': channel,
+                    'channel': _channel,
                     'refreshMessages': _refreshMessages
                   });
             },
@@ -113,7 +123,7 @@ class _ChannelPageState extends State<ChannelPage> {
                 ).then<void>((value) {
                   // The value passed to Navigator.pop() or null.
                   if (value != null) {
-                    value['channel'] = channel;
+                    value['channel'] = _channel;
                     value['refreshMessages'] = _refreshMessages;
                     widget.context.forward('/netflow/channel/publish_article',
                         arguments: value);
@@ -150,6 +160,9 @@ class _ChannelPageState extends State<ChannelPage> {
             SliverToBoxAdapter(
               child: _Header(
                 context: widget.context,
+                refresh: () {
+                  _reloadChannel();
+                },
               ),
             ),
           ];
@@ -174,7 +187,7 @@ class _ChannelPageState extends State<ChannelPage> {
                 child: _MessageCard(
                   context: widget.context,
                   message: msg,
-                  channel: channel,
+                  channel: _channel,
                   onDeleted: (msg) {
                     snapshot.data.remove(msg);
                     setState(() {});
@@ -324,12 +337,16 @@ class DialogItem extends StatelessWidget {
 
 class _Header extends StatelessWidget {
   PageContext context;
+  Function() refresh;
 
-  _Header({this.context});
+  _Header({
+    this.context,
+    this.refresh,
+  });
 
   @override
   Widget build(BuildContext context) {
-    var _channel=this.context.parameters['channel'];
+    var _channel = this.context.parameters['channel'];
     return Container(
       alignment: Alignment.bottomLeft,
       padding: EdgeInsets.only(
@@ -347,7 +364,11 @@ class _Header extends StatelessWidget {
             behavior: HitTestBehavior.opaque,
             onTap: () {
               this.context.forward('/netflow/manager/channel_gateway',
-                  arguments: <String,dynamic>{'channel': _channel});
+                  arguments: <String, dynamic>{'channel': _channel}).then((v) {
+                if (this.refresh != null) {
+                  this.refresh();
+                }
+              });
             },
             child: Padding(
               padding: EdgeInsets.only(
@@ -546,7 +567,7 @@ class __MessageCardState extends State<_MessageCard> {
                               arguments: {
                                 'media': media,
                                 'others': snapshot.data,
-                                'autoPlay':true,
+                                'autoPlay': true,
                               },
                             );
                           },
@@ -607,7 +628,7 @@ class __MessageCardState extends State<_MessageCard> {
                                           recognizer: TapGestureRecognizer()
                                             ..onTap = () {
                                               widget.context
-                                                  .forward("/site/personal");
+                                                  .forward("/site/personal",arguments: {'person':snapshot.data,});
                                             },
                                         ),
                                       ],
@@ -661,7 +682,7 @@ class __MessageCardState extends State<_MessageCard> {
 
   Future<Person> _getPerson() async {
     IPersonService personService =
-        widget.context.site.getService('/upstream/persons');
+        widget.context.site.getService('/gbera/persons');
     var person = '';
     if (!StringUtil.isEmpty(widget.message.upstreamPerson)) {
       person = widget.message.upstreamPerson;
@@ -1085,7 +1106,8 @@ class __InteractiveRegionState extends State<_InteractiveRegion> {
         }
         var comments = snapshot.data['comments'];
         var likePersons = snapshot.data['likePersons'];
-        bool isHide = comments.isEmpty && likePersons.isEmpty&&!_isShowCommentEditor;
+        bool isHide =
+            comments.isEmpty && likePersons.isEmpty && !_isShowCommentEditor;
         if (isHide) {
           return Container(
             width: 0,
@@ -1104,8 +1126,10 @@ class __InteractiveRegionState extends State<_InteractiveRegion> {
               TextSpan(
                 text: '${comment.nickName ?? ''}:',
                 recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    widget.context.forward("/site/personal");
+                  ..onTap = () async{
+                    IPersonService personService=widget.context.site.getService('/gbera/persons');
+                    var person=await personService.getPersonFullName(comment.person);
+                    widget.context.forward("/site/personal",arguments: {'person':person});
                   },
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
@@ -1201,8 +1225,10 @@ class __InteractiveRegionState extends State<_InteractiveRegion> {
                                     decoration: TextDecoration.underline,
                                   ),
                                   recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      widget.context.forward("/site/personal");
+                                    ..onTap = () async{
+                                      IPersonService personService=widget.context.site.getService('/gbera/persons');
+                                      var person=await personService.getPersonFullName(like.person);
+                                      widget.context.forward("/site/personal",arguments: {'person':person});
                                     },
                                   children: [
                                     TextSpan(
@@ -1224,7 +1250,7 @@ class __InteractiveRegionState extends State<_InteractiveRegion> {
                         ),
                       ],
                     ),
-              likePersons.isEmpty||comments.isEmpty
+              likePersons.isEmpty || comments.isEmpty
                   ? Container(
                       width: 0,
                       height: 3,

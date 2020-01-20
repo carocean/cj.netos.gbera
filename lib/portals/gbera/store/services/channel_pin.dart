@@ -37,6 +37,11 @@ class ChannelPinService implements IChannelPinService {
   }
 
   @override
+  Future<List<ChannelInputPerson>> listInputPerson(String channelid) async{
+    return await this.inputPersonDAO.listInputPerson(channelid);
+  }
+
+  @override
   Future<Function> removeOutputPerson(String person, String channelid) async {
     await this.outputPersonDAO.removeOutputPerson(person, channelid);
   }
@@ -84,13 +89,13 @@ class ChannelPinService implements IChannelPinService {
 
   @override
   Future<Function> setOutputPersonSelector(String channelid,
-      OutsitePersonsSettingStrategy outsitePersonsSettingStrategy) async {
+      PinPersonsSettingsStrategy outsitePersonsSettingStrategy) async {
     var selector;
     switch (outsitePersonsSettingStrategy) {
-      case OutsitePersonsSettingStrategy.only_select:
+      case PinPersonsSettingsStrategy.only_select:
         selector = 'only_select';
         break;
-      case OutsitePersonsSettingStrategy.all_except:
+      case PinPersonsSettingsStrategy.all_except:
         selector = 'all_except';
         break;
     }
@@ -114,29 +119,29 @@ class ChannelPinService implements IChannelPinService {
   }
 
   @override
-  Future<OutsitePersonsSettingStrategy> getOutputPersonSelector(
+  Future<PinPersonsSettingsStrategy> getOutputPersonSelector(
       String channelid) async {
     ChannelPin pin = await channelPinDAO.getChannelPin(channelid);
     if (pin == null) {
-      return OutsitePersonsSettingStrategy.all_except;
+      return PinPersonsSettingsStrategy.all_except;
     }
     if (StringUtil.isEmpty(pin.outPersonSelector)) {
-      return OutsitePersonsSettingStrategy.all_except;
+      return PinPersonsSettingsStrategy.all_except;
     }
     switch (pin.outPersonSelector) {
       case 'all_except':
-        return OutsitePersonsSettingStrategy.all_except;
+        return PinPersonsSettingsStrategy.all_except;
       case 'only_select':
-        return OutsitePersonsSettingStrategy.only_select;
+        return PinPersonsSettingsStrategy.only_select;
     }
-    return OutsitePersonsSettingStrategy.all_except;
+    return PinPersonsSettingsStrategy.all_except;
   }
 
   @override
-  Future<OutsitePersonsSettingStrategy> getInputPersonSelector(
+  Future<PinPersonsSettingsStrategy> getInputPersonSelector(
       String channelid) async {
     // 输入用户选择策略永远是从指定管道的输入端的所有用户中排除
-    return OutsitePersonsSettingStrategy.all_except;
+    return PinPersonsSettingsStrategy.all_except;
   }
 
   @override

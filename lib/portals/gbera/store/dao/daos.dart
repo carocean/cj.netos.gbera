@@ -30,13 +30,15 @@ abstract class IPersonDAO {
   Future<List<Person>> pagePersonWithout(
       List<String> ids, int persons_limit, int persons_offset);
 
-  @Query(
-      "SELECT *  FROM Person where id IN (:ids)")
+  @Query("SELECT *  FROM Person where id IN (:ids)")
   Future<List<Person>> listPersonWith(List<String> ids);
 
   @Query(
       'SELECT * FROM Person WHERE accountName = :accountName and appid=:appid and tenantid=:tenantid LIMIT 1 OFFSET 0')
   Future<Person> findPerson(String accountName, String appid, String tenantid);
+
+  @Query('SELECT * FROM Person WHERE uid = :uid LIMIT 1 OFFSET 0')
+  Future<Person> getPersonByUID(String uid) {}
 }
 
 @dao
@@ -70,6 +72,9 @@ abstract class IChannelDAO {
 
   @Query('UPDATE Channel SET leading = :path WHERE id = :channelid')
   Future<void> updateLeading(String path, String channelid);
+
+  @Query('UPDATE Channel SET name = :name WHERE id = :channelid')
+  Future<void> updateName(String name, String channelid);
 }
 
 @dao
@@ -287,10 +292,9 @@ abstract class IChannelOutputPersonDAO {
   @Query(
       'select * FROM ChannelOutputPerson WHERE person=:person AND channel = :channelid LIMIT 1 OFFSET 0')
   Future<ChannelOutputPerson> getOutputPerson(String person, String channelid);
-  @Query(
-      'delete FROM ChannelOutputPerson WHERE channel = :channelid')
-  Future<void> emptyOutputPersons(String channelid) ;
 
+  @Query('delete FROM ChannelOutputPerson WHERE channel = :channelid')
+  Future<void> emptyOutputPersons(String channelid);
 }
 
 @dao
@@ -310,4 +314,7 @@ abstract class IChannelInputPersonDAO {
   @Query(
       'select * FROM ChannelInputPerson WHERE person=:person AND channel = :channelid LIMIT 1 OFFSET 0')
   Future<ChannelInputPerson> getInputPerson(String person, String channelid);
+
+  @Query('SELECT *  FROM ChannelInputPerson WHERE channel=:channelid')
+  Future<List<ChannelInputPerson>> listInputPerson(String channelid) {}
 }

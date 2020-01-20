@@ -16,9 +16,15 @@ mixin IPersonService {
 
   Future<int> count();
 
-  Future<List<Person>> pagePersonWithout(List<String> personList, int persons_limit, int persons_offset) ;
+  Future<List<Person>> pagePersonWithout(
+      List<String> personList, int persons_limit, int persons_offset);
 
-  Future<List<Person>> listPersonWith(List<String> personList) ;
+  Future<List<Person>> listPersonWith(List<String> personList);
+
+  Future<Person> getPersonByUID(String uid) ;
+
+  Future<Person> getPersonFullName(String person);
+
 
 }
 mixin IChannelService {
@@ -49,6 +55,9 @@ mixin IChannelService {
   Future<void> updateLeading(String path, String channelid);
 
   Future<void> remove(String channelid);
+
+  Future<void> updateName(String channelid,String name) ;
+
 }
 mixin IInsiteMessageService {
   Future<void> empty();
@@ -119,13 +128,12 @@ mixin IChannelCommentService {
 mixin IChannelPinService {
   Future<void> init(String channelid);
 
-  Future<OutsitePersonsSettingStrategy> getInputPersonSelector(
-      String channelid);
-  Future<OutsitePersonsSettingStrategy> getOutputPersonSelector(
-      String channelid);
+  Future<PinPersonsSettingsStrategy> getInputPersonSelector(String channelid);
+
+  Future<PinPersonsSettingsStrategy> getOutputPersonSelector(String channelid);
 
   Future<void> setOutputPersonSelector(String channelid,
-      OutsitePersonsSettingStrategy outsitePersonsSettingStrategy);
+      PinPersonsSettingsStrategy outsitePersonsSettingStrategy);
 
   Future<bool> getOutputGeoSelector(String channelid);
 
@@ -149,12 +157,11 @@ mixin IChannelPinService {
   Future<List<ChannelOutputPerson>> pageOutputPerson(
       String channelid, int limit, int offset);
 
-  Future<void>removePin(String channelid) ;
+  Future<void> removePin(String channelid);
 
-  Future<List<ChannelOutputPerson>> listOutputPerson(String channelid) ;
+  Future<List<ChannelOutputPerson>> listOutputPerson(String channelid);
 
-  Future<void> emptyOutputPersons(String channelid) ;
+  Future<List<ChannelInputPerson>> listInputPerson(String channelid);
 
-
-
+  Future<void> emptyOutputPersons(String channelid);
 }

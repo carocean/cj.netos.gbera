@@ -8,7 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/store/entities.dart';
 import 'package:gbera/portals/gbera/store/services.dart';
-Function() _resetPersons;
+
 class PersonalSite extends StatefulWidget {
   PageContext context;
 
@@ -42,17 +42,15 @@ class _PersonalSiteState extends State<PersonalSite> {
   var _controller;
   Person _person;
   List<Channel> _myChannels = [];
-
+  var _personName='';
   @override
   void initState() {
-    _resetPersons=widget.context.parameters['resetPersons'];
-    super.initState();
     _controller = ScrollController(initialScrollOffset: 0.0);
     _controller.addListener(_listener);
     _person = widget.context.parameters['person'];
     _load();
+    super.initState();
   }
-
   @override
   void dispose() {
     this._myChannels.clear();
@@ -62,16 +60,26 @@ class _PersonalSiteState extends State<PersonalSite> {
   }
 
   _load() async {
+    if(_person==null) {
+     await _test();
+    }
+    _personName = '${_person.nickName ?? _person.accountName}';
     IChannelService channelService =
-        widget.context.site.getService('/external/channels');
+        widget.context.site.getService('/netflow/channels');
     _myChannels = await channelService.getChannelsOfPerson(
-        '${_person.accountName}@${_person.appid}.${_person.tenantid}');
+        _personName);
+
     setState(() {});
   }
-
+  //用于测试，随时删除
+  Future<void> _test()async{
+    IPersonService personService =
+    widget.context.site.getService('/gbera/persons');
+    _person=await personService.getPersonByUID('0020011912411634');
+  }
   @override
   Widget build(BuildContext context) {
-    var personName = '${_person.nickName ?? _person.accountName}';
+
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -81,16 +89,13 @@ class _PersonalSiteState extends State<PersonalSite> {
         backgroundColor: Colors.white,
         leading: IconButton(
           onPressed: () {
-            if(_resetPersons!=null) {
-              _resetPersons();
-            }
             widget.context.backward();
           },
           icon: Icon(
             Icons.clear,
           ),
         ),
-        title: showOnAppbar ? Text(personName) : Text(''),
+        title: showOnAppbar ? Text(_personName) : Text(''),
         actions: <Widget>[
           IconButton(
             onPressed: () {
@@ -205,12 +210,12 @@ class _PersonalSiteState extends State<PersonalSite> {
         slivers: <Widget>[
           SliverToBoxAdapter(
             child: _Header(
-              imgSrc: _person.avatar,
-              title: personName,
-              uid: '${_person.uid}',
+              imgSrc: _person?.avatar,
+              title: _personName,
+              uid: '${_person?.uid}',
               person:
-                  '${_person.accountName}@${_person.appid}.${_person.tenantid}',
-              signText: '${_person.signature ?? ''}',
+                  _personName,
+              signText: '${_person?.signature ?? ''}',
             ),
           ),
           SliverToBoxAdapter(
@@ -495,7 +500,7 @@ class __HeaderState extends State<_Header> {
                   borderRadius: BorderRadius.all(
                     Radius.circular(6),
                   ),
-                  child: Image.file(
+                  child: widget.imgSrc==null?Container(width: 0,height: 0,): Image.file(
                     File(widget.imgSrc),
                     width: 80,
                     height: 80,
@@ -646,6 +651,7 @@ class _ChannelItem extends StatefulWidget {
   List images = [];
   String title;
   String avatar;
+
   _ChannelItem({
     this.title = '',
     this.images,

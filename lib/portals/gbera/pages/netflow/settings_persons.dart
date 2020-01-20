@@ -117,7 +117,7 @@ class _SettingsPersonsState extends State<SettingsPersons> {
 
   Future<int> _onLoadPersonCount() async {
     IPersonService personService =
-        widget.context.site.getService('/upstream/persons');
+        widget.context.site.getService('/gbera/persons');
     int count = await personService.count();
     return count;
   }
@@ -127,7 +127,7 @@ class _SettingsPersonsState extends State<SettingsPersons> {
       return;
     }
     IPersonService personService =
-        widget.context.site.getService('/upstream/persons');
+        widget.context.site.getService('/gbera/persons');
     List<Person> persons = await personService.pagePerson(limit, offset);
     if (persons.length == 0) {
       return;

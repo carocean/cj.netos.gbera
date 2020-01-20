@@ -22,7 +22,7 @@ class OutsitePersons extends StatefulWidget {
 class _OutsitePersonsState extends State<OutsitePersons> {
   Channel _channel;
 
-  OutsitePersonsSettingStrategy _strategy;
+  PinPersonsSettingsStrategy _strategy;
   int _limit = 20;
   int _offset = 0;
   List<Person> _persons = [];
@@ -116,22 +116,22 @@ class _OutsitePersonsState extends State<OutsitePersons> {
                   );
                 }
                 switch (_strategy) {
-                  case OutsitePersonsSettingStrategy.only_select:
+                  case PinPersonsSettingsStrategy.only_select:
                     return _PersonListRegion(
                       context: widget.context,
                       persons: snapshot.data,
-                      resetPersons:resetPersons,
+                      resetPersons: resetPersons,
                       outsitePersonsSettingStrategy: _strategy,
                       channel: _channel,
                     );
-                  case OutsitePersonsSettingStrategy.all_except:
+                  case PinPersonsSettingsStrategy.all_except:
                     return SwipeRefreshLayout(
                       onSwipeDown: _onSwipeDown,
                       onSwipeUp: _onSwipeUp,
                       child: _PersonListRegion(
                         context: widget.context,
                         persons: snapshot.data,
-                        resetPersons:resetPersons,
+                        resetPersons: resetPersons,
                         outsitePersonsSettingStrategy: _strategy,
                         channel: _channel,
                       ),
@@ -149,10 +149,12 @@ class _OutsitePersonsState extends State<OutsitePersons> {
       ),
     );
   }
-  resetPersons(){
+
+  resetPersons() {
     _persons.clear();
-    _offset=0;
+    _offset = 0;
   }
+
   Future<void> _onSwipeDown() async {}
 
   Future<void> _onSwipeUp() async {
@@ -164,15 +166,15 @@ class _OutsitePersonsState extends State<OutsitePersons> {
     IChannelPinService pinService =
         widget.context.site.getService('/channel/pin');
     IChannelService channelService =
-        widget.context.site.getService('/external/channels');
+        widget.context.site.getService('/netflow/channels');
     IPersonService personService =
-        widget.context.site.getService('/upstream/persons');
-    OutsitePersonsSettingStrategy strategy =
+        widget.context.site.getService('/gbera/persons');
+    PinPersonsSettingsStrategy strategy =
         await pinService.getOutputPersonSelector(_channel.id);
     this._strategy = strategy;
     List<Person> personObjs;
     switch (strategy) {
-      case OutsitePersonsSettingStrategy.only_select:
+      case PinPersonsSettingsStrategy.only_select:
         var out_persons = await pinService.listOutputPerson(_channel.id);
         var persons = <String>[];
         for (var op in out_persons) {
@@ -180,7 +182,7 @@ class _OutsitePersonsState extends State<OutsitePersons> {
         }
         personObjs = await personService.listPersonWith(persons);
         break;
-      case OutsitePersonsSettingStrategy.all_except:
+      case PinPersonsSettingsStrategy.all_except:
         var out_persons = await pinService.listOutputPerson(_channel.id);
         var persons = <String>[];
         for (var op in out_persons) {
@@ -193,9 +195,8 @@ class _OutsitePersonsState extends State<OutsitePersons> {
         }
         break;
     }
-    for(var p in personObjs) {
+    for (var p in personObjs) {
       _persons.add(p);
-
     }
     return _persons;
   }
@@ -211,7 +212,11 @@ class _OutsitePersonsState extends State<OutsitePersons> {
         switch (value) {
           case '/netflow/channel/outsite/persons_settings':
             widget.context.forward('/netflow/channel/outsite/persons_settings',
-                arguments: {'channel': _channel,'resetPersons':resetPersons});
+                arguments: {'channel': _channel, }).then((obj){
+                  if(resetPersons!=null) {
+                    resetPersons();
+                  }
+            });
             break;
         }
       },
@@ -249,13 +254,14 @@ class _PersonListRegion extends StatefulWidget {
   List<Person> persons;
   PageContext context;
   Channel channel;
-  OutsitePersonsSettingStrategy outsitePersonsSettingStrategy;
+  PinPersonsSettingsStrategy outsitePersonsSettingStrategy;
   Function() resetPersons;
+
   _PersonListRegion(
       {this.persons,
       this.context,
       this.outsitePersonsSettingStrategy,
-        this.resetPersons,
+      this.resetPersons,
       this.channel});
 
   @override
@@ -289,7 +295,14 @@ class __PersonListRegionState extends State<_PersonListRegion> {
                   ..onTap = () {
                     widget.context.forward(
                         '/netflow/channel/outsite/persons_settings',
-                        arguments: {'channel': widget.channel,'resetPersons':widget.resetPersons});
+                        arguments: {
+                          'channel': widget.channel,
+                        }).then((obj){
+                          if(widget.resetPersons!=null) {
+                            widget.resetPersons();
+                          }
+
+                    });
                   },
               ),
               TextSpan(text: '设置公众。'),
@@ -320,7 +333,13 @@ class __PersonListRegionState extends State<_PersonListRegion> {
                     height: 40,
                   ),
                   onItemTap: () {
-                    widget.context.forward('/site/personal',arguments: {'person':p,'resetPersons':widget.resetPersons});
+                    widget.context.forward('/netflow/channel/pin/see_persons', arguments: {
+                      'person': p,'pinType':'downstream','channel':widget.channel,'direction_tips':'${widget.context.userPrincipal.nickName ?? widget.context.userPrincipal.accountName}>'
+                    }).then((obj) {
+                      if (widget.resetPersons != null) {
+                        widget.resetPersons();
+                      }
+                    });
                   },
                 ),
                 confirmDismiss: (DismissDirection direction) async {
@@ -361,14 +380,14 @@ class __PersonListRegionState extends State<_PersonListRegion> {
         title: Text.rich(
           TextSpan(
             text: widget.outsitePersonsSettingStrategy ==
-                    OutsitePersonsSettingStrategy.all_except
+                    PinPersonsSettingsStrategy.all_except
                 ? '是否排除？'
                 : '是否移除？',
             children: [
               TextSpan(text: '\r\n'),
               TextSpan(
                 text: widget.outsitePersonsSettingStrategy ==
-                        OutsitePersonsSettingStrategy.all_except
+                        PinPersonsSettingsStrategy.all_except
                     ? '排除后可在权限设置中找回'
                     : '移除后可在权限设置中找回',
                 style: TextStyle(
@@ -411,7 +430,7 @@ class __PersonListRegionState extends State<_PersonListRegion> {
     IChannelPinService pinService =
         widget.context.site.getService('/channel/pin');
     switch (widget.outsitePersonsSettingStrategy) {
-      case OutsitePersonsSettingStrategy.only_select:
+      case PinPersonsSettingsStrategy.only_select:
         pinService
             .removeOutputPerson(
                 '${person.accountName}@${person.appid}.${person.tenantid}',
@@ -421,7 +440,7 @@ class __PersonListRegionState extends State<_PersonListRegion> {
           setState(() {});
         });
         break;
-      case OutsitePersonsSettingStrategy.all_except:
+      case PinPersonsSettingsStrategy.all_except:
         pinService
             .addOutputPerson(
           ChannelOutputPerson(

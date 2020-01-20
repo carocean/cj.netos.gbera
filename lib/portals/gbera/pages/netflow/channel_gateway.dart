@@ -31,14 +31,14 @@ class _ChannelGatewayState extends State<ChannelGateway> {
     this._isSetGeo = false;
     super.dispose();
   }
-  _load()async{
-    IChannelPinService pinService =
-    widget.context.site.getService('/channel/pin');
-    this._isSetGeo = await pinService.getOutputGeoSelector(_channel.id);
-    setState(() {
 
-    });
+  _load() async {
+    IChannelPinService pinService =
+        widget.context.site.getService('/channel/pin');
+    this._isSetGeo = await pinService.getOutputGeoSelector(_channel.id);
+    setState(() {});
   }
+
   _setGeo() async {
     IChannelPinService pinService =
         widget.context.site.getService('/channel/pin');
@@ -49,6 +49,15 @@ class _ChannelGatewayState extends State<ChannelGateway> {
     }
     this._isSetGeo = await pinService.getOutputGeoSelector(_channel.id);
     setState(() {});
+  }
+
+  _reloadChannel()async {
+    IChannelService channelService =
+        widget.context.site.getService('/netflow/channels');
+    _channel =await channelService.getChannel(_channel.id);
+    setState(() {
+
+    });
   }
 
   @override
@@ -85,14 +94,26 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                     title: '名称',
                     tipsText: '${_channel?.name}',
                     onItemTap: () {
-                      widget.context.forward('/netflow/channel/rename');
+                      widget.context.forward(
+                        '/netflow/channel/rename',
+                        arguments: {
+                          'channel': _channel,
+                        },
+                      ).then((v) {
+                        _reloadChannel();
+                      });
                     },
                   ),
                   _CardItem(
                     title: '二维码',
                     tipsIconData: FontAwesomeIcons.qrcode,
                     onItemTap: () {
-                      widget.context.forward('/netflow/channel/qrcode');
+                      widget.context.forward(
+                        '/netflow/channel/qrcode',
+                        arguments: {
+                          'channel': _channel,
+                        },
+                      );
                     },
                   ),
                   _CardItem(
@@ -109,7 +130,12 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                       'http://b-ssl.duitang.com/uploads/item/201510/10/20151010054541_3YmaC.jpeg',
                     ],
                     onItemTap: () {
-                      widget.context.forward('/netflow/portal/channel');
+                      widget.context.forward(
+                        '/netflow/portal/channel',
+                        arguments: {
+                          'channel': _channel,
+                        },
+                      );
                     },
                   ),
                 ],
@@ -157,10 +183,10 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                     tipsText: '是否充许本管道的信息推送到我的地圈',
                     operator: _MySwitch(
                       value: _isSetGeo,
+                      onTap:(){
+                        _setGeo();
+                      },
                     ),
-                    onItemTap: () {
-                      _setGeo();
-                    },
                   ),
 //                  _CardItem(
 //                    title: '微信朋友圈',
@@ -177,23 +203,23 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                 ],
               ),
             ),
-            SliverToBoxAdapter(
-              child: Container(
-                height: 10,
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: _Card(
-                title: '',
-                items: [
-                  _CardItem(
-                    title: '权限',
-                    tipsText: '管道动态、出入口公众等',
-                    onItemTap: () {},
-                  ),
-                ],
-              ),
-            ),
+//            SliverToBoxAdapter(
+//              child: Container(
+//                height: 10,
+//              ),
+//            ),
+//            SliverToBoxAdapter(
+//              child: _Card(
+//                title: '',
+//                items: [
+//                  _CardItem(
+//                    title: '权限',
+//                    tipsText: '管道动态、出入口公众等',
+//                    onItemTap: () {},
+//                  ),
+//                ],
+//              ),
+//            ),
             SliverToBoxAdapter(
               child: Container(
                 height: 10,
@@ -229,8 +255,8 @@ class _ChannelGatewayState extends State<ChannelGateway> {
 
 class _MySwitch extends StatefulWidget {
   bool value;
-
-  _MySwitch({this.value = false});
+  Function() onTap;
+  _MySwitch({this.onTap,this.value = false});
 
   @override
   __MySwitchState createState() => __MySwitchState();
@@ -244,6 +270,9 @@ class __MySwitchState extends State<_MySwitch> {
       child: Switch.adaptive(
         value: widget.value,
         onChanged: (value) {
+          if(widget.onTap!=null) {
+            widget.onTap();
+          }
           setState(() {
             widget.value = value;
           });

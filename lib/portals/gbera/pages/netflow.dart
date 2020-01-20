@@ -331,7 +331,7 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
 
   Future<List<_ChannelItem>> _loadChannels() async {
     IChannelService channelService =
-        widget.context.site.getService('/external/channels');
+        widget.context.site.getService('/netflow/channels');
     List<Channel> list = await channelService.getAllChannel();
     if (list.isEmpty) {
       await channelService.init(widget.context.userPrincipal);
@@ -379,15 +379,22 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
               '/netflow/channel/avatar',
               arguments: <String, Object>{
                 'channel': ch,
-                'refreshChannels': _refreshChannels,
               },
-            );
+            ).then((v) {
+              if(_refreshChannels!=null) {
+                _refreshChannels();
+              }
+            });
           },
           openChannel: () {
             widget.context.forward(
               '/netflow/channel',
               arguments: {'channel': ch},
-            );
+            ).then((v) {
+              if(_refreshChannels!=null) {
+                _refreshChannels();
+              }
+            });
           },
           isSystemChannel: channelService.isSystemChannel(ch.id),
         ),
@@ -451,23 +458,37 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
                         ],
                       );
                     }).then((v) {
-                  print('xxxx-$v');
                   if (v == null) return;
-                  v['refreshChannels'] = _refreshChannels;
-                  widget.context.forward(value, arguments: v);
+                  widget.context.forward(value, arguments: v).then((v) {
+                    if(_refreshChannels!=null) {
+                      _refreshChannels();
+                    }
+                  });
                 });
                 break;
               case '/netflow/manager/scan_channel':
                 String cameraScanResult = await scanner.scan();
                 if (cameraScanResult == null) break;
                 arguments['qrcode'] = cameraScanResult;
-                widget.context.forward(value, arguments: arguments);
+                widget.context.forward(value, arguments: arguments).then((v) {
+                  if(_refreshChannels!=null) {
+                    _refreshChannels();
+                  }
+                });
                 break;
               case '/netflow/manager/search_channel':
-                widget.context.forward(value, arguments: arguments);
+                widget.context.forward(value, arguments: arguments).then((v) {
+                  if(_refreshChannels!=null) {
+                    _refreshChannels();
+                  }
+                });
                 break;
               case '/test/services':
-                widget.context.forward(value, arguments: arguments);
+                widget.context.forward(value, arguments: arguments).then((v) {
+                  if(_refreshChannels!=null) {
+                    _refreshChannels();
+                  }
+                });
                 break;
             }
           },
@@ -588,9 +609,9 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
     IInsiteMessageService messageService =
         widget.context.site.getService('/insite/messages');
     IPersonService personService =
-        widget.context.site.getService('/upstream/persons');
+        widget.context.site.getService('/gbera/persons');
     IChannelService channelService =
-        widget.context.site.getService('/external/channels');
+        widget.context.site.getService('/netflow/channels');
     var messages = await messageService.pageMessage(4, 0);
     var msgviews = <MessageView>[];
     for (var msg in messages) {
@@ -1143,7 +1164,7 @@ class _ChannelItem extends StatelessWidget {
 
   _deleteChannel(String channelid) async {
     IChannelService channelService =
-        this.context.site.getService('/external/channels');
+        this.context.site.getService('/netflow/channels');
     await channelService.remove(channelid);
   }
 }

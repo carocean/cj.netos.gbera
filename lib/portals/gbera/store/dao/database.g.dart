@@ -122,7 +122,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `ChannelPin` (`id` TEXT, `channel` TEXT, `inPersonSelector` TEXT, `outPersonSelector` TEXT, `outGeoSelector` TEXT, `outWechatPenYouSelector` TEXT, `outWechatHaoYouSelector` TEXT, `outContractSelector` TEXT, `inRights` TEXT, `outRights` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `ChannelInputPerson` (`id` TEXT, `person` TEXT, `channel` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `ChannelInputPerson` (`id` TEXT, `channel` TEXT, `person` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `ChannelOutputPerson` (`id` TEXT, `channel` TEXT, `person` TEXT, PRIMARY KEY (`id`))');
 
@@ -299,6 +299,14 @@ class _$IPersonDAO extends IPersonDAO {
     return _queryAdapter.query(
         'SELECT * FROM Person WHERE accountName = ? and appid=? and tenantid=? LIMIT 1 OFFSET 0',
         arguments: <dynamic>[accountName, appid, tenantid],
+        mapper: _personMapper);
+  }
+
+  @override
+  Future<Person> getPersonByUID(String uid) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Person WHERE uid = ? LIMIT 1 OFFSET 0',
+        arguments: <dynamic>[uid],
         mapper: _personMapper);
   }
 
@@ -515,6 +523,13 @@ class _$IChannelDAO extends IChannelDAO {
     await _queryAdapter.queryNoReturn(
         'UPDATE Channel SET leading = ? WHERE id = ?',
         arguments: <dynamic>[path, channelid]);
+  }
+
+  @override
+  Future<void> updateName(String name, String channelid) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE Channel SET name = ? WHERE id = ?',
+        arguments: <dynamic>[name, channelid]);
   }
 
   @override
@@ -1041,8 +1056,8 @@ class _$IChannelInputPersonDAO extends IChannelInputPersonDAO {
             'ChannelInputPerson',
             (ChannelInputPerson item) => <String, dynamic>{
                   'id': item.id,
-                  'person': item.person,
-                  'channel': item.channel
+                  'channel': item.channel,
+                  'person': item.person
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -1052,8 +1067,8 @@ class _$IChannelInputPersonDAO extends IChannelInputPersonDAO {
   final QueryAdapter _queryAdapter;
 
   static final _channelInputPersonMapper = (Map<String, dynamic> row) =>
-      ChannelInputPerson(row['id'] as String, row['person'] as String,
-          row['channel'] as String);
+      ChannelInputPerson(row['id'] as String, row['channel'] as String,
+          row['person'] as String);
 
   final InsertionAdapter<ChannelInputPerson>
       _channelInputPersonInsertionAdapter;
@@ -1080,6 +1095,14 @@ class _$IChannelInputPersonDAO extends IChannelInputPersonDAO {
     return _queryAdapter.query(
         'select * FROM ChannelInputPerson WHERE person=? AND channel = ? LIMIT 1 OFFSET 0',
         arguments: <dynamic>[person, channelid],
+        mapper: _channelInputPersonMapper);
+  }
+
+  @override
+  Future<List<ChannelInputPerson>> listInputPerson(String channelid) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM ChannelInputPerson WHERE channel=?',
+        arguments: <dynamic>[channelid],
         mapper: _channelInputPersonMapper);
   }
 

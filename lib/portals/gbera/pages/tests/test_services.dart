@@ -39,7 +39,7 @@ class _TestServicesState extends State<TestServices> {
                 CardItem(
                   title: '初始化公众数据',
                   onItemTap: (){
-                    widget.context.forward('/test/services/upstream/persons');
+                    widget.context.forward('/test/services/gbera/persons');
                   },
                 ),
                 CardItem(

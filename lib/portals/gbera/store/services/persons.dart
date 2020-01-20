@@ -29,6 +29,22 @@ class PersonService implements IPersonService {
   }
 
   @override
+  Future<Person> getPersonByUID(String uid) async{
+    return await this.personDAO.getPersonByUID(uid);
+  }
+
+  @override
+  Future<Person> getPersonFullName(String p) async{
+    int pos=p.indexOf('@');
+    String accountName=p.substring(0,pos);
+    String remain=p.substring(pos+1,p.length);
+    pos=remain.lastIndexOf('.');
+    String appid=remain.substring(0,pos);
+    String tenantid=remain.substring(pos+1,remain.length);
+    return await personDAO.findPerson(accountName,appid,tenantid);
+  }
+
+  @override
   Future<List<Person>> getAllPerson() async {
     return await this.personDAO.getAllPerson();
   }

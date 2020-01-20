@@ -52,7 +52,14 @@ class ChannelService implements IChannelService {
             DateTime.now().millisecondsSinceEpoch,
             0),
       );
+      await pinService.init(_GEO_CHANNEL_ID);
+      await pinService.setOutputGeoSelector(_GEO_CHANNEL_ID, true);
     }
+  }
+
+  @override
+  Future<Function> updateName(String channelid, String text) async{
+    await this.channelDAO.updateName(text,channelid);
   }
 
   @override

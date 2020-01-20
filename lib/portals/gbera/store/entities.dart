@@ -190,13 +190,13 @@ class ChannelPin {
 class ChannelInputPerson {
   @primaryKey
   final String id;
-  final String person;
   final String channel;
+  final String person;
 
   ChannelInputPerson(
     this.id,
-    this.person,
     this.channel,
+    this.person,
   );
 }
 
@@ -210,7 +210,7 @@ class ChannelOutputPerson {
   ChannelOutputPerson(this.id, this.channel, this.person);
 }
 
-enum OutsitePersonsSettingStrategy {
+enum PinPersonsSettingsStrategy {
   only_select,
   all_except,
 }

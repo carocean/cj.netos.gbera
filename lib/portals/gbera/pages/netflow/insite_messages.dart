@@ -136,9 +136,9 @@ class _MessagesRegionState extends State<_MessagesRegion> {
     IInsiteMessageService messageService =
         widget.context.site.getService('/insite/messages');
     IPersonService personService =
-        widget.context.site.getService('/upstream/persons');
+        widget.context.site.getService('/gbera/persons');
     IChannelService channelService =
-        widget.context.site.getService('/external/channels');
+        widget.context.site.getService('/netflow/channels');
     var messages = await messageService.pageMessageByChannelVisualable(limit, offset,widget.tabView.loopType);
     if (messages.length == 0) {
       return;

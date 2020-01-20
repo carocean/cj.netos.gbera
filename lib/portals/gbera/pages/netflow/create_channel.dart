@@ -58,7 +58,7 @@ class _CreateChannelState extends State<CreateChannel> {
             ),
             onPressed: () async {
               IChannelService channelService =
-                  widget.context.site.getService('/external/channels');
+                  widget.context.site.getService('/netflow/channels');
               UserPrincipal user = widget.context.userPrincipal;
               var channelName = _channel_name_value.text;
               if (await channelService.existsName(channelName, user.person)) {
@@ -85,11 +85,6 @@ class _CreateChannelState extends State<CreateChannel> {
                 0,
               );
               await channelService.addChannel(channel);
-              var refreshChannels =
-                  widget.context.parameters['refreshChannels'];
-              if (refreshChannels != null) {
-                await refreshChannels();
-              }
               widget.context.backward();
             },
           ),

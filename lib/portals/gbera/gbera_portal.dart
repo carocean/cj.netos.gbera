@@ -41,11 +41,13 @@ import 'package:gbera/portals/gbera/pages/netflow/channels_of_user.dart';
 import 'package:gbera/portals/gbera/pages/netflow/create_channel.dart';
 import 'package:gbera/portals/gbera/pages/netflow/insite_messages.dart';
 import 'package:gbera/portals/gbera/pages/netflow/insite_persons.dart';
+import 'package:gbera/portals/gbera/pages/netflow/insite_persons_settings.dart';
 import 'package:gbera/portals/gbera/pages/netflow/outsite_persons.dart';
 import 'package:gbera/portals/gbera/pages/netflow/outsite_persons_settings.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publish_article.dart';
 import 'package:gbera/portals/gbera/pages/netflow/scan_channel.dart';
 import 'package:gbera/portals/gbera/pages/netflow/search_channel.dart';
+import 'package:gbera/portals/gbera/pages/netflow/see_channelpin_persons.dart';
 import 'package:gbera/portals/gbera/pages/netflow/service_menu.dart';
 import 'package:gbera/portals/gbera/pages/netflow/settings_main.dart';
 import 'package:gbera/portals/gbera/pages/netflow/settings_persons.dart';
@@ -116,10 +118,10 @@ class GberaPortal {
       name: '金证时代官方框架',
       buildPortalStore: (Portal portal, IServiceProvider site) => PortalStore(
         services: {
-          "/upstream/persons": PersonService(site: site),
-          '/external/channels': ChannelService(site: site),
-          '/channel/pin': ChannelPinService(site: site),
+          "/gbera/persons": PersonService(site: site),
+          '/netflow/channels': ChannelService(site: site),
           '/insite/messages': InsiteMessageService(site: site),
+          '/channel/pin': ChannelPinService(site: site),
           '/channel/messages': ChannelMessageService(site: site),
           '/channel/messages/medias': ChannelMediaService(site: site),
           '/channel/messages/likes': ChannelLikeService(site: site),
@@ -268,7 +270,7 @@ class GberaPortal {
           title: '测试公众',
           subtitle: '',
           icon: GalleryIcons.shrine,
-          url: '/test/services/upstream/persons',
+          url: '/test/services/gbera/persons',
           buildPage: (PageContext pageContext) => TestUpstreamPersonService(
             context: pageContext,
           ),
@@ -359,7 +361,7 @@ class GberaPortal {
           subtitle: '',
           icon: GalleryIcons.shrine,
           url: '/netflow/channel/qrcode',
-          buildPage: (PageContext pageContext) => QrcodeChannel(
+          buildPage: (PageContext pageContext) => ChannelQrcode(
             context: pageContext,
           ),
         ),
@@ -558,6 +560,26 @@ class GberaPortal {
           icon: Icons.art_track,
           url: '/netflow/channel/outsite/persons_settings',
           buildPage: (PageContext pageContext) => OutsitePersonsSettings(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '进口公众权限设置',
+          subtitle: '',
+          desc: '',
+          icon: Icons.art_track,
+          url: '/netflow/channel/insite/persons_settings',
+          buildPage: (PageContext pageContext) => InsitePersonsSettings(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '管道端口用户查看器',
+          subtitle: '',
+          desc: '',
+          icon: Icons.art_track,
+          url: '/netflow/channel/pin/see_persons',
+          buildPage: (PageContext pageContext) => SeeChannelPinPersons(
             context: pageContext,
           ),
         ),
