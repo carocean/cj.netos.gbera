@@ -39,16 +39,16 @@ import 'package:gbera/portals/gbera/pages/netflow/channel_qrcode.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_rename.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channels_of_user.dart';
 import 'package:gbera/portals/gbera/pages/netflow/create_channel.dart';
+import 'package:gbera/portals/gbera/pages/netflow/insite_messages.dart';
 import 'package:gbera/portals/gbera/pages/netflow/insite_persons.dart';
 import 'package:gbera/portals/gbera/pages/netflow/outsite_persons.dart';
-import 'package:gbera/portals/gbera/pages/netflow/insite_messages.dart';
 import 'package:gbera/portals/gbera/pages/netflow/outsite_persons_settings.dart';
-import 'package:gbera/portals/gbera/pages/netflow/settings_persons.dart';
-import 'package:gbera/portals/gbera/pages/netflow/settings_main.dart';
 import 'package:gbera/portals/gbera/pages/netflow/publish_article.dart';
 import 'package:gbera/portals/gbera/pages/netflow/scan_channel.dart';
 import 'package:gbera/portals/gbera/pages/netflow/search_channel.dart';
 import 'package:gbera/portals/gbera/pages/netflow/service_menu.dart';
+import 'package:gbera/portals/gbera/pages/netflow/settings_main.dart';
+import 'package:gbera/portals/gbera/pages/netflow/settings_persons.dart';
 import 'package:gbera/portals/gbera/pages/profile.dart';
 import 'package:gbera/portals/gbera/pages/profile/edit_sex.dart';
 import 'package:gbera/portals/gbera/pages/profile/edit_username.dart';
@@ -65,8 +65,8 @@ import 'package:gbera/portals/gbera/pages/system/about.dart';
 import 'package:gbera/portals/gbera/pages/system/contract.dart';
 import 'package:gbera/portals/gbera/pages/system/themes.dart';
 import 'package:gbera/portals/gbera/pages/tests/test_insite_messages.dart';
-import 'package:gbera/portals/gbera/pages/tests/test_services.dart';
 import 'package:gbera/portals/gbera/pages/tests/test_persons.dart';
+import 'package:gbera/portals/gbera/pages/tests/test_services.dart';
 import 'package:gbera/portals/gbera/pages/users/account_login.dart';
 import 'package:gbera/portals/gbera/pages/users/accounts.dart';
 import 'package:gbera/portals/gbera/pages/users/add_account.dart';
@@ -92,6 +92,7 @@ import 'package:gbera/portals/gbera/scaffolds.dart';
 import 'package:gbera/portals/gbera/store/dao/database.dart';
 import 'package:gbera/portals/gbera/store/services/channel_extra.dart';
 import 'package:gbera/portals/gbera/store/services/channel_messages.dart';
+import 'package:gbera/portals/gbera/store/services/channel_pin.dart';
 import 'package:gbera/portals/gbera/store/services/channels.dart';
 import 'package:gbera/portals/gbera/store/services/insite_messages.dart';
 import 'package:gbera/portals/gbera/store/services/persons.dart';
@@ -117,6 +118,7 @@ class GberaPortal {
         services: {
           "/upstream/persons": PersonService(site: site),
           '/external/channels': ChannelService(site: site),
+          '/channel/pin': ChannelPinService(site: site),
           '/insite/messages': InsiteMessageService(site: site),
           '/channel/messages': ChannelMessageService(site: site),
           '/channel/messages/medias': ChannelMediaService(site: site),
@@ -1051,7 +1053,6 @@ class GberaPortal {
             context: pageContext,
           ),
         ),
-
         Page(
           title: '栏目列表',
           subtitle: '',

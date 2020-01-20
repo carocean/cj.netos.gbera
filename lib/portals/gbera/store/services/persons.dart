@@ -39,6 +39,45 @@ class PersonService implements IPersonService {
   }
 
   @override
+  Future<List<Person>> listPersonWith(List<String> personList) async{
+    List<String> ids=[];
+    for(String p in personList) {
+      int pos=p.indexOf('@');
+      String accountName=p.substring(0,pos);
+      String remain=p.substring(pos+1,p.length);
+      pos=remain.lastIndexOf('.');
+      String appid=remain.substring(0,pos);
+      String tenantid=remain.substring(pos+1,remain.length);
+      Person person=await personDAO.findPerson(accountName,appid,tenantid);
+      if(person==null) {
+        continue;
+      }
+      ids.add(person.id);
+    }
+    return await this.personDAO.listPersonWith(ids);
+  }
+
+  @override
+  Future<List<Person>> pagePersonWithout(
+      List<String> personList, int persons_limit, int persons_offset) async{
+    List<String> ids=[];
+    for(String p in personList) {
+      int pos=p.indexOf('@');
+      String accountName=p.substring(0,pos);
+      String remain=p.substring(pos+1,p.length);
+      pos=remain.lastIndexOf('.');
+      String appid=remain.substring(0,pos);
+      String tenantid=remain.substring(pos+1,remain.length);
+      Person person=await personDAO.findPerson(accountName,appid,tenantid);
+      if(person==null) {
+        continue;
+      }
+      ids.add(person.id);
+    }
+    return await this.personDAO.pagePersonWithout(ids,persons_limit,persons_offset);
+  }
+
+  @override
   Future<void> addPerson(Person person) async {
     await personDAO.addPerson(person);
   }

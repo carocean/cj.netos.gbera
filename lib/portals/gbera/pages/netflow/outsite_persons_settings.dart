@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/common/swipe_refresh.dart';
 import 'package:gbera/portals/gbera/parts/CardItem.dart';
-
+import 'package:gbera/portals/gbera/store/entities.dart';
+import 'package:gbera/portals/gbera/store/services.dart';
+import 'package:uuid/uuid.dart';
+Function() _resetParentWidgetPersons;
 class OutsitePersonsSettings extends StatefulWidget {
   PageContext context;
 
@@ -12,21 +18,78 @@ class OutsitePersonsSettings extends StatefulWidget {
 }
 
 class _OutsitePersonsSettingsState extends State<OutsitePersonsSettings> {
-  OutsitePersonsSettingStrategy value;
-  OutsitePersonsSettingStrategy group_value;
+  OutsitePersonsSettingStrategy _selected_outsite_persons_strategy;
+  Channel _channel;
+  IChannelPinService _pinService;
+  int _persons_limit = 20;
+  int _persons_offset = 0;
+  List<Person> _persons = [];
 
   @override
   void initState() {
-    value = OutsitePersonsSettingStrategy.all_except;
-    group_value = value;
-
+    _selected_outsite_persons_strategy =
+        OutsitePersonsSettingStrategy.all_except;
+    _channel = widget.context.parameters['channel'];
+    _resetParentWidgetPersons=widget.context.parameters['resetPersons'];
+    _pinService = widget.context.site.getService('/channel/pin');
+    _load();
     super.initState();
   }
 
   @override
   void dispose() {
-    group_value = null;
+    _selected_outsite_persons_strategy = null;
+    _channel = null;
+    _persons_offset = 0;
     super.dispose();
+  }
+
+  _load() async {
+    _selected_outsite_persons_strategy =
+        await _pinService.getOutputPersonSelector(_channel.id);
+    List<ChannelOutputPerson> outputPersons =
+        await _pinService.listOutputPerson(_channel.id);
+    var personList = <String>[];
+    for (ChannelOutputPerson p in outputPersons) {
+      personList.add(p.person);
+    }
+    IPersonService personService =
+        widget.context.site.getService('/upstream/persons');
+    switch (_selected_outsite_persons_strategy) {
+      case OutsitePersonsSettingStrategy.only_select:
+        //求剩余未被选择的公众
+        var personObjs = await personService.pagePersonWithout(
+            personList, _persons_limit, _persons_offset);
+        if (!personObjs.isEmpty) {
+          this._persons_offset += personObjs.length;
+        }
+        for(var p in personObjs) {
+          _persons.add(p);
+        }
+        break;
+      case OutsitePersonsSettingStrategy.all_except:
+        // 求被排除的公众
+        var personObjs = await personService.listPersonWith(personList);
+        for(var p in personObjs) {
+          _persons.add(p);
+        }
+        break;
+    }
+    setState(() {});
+  }
+
+  _reloadPersons() async {
+    _persons.clear();
+    _load();
+  }
+
+  Future<void>_onSwipeUp() async {
+    await _load();
+
+  }
+
+  Future<void>_onSwipeDown() async {
+
   }
 
   @override
@@ -47,9 +110,16 @@ class _OutsitePersonsSettingsState extends State<OutsitePersonsSettings> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 GestureDetector(
-                  onTap: () {
-                    group_value = OutsitePersonsSettingStrategy.all_except;
-                    setState(() {});
+                  onTap: () async {
+                    _selected_outsite_persons_strategy =
+                        OutsitePersonsSettingStrategy.all_except;
+                    await _pinService.setOutputPersonSelector(
+                        _channel.id, _selected_outsite_persons_strategy);
+                    _persons_offset = 0;
+                    await _reloadPersons();
+                    if(_resetParentWidgetPersons!=null) {
+                      _resetParentWidgetPersons();
+                    }
                   },
                   child: Row(
                     children: <Widget>[
@@ -65,7 +135,7 @@ class _OutsitePersonsSettingsState extends State<OutsitePersonsSettings> {
                         height: 20,
                         child: Radio(
                           value: OutsitePersonsSettingStrategy.all_except,
-                          groupValue: group_value,
+                          groupValue: _selected_outsite_persons_strategy,
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
                         ),
@@ -74,9 +144,16 @@ class _OutsitePersonsSettingsState extends State<OutsitePersonsSettings> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {
-                    group_value = OutsitePersonsSettingStrategy.only_select;
-                    setState(() {});
+                  onTap: () async {
+                    _selected_outsite_persons_strategy =
+                        OutsitePersonsSettingStrategy.only_select;
+                    await _pinService.setOutputPersonSelector(
+                        _channel.id, _selected_outsite_persons_strategy);
+                    _persons_offset = 0;
+                    await _reloadPersons();
+                    if(_resetParentWidgetPersons!=null) {
+                      _resetParentWidgetPersons();
+                    }
                   },
                   child: Row(
                     children: <Widget>[
@@ -92,7 +169,7 @@ class _OutsitePersonsSettingsState extends State<OutsitePersonsSettings> {
                         height: 20,
                         child: Radio(
                           value: OutsitePersonsSettingStrategy.only_select,
-                          groupValue: group_value,
+                          groupValue: _selected_outsite_persons_strategy,
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
                         ),
@@ -104,51 +181,174 @@ class _OutsitePersonsSettingsState extends State<OutsitePersonsSettings> {
             ),
           ),
           Card(
-            child: ListView(
-              shrinkWrap: true,
-              padding: EdgeInsets.only(
-                left: 10,
-                right: 10,
-              ),
-              children: <Widget>[
-                CardItem(
-                  leading: Icon(
-                    Icons.forward,
-                  ),
-                  paddingBottom: 10,
-                  paddingTop: 10,
-                  title: 'cj',
-                  tail: Icon(
-                    Icons.check,
-                    color: Colors.red,
-                  ),
-                ),
-                Divider(
-                  height: 1,
-                  indent: 0,
-                ),
-                CardItem(
-                  leading: Icon(
-                    Icons.person,
-                  ),
-                  paddingBottom: 10,
-                  paddingTop: 10,
-                  title: 'tom',
-                  tail: Icon(
-                    Icons.check,
-                    color: Colors.red,
-                  ),
-                ),
-              ],
-            ),
+            child: _persons.isEmpty
+                ? Container(
+                    constraints: BoxConstraints.tightForFinite(
+                      width: double.maxFinite,
+                    ),
+                    height: 40,
+                    alignment: Alignment.center,
+                    child: Text(
+                      '无',
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  )
+                : _selected_outsite_persons_strategy ==
+                        OutsitePersonsSettingStrategy.only_select
+                    ? SwipeRefreshLayout(
+                        onSwipeDown: _onSwipeDown,
+                        onSwipeUp: _onSwipeUp,
+                        child: _listview(),
+                      )
+                    : _listview(),
           ),
         ],
       ),
     );
   }
+ Widget _listview(){
+    return ListView(
+      shrinkWrap: true,
+      padding: EdgeInsets.only(
+        left: 10,
+        right: 10,
+      ),
+      children: _persons.map((p) {
+        return _SelectPerson(
+          person: p,
+          selected_outsite_persons_strategy:
+          _selected_outsite_persons_strategy,
+          pageContext: widget.context,
+          channel: _channel,
+        );
+      }).toList(),
+    );
+  }
 }
 
-enum OutsitePersonsSettingStrategy {
-  only_select,
-  all_except,
+class _SelectPerson extends StatefulWidget {
+  Person person;
+  PageContext pageContext;
+  Channel channel;
+  OutsitePersonsSettingStrategy selected_outsite_persons_strategy;
+
+  _SelectPerson(
+      {this.person,
+      this.selected_outsite_persons_strategy,
+      this.pageContext,
+      this.channel});
+
+  @override
+  __SelectPersonState createState() => __SelectPersonState();
+}
+
+class __SelectPersonState extends State<_SelectPerson> {
+  bool _is_seleted = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _is_seleted = false;
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        CardItem(
+          leading: Image.file(
+            File(widget.person.avatar),
+            fit: BoxFit.fitWidth,
+            width: 30,
+            height: 30,
+          ),
+          paddingBottom: 10,
+          paddingTop: 10,
+          title: '${widget.person.nickName ?? widget.person.accountName}',
+          tail: _getIcon(),
+          onItemTap: () {
+            _doSelect();
+          },
+        ),
+        Divider(
+          height: 1,
+          indent: 40,
+        ),
+      ],
+    );
+  }
+
+  _getIcon() {
+    switch (widget.selected_outsite_persons_strategy) {
+      case OutsitePersonsSettingStrategy.only_select:
+        return _is_seleted
+            ? Icon(Icons.check)
+            : Container(
+                width: 0,
+                height: 0,
+              );
+      case OutsitePersonsSettingStrategy.all_except:
+        return _is_seleted
+            ? Icon(Icons.clear)
+            : Container(
+                width: 0,
+                height: 0,
+              );
+    }
+    return Container(
+      width: 0,
+      height: 0,
+    );
+  }
+
+  void _doSelect() async {
+    IChannelPinService pinService =
+        widget.pageContext.site.getService('/channel/pin');
+    var isSeleted = _is_seleted;
+    var personFullName =
+        '${widget.person.accountName}@${widget.person.appid}.${widget.person.tenantid}';
+    switch(widget.selected_outsite_persons_strategy) {
+      case OutsitePersonsSettingStrategy.only_select:
+        if (isSeleted) {
+          //从输出公众表中移除
+          await pinService.removeOutputPerson(personFullName, widget.channel.id);
+        } else {
+          //添加到输出公众表
+          await pinService.addOutputPerson(
+            ChannelOutputPerson(
+              '${Uuid().v1()}',
+              widget.channel.id,
+              personFullName,
+            ),
+          );
+        }
+        break;
+      case OutsitePersonsSettingStrategy.all_except:
+        if (isSeleted) {
+          await pinService.addOutputPerson(
+            ChannelOutputPerson(
+              '${Uuid().v1()}',
+              widget.channel.id,
+              personFullName,
+            ),
+          );
+        } else {
+          await pinService.removeOutputPerson(personFullName, widget.channel.id);
+        }
+        break;
+    }
+
+    _is_seleted = !isSeleted;
+    setState(() {});
+    if(_resetParentWidgetPersons!=null) {
+      _resetParentWidgetPersons();
+    }
+  }
 }

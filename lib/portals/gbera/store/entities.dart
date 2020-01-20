@@ -174,7 +174,7 @@ class ChannelPin {
   final String outRights;
 
   ChannelPin(
-      {this.id,
+      this.id,
       this.channel,
       this.inPersonSelector,
       this.outPersonSelector,
@@ -183,7 +183,7 @@ class ChannelPin {
       this.outWechatHaoYouSelector,
       this.outContractSelector,
       this.inRights,
-      this.outRights});
+      this.outRights);
 }
 
 @entity
@@ -208,4 +208,9 @@ class ChannelOutputPerson {
   final String person;
 
   ChannelOutputPerson(this.id, this.channel, this.person);
+}
+
+enum OutsitePersonsSettingStrategy {
+  only_select,
+  all_except,
 }

@@ -13,12 +13,13 @@ class ChannelService implements IChannelService {
   };
   IChannelDAO channelDAO;
   IChannelMessageService messageService;
-
+  IChannelPinService pinService;
   ChannelService({ServiceSite site}) {
     site.onready.add(() {
       AppDatabase db = site.database;
       channelDAO = db.channelDAO;
       messageService = site.getService('/channel/messages');
+      pinService=site.getService('/channel/pin');
     });
   }
   @override
@@ -77,11 +78,13 @@ class ChannelService implements IChannelService {
   @override
   Future<void> addChannel(Channel channel) async {
     await this.channelDAO.addChannel(channel);
+    await pinService.init(channel.id);
   }
 
   @override
   Future<Function> remove(String channelid) async {
     await messageService.emptyBy(channelid);
+    await this.pinService.removePin(channelid);
     await channelDAO.removeChannel(channelid);
   }
 

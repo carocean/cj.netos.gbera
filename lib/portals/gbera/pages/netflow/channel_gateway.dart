@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/store/entities.dart';
+import 'package:gbera/portals/gbera/store/services.dart';
 
 class ChannelGateway extends StatefulWidget {
   PageContext context;
@@ -14,19 +15,40 @@ class ChannelGateway extends StatefulWidget {
 }
 
 class _ChannelGatewayState extends State<ChannelGateway> {
-  bool _isInvisualabled = false;
   Channel _channel;
+  bool _isSetGeo = false;
 
   @override
   void initState() {
     _channel = widget.context.parameters['channel'];
+    _load();
     super.initState();
   }
 
   @override
   void dispose() {
     this._channel = null;
+    this._isSetGeo = false;
     super.dispose();
+  }
+  _load()async{
+    IChannelPinService pinService =
+    widget.context.site.getService('/channel/pin');
+    this._isSetGeo = await pinService.getOutputGeoSelector(_channel.id);
+    setState(() {
+
+    });
+  }
+  _setGeo() async {
+    IChannelPinService pinService =
+        widget.context.site.getService('/channel/pin');
+    if (_isSetGeo) {
+      await pinService.setOutputGeoSelector(_channel.id, false);
+    } else {
+      await pinService.setOutputGeoSelector(_channel.id, true);
+    }
+    this._isSetGeo = await pinService.getOutputGeoSelector(_channel.id);
+    setState(() {});
   }
 
   @override
@@ -106,7 +128,8 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                     title: '公众',
                     tipsText: '如果不愿接收某人的信息可将他移除',
                     onItemTap: () {
-                      widget.context.forward('/netflow/channel/insite/persons',arguments: <String,Object>{'channel':_channel});
+                      widget.context.forward('/netflow/channel/insite/persons',
+                          arguments: <String, Object>{'channel': _channel});
                     },
                   ),
                 ],
@@ -125,28 +148,32 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                     title: '公众',
                     tipsText: '如果不愿让某人接收信息可将他移除',
                     onItemTap: () {
-                      widget.context
-                          .forward('/netflow/channel/outsite/persons',arguments: <String,Object>{'channel':_channel});
+                      widget.context.forward('/netflow/channel/outsite/persons',
+                          arguments: <String, Object>{'channel': _channel});
                     },
                   ),
                   _CardItem(
                     title: '地圈',
                     tipsText: '是否充许本管道的信息推送到我的地圈',
-                    operator: _MySwitch(),
-                    onItemTap: () {},
+                    operator: _MySwitch(
+                      value: _isSetGeo,
+                    ),
+                    onItemTap: () {
+                      _setGeo();
+                    },
                   ),
-                  _CardItem(
-                    title: '微信朋友圈',
-                    tipsText: '是否充许本管道的信息推送到我的微信朋友圈',
-                    operator: _MySwitch(),
-                    onItemTap: () {},
-                  ),
-                  _CardItem(
-                    title: '微信用户',
-                    tipsText: '是否充许本管道的信息推送到我的微信用户',
-                    operator: _MySwitch(),
-                    onItemTap: () {},
-                  ),
+//                  _CardItem(
+//                    title: '微信朋友圈',
+//                    tipsText: '是否充许本管道的信息推送到我的微信朋友圈',
+//                    operator: _MySwitch(),
+//                    onItemTap: () {},
+//                  ),
+//                  _CardItem(
+//                    title: '微信用户',
+//                    tipsText: '是否充许本管道的信息推送到我的微信用户',
+//                    operator: _MySwitch(),
+//                    onItemTap: () {},
+//                  ),
                 ],
               ),
             ),
@@ -172,27 +199,27 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                 height: 10,
               ),
             ),
-            SliverToBoxAdapter(
-              child: _Card(
-                title: '',
-                items: [
-                  _CardItem(
-                    title: '推广',
-                    tipsText: '让别人帮您推广本管道，请充钱',
-                    onItemTap: () {
-                      widget.context.forward('/netflow/channel/popularize');
-                    },
-                  ),
-                  _CardItem(
-                    title: '转让',
-                    tipsText: '受让方除得到本管道且连同所属微站',
-                    onItemTap: () {
-                      widget.context.forward('/netflow/channel/popularize');
-                    },
-                  ),
-                ],
-              ),
-            ),
+//            SliverToBoxAdapter(
+//              child: _Card(
+//                title: '',
+//                items: [
+//                  _CardItem(
+//                    title: '推广',
+//                    tipsText: '让别人帮您推广本管道，请充钱',
+//                    onItemTap: () {
+//                      widget.context.forward('/netflow/channel/popularize');
+//                    },
+//                  ),
+//                  _CardItem(
+//                    title: '转让',
+//                    tipsText: '受让方除得到本管道且连同所属微站',
+//                    onItemTap: () {
+//                      widget.context.forward('/netflow/channel/popularize');
+//                    },
+//                  ),
+//                ],
+//              ),
+//            ),
           ],
         ),
       ),

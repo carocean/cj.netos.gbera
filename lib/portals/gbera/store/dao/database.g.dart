@@ -276,6 +276,33 @@ class _$IPersonDAO extends IPersonDAO {
   }
 
   @override
+  Future<List<Person>> pagePersonWithout(
+      List<String> ids, int persons_limit, int persons_offset) async {
+    final valueList1 = ids.map((value) => "'$value'").join(', ');
+    return _queryAdapter.queryList(
+        'SELECT * FROM Person where id NOT IN ($valueList1) LIMIT ? OFFSET ?',
+        arguments: <dynamic>[persons_limit, persons_offset],
+        mapper: _personMapper);
+  }
+
+  @override
+  Future<List<Person>> listPersonWith(List<String> ids) async {
+    final valueList1 = ids.map((value) => "'$value'").join(', ');
+    return _queryAdapter.queryList(
+        'SELECT * FROM Person where id IN ($valueList1)',
+        mapper: _personMapper);
+  }
+
+  @override
+  Future<Person> findPerson(
+      String accountName, String appid, String tenantid) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Person WHERE accountName = ? and appid=? and tenantid=? LIMIT 1 OFFSET 0',
+        arguments: <dynamic>[accountName, appid, tenantid],
+        mapper: _personMapper);
+  }
+
+  @override
   Future<void> addPerson(Person person) async {
     await _personInsertionAdapter.insert(
         person, sqflite.ConflictAlgorithm.abort);
@@ -934,25 +961,203 @@ class _$IChannelCommentDAO extends IChannelCommentDAO {
 }
 
 class _$IChannelPinDAO extends IChannelPinDAO {
-  _$IChannelPinDAO(this.database, this.changeListener);
+  _$IChannelPinDAO(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _channelPinInsertionAdapter = InsertionAdapter(
+            database,
+            'ChannelPin',
+            (ChannelPin item) => <String, dynamic>{
+                  'id': item.id,
+                  'channel': item.channel,
+                  'inPersonSelector': item.inPersonSelector,
+                  'outPersonSelector': item.outPersonSelector,
+                  'outGeoSelector': item.outGeoSelector,
+                  'outWechatPenYouSelector': item.outWechatPenYouSelector,
+                  'outWechatHaoYouSelector': item.outWechatHaoYouSelector,
+                  'outContractSelector': item.outContractSelector,
+                  'inRights': item.inRights,
+                  'outRights': item.outRights
+                });
 
   final sqflite.DatabaseExecutor database;
 
   final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  static final _channelPinMapper = (Map<String, dynamic> row) => ChannelPin(
+      row['id'] as String,
+      row['channel'] as String,
+      row['inPersonSelector'] as String,
+      row['outPersonSelector'] as String,
+      row['outGeoSelector'] as String,
+      row['outWechatPenYouSelector'] as String,
+      row['outWechatHaoYouSelector'] as String,
+      row['outContractSelector'] as String,
+      row['inRights'] as String,
+      row['outRights'] as String);
+
+  final InsertionAdapter<ChannelPin> _channelPinInsertionAdapter;
+
+  @override
+  Future<void> setOutputPersonSelector(
+      dynamic selector, String channelid) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE ChannelPin SET outPersonSelector = ? WHERE channel = ?',
+        arguments: <dynamic>[selector, channelid]);
+  }
+
+  @override
+  Future<void> setOutputGeoSelector(String isset, String channelid) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE ChannelPin SET outGeoSelector = ? WHERE channel = ?',
+        arguments: <dynamic>[isset, channelid]);
+  }
+
+  @override
+  Future<ChannelPin> getChannelPin(String channelid) async {
+    return _queryAdapter.query('SELECT * FROM ChannelPin WHERE channel=?',
+        arguments: <dynamic>[channelid], mapper: _channelPinMapper);
+  }
+
+  @override
+  Future<void> remove(String channelid) async {
+    await _queryAdapter.queryNoReturn('delete FROM ChannelPin WHERE channel=?',
+        arguments: <dynamic>[channelid]);
+  }
+
+  @override
+  Future<void> addChannelPin(ChannelPin channelPin) async {
+    await _channelPinInsertionAdapter.insert(
+        channelPin, sqflite.ConflictAlgorithm.abort);
+  }
 }
 
 class _$IChannelInputPersonDAO extends IChannelInputPersonDAO {
-  _$IChannelInputPersonDAO(this.database, this.changeListener);
+  _$IChannelInputPersonDAO(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _channelInputPersonInsertionAdapter = InsertionAdapter(
+            database,
+            'ChannelInputPerson',
+            (ChannelInputPerson item) => <String, dynamic>{
+                  'id': item.id,
+                  'person': item.person,
+                  'channel': item.channel
+                });
 
   final sqflite.DatabaseExecutor database;
 
   final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  static final _channelInputPersonMapper = (Map<String, dynamic> row) =>
+      ChannelInputPerson(row['id'] as String, row['person'] as String,
+          row['channel'] as String);
+
+  final InsertionAdapter<ChannelInputPerson>
+      _channelInputPersonInsertionAdapter;
+
+  @override
+  Future<List<ChannelInputPerson>> pageInputPerson(
+      String channelid, int limit, int offset) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM ChannelInputPerson WHERE channel=? LIMIT ? OFFSET ?',
+        arguments: <dynamic>[channelid, limit, offset],
+        mapper: _channelInputPersonMapper);
+  }
+
+  @override
+  Future<void> removeInputPerson(String person, String channelid) async {
+    await _queryAdapter.queryNoReturn(
+        'delete FROM ChannelInputPerson WHERE person=? AND channel = ?',
+        arguments: <dynamic>[person, channelid]);
+  }
+
+  @override
+  Future<ChannelInputPerson> getInputPerson(
+      String person, String channelid) async {
+    return _queryAdapter.query(
+        'select * FROM ChannelInputPerson WHERE person=? AND channel = ? LIMIT 1 OFFSET 0',
+        arguments: <dynamic>[person, channelid],
+        mapper: _channelInputPersonMapper);
+  }
+
+  @override
+  Future<void> addInputPerson(ChannelInputPerson person) async {
+    await _channelInputPersonInsertionAdapter.insert(
+        person, sqflite.ConflictAlgorithm.abort);
+  }
 }
 
 class _$IChannelOutputPersonDAO extends IChannelOutputPersonDAO {
-  _$IChannelOutputPersonDAO(this.database, this.changeListener);
+  _$IChannelOutputPersonDAO(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _channelOutputPersonInsertionAdapter = InsertionAdapter(
+            database,
+            'ChannelOutputPerson',
+            (ChannelOutputPerson item) => <String, dynamic>{
+                  'id': item.id,
+                  'channel': item.channel,
+                  'person': item.person
+                });
 
   final sqflite.DatabaseExecutor database;
 
   final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  static final _channelOutputPersonMapper = (Map<String, dynamic> row) =>
+      ChannelOutputPerson(row['id'] as String, row['channel'] as String,
+          row['person'] as String);
+
+  final InsertionAdapter<ChannelOutputPerson>
+      _channelOutputPersonInsertionAdapter;
+
+  @override
+  Future<List<ChannelOutputPerson>> pageOutputPerson(
+      String channelid, int limit, int offset) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM ChannelOutputPerson WHERE channel=? LIMIT ? OFFSET ?',
+        arguments: <dynamic>[channelid, limit, offset],
+        mapper: _channelOutputPersonMapper);
+  }
+
+  @override
+  Future<List<ChannelOutputPerson>> listOutputPerson(String channelid) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM ChannelOutputPerson WHERE channel=?',
+        arguments: <dynamic>[channelid],
+        mapper: _channelOutputPersonMapper);
+  }
+
+  @override
+  Future<void> removeOutputPerson(String person, String channelid) async {
+    await _queryAdapter.queryNoReturn(
+        'delete FROM ChannelOutputPerson WHERE person=? AND channel = ?',
+        arguments: <dynamic>[person, channelid]);
+  }
+
+  @override
+  Future<ChannelOutputPerson> getOutputPerson(
+      String person, String channelid) async {
+    return _queryAdapter.query(
+        'select * FROM ChannelOutputPerson WHERE person=? AND channel = ? LIMIT 1 OFFSET 0',
+        arguments: <dynamic>[person, channelid],
+        mapper: _channelOutputPersonMapper);
+  }
+
+  @override
+  Future<void> emptyOutputPersons(String channelid) async {
+    await _queryAdapter.queryNoReturn(
+        'delete FROM ChannelOutputPerson WHERE channel = ?',
+        arguments: <dynamic>[channelid]);
+  }
+
+  @override
+  Future<void> addOutputPerson(ChannelOutputPerson person) async {
+    await _channelOutputPersonInsertionAdapter.insert(
+        person, sqflite.ConflictAlgorithm.abort);
+  }
 }

@@ -24,6 +24,19 @@ abstract class IPersonDAO {
 
   @Query("SELECT * FROM Person")
   Future<List<Person>> countPersons();
+
+  @Query(
+      'SELECT *  FROM Person where id NOT IN (:ids) LIMIT :persons_limit OFFSET  :persons_offset')
+  Future<List<Person>> pagePersonWithout(
+      List<String> ids, int persons_limit, int persons_offset);
+
+  @Query(
+      "SELECT *  FROM Person where id IN (:ids)")
+  Future<List<Person>> listPersonWith(List<String> ids);
+
+  @Query(
+      'SELECT * FROM Person WHERE accountName = :accountName and appid=:appid and tenantid=:tenantid LIMIT 1 OFFSET 0')
+  Future<Person> findPerson(String accountName, String appid, String tenantid);
 }
 
 @dao
@@ -173,7 +186,7 @@ abstract class IChannelMediaDAO {
   Future<List<Media>> getMediaByMsgId(String msgid);
 
   @Query('SELECT * FROM Media WHERE onChannel = :channelid')
-  Future<List<Media>> getMediaByChannelId(String channelid) ;
+  Future<List<Media>> getMediaByChannelId(String channelid);
 }
 
 @dao
@@ -203,9 +216,9 @@ abstract class IChannelLikePersonDAO {
       'SELECT *  FROM LikePerson WHERE msgid=:msgid  LIMIT :pageSize OFFSET  :offset')
   Future<List<LikePerson>> pageLikePersonBy(
       String msgid, int pageSize, int offset);
-  @Query('delete FROM LikePerson WHERE onChannel = :channelid')
-  Future<void>  removeLikePersonByChannel(String channelid) ;
 
+  @Query('delete FROM LikePerson WHERE onChannel = :channelid')
+  Future<void> removeLikePersonByChannel(String channelid);
 }
 
 @dao
@@ -229,19 +242,72 @@ abstract class IChannelCommentDAO {
       'SELECT *  FROM ChannelComment WHERE msgid=:msgid  LIMIT :pageSize OFFSET  :offset')
   Future<List<ChannelComment>> pageLikeCommentBy(
       String msgid, int pageSize, int offset) {}
-  @Query('delete FROM ChannelComment WHERE onChannel = :channelid')
-  Future<void> removeCommentBy(String channelid) ;
 
+  @Query('delete FROM ChannelComment WHERE onChannel = :channelid')
+  Future<void> removeCommentBy(String channelid);
 }
+
 @dao
 abstract class IChannelPinDAO {
+  @Query(
+      'UPDATE ChannelPin SET outPersonSelector = :selector WHERE channel = :channelid')
+  Future<void> setOutputPersonSelector(selector, String channelid);
 
+  @Query(
+      'UPDATE ChannelPin SET outGeoSelector = :isset WHERE channel = :channelid')
+  Future<void> setOutputGeoSelector(String isset, String channelid);
+
+  @Query('SELECT *  FROM ChannelPin WHERE channel=:channelid')
+  Future<ChannelPin> getChannelPin(String channelid);
+
+  @insert
+  Future<void> addChannelPin(ChannelPin channelPin);
+
+  @Query('delete FROM ChannelPin WHERE channel=:channelid')
+  Future<void> remove(String channelid);
 }
+
 @dao
 abstract class IChannelOutputPersonDAO {
+  @Query(
+      'SELECT *  FROM ChannelOutputPerson WHERE channel=:channelid  LIMIT :limit OFFSET  :offset')
+  Future<List<ChannelOutputPerson>> pageOutputPerson(
+      String channelid, int limit, int offset);
+
+  @Query('SELECT *  FROM ChannelOutputPerson WHERE channel=:channelid')
+  Future<List<ChannelOutputPerson>> listOutputPerson(String channelid);
+
+  @Query(
+      'delete FROM ChannelOutputPerson WHERE person=:person AND channel = :channelid')
+  Future<void> removeOutputPerson(String person, String channelid);
+
+  @insert
+  Future<void> addOutputPerson(ChannelOutputPerson person);
+
+  @Query(
+      'select * FROM ChannelOutputPerson WHERE person=:person AND channel = :channelid LIMIT 1 OFFSET 0')
+  Future<ChannelOutputPerson> getOutputPerson(String person, String channelid);
+  @Query(
+      'delete FROM ChannelOutputPerson WHERE channel = :channelid')
+  Future<void> emptyOutputPersons(String channelid) ;
 
 }
+
 @dao
 abstract class IChannelInputPersonDAO {
+  @Query(
+      'SELECT *  FROM ChannelInputPerson WHERE channel=:channelid  LIMIT :limit OFFSET  :offset')
+  Future<List<ChannelInputPerson>> pageInputPerson(
+      String channelid, int limit, int offset);
 
+  @Query(
+      'delete FROM ChannelInputPerson WHERE person=:person AND channel = :channelid')
+  Future<void> removeInputPerson(String person, String channelid);
+
+  @insert
+  Future<void> addInputPerson(ChannelInputPerson person);
+
+  @Query(
+      'select * FROM ChannelInputPerson WHERE person=:person AND channel = :channelid LIMIT 1 OFFSET 0')
+  Future<ChannelInputPerson> getInputPerson(String person, String channelid);
 }

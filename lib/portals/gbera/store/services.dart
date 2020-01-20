@@ -15,6 +15,11 @@ mixin IPersonService {
   Future<List<Person>> pagePerson(int limit, int offset);
 
   Future<int> count();
+
+  Future<List<Person>> pagePersonWithout(List<String> personList, int persons_limit, int persons_offset) ;
+
+  Future<List<Person>> listPersonWith(List<String> personList) ;
+
 }
 mixin IChannelService {
   Future<void> init(UserPrincipal user);
@@ -110,4 +115,46 @@ mixin IChannelCommentService {
   Future<void> removeComment(String id);
 
   Future<void> removeBy(String channelid) {}
+}
+mixin IChannelPinService {
+  Future<void> init(String channelid);
+
+  Future<OutsitePersonsSettingStrategy> getInputPersonSelector(
+      String channelid);
+  Future<OutsitePersonsSettingStrategy> getOutputPersonSelector(
+      String channelid);
+
+  Future<void> setOutputPersonSelector(String channelid,
+      OutsitePersonsSettingStrategy outsitePersonsSettingStrategy);
+
+  Future<bool> getOutputGeoSelector(String channelid);
+
+  Future<void> setOutputGeoSelector(String channelid, bool isSet);
+
+  Future<void> setOutputWechatCircleSelector(String channelid, bool isSet);
+
+  Future<void> setOutputWechatHaoYouSelector(String channelid, bool isSet);
+
+  Future<void> addInputPerson(ChannelInputPerson person);
+
+  Future<void> removeInputPerson(String person, String channelid);
+
+  Future<List<ChannelInputPerson>> pageInputPerson(
+      String channelid, int limit, int offset);
+
+  Future<void> addOutputPerson(ChannelOutputPerson person);
+
+  Future<void> removeOutputPerson(String person, String channelid);
+
+  Future<List<ChannelOutputPerson>> pageOutputPerson(
+      String channelid, int limit, int offset);
+
+  Future<void>removePin(String channelid) ;
+
+  Future<List<ChannelOutputPerson>> listOutputPerson(String channelid) ;
+
+  Future<void> emptyOutputPersons(String channelid) ;
+
+
+
 }

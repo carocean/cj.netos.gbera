@@ -8,7 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/store/entities.dart';
 import 'package:gbera/portals/gbera/store/services.dart';
-
+Function() _resetPersons;
 class PersonalSite extends StatefulWidget {
   PageContext context;
 
@@ -45,6 +45,7 @@ class _PersonalSiteState extends State<PersonalSite> {
 
   @override
   void initState() {
+    _resetPersons=widget.context.parameters['resetPersons'];
     super.initState();
     _controller = ScrollController(initialScrollOffset: 0.0);
     _controller.addListener(_listener);
@@ -80,6 +81,9 @@ class _PersonalSiteState extends State<PersonalSite> {
         backgroundColor: Colors.white,
         leading: IconButton(
           onPressed: () {
+            if(_resetPersons!=null) {
+              _resetPersons();
+            }
             widget.context.backward();
           },
           icon: Icon(
