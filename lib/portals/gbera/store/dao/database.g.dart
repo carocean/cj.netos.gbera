@@ -102,29 +102,29 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Person` (`id` TEXT, `uid` TEXT, `accountid` TEXT, `accountName` TEXT, `appid` TEXT, `tenantid` TEXT, `avatar` TEXT, `rights` TEXT, `nickName` TEXT, `signature` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Person` (`id` TEXT, `official` TEXT, `uid` TEXT, `accountid` TEXT, `accountName` TEXT, `appid` TEXT, `tenantid` TEXT, `avatar` TEXT, `rights` TEXT, `nickName` TEXT, `signature` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `MicroSite` (`id` TEXT, `name` TEXT, `leading` TEXT, `desc` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `MicroSite` (`id` TEXT, `name` TEXT, `leading` TEXT, `desc` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `MicroApp` (`id` TEXT, `site` TEXT, `leading` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `MicroApp` (`id` TEXT, `site` TEXT, `leading` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Channel` (`id` TEXT, `name` TEXT, `owner` TEXT, `loopType` TEXT, `leading` TEXT, `site` TEXT, `tips` TEXT, `ctime` INTEGER, `utime` INTEGER, `unreadMsgCount` INTEGER, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Channel` (`id` TEXT, `code` TEXT, `name` TEXT, `owner` TEXT, `loopType` TEXT, `leading` TEXT, `site` TEXT, `tips` TEXT, `ctime` INTEGER, `utime` INTEGER, `unreadMsgCount` INTEGER, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `InsiteMessage` (`id` TEXT, `upstreamPerson` TEXT, `sourceSite` TEXT, `sourceApp` TEXT, `onChannel` TEXT, `creator` TEXT, `ctime` INTEGER, `digests` TEXT, `wy` REAL, `location` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `InsiteMessage` (`id` TEXT, `upstreamPerson` TEXT, `sourceSite` TEXT, `sourceApp` TEXT, `onChannel` TEXT, `creator` TEXT, `ctime` INTEGER, `digests` TEXT, `wy` REAL, `location` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `ChannelMessage` (`id` TEXT, `upstreamPerson` TEXT, `sourceSite` TEXT, `sourceApp` TEXT, `onChannel` TEXT, `creator` TEXT, `ctime` INTEGER, `text` TEXT, `wy` REAL, `location` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `ChannelMessage` (`id` TEXT, `upstreamPerson` TEXT, `sourceSite` TEXT, `sourceApp` TEXT, `onChannel` TEXT, `creator` TEXT, `ctime` INTEGER, `text` TEXT, `wy` REAL, `location` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `ChannelComment` (`id` TEXT, `person` TEXT, `avatar` TEXT, `msgid` TEXT, `text` TEXT, `ctime` INTEGER, `nickName` TEXT, `onChannel` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `ChannelComment` (`id` TEXT, `person` TEXT, `avatar` TEXT, `msgid` TEXT, `text` TEXT, `ctime` INTEGER, `nickName` TEXT, `onChannel` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `LikePerson` (`id` TEXT, `person` TEXT, `avatar` TEXT, `msgid` TEXT, `ctime` INTEGER, `nickName` TEXT, `onChannel` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `LikePerson` (`id` TEXT, `person` TEXT, `avatar` TEXT, `msgid` TEXT, `ctime` INTEGER, `nickName` TEXT, `onChannel` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Media` (`id` TEXT, `type` TEXT, `src` TEXT, `leading` TEXT, `msgid` TEXT, `text` TEXT, `onChannel` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Media` (`id` TEXT, `type` TEXT, `src` TEXT, `leading` TEXT, `msgid` TEXT, `text` TEXT, `onChannel` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `ChannelPin` (`id` TEXT, `channel` TEXT, `inPersonSelector` TEXT, `outPersonSelector` TEXT, `outGeoSelector` TEXT, `outWechatPenYouSelector` TEXT, `outWechatHaoYouSelector` TEXT, `outContractSelector` TEXT, `inRights` TEXT, `outRights` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `ChannelPin` (`id` TEXT, `channel` TEXT, `inPersonSelector` TEXT, `outPersonSelector` TEXT, `outGeoSelector` TEXT, `outWechatPenYouSelector` TEXT, `outWechatHaoYouSelector` TEXT, `outContractSelector` TEXT, `inRights` TEXT, `outRights` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `ChannelInputPerson` (`id` TEXT, `channel` TEXT, `person` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `ChannelInputPerson` (`id` TEXT, `channel` TEXT, `person` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `ChannelOutputPerson` (`id` TEXT, `channel` TEXT, `person` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `ChannelOutputPerson` (`id` TEXT, `channel` TEXT, `person` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -209,6 +209,7 @@ class _$IPersonDAO extends IPersonDAO {
             'Person',
             (Person item) => <String, dynamic>{
                   'id': item.id,
+                  'official': item.official,
                   'uid': item.uid,
                   'accountid': item.accountid,
                   'accountName': item.accountName,
@@ -217,7 +218,8 @@ class _$IPersonDAO extends IPersonDAO {
                   'avatar': item.avatar,
                   'rights': item.rights,
                   'nickName': item.nickName,
-                  'signature': item.signature
+                  'signature': item.signature,
+                  'sandbox': item.sandbox
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -228,6 +230,7 @@ class _$IPersonDAO extends IPersonDAO {
 
   static final _personMapper = (Map<String, dynamic> row) => Person(
       row['id'] as String,
+      row['official'] as String,
       row['uid'] as String,
       row['accountid'] as String,
       row['accountName'] as String,
@@ -236,77 +239,87 @@ class _$IPersonDAO extends IPersonDAO {
       row['avatar'] as String,
       row['rights'] as String,
       row['nickName'] as String,
-      row['signature'] as String);
+      row['signature'] as String,
+      row['sandbox'] as String);
 
   final InsertionAdapter<Person> _personInsertionAdapter;
 
   @override
-  Future<void> removePerson(String id) async {
-    await _queryAdapter.queryNoReturn('delete FROM Person WHERE id = ?',
-        arguments: <dynamic>[id]);
+  Future<void> removePerson(String official, String sandbox) async {
+    await _queryAdapter.queryNoReturn(
+        'delete FROM Person WHERE official = ? AND sandbox=?',
+        arguments: <dynamic>[official, sandbox]);
   }
 
   @override
-  Future<void> empty() async {
-    await _queryAdapter.queryNoReturn('delete FROM Person');
+  Future<void> empty(String sandbox) async {
+    await _queryAdapter.queryNoReturn('delete FROM Person where sandbox=?',
+        arguments: <dynamic>[sandbox]);
   }
 
   @override
-  Future<List<Person>> pagePerson(int pageSize, int currPage) async {
-    return _queryAdapter.queryList('SELECT * FROM Person LIMIT ? OFFSET ?',
-        arguments: <dynamic>[pageSize, currPage], mapper: _personMapper);
-  }
-
-  @override
-  Future<Person> getPerson(String id) async {
-    return _queryAdapter.query('SELECT * FROM Person WHERE id = ?',
-        arguments: <dynamic>[id], mapper: _personMapper);
-  }
-
-  @override
-  Future<List<Person>> getAllPerson() async {
-    return _queryAdapter.queryList('SELECT * FROM Person',
-        mapper: _personMapper);
-  }
-
-  @override
-  Future<List<Person>> countPersons() async {
-    return _queryAdapter.queryList('SELECT * FROM Person',
-        mapper: _personMapper);
-  }
-
-  @override
-  Future<List<Person>> pagePersonWithout(
-      List<String> ids, int persons_limit, int persons_offset) async {
-    final valueList1 = ids.map((value) => "'$value'").join(', ');
+  Future<List<Person>> pagePerson(
+      String sandbox, int pageSize, int currPage) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM Person where id NOT IN ($valueList1) LIMIT ? OFFSET ?',
-        arguments: <dynamic>[persons_limit, persons_offset],
+        'SELECT * FROM Person where sandbox=? LIMIT ? OFFSET ?',
+        arguments: <dynamic>[sandbox, pageSize, currPage],
         mapper: _personMapper);
   }
 
   @override
-  Future<List<Person>> listPersonWith(List<String> ids) async {
-    final valueList1 = ids.map((value) => "'$value'").join(', ');
+  Future<Person> getPerson(String official, String sandbox) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Person WHERE official = ? and sandbox=?',
+        arguments: <dynamic>[official, sandbox],
+        mapper: _personMapper);
+  }
+
+  @override
+  Future<List<Person>> getAllPerson(String sandbox) async {
+    return _queryAdapter.queryList('SELECT * FROM Person where sandbox=?',
+        arguments: <dynamic>[sandbox], mapper: _personMapper);
+  }
+
+  @override
+  Future<List<Person>> countPersons(String sandbox) async {
+    return _queryAdapter.queryList('SELECT * FROM Person where sandbox=?',
+        arguments: <dynamic>[sandbox], mapper: _personMapper);
+  }
+
+  @override
+  Future<List<Person>> pagePersonWithout(String sandbox, List<String> officials,
+      int persons_limit, int persons_offset) async {
+    final valueList1 = officials.map((value) => "'$value'").join(', ');
     return _queryAdapter.queryList(
-        'SELECT * FROM Person where id IN ($valueList1)',
+        'SELECT * FROM Person where sandbox=? and official NOT IN ($valueList1) LIMIT ? OFFSET ?',
+        arguments: <dynamic>[sandbox, persons_limit, persons_offset],
+        mapper: _personMapper);
+  }
+
+  @override
+  Future<List<Person>> listPersonWith(
+      String sandbox, List<String> officials) async {
+    final valueList1 = officials.map((value) => "'$value'").join(', ');
+    return _queryAdapter.queryList(
+        'SELECT * FROM Person where sandbox=? and official IN ($valueList1)',
+        arguments: <dynamic>[sandbox],
         mapper: _personMapper);
   }
 
   @override
   Future<Person> findPerson(
-      String accountName, String appid, String tenantid) async {
+      String sandbox, String accountName, String appid, String tenantid) async {
     return _queryAdapter.query(
-        'SELECT * FROM Person WHERE accountName = ? and appid=? and tenantid=? LIMIT 1 OFFSET 0',
-        arguments: <dynamic>[accountName, appid, tenantid],
+        'SELECT * FROM Person WHERE sandbox=? and accountName = ? and appid=? and tenantid=? LIMIT 1 OFFSET 0',
+        arguments: <dynamic>[sandbox, accountName, appid, tenantid],
         mapper: _personMapper);
   }
 
   @override
-  Future<Person> getPersonByUID(String uid) async {
+  Future<Person> getPersonByUID(String sandbox, String uid) async {
     return _queryAdapter.query(
-        'SELECT * FROM Person WHERE uid = ? LIMIT 1 OFFSET 0',
-        arguments: <dynamic>[uid],
+        'SELECT * FROM Person WHERE sandbox =? and uid = ? LIMIT 1 OFFSET 0',
+        arguments: <dynamic>[sandbox, uid],
         mapper: _personMapper);
   }
 
@@ -327,7 +340,8 @@ class _$IMicroSiteDAO extends IMicroSiteDAO {
                   'id': item.id,
                   'name': item.name,
                   'leading': item.leading,
-                  'desc': item.desc
+                  'desc': item.desc,
+                  'sandbox': item.sandbox
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -340,32 +354,39 @@ class _$IMicroSiteDAO extends IMicroSiteDAO {
       row['id'] as String,
       row['name'] as String,
       row['leading'] as String,
-      row['desc'] as String);
+      row['desc'] as String,
+      row['sandbox'] as String);
 
   final InsertionAdapter<MicroSite> _microSiteInsertionAdapter;
 
   @override
-  Future<void> removeSite(String id) async {
-    await _queryAdapter.queryNoReturn('delete FROM MicroSite WHERE id = ?',
-        arguments: <dynamic>[id]);
+  Future<void> removeSite(String id, String sandbox) async {
+    await _queryAdapter.queryNoReturn(
+        'delete FROM MicroSite WHERE id = ? and sandbox=?',
+        arguments: <dynamic>[id, sandbox]);
   }
 
   @override
-  Future<List<MicroSite>> pageSite(int pageSize, int currPage) async {
-    return _queryAdapter.queryList('SELECT * FROM MicroSite LIMIT ? OFFSET ?',
-        arguments: <dynamic>[pageSize, currPage], mapper: _microSiteMapper);
-  }
-
-  @override
-  Future<MicroSite> getSite(String id) async {
-    return _queryAdapter.query('SELECT * FROM MicroSite WHERE id = ?',
-        arguments: <dynamic>[id], mapper: _microSiteMapper);
-  }
-
-  @override
-  Future<List<MicroSite>> getAllSite() async {
-    return _queryAdapter.queryList('SELECT * FROM MicroSite',
+  Future<List<MicroSite>> pageSite(
+      String sandbox, int pageSize, int currPage) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM MicroSite where sandbox=? LIMIT ? OFFSET ?',
+        arguments: <dynamic>[sandbox, pageSize, currPage],
         mapper: _microSiteMapper);
+  }
+
+  @override
+  Future<MicroSite> getSite(String sandbox, String id) async {
+    return _queryAdapter.query(
+        'SELECT * FROM MicroSite WHERE sandbox=? and id = ?',
+        arguments: <dynamic>[sandbox, id],
+        mapper: _microSiteMapper);
+  }
+
+  @override
+  Future<List<MicroSite>> getAllSite(String sandbox) async {
+    return _queryAdapter.queryList('SELECT * FROM MicroSite where sandbox=?',
+        arguments: <dynamic>[sandbox], mapper: _microSiteMapper);
   }
 
   @override
@@ -384,7 +405,8 @@ class _$IMicroAppDAO extends IMicroAppDAO {
             (MicroApp item) => <String, dynamic>{
                   'id': item.id,
                   'site': item.site,
-                  'leading': item.leading
+                  'leading': item.leading,
+                  'sandbox': item.sandbox
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -394,32 +416,41 @@ class _$IMicroAppDAO extends IMicroAppDAO {
   final QueryAdapter _queryAdapter;
 
   static final _microAppMapper = (Map<String, dynamic> row) => MicroApp(
-      row['id'] as String, row['site'] as String, row['leading'] as String);
+      row['id'] as String,
+      row['site'] as String,
+      row['leading'] as String,
+      row['sandbox'] as String);
 
   final InsertionAdapter<MicroApp> _microAppInsertionAdapter;
 
   @override
-  Future<void> removeApp(String id) async {
-    await _queryAdapter.queryNoReturn('delete FROM MicroApp WHERE id = ?',
-        arguments: <dynamic>[id]);
+  Future<void> removeApp(String sandbox, String id) async {
+    await _queryAdapter.queryNoReturn(
+        'delete FROM MicroApp WHERE sandbox=? and id = ?',
+        arguments: <dynamic>[sandbox, id]);
   }
 
   @override
-  Future<List<MicroApp>> pageApp(int pageSize, int currPage) async {
-    return _queryAdapter.queryList('SELECT * FROM MicroApp LIMIT ? OFFSET ?',
-        arguments: <dynamic>[pageSize, currPage], mapper: _microAppMapper);
-  }
-
-  @override
-  Future<MicroApp> getApp(String id) async {
-    return _queryAdapter.query('SELECT * FROM MicroApp WHERE id = ?',
-        arguments: <dynamic>[id], mapper: _microAppMapper);
-  }
-
-  @override
-  Future<List<MicroApp>> getAllApp() async {
-    return _queryAdapter.queryList('SELECT * FROM MicroApp',
+  Future<List<MicroApp>> pageApp(
+      String sandbox, int pageSize, int currPage) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM MicroApp where sandbox=? LIMIT ? OFFSET ?',
+        arguments: <dynamic>[sandbox, pageSize, currPage],
         mapper: _microAppMapper);
+  }
+
+  @override
+  Future<MicroApp> getApp(String sandbox, String id) async {
+    return _queryAdapter.query(
+        'SELECT * FROM MicroApp WHERE sandbox=? and id = ?',
+        arguments: <dynamic>[sandbox, id],
+        mapper: _microAppMapper);
+  }
+
+  @override
+  Future<List<MicroApp>> getAllApp(String sandbox) async {
+    return _queryAdapter.queryList('SELECT * FROM MicroApp where sandbox=?',
+        arguments: <dynamic>[sandbox], mapper: _microAppMapper);
   }
 
   @override
@@ -437,6 +468,7 @@ class _$IChannelDAO extends IChannelDAO {
             'Channel',
             (Channel item) => <String, dynamic>{
                   'id': item.id,
+                  'code': item.code,
                   'name': item.name,
                   'owner': item.owner,
                   'loopType': item.loopType,
@@ -445,7 +477,8 @@ class _$IChannelDAO extends IChannelDAO {
                   'tips': item.tips,
                   'ctime': item.ctime,
                   'utime': item.utime,
-                  'unreadMsgCount': item.unreadMsgCount
+                  'unreadMsgCount': item.unreadMsgCount,
+                  'sandbox': item.sandbox
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -456,6 +489,7 @@ class _$IChannelDAO extends IChannelDAO {
 
   static final _channelMapper = (Map<String, dynamic> row) => Channel(
       row['id'] as String,
+      row['code'] as String,
       row['name'] as String,
       row['owner'] as String,
       row['loopType'] as String,
@@ -464,72 +498,86 @@ class _$IChannelDAO extends IChannelDAO {
       row['tips'] as String,
       row['ctime'] as int,
       row['utime'] as int,
-      row['unreadMsgCount'] as int);
+      row['unreadMsgCount'] as int,
+      row['sandbox'] as String);
 
   final InsertionAdapter<Channel> _channelInsertionAdapter;
 
   @override
-  Future<void> removeChannel(String channelid) async {
-    await _queryAdapter.queryNoReturn('delete FROM Channel WHERE id = ?',
-        arguments: <dynamic>[channelid]);
+  Future<void> removeChannel(String sandbox, String code) async {
+    await _queryAdapter.queryNoReturn(
+        'delete FROM Channel WHERE sandbox=? and code = ?',
+        arguments: <dynamic>[sandbox, code]);
   }
 
   @override
-  Future<List<Channel>> pageChannel(int pageSize, int currPage) async {
-    return _queryAdapter.queryList('SELECT * FROM Channel LIMIT ? OFFSET ?',
-        arguments: <dynamic>[pageSize, currPage], mapper: _channelMapper);
-  }
-
-  @override
-  Future<Channel> getChannel(String channelid) async {
-    return _queryAdapter.query('SELECT * FROM Channel WHERE id = ?',
-        arguments: <dynamic>[channelid], mapper: _channelMapper);
-  }
-
-  @override
-  Future<List<Channel>> getAllChannel() async {
+  Future<List<Channel>> pageChannel(
+      String sandbox, int pageSize, int currPage) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM Channel ORDER BY utime DESC,ctime DESC',
+        'SELECT * FROM Channel where sandbox=? LIMIT ? OFFSET ?',
+        arguments: <dynamic>[sandbox, pageSize, currPage],
         mapper: _channelMapper);
   }
 
   @override
-  Future<void> empty() async {
-    await _queryAdapter.queryNoReturn('delete FROM Channel');
-  }
-
-  @override
-  Future<void> emptyOfPerson(String personid) async {
-    await _queryAdapter.queryNoReturn('delete FROM Channel WHERE owner = ?',
-        arguments: <dynamic>[personid]);
-  }
-
-  @override
-  Future<List<Channel>> getChannelsOfPerson(String personid) async {
-    return _queryAdapter.queryList('SELECT * FROM Channel WHERE owner = ?',
-        arguments: <dynamic>[personid], mapper: _channelMapper);
-  }
-
-  @override
-  Future<Channel> getChannelByName(String channelName, String owner) async {
+  Future<Channel> getChannel(String sandbox, String code) async {
     return _queryAdapter.query(
-        'SELECT * FROM Channel WHERE name = ? AND owner = ?',
-        arguments: <dynamic>[channelName, owner],
+        'SELECT * FROM Channel WHERE sandbox=? and code = ?',
+        arguments: <dynamic>[sandbox, code],
         mapper: _channelMapper);
   }
 
   @override
-  Future<void> updateLeading(String path, String channelid) async {
-    await _queryAdapter.queryNoReturn(
-        'UPDATE Channel SET leading = ? WHERE id = ?',
-        arguments: <dynamic>[path, channelid]);
+  Future<List<Channel>> getAllChannel(String sandbox) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Channel where sandbox=? ORDER BY utime DESC,ctime DESC',
+        arguments: <dynamic>[sandbox],
+        mapper: _channelMapper);
   }
 
   @override
-  Future<void> updateName(String name, String channelid) async {
+  Future<void> empty(String sandbox) async {
+    await _queryAdapter.queryNoReturn('delete FROM Channel where sandbox=?',
+        arguments: <dynamic>[sandbox]);
+  }
+
+  @override
+  Future<void> emptyOfPerson(String sandbox, String person) async {
     await _queryAdapter.queryNoReturn(
-        'UPDATE Channel SET name = ? WHERE id = ?',
-        arguments: <dynamic>[name, channelid]);
+        'delete FROM Channel WHERE sandbox=? and owner = ?',
+        arguments: <dynamic>[sandbox, person]);
+  }
+
+  @override
+  Future<List<Channel>> getChannelsOfPerson(
+      String sandbox, String person) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Channel WHERE sandbox=? owner = ?',
+        arguments: <dynamic>[sandbox, person],
+        mapper: _channelMapper);
+  }
+
+  @override
+  Future<Channel> getChannelByName(
+      String sandbox, String channelName, String owner) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Channel WHERE sandbox=? and name = ? AND owner = ?',
+        arguments: <dynamic>[sandbox, channelName, owner],
+        mapper: _channelMapper);
+  }
+
+  @override
+  Future<void> updateLeading(String path, String sandbox, String code) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE Channel SET leading = ? WHERE sandbox=? and code = ?',
+        arguments: <dynamic>[path, sandbox, code]);
+  }
+
+  @override
+  Future<void> updateName(String name, String code, String sandbox) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE Channel SET name = ? WHERE code = ? and sandbox=?',
+        arguments: <dynamic>[name, code, sandbox]);
   }
 
   @override
@@ -555,7 +603,8 @@ class _$IInsiteMessageDAO extends IInsiteMessageDAO {
                   'ctime': item.ctime,
                   'digests': item.digests,
                   'wy': item.wy,
-                  'location': item.location
+                  'location': item.location,
+                  'sandbox': item.sandbox
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -575,48 +624,57 @@ class _$IInsiteMessageDAO extends IInsiteMessageDAO {
           row['ctime'] as int,
           row['digests'] as String,
           row['wy'] as double,
-          row['location'] as String);
+          row['location'] as String,
+          row['sandbox'] as String);
 
   final InsertionAdapter<InsiteMessage> _insiteMessageInsertionAdapter;
 
   @override
-  Future<void> removeMessage(String id) async {
-    await _queryAdapter.queryNoReturn('delete FROM InsiteMessage WHERE id = ?',
-        arguments: <dynamic>[id]);
+  Future<void> removeMessage(String id, String sandbox) async {
+    await _queryAdapter.queryNoReturn(
+        'delete FROM InsiteMessage WHERE id = ? and sandbox=?',
+        arguments: <dynamic>[id, sandbox]);
   }
 
   @override
-  Future<List<InsiteMessage>> pageMessage(int pageSize, int currPage) async {
+  Future<List<InsiteMessage>> pageMessage(
+      String sandbox, int pageSize, int currPage) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM InsiteMessage LIMIT ? OFFSET ?',
-        arguments: <dynamic>[pageSize, currPage],
+        'SELECT * FROM InsiteMessage where sandbox=? LIMIT ? OFFSET ?',
+        arguments: <dynamic>[sandbox, pageSize, currPage],
         mapper: _insiteMessageMapper);
   }
 
   @override
   Future<List<InsiteMessage>> pageMessageByChannelLoopType(
-      String loopType, int limit, int offset) async {
+      String loopType, String sandbox, int limit, int offset) async {
     return _queryAdapter.queryList(
-        'SELECT msg.* FROM InsiteMessage msg,Channel ch WHERE msg.onChannel=ch.id AND ch.loopType=? LIMIT ? OFFSET ?',
-        arguments: <dynamic>[loopType, limit, offset],
+        'SELECT msg.* FROM InsiteMessage msg,Channel ch WHERE msg.onChannel=ch.code AND ch.loopType=? and msg.sandbox=? LIMIT ? OFFSET ?',
+        arguments: <dynamic>[loopType, sandbox, limit, offset],
         mapper: _insiteMessageMapper);
   }
 
   @override
-  Future<InsiteMessage> getMessage(String id) async {
-    return _queryAdapter.query('SELECT * FROM InsiteMessage WHERE id = ?',
-        arguments: <dynamic>[id], mapper: _insiteMessageMapper);
-  }
-
-  @override
-  Future<List<InsiteMessage>> getAllMessage() async {
-    return _queryAdapter.queryList('SELECT * FROM InsiteMessage',
+  Future<InsiteMessage> getMessage(String id, String sandbox) async {
+    return _queryAdapter.query(
+        'SELECT * FROM InsiteMessage WHERE id = ? and sandbox=?',
+        arguments: <dynamic>[id, sandbox],
         mapper: _insiteMessageMapper);
   }
 
   @override
-  Future<void> empty() async {
-    await _queryAdapter.queryNoReturn('delete FROM InsiteMessage');
+  Future<List<InsiteMessage>> getAllMessage(String sandbox) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM InsiteMessage where sandbox=?',
+        arguments: <dynamic>[sandbox],
+        mapper: _insiteMessageMapper);
+  }
+
+  @override
+  Future<void> empty(String sandbox) async {
+    await _queryAdapter.queryNoReturn(
+        'delete FROM InsiteMessage where sandbox=?',
+        arguments: <dynamic>[sandbox]);
   }
 
   @override
@@ -642,7 +700,8 @@ class _$IChannelMessageDAO extends IChannelMessageDAO {
                   'ctime': item.ctime,
                   'text': item.text,
                   'wy': item.wy,
-                  'location': item.location
+                  'location': item.location,
+                  'sandbox': item.sandbox
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -662,65 +721,73 @@ class _$IChannelMessageDAO extends IChannelMessageDAO {
           row['ctime'] as int,
           row['text'] as String,
           row['wy'] as double,
-          row['location'] as String);
+          row['location'] as String,
+          row['sandbox'] as String);
 
   final InsertionAdapter<ChannelMessage> _channelMessageInsertionAdapter;
 
   @override
-  Future<void> removeMessage(String id) async {
-    await _queryAdapter.queryNoReturn('delete FROM ChannelMessage WHERE id = ?',
-        arguments: <dynamic>[id]);
+  Future<void> removeMessage(String id, String sandbox) async {
+    await _queryAdapter.queryNoReturn(
+        'delete FROM ChannelMessage WHERE id = ? and sandbox=?',
+        arguments: <dynamic>[id, sandbox]);
   }
 
   @override
   Future<List<ChannelMessage>> pageMessage(
-      String onChannel, int pageSize, int currPage) async {
+      String onChannel, String sandbox, int pageSize, int currPage) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM ChannelMessage WHERE onChannel = ? ORDER BY ctime DESC LIMIT ? OFFSET ?',
-        arguments: <dynamic>[onChannel, pageSize, currPage],
+        'SELECT * FROM ChannelMessage WHERE onChannel = ? and sandbox=? ORDER BY ctime DESC LIMIT ? OFFSET ?',
+        arguments: <dynamic>[onChannel, sandbox, pageSize, currPage],
         mapper: _channelMessageMapper);
   }
 
   @override
   Future<List<ChannelMessage>> pageMessageByChannelLoopType(
-      String loopType, int limit, int offset) async {
+      String loopType, String sandbox, int limit, int offset) async {
     return _queryAdapter.queryList(
-        'SELECT msg.* FROM ChannelMessage msg,Channel ch WHERE msg.onChannel=ch.id AND ch.loopType=? LIMIT ? OFFSET ?',
-        arguments: <dynamic>[loopType, limit, offset],
+        'SELECT msg.* FROM ChannelMessage msg,Channel ch WHERE msg.onChannel=ch.code AND ch.loopType=? and msg.sandbox=? LIMIT ? OFFSET ?',
+        arguments: <dynamic>[loopType, sandbox, limit, offset],
         mapper: _channelMessageMapper);
   }
 
   @override
-  Future<List<ChannelMessage>> pageMessageBy(
-      String onchannel, String person, int limit, int offset) async {
+  Future<List<ChannelMessage>> pageMessageBy(String onchannel, String person,
+      String sandbox, int limit, int offset) async {
     return _queryAdapter.queryList(
-        'SELECT msg.* FROM ChannelMessage msg WHERE msg.onChannel=? AND msg.creator=? ORDER BY ctime DESC LIMIT ? OFFSET ?',
-        arguments: <dynamic>[onchannel, person, limit, offset],
+        'SELECT msg.* FROM ChannelMessage msg WHERE msg.onChannel=? AND msg.creator=? and msg.sandbox=? ORDER BY ctime DESC LIMIT ? OFFSET ?',
+        arguments: <dynamic>[onchannel, person, sandbox, limit, offset],
         mapper: _channelMessageMapper);
   }
 
   @override
-  Future<ChannelMessage> getMessage(String id) async {
-    return _queryAdapter.query('SELECT * FROM ChannelMessage WHERE id = ?',
-        arguments: <dynamic>[id], mapper: _channelMessageMapper);
-  }
-
-  @override
-  Future<List<ChannelMessage>> getAllMessage() async {
-    return _queryAdapter.queryList('SELECT * FROM ChannelMessage',
+  Future<ChannelMessage> getMessage(String id, String sandbox) async {
+    return _queryAdapter.query(
+        'SELECT * FROM ChannelMessage WHERE id = ? and sandbox=?',
+        arguments: <dynamic>[id, sandbox],
         mapper: _channelMessageMapper);
   }
 
   @override
-  Future<void> empty() async {
-    await _queryAdapter.queryNoReturn('delete FROM ChannelMessage');
+  Future<List<ChannelMessage>> getAllMessage(String sandbox) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM ChannelMessage where sandbox=?',
+        arguments: <dynamic>[sandbox],
+        mapper: _channelMessageMapper);
   }
 
   @override
-  Future<void> removeMessagesBy(String channelid) async {
+  Future<void> empty(String sandbox) async {
     await _queryAdapter.queryNoReturn(
-        'delete FROM ChannelMessage where onChannel=?',
-        arguments: <dynamic>[channelid]);
+        'delete FROM ChannelMessage where sandbox=?',
+        arguments: <dynamic>[sandbox]);
+  }
+
+  @override
+  Future<void> removeMessagesBy(String channelcode, String sandbox) async {
+    await _queryAdapter.queryNoReturn(
+        'delete FROM ChannelMessage where onChannel=? and sandbox=?',
+        arguments: <dynamic>[channelcode, sandbox]);
   }
 
   @override
@@ -743,7 +810,8 @@ class _$IChannelMediaDAO extends IChannelMediaDAO {
                   'leading': item.leading,
                   'msgid': item.msgid,
                   'text': item.text,
-                  'onChannel': item.onChannel
+                  'onChannel': item.onChannel,
+                  'sandbox': item.sandbox
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -759,43 +827,54 @@ class _$IChannelMediaDAO extends IChannelMediaDAO {
       row['leading'] as String,
       row['msgid'] as String,
       row['text'] as String,
-      row['onChannel'] as String);
+      row['onChannel'] as String,
+      row['sandbox'] as String);
 
   final InsertionAdapter<Media> _mediaInsertionAdapter;
 
   @override
-  Future<void> removeMedia(String id) async {
-    await _queryAdapter.queryNoReturn('delete FROM Media WHERE id = ?',
-        arguments: <dynamic>[id]);
+  Future<void> removeMedia(String id, String sandbox) async {
+    await _queryAdapter.queryNoReturn(
+        'delete FROM Media WHERE id = ? and sandbox=?',
+        arguments: <dynamic>[id, sandbox]);
   }
 
   @override
-  Future<List<Media>> pageMedia(int pageSize, int currPage) async {
-    return _queryAdapter.queryList('SELECT * FROM Media LIMIT ? OFFSET ?',
-        arguments: <dynamic>[pageSize, currPage], mapper: _mediaMapper);
+  Future<List<Media>> pageMedia(
+      String sandbox, int pageSize, int currPage) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Media where sandbox=? LIMIT ? OFFSET ?',
+        arguments: <dynamic>[sandbox, pageSize, currPage],
+        mapper: _mediaMapper);
   }
 
   @override
-  Future<Media> getMedia(String id) async {
-    return _queryAdapter.query('SELECT * FROM Media WHERE id = ?',
-        arguments: <dynamic>[id], mapper: _mediaMapper);
+  Future<Media> getMedia(String id, String sandbox) async {
+    return _queryAdapter.query('SELECT * FROM Media WHERE id = ? and sandbox=?',
+        arguments: <dynamic>[id, sandbox], mapper: _mediaMapper);
   }
 
   @override
-  Future<List<Media>> getAllMedia() async {
-    return _queryAdapter.queryList('SELECT * FROM Media', mapper: _mediaMapper);
+  Future<List<Media>> getAllMedia(String sandbox) async {
+    return _queryAdapter.queryList('SELECT * FROM Media where sandbox=?',
+        arguments: <dynamic>[sandbox], mapper: _mediaMapper);
   }
 
   @override
-  Future<List<Media>> getMediaByMsgId(String msgid) async {
-    return _queryAdapter.queryList('SELECT * FROM Media WHERE msgid = ?',
-        arguments: <dynamic>[msgid], mapper: _mediaMapper);
+  Future<List<Media>> getMediaByMsgId(String msgid, String sandbox) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Media WHERE msgid = ? and sandbox=?',
+        arguments: <dynamic>[msgid, sandbox],
+        mapper: _mediaMapper);
   }
 
   @override
-  Future<List<Media>> getMediaByChannelId(String channelid) async {
-    return _queryAdapter.queryList('SELECT * FROM Media WHERE onChannel = ?',
-        arguments: <dynamic>[channelid], mapper: _mediaMapper);
+  Future<List<Media>> getMediaBychannelcode(
+      String channelcode, String sandbox) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Media WHERE onChannel = ? and sandbox=?',
+        arguments: <dynamic>[channelcode, sandbox],
+        mapper: _mediaMapper);
   }
 
   @override
@@ -817,7 +896,8 @@ class _$IChannelLikePersonDAO extends IChannelLikePersonDAO {
                   'msgid': item.msgid,
                   'ctime': item.ctime,
                   'nickName': item.nickName,
-                  'onChannel': item.onChannel
+                  'onChannel': item.onChannel,
+                  'sandbox': item.sandbox
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -833,63 +913,73 @@ class _$IChannelLikePersonDAO extends IChannelLikePersonDAO {
       row['msgid'] as String,
       row['ctime'] as int,
       row['nickName'] as String,
-      row['onChannel'] as String);
+      row['onChannel'] as String,
+      row['sandbox'] as String);
 
   final InsertionAdapter<LikePerson> _likePersonInsertionAdapter;
 
   @override
-  Future<void> removeLikePerson(String id) async {
-    await _queryAdapter.queryNoReturn('delete FROM LikePerson WHERE id = ?',
-        arguments: <dynamic>[id]);
-  }
-
-  @override
-  Future<List<LikePerson>> pageLikePerson(int pageSize, int currPage) async {
-    return _queryAdapter.queryList('SELECT * FROM LikePerson LIMIT ? OFFSET ?',
-        arguments: <dynamic>[pageSize, currPage], mapper: _likePersonMapper);
-  }
-
-  @override
-  Future<LikePerson> getLikePerson(String id) async {
-    return _queryAdapter.query('SELECT * FROM LikePerson WHERE id = ?',
-        arguments: <dynamic>[id], mapper: _likePersonMapper);
-  }
-
-  @override
-  Future<List<LikePerson>> getAllLikePerson() async {
-    return _queryAdapter.queryList('SELECT * FROM LikePerson',
-        mapper: _likePersonMapper);
-  }
-
-  @override
-  Future<List<LikePerson>> getLikePersonBy(String msgid, String person) async {
-    return _queryAdapter.queryList(
-        'SELECT * FROM LikePerson WHERE msgid = ? AND person=?',
-        arguments: <dynamic>[msgid, person],
-        mapper: _likePersonMapper);
-  }
-
-  @override
-  Future<void> removeLikePersonBy(String msgid, String person) async {
+  Future<void> removeLikePerson(String id, String sandbox) async {
     await _queryAdapter.queryNoReturn(
-        'delete FROM LikePerson WHERE msgid = ? AND person=?',
-        arguments: <dynamic>[msgid, person]);
+        'delete FROM LikePerson WHERE id = ? and sandbox=?',
+        arguments: <dynamic>[id, sandbox]);
+  }
+
+  @override
+  Future<List<LikePerson>> pageLikePerson(
+      String sandbox, int pageSize, int currPage) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM LikePerson where sandbox=? LIMIT ? OFFSET ?',
+        arguments: <dynamic>[sandbox, pageSize, currPage],
+        mapper: _likePersonMapper);
+  }
+
+  @override
+  Future<LikePerson> getLikePerson(String id, String sandbox) async {
+    return _queryAdapter.query(
+        'SELECT * FROM LikePerson WHERE id = ? and sandbox=?',
+        arguments: <dynamic>[id, sandbox],
+        mapper: _likePersonMapper);
+  }
+
+  @override
+  Future<List<LikePerson>> getAllLikePerson(String sandbox) async {
+    return _queryAdapter.queryList('SELECT * FROM LikePerson where sandbox=?',
+        arguments: <dynamic>[sandbox], mapper: _likePersonMapper);
+  }
+
+  @override
+  Future<List<LikePerson>> getLikePersonBy(
+      String msgid, String person, String sandbox) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM LikePerson WHERE msgid = ? AND person=? and sandbox=?',
+        arguments: <dynamic>[msgid, person, sandbox],
+        mapper: _likePersonMapper);
+  }
+
+  @override
+  Future<void> removeLikePersonBy(
+      String msgid, String person, String sandbox) async {
+    await _queryAdapter.queryNoReturn(
+        'delete FROM LikePerson WHERE msgid = ? AND person=? and sandbox=?',
+        arguments: <dynamic>[msgid, person, sandbox]);
   }
 
   @override
   Future<List<LikePerson>> pageLikePersonBy(
-      String msgid, int pageSize, int offset) async {
+      String msgid, String sandbox, int pageSize, int offset) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM LikePerson WHERE msgid=? LIMIT ? OFFSET ?',
-        arguments: <dynamic>[msgid, pageSize, offset],
+        'SELECT * FROM LikePerson WHERE msgid=? and sandbox=? LIMIT ? OFFSET ?',
+        arguments: <dynamic>[msgid, sandbox, pageSize, offset],
         mapper: _likePersonMapper);
   }
 
   @override
-  Future<void> removeLikePersonByChannel(String channelid) async {
+  Future<void> removeLikePersonByChannel(
+      String channelcode, String sandbox) async {
     await _queryAdapter.queryNoReturn(
-        'delete FROM LikePerson WHERE onChannel = ?',
-        arguments: <dynamic>[channelid]);
+        'delete FROM LikePerson WHERE onChannel = ? and sandbox=?',
+        arguments: <dynamic>[channelcode, sandbox]);
   }
 
   @override
@@ -913,7 +1003,8 @@ class _$IChannelCommentDAO extends IChannelCommentDAO {
                   'text': item.text,
                   'ctime': item.ctime,
                   'nickName': item.nickName,
-                  'onChannel': item.onChannel
+                  'onChannel': item.onChannel,
+                  'sandbox': item.sandbox
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -931,50 +1022,57 @@ class _$IChannelCommentDAO extends IChannelCommentDAO {
           row['text'] as String,
           row['ctime'] as int,
           row['nickName'] as String,
-          row['onChannel'] as String);
+          row['onChannel'] as String,
+          row['sandbox'] as String);
 
   final InsertionAdapter<ChannelComment> _channelCommentInsertionAdapter;
 
   @override
-  Future<void> removeComment(String id) async {
-    await _queryAdapter.queryNoReturn('delete FROM ChannelComment WHERE id = ?',
-        arguments: <dynamic>[id]);
+  Future<void> removeComment(String id, String sandbox) async {
+    await _queryAdapter.queryNoReturn(
+        'delete FROM ChannelComment WHERE id = ? and sandbox=?',
+        arguments: <dynamic>[id, sandbox]);
   }
 
   @override
-  Future<List<ChannelComment>> pageComment(int pageSize, int currPage) async {
+  Future<List<ChannelComment>> pageComment(
+      String sandbox, int pageSize, int currPage) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM ChannelComment LIMIT ? OFFSET ?',
-        arguments: <dynamic>[pageSize, currPage],
+        'SELECT * FROM ChannelComment where sandbox=? LIMIT ? OFFSET ?',
+        arguments: <dynamic>[sandbox, pageSize, currPage],
         mapper: _channelCommentMapper);
   }
 
   @override
-  Future<ChannelComment> getComment(String id) async {
-    return _queryAdapter.query('SELECT * FROM ChannelComment WHERE id = ?',
-        arguments: <dynamic>[id], mapper: _channelCommentMapper);
+  Future<ChannelComment> getComment(String id, String sandbox) async {
+    return _queryAdapter.query(
+        'SELECT * FROM ChannelComment WHERE id = ? and sandbox=?',
+        arguments: <dynamic>[id, sandbox],
+        mapper: _channelCommentMapper);
   }
 
   @override
-  Future<List<ChannelComment>> getAllComment() async {
-    return _queryAdapter.queryList('SELECT * FROM ChannelComment',
+  Future<List<ChannelComment>> getAllComment(String sandbox) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM ChannelComment where sandbox=?',
+        arguments: <dynamic>[sandbox],
         mapper: _channelCommentMapper);
   }
 
   @override
   Future<List<ChannelComment>> pageLikeCommentBy(
-      String msgid, int pageSize, int offset) async {
+      String msgid, String sandbox, int pageSize, int offset) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM ChannelComment WHERE msgid=? LIMIT ? OFFSET ?',
-        arguments: <dynamic>[msgid, pageSize, offset],
+        'SELECT * FROM ChannelComment WHERE msgid=? and sandbox=? LIMIT ? OFFSET ?',
+        arguments: <dynamic>[msgid, sandbox, pageSize, offset],
         mapper: _channelCommentMapper);
   }
 
   @override
-  Future<void> removeCommentBy(String channelid) async {
+  Future<void> removeCommentBy(String channelcode, String sandbox) async {
     await _queryAdapter.queryNoReturn(
-        'delete FROM ChannelComment WHERE onChannel = ?',
-        arguments: <dynamic>[channelid]);
+        'delete FROM ChannelComment WHERE onChannel = ? and sandbox=?',
+        arguments: <dynamic>[channelcode, sandbox]);
   }
 
   @override
@@ -1000,7 +1098,8 @@ class _$IChannelPinDAO extends IChannelPinDAO {
                   'outWechatHaoYouSelector': item.outWechatHaoYouSelector,
                   'outContractSelector': item.outContractSelector,
                   'inRights': item.inRights,
-                  'outRights': item.outRights
+                  'outRights': item.outRights,
+                  'sandbox': item.sandbox
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -1019,35 +1118,40 @@ class _$IChannelPinDAO extends IChannelPinDAO {
       row['outWechatHaoYouSelector'] as String,
       row['outContractSelector'] as String,
       row['inRights'] as String,
-      row['outRights'] as String);
+      row['outRights'] as String,
+      row['sandbox'] as String);
 
   final InsertionAdapter<ChannelPin> _channelPinInsertionAdapter;
 
   @override
   Future<void> setOutputPersonSelector(
-      dynamic selector, String channelid) async {
+      dynamic selector, String channelcode, String sandbox) async {
     await _queryAdapter.queryNoReturn(
-        'UPDATE ChannelPin SET outPersonSelector = ? WHERE channel = ?',
-        arguments: <dynamic>[selector, channelid]);
+        'UPDATE ChannelPin SET outPersonSelector = ? WHERE channel = ? and sandbox=?',
+        arguments: <dynamic>[selector, channelcode, sandbox]);
   }
 
   @override
-  Future<void> setOutputGeoSelector(String isset, String channelid) async {
+  Future<void> setOutputGeoSelector(
+      String isset, String channelcode, String sandbox) async {
     await _queryAdapter.queryNoReturn(
-        'UPDATE ChannelPin SET outGeoSelector = ? WHERE channel = ?',
-        arguments: <dynamic>[isset, channelid]);
+        'UPDATE ChannelPin SET outGeoSelector = ? WHERE channel = ? and sandbox=?',
+        arguments: <dynamic>[isset, channelcode, sandbox]);
   }
 
   @override
-  Future<ChannelPin> getChannelPin(String channelid) async {
-    return _queryAdapter.query('SELECT * FROM ChannelPin WHERE channel=?',
-        arguments: <dynamic>[channelid], mapper: _channelPinMapper);
+  Future<ChannelPin> getChannelPin(String channelcode, String sandbox) async {
+    return _queryAdapter.query(
+        'SELECT * FROM ChannelPin WHERE channel=? and sandbox=?',
+        arguments: <dynamic>[channelcode, sandbox],
+        mapper: _channelPinMapper);
   }
 
   @override
-  Future<void> remove(String channelid) async {
-    await _queryAdapter.queryNoReturn('delete FROM ChannelPin WHERE channel=?',
-        arguments: <dynamic>[channelid]);
+  Future<void> remove(String channelcode, String sandbox) async {
+    await _queryAdapter.queryNoReturn(
+        'delete FROM ChannelPin WHERE channel=? and sandbox=?',
+        arguments: <dynamic>[channelcode, sandbox]);
   }
 
   @override
@@ -1066,7 +1170,8 @@ class _$IChannelInputPersonDAO extends IChannelInputPersonDAO {
             (ChannelInputPerson item) => <String, dynamic>{
                   'id': item.id,
                   'channel': item.channel,
-                  'person': item.person
+                  'person': item.person,
+                  'sandbox': item.sandbox
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -1077,41 +1182,43 @@ class _$IChannelInputPersonDAO extends IChannelInputPersonDAO {
 
   static final _channelInputPersonMapper = (Map<String, dynamic> row) =>
       ChannelInputPerson(row['id'] as String, row['channel'] as String,
-          row['person'] as String);
+          row['person'] as String, row['sandbox'] as String);
 
   final InsertionAdapter<ChannelInputPerson>
       _channelInputPersonInsertionAdapter;
 
   @override
   Future<List<ChannelInputPerson>> pageInputPerson(
-      String channelid, int limit, int offset) async {
+      String channelcode, String sandbox, int limit, int offset) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM ChannelInputPerson WHERE channel=? LIMIT ? OFFSET ?',
-        arguments: <dynamic>[channelid, limit, offset],
+        'SELECT * FROM ChannelInputPerson WHERE channel=? and sandbox=? LIMIT ? OFFSET ?',
+        arguments: <dynamic>[channelcode, sandbox, limit, offset],
         mapper: _channelInputPersonMapper);
   }
 
   @override
-  Future<void> removeInputPerson(String person, String channelid) async {
+  Future<void> removeInputPerson(
+      String person, String channelcode, String sandbox) async {
     await _queryAdapter.queryNoReturn(
-        'delete FROM ChannelInputPerson WHERE person=? AND channel = ?',
-        arguments: <dynamic>[person, channelid]);
+        'delete FROM ChannelInputPerson WHERE person=? AND channel = ? and sandbox=?',
+        arguments: <dynamic>[person, channelcode, sandbox]);
   }
 
   @override
   Future<ChannelInputPerson> getInputPerson(
-      String person, String channelid) async {
+      String person, String channelcode, String sandbox) async {
     return _queryAdapter.query(
-        'select * FROM ChannelInputPerson WHERE person=? AND channel = ? LIMIT 1 OFFSET 0',
-        arguments: <dynamic>[person, channelid],
+        'select * FROM ChannelInputPerson WHERE person=? AND channel = ? and sandbox=? LIMIT 1 OFFSET 0',
+        arguments: <dynamic>[person, channelcode, sandbox],
         mapper: _channelInputPersonMapper);
   }
 
   @override
-  Future<List<ChannelInputPerson>> listInputPerson(String channelid) async {
+  Future<List<ChannelInputPerson>> listInputPerson(
+      String channelcode, String sandbox) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM ChannelInputPerson WHERE channel=?',
-        arguments: <dynamic>[channelid],
+        'SELECT * FROM ChannelInputPerson WHERE channel=? and sandbox=?',
+        arguments: <dynamic>[channelcode, sandbox],
         mapper: _channelInputPersonMapper);
   }
 
@@ -1131,7 +1238,8 @@ class _$IChannelOutputPersonDAO extends IChannelOutputPersonDAO {
             (ChannelOutputPerson item) => <String, dynamic>{
                   'id': item.id,
                   'channel': item.channel,
-                  'person': item.person
+                  'person': item.person,
+                  'sandbox': item.sandbox
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -1142,49 +1250,51 @@ class _$IChannelOutputPersonDAO extends IChannelOutputPersonDAO {
 
   static final _channelOutputPersonMapper = (Map<String, dynamic> row) =>
       ChannelOutputPerson(row['id'] as String, row['channel'] as String,
-          row['person'] as String);
+          row['person'] as String, row['sandbox'] as String);
 
   final InsertionAdapter<ChannelOutputPerson>
       _channelOutputPersonInsertionAdapter;
 
   @override
   Future<List<ChannelOutputPerson>> pageOutputPerson(
-      String channelid, int limit, int offset) async {
+      String channelcode, String sandbox, int limit, int offset) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM ChannelOutputPerson WHERE channel=? LIMIT ? OFFSET ?',
-        arguments: <dynamic>[channelid, limit, offset],
+        'SELECT * FROM ChannelOutputPerson WHERE channel=? and sandbox=? LIMIT ? OFFSET ?',
+        arguments: <dynamic>[channelcode, sandbox, limit, offset],
         mapper: _channelOutputPersonMapper);
   }
 
   @override
-  Future<List<ChannelOutputPerson>> listOutputPerson(String channelid) async {
+  Future<List<ChannelOutputPerson>> listOutputPerson(
+      String channelcode, String sandbox) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM ChannelOutputPerson WHERE channel=?',
-        arguments: <dynamic>[channelid],
+        'SELECT * FROM ChannelOutputPerson WHERE channel=? and sandbox=?',
+        arguments: <dynamic>[channelcode, sandbox],
         mapper: _channelOutputPersonMapper);
   }
 
   @override
-  Future<void> removeOutputPerson(String person, String channelid) async {
+  Future<void> removeOutputPerson(
+      String person, String channelcode, String sandbox) async {
     await _queryAdapter.queryNoReturn(
-        'delete FROM ChannelOutputPerson WHERE person=? AND channel = ?',
-        arguments: <dynamic>[person, channelid]);
+        'delete FROM ChannelOutputPerson WHERE person=? AND channel = ? and sandbox=?',
+        arguments: <dynamic>[person, channelcode, sandbox]);
   }
 
   @override
   Future<ChannelOutputPerson> getOutputPerson(
-      String person, String channelid) async {
+      String person, String channelcode, String sandbox) async {
     return _queryAdapter.query(
-        'select * FROM ChannelOutputPerson WHERE person=? AND channel = ? LIMIT 1 OFFSET 0',
-        arguments: <dynamic>[person, channelid],
+        'select * FROM ChannelOutputPerson WHERE person=? AND channel = ? and sandbox=? LIMIT 1 OFFSET 0',
+        arguments: <dynamic>[person, channelcode, sandbox],
         mapper: _channelOutputPersonMapper);
   }
 
   @override
-  Future<void> emptyOutputPersons(String channelid) async {
+  Future<void> emptyOutputPersons(String channelcode, String sandbox) async {
     await _queryAdapter.queryNoReturn(
-        'delete FROM ChannelOutputPerson WHERE channel = ?',
-        arguments: <dynamic>[channelid]);
+        'delete FROM ChannelOutputPerson WHERE channel = ? and sandbox=?',
+        arguments: <dynamic>[channelcode, sandbox]);
   }
 
   @override

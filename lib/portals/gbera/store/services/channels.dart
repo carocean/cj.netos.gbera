@@ -9,27 +9,29 @@ import '../entities.dart';
 class ChannelService implements IChannelService {
   ///固定管道
   static const Map<String, String> _SYSTEM_CHANNELS = {
-    ///地推id
+    ///地推code
     'geo_channel': '4203EC25-1FC8-479D-A78F-74338FC7E769'
   };
   IChannelDAO channelDAO;
   IChannelMessageService messageService;
   IChannelPinService pinService;
+  Environment env;
   ChannelService({ServiceSite site}) {
     site.onready.add(() {
       AppDatabase db = site.database;
       channelDAO = db.channelDAO;
       messageService = site.getService('/channel/messages');
       pinService=site.getService('/channel/pin');
+      env=site.getService('@.environment');
     });
   }
   @override
-   bool isSystemChannel(channelid) {
-    return _SYSTEM_CHANNELS.containsValue(channelid);
+   bool isSystemChannel(code) {
+    return _SYSTEM_CHANNELS.containsValue(code);
   }
   @override
-   String getSystemChannel(String channelid) {
-    return _SYSTEM_CHANNELS[channelid];
+   String getSystemChannel(String code) {
+    return _SYSTEM_CHANNELS[code];
   }
   @override
    Iterable<String> listSystemChannel() {
@@ -38,11 +40,12 @@ class ChannelService implements IChannelService {
 
   @override
   Future<void> init(UserPrincipal user) async {
-    var _GEO_CHANNEL_ID=_SYSTEM_CHANNELS['geo_channel'];
-    if (await channelDAO.getChannel(_GEO_CHANNEL_ID) == null) {
+    var _GEO_CHANNEL_CODE=_SYSTEM_CHANNELS['geo_channel'];
+    if (await channelDAO.getChannel(env?.userPrincipal?.person,_GEO_CHANNEL_CODE) == null) {
       await channelDAO.addChannel(
         Channel(
-            _GEO_CHANNEL_ID,
+            '${Uuid().v1()}',
+            _GEO_CHANNEL_CODE,
             '地推',
             user.person,
             'openLoop',
@@ -51,70 +54,70 @@ class ChannelService implements IChannelService {
             null,
             DateTime.now().millisecondsSinceEpoch,
             DateTime.now().millisecondsSinceEpoch,
-            0),
+            0,env?.userPrincipal?.person),
       );
-      await pinService.init(_GEO_CHANNEL_ID);
-      await pinService.setOutputGeoSelector(_GEO_CHANNEL_ID, true);
+      await pinService.init(_GEO_CHANNEL_CODE);
+      await pinService.setOutputGeoSelector(_GEO_CHANNEL_CODE, true);
     }
   }
 
   @override
-  Future<Function> updateName(String channelid, String text) async{
-    await this.channelDAO.updateName(text,channelid);
+  Future<Function> updateName(String code, String text) async{
+    await this.channelDAO.updateName(text,code,env?.userPrincipal?.person);
   }
 
   @override
-  Future<void> updateLeading(String path, String channelid) async {
-    await this.channelDAO.updateLeading(path, channelid);
+  Future<void> updateLeading(String path, String channelcode) async {
+    await this.channelDAO.updateLeading(path,env?.userPrincipal?.person, channelcode);
   }
 
   @override
   Future<void> empty() async {
-    await this.channelDAO.empty();
+    await this.channelDAO.empty(env?.userPrincipal?.person);
   }
 
   @override
   Future<List<Channel>> getChannelsOfPerson(String personid) async {
-    return await this.channelDAO.getChannelsOfPerson(personid);
+    return await this.channelDAO.getChannelsOfPerson(env?.userPrincipal?.person,personid);
   }
 
   @override
   Future<List<Channel>> getAllChannel() async {
-    return await this.channelDAO.getAllChannel();
+    return await this.channelDAO.getAllChannel(env?.userPrincipal?.person);
   }
 
   @override
   Future<void> addChannel(Channel channel) async {
     await this.channelDAO.addChannel(channel);
-    await pinService.init(channel.id);
+    await pinService.init(channel.code);
   }
 
   @override
-  Future<Function> remove(String channelid) async {
-    await messageService.emptyBy(channelid);
-    await this.pinService.removePin(channelid);
-    await channelDAO.removeChannel(channelid);
+  Future<Function> remove(String code) async {
+    await messageService.emptyBy(code);
+    await this.pinService.removePin(code);
+    await channelDAO.removeChannel(env?.userPrincipal?.person,code);
   }
 
   @override
-  Future<Channel> getChannel(String channelid) async {
-    return await this.channelDAO.getChannel(channelid);
+  Future<Channel> getChannel(String code) async {
+    return await this.channelDAO.getChannel(env?.userPrincipal?.person,code);
   }
 
   @override
   Future<bool> existsName(String channelName, String owner) async {
-    var ch = await this.channelDAO.getChannelByName(channelName, owner);
+    var ch = await this.channelDAO.getChannelByName(env?.userPrincipal?.person,channelName, owner);
     return ch == null ? false : true;
   }
 
   @override
-  Future<bool> existsChannel(channelid) async {
-    var ch = await this.channelDAO.getChannel(channelid);
+  Future<bool> existsChannel(code) async {
+    var ch = await this.channelDAO.getChannel(env?.userPrincipal?.person,code);
     return ch == null ? false : true;
   }
 
   @override
   Future<void> emptyOfPerson(String personid) async {
-    await this.channelDAO.emptyOfPerson(personid);
+    await this.channelDAO.emptyOfPerson(env?.userPrincipal?.person,personid);
   }
 }

@@ -13,7 +13,7 @@ class ChannelMessageService implements IChannelMessageService {
   IChannelMediaService mediaService;
   IChannelCommentService commentService;
   IChannelLikeService likeService;
-
+  Environment env;
   ChannelMessageService({ServiceSite site}) {
     site.onready.add(() {
       AppDatabase db = site.database;
@@ -21,19 +21,20 @@ class ChannelMessageService implements IChannelMessageService {
       mediaService = site.getService('/channel/messages/medias');
       commentService = site.getService('/channel/messages/comments');
       likeService = site.getService('/channel/messages/likes');
+      env=site.getService('@.environment');
     });
   }
 
   @override
   Future<List<ChannelMessage>> pageMessageBy(
       int limit, int offset, String onchannel, String person) async{
-    return await channelMessageDAO.pageMessageBy(onchannel,person,limit,offset,);
+    return await channelMessageDAO.pageMessageBy(onchannel,person,env?.userPrincipal?.person,limit,offset,);
   }
 
   @transaction
   @override
   Future<Function> removeMessage(String id) async {
-    await channelMessageDAO.removeMessage(id);
+    await channelMessageDAO.removeMessage(id,env?.userPrincipal?.person);
     List<Media> medias = await mediaService.getMedias(id);
     for (var m in medias) {
       mediaService.remove(m.id);
@@ -51,12 +52,12 @@ class ChannelMessageService implements IChannelMessageService {
   }
 
   @override
-  Future<Function> emptyBy(String channelid) async{
+  Future<Function> emptyBy(String channelcode) async{
     //还要清除掉媒体文件
-    await mediaService.removeBy(channelid);
-    await likeService.removeBy(channelid);
-    await commentService.removeBy(channelid);
-    await channelMessageDAO.removeMessagesBy(channelid);
+    await mediaService.removeBy(channelcode);
+    await likeService.removeBy(channelcode);
+    await commentService.removeBy(channelcode);
+    await channelMessageDAO.removeMessagesBy(channelcode,env?.userPrincipal?.person);
 
   }
 
@@ -66,7 +67,7 @@ class ChannelMessageService implements IChannelMessageService {
   @override
   Future<List<ChannelMessage>> pageMessage(
       int pageSize, int currPage, String onChannel) async {
-    return await channelMessageDAO.pageMessage(onChannel, pageSize, currPage);
+    return await channelMessageDAO.pageMessage(onChannel,env?.userPrincipal?.person, pageSize, currPage);
   }
 
   @override

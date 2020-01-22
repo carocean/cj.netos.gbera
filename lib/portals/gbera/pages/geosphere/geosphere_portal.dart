@@ -49,7 +49,7 @@ class _GeospherePortalState extends State<GeospherePortal> {
   List<ChannelMessage> _messages = [];
 
   Future<List<ChannelMessage>> _loadMessages() async {
-    var onchannel = IChannelService.GEO_CIRCUIT_CHANNEL_ID;
+    var onchannel = IChannelService.GEO_CIRCUIT_CHANNEL_CODE;
     IChannelMessageService messageService =
         widget.context.site.getService('/channel/messages');
     var person = widget.context.userPrincipal.person;
@@ -680,6 +680,7 @@ class __MessageOperatesPopupMenuState extends State<_MessageOperatesPopupMenu> {
       widget.context.userPrincipal.nickName ??
           widget.context.userPrincipal.accountName,
       widget.message.onChannel,
+      widget.context.userPrincipal.person,
     );
     await likeService.like(likePerson);
   }
@@ -1118,6 +1119,7 @@ class __InteractiveRegionState extends State<_InteractiveRegion> {
         widget.context.userPrincipal.nickName ??
             widget.context.userPrincipal.accountName,
         widget.message.onChannel,
+        widget.context.userPrincipal.person,
       ),
     );
   }

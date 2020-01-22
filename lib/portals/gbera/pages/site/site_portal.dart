@@ -245,7 +245,16 @@ class __MessageCardState extends State<_MessageCard> {
   @override
   Widget build(BuildContext context) {
     var images = [
-      Media(null,'image','https://img11.360buyimg.com/n1/s450x450_jfs/t21856/309/486959023/285536/3356dc82/5b0fc33cN898ac257.png',null,null,null,null),
+      Media(
+        null,
+        'image',
+        'https://img11.360buyimg.com/n1/s450x450_jfs/t21856/309/486959023/285536/3356dc82/5b0fc33cN898ac257.png',
+        null,
+        null,
+        null,
+        null,
+        widget.context.userPrincipal.person,
+      ),
     ];
     return Card(
       shape: OutlineInputBorder(

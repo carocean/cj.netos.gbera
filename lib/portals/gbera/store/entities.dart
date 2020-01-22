@@ -4,6 +4,7 @@ import 'package:floor/floor.dart';
 class Person {
   @primaryKey
   final String id;
+  final String official;
   final String uid;
   final String accountid;
   final String accountName;
@@ -13,9 +14,9 @@ class Person {
   final String rights;
   final String nickName;
   final String signature;
-
-  Person(this.id, this.uid, this.accountid, this.accountName, this.appid,
-      this.tenantid, this.avatar, this.rights, this.nickName, this.signature);
+  final String sandbox;
+  Person(this.id,this.official, this.uid, this.accountid, this.accountName, this.appid,
+      this.tenantid, this.avatar, this.rights, this.nickName, this.signature,this.sandbox);
 }
 
 @entity
@@ -25,8 +26,8 @@ class MicroSite {
   final String name;
   final String leading;
   final String desc;
-
-  MicroSite(this.id, this.name, this.leading, this.desc);
+  final String sandbox;
+  MicroSite(this.id, this.name, this.leading, this.desc,this.sandbox);
 }
 
 @entity
@@ -35,14 +36,15 @@ class MicroApp {
   final String id;
   final String site;
   final String leading;
-
-  MicroApp(this.id, this.site, this.leading);
+  final String sandbox;
+  MicroApp(this.id, this.site, this.leading,this.sandbox);
 }
 
 @entity
 class Channel {
   @primaryKey
   final String id;
+  final String code;
   final String name;
   final String owner;
   final String loopType;
@@ -52,9 +54,9 @@ class Channel {
   int ctime = DateTime.now().millisecondsSinceEpoch;
   int utime = DateTime.now().millisecondsSinceEpoch;
   int unreadMsgCount = 0;
-
-  Channel(this.id, this.name, this.owner, this.loopType, this.leading,
-      this.site, this.tips, this.ctime, this.utime, this.unreadMsgCount);
+  final String sandbox;
+  Channel(this.id, this.code,this.name, this.owner, this.loopType, this.leading,
+      this.site, this.tips, this.ctime, this.utime, this.unreadMsgCount,this.sandbox);
 }
 
 @entity
@@ -70,7 +72,7 @@ class InsiteMessage {
   final String digests;
   final double wy;
   final String location;
-
+  final String sandbox;
   InsiteMessage(
     this.id,
     this.upstreamPerson,
@@ -82,6 +84,7 @@ class InsiteMessage {
     this.digests,
     this.wy,
     this.location,
+      this.sandbox,
   );
 }
 
@@ -98,7 +101,7 @@ class ChannelMessage {
   final String text;
   final double wy;
   final String location;
-
+  final String sandbox;
   ChannelMessage(
     this.id,
     this.upstreamPerson,
@@ -110,6 +113,7 @@ class ChannelMessage {
     this.text,
     this.wy,
     this.location,
+      this.sandbox,
   );
 }
 
@@ -123,9 +127,9 @@ class LikePerson {
   final int ctime;
   final String nickName;
   final String onChannel;
-
+  final String sandbox;
   LikePerson(this.id, this.person, this.avatar, this.msgid, this.ctime,
-      this.nickName, this.onChannel);
+      this.nickName, this.onChannel,this.sandbox);
 }
 
 @entity
@@ -139,9 +143,9 @@ class ChannelComment {
   final int ctime;
   final String nickName;
   final String onChannel;
-
+  final String sandbox;
   ChannelComment(this.id, this.person, this.avatar, this.msgid, this.text,
-      this.ctime, this.nickName, this.onChannel);
+      this.ctime, this.nickName, this.onChannel,this.sandbox);
 }
 
 @entity
@@ -154,9 +158,9 @@ class Media {
   final String msgid;
   final String text;
   final String onChannel;
-
+  final String sandbox;
   Media(this.id, this.type, this.src, this.leading, this.msgid, this.text,
-      this.onChannel);
+      this.onChannel,this.sandbox);
 }
 
 @entity
@@ -172,7 +176,7 @@ class ChannelPin {
   final String outContractSelector;
   final String inRights;
   final String outRights;
-
+  final String sandbox;
   ChannelPin(
       this.id,
       this.channel,
@@ -183,7 +187,7 @@ class ChannelPin {
       this.outWechatHaoYouSelector,
       this.outContractSelector,
       this.inRights,
-      this.outRights);
+      this.outRights,this.sandbox,);
 }
 
 @entity
@@ -192,11 +196,12 @@ class ChannelInputPerson {
   final String id;
   final String channel;
   final String person;
-
+  final String sandbox;
   ChannelInputPerson(
     this.id,
     this.channel,
     this.person,
+      this.sandbox,
   );
 }
 
@@ -206,8 +211,8 @@ class ChannelOutputPerson {
   final String id;
   final String channel;
   final String person;
-
-  ChannelOutputPerson(this.id, this.channel, this.person);
+  final String sandbox;
+  ChannelOutputPerson(this.id, this.channel, this.person, this.sandbox);
 }
 
 enum PinPersonsSettingsStrategy {

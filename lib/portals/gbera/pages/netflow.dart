@@ -531,7 +531,7 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
       items.add(
         _ChannelItem(
           context: widget.context,
-          id: ch.id,
+          code: ch.code,
           title: ch.name,
           subtitle: '$newest',
           showNewest: !StringUtil.isEmpty(tips),
@@ -574,7 +574,7 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
               }
             });
           },
-          isSystemChannel: channelService.isSystemChannel(ch.id),
+          isSystemChannel: channelService.isSystemChannel(ch.code),
         ),
       );
     }
@@ -786,7 +786,7 @@ class _MessagesRegionState extends State<_MessagesRegion> {
 
 class _ChannelItem extends StatelessWidget {
   PageContext context;
-  String id;
+  String code;
   String leading;
   String title;
   String who;
@@ -801,7 +801,7 @@ class _ChannelItem extends StatelessWidget {
 
   _ChannelItem({
     this.context,
-    this.id,
+    this.code,
     this.leading,
     this.title,
     this.who,
@@ -1071,7 +1071,7 @@ class _ChannelItem extends StatelessWidget {
         switch (direction) {
           case DismissDirection.endToStart:
             print('---------do deleted');
-            _deleteChannel(this.id);
+            _deleteChannel(this.code);
             break;
           case DismissDirection.vertical:
             // TODO: Handle this case.

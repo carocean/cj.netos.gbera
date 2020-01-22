@@ -64,9 +64,9 @@ class _DesktopState extends State<Desktop> with AutomaticKeepAliveClientMixin {
               ),
               titleSpacing: 10,
               centerTitle: false,
+
               automaticallyImplyLeading: false,
               elevation: 0,
-              expandedHeight: 0,
               actions: <Widget>[
                 IconButton(
                   // Use the FontAwesomeIcons class for the IconData
@@ -126,7 +126,7 @@ class _DesktopState extends State<Desktop> with AutomaticKeepAliveClientMixin {
           ),
           SliverToBoxAdapter(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -134,8 +134,8 @@ class _DesktopState extends State<Desktop> with AutomaticKeepAliveClientMixin {
                   padding: EdgeInsets.only(
                     left: 10,
                     right: 10,
-                    top: 10,
-                    bottom: 20,
+                    top: 30,
+                    bottom: 30,
                   ),
                   child: Row(
                     children: <Widget>[
@@ -177,6 +177,7 @@ class _DesktopState extends State<Desktop> with AutomaticKeepAliveClientMixin {
                     ],
                   ),
                 ),
+                /*
                 Center(
                   child: Padding(
                     padding: EdgeInsets.only(top: 10, bottom: 10),
@@ -249,6 +250,7 @@ class _DesktopState extends State<Desktop> with AutomaticKeepAliveClientMixin {
                     ),
                   ),
                 ),
+                */
               ],
             ),
           ),

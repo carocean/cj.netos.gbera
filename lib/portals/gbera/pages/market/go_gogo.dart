@@ -591,7 +591,7 @@ class Category {
 
   @override
   bool operator ==(other) {
-    return id == other?.id;
+    return id == other?.code;
   }
 
   @override
@@ -2234,7 +2234,7 @@ class _GoupCardState extends State<_GoupCard> {
   Widget build(BuildContext context) {
     var medias=<Media>[];
     for(var img in widget.merchandise.images){
-      medias.add(Media(null,'image',img,null,null,null,null));
+      medias.add(Media(null,'image',img,null,null,null,null,widget.context.userPrincipal.person,));
     }
     return Column(
       children: <Widget>[

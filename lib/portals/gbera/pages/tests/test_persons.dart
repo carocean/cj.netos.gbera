@@ -50,12 +50,13 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
                   Dio dio = widget.context.site.getService('@.http');
                   await personService.empty();
                   for (var obj in persons) {
-                    if (await personService.existsPerson(obj['id'])) {
+                    if (await personService.existsPerson(obj['official'])) {
                       continue;
                     }
                     var avatar = await Downloads.downloadPersonAvatar(dio: dio,avatarUrl: obj['avatar']);
                     Person person = Person(
-                      obj['id'],
+                      Uuid().v1(),
+                      obj['official'],
                       obj['uid'],
                       obj['accountid'],
                       obj['accountName'],
@@ -65,6 +66,7 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
                       obj['rights'],
                       obj['nickName'],
                       obj['signature'],
+                      widget.context.userPrincipal.person,
                     );
                     await personService.addPerson(person);
                     var objchs = obj['channels'];
@@ -72,10 +74,10 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
                       continue;
                     }
 
-                    await channelService.emptyOfPerson(person.id);
+                    await channelService.emptyOfPerson(person.official);
                     await channelService.init(widget.context.userPrincipal);
                     for (var och in objchs) {
-                      if (await channelService.existsChannel(och['id'])) {
+                      if (await channelService.existsChannel(och['code'])) {
                         continue;
                       }
                       String leading=och['leading'];
@@ -83,7 +85,8 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
                         leading=await Downloads.downloadChannelAvatar(dio: dio,avatarUrl: leading);
                       }
                       Channel ch = Channel(
-                        och['id'],
+                        Uuid().v1(),
+                        och['code'],
                         och['name'],
                         och['owner'],
                         och['loopType'],
@@ -93,6 +96,7 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
                         DateTime.now().millisecondsSinceEpoch,
                         DateTime.now().millisecondsSinceEpoch,
                         och['unreadMsgCount']??0,
+                        widget.context.userPrincipal.person,
                       );
                       channelService.addChannel(ch);
                     }

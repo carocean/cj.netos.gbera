@@ -170,12 +170,12 @@ class _OutsitePersonsState extends State<OutsitePersons> {
     IPersonService personService =
         widget.context.site.getService('/gbera/persons');
     PinPersonsSettingsStrategy strategy =
-        await pinService.getOutputPersonSelector(_channel.id);
+        await pinService.getOutputPersonSelector(_channel.code);
     this._strategy = strategy;
     List<Person> personObjs;
     switch (strategy) {
       case PinPersonsSettingsStrategy.only_select:
-        var out_persons = await pinService.listOutputPerson(_channel.id);
+        var out_persons = await pinService.listOutputPerson(_channel.code);
         var persons = <String>[];
         for (var op in out_persons) {
           persons.add(op.person);
@@ -183,7 +183,7 @@ class _OutsitePersonsState extends State<OutsitePersons> {
         personObjs = await personService.listPersonWith(persons);
         break;
       case PinPersonsSettingsStrategy.all_except:
-        var out_persons = await pinService.listOutputPerson(_channel.id);
+        var out_persons = await pinService.listOutputPerson(_channel.code);
         var persons = <String>[];
         for (var op in out_persons) {
           persons.add(op.person);
@@ -434,7 +434,7 @@ class __PersonListRegionState extends State<_PersonListRegion> {
         pinService
             .removeOutputPerson(
                 '${person.accountName}@${person.appid}.${person.tenantid}',
-                widget.channel.id)
+                widget.channel.code)
             .whenComplete(() {
           widget.persons.remove(person);
           setState(() {});
@@ -445,8 +445,9 @@ class __PersonListRegionState extends State<_PersonListRegion> {
             .addOutputPerson(
           ChannelOutputPerson(
             '${Uuid().v1()}',
-            widget.channel.id,
+            widget.channel.code,
             '${person.accountName}@${person.appid}.${person.tenantid}',
+            widget.context.userPrincipal.person,
           ),
         )
             .whenComplete(() {

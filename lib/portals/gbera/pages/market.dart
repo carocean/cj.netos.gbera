@@ -16,16 +16,14 @@ class Market extends StatefulWidget {
   _MarketState createState() => _MarketState();
 }
 
-class _MarketState extends State<Market> with AutomaticKeepAliveClientMixin{
-
+class _MarketState extends State<Market> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive {
     return true;
   }
 
   @override
-  void initState() {
-  }
+  void initState() {}
 
   @override
   void dispose() {
@@ -279,8 +277,26 @@ class _MarketState extends State<Market> with AutomaticKeepAliveClientMixin{
           _News(
               title: '佛山王先生开店3个月净赚500万！',
               images: [
-                Media(null,'image','https://img20.360buyimg.com/vc/jfs/t9712/323/19330494/133477/712d7d6b/59c3894cN586c7217.jpg',null,null,null,null),
-                Media(null,'image','http://dingyue.nosdn.127.net/vvRjNcu9VBGgAevyEl5kQ0PO4ndOa4p3KJcED=yrAyXUP1529905129060compressflag.jpg',null,null,null,null),
+                Media(
+                  null,
+                  'image',
+                  'https://img20.360buyimg.com/vc/jfs/t9712/323/19330494/133477/712d7d6b/59c3894cN586c7217.jpg',
+                  null,
+                  null,
+                  null,
+                  null,
+                  widget.context.userPrincipal.person,
+                ),
+                Media(
+                  null,
+                  'image',
+                  'http://dingyue.nosdn.127.net/vvRjNcu9VBGgAevyEl5kQ0PO4ndOa4p3KJcED=yrAyXUP1529905129060compressflag.jpg',
+                  null,
+                  null,
+                  null,
+                  null,
+                  widget.context.userPrincipal.person,
+                ),
               ],
               Content:
                   '开始禅城区的地商李明找到我跟我说，快点接上帑指市场，未来10倍，20倍的利都有，我跟李明是多年的交情，想必也不会忽悠我，我就尝试着做了。没想到赚钱原来这么容易，小店现在一个月营业额是25万，发行帑银净赚60万'),
@@ -289,7 +305,16 @@ class _MarketState extends State<Market> with AutomaticKeepAliveClientMixin{
             Content:
                 '金融界美股讯 摩根大通分析师周五表示，APPle TV+的推出及苹果进军数字服务领域，可能帮助该公司未来六年内广告收入增加逾五倍，达到每年110亿美元。分析师萨米克 查特吉（Samik Chatterjee）上调了苹果的股价目标，认为该公司可以利用每天搜索其应用商店和Safari浏览器的数百万用户来实现类似于Facebook和谷歌近年来强劲的广告增长。',
             images: [
-              Media(null,'image','https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573935907335&di=7e2eb6de84a234ce122dd0d9c87dd33e&imgtype=0&src=http%3A%2F%2Fi0.hdslb.com%2Fbfs%2Farticle%2Ffdf4d59b8564a9435df039cf2764ee54136405c6.jpg',null,null,null,null),
+              Media(
+                null,
+                'image',
+                'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573935907335&di=7e2eb6de84a234ce122dd0d9c87dd33e&imgtype=0&src=http%3A%2F%2Fi0.hdslb.com%2Fbfs%2Farticle%2Ffdf4d59b8564a9435df039cf2764ee54136405c6.jpg',
+                null,
+                null,
+                null,
+                null,
+                widget.context.userPrincipal.person,
+              ),
             ],
           ),
           _News(

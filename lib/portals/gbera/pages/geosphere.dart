@@ -69,7 +69,7 @@ class _GeosphereState extends State<Geosphere>
     IChannelMessageService messageService =
         widget.context.site.getService('/channel/messages');
     var messages = await messageService.pageMessage(
-        _limit, _offset, IChannelService.GEO_CIRCUIT_CHANNEL_ID);
+        _limit, _offset, IChannelService.GEO_CIRCUIT_CHANNEL_CODE);
     if (messages != null && !messages.isEmpty) {
       _offset += messages.length;
       for (var msg in messages) {
@@ -632,21 +632,34 @@ class __ContentState extends State<_Content> {
               ),
             ),
           ),
-          ListView(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            padding: EdgeInsets.all(0),
-            children: widget.messages.map((msg) {
-              return _MessageCard(
-                context: widget.context,
-                message: msg,
-                onDeleted: (msg) {
-                  widget.messages.remove(msg);
-                  setState(() {});
-                },
-              );
-            }).toList(),
-          ),
+          widget.messages.isEmpty
+              ? Container(
+                  padding: EdgeInsets.only(
+                    top: 20,
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    '没有活动',
+                    style: TextStyle(
+                      color: Colors.grey[500],
+                    ),
+                  ),
+                )
+              : ListView(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  padding: EdgeInsets.all(0),
+                  children: widget.messages.map((msg) {
+                    return _MessageCard(
+                      context: widget.context,
+                      message: msg,
+                      onDeleted: (msg) {
+                        widget.messages.remove(msg);
+                        setState(() {});
+                      },
+                    );
+                  }).toList(),
+                ),
         ],
       ),
     );
@@ -1130,6 +1143,7 @@ class __MessageOperatesPopupMenuState extends State<_MessageOperatesPopupMenu> {
       widget.context.userPrincipal.nickName ??
           widget.context.userPrincipal.accountName,
       widget.message.onChannel,
+      widget.context.userPrincipal.person,
     );
     await likeService.like(likePerson);
   }
@@ -1568,6 +1582,7 @@ class __InteractiveRegionState extends State<_InteractiveRegion> {
         widget.context.userPrincipal.nickName ??
             widget.context.userPrincipal.accountName,
         widget.message.onChannel,
+        widget.context.userPrincipal.person,
       ),
     );
   }

@@ -81,12 +81,13 @@ class _ChannelPublishArticleState extends State<ChannelPublishArticle> {
                   null,
                   null,
                   null,
-                  _channel.id,
+                  _channel.code,
                   user.person,
                   DateTime.now().millisecondsSinceEpoch,
                   content,
                   wy,
                   location,
+                  widget.context.userPrincipal.person,
                 ),
               );
               for (MediaFile file in images) {
@@ -109,7 +110,8 @@ class _ChannelPublishArticleState extends State<ChannelPublishArticle> {
                     null,
                     msgid,
                     null,
-                    _channel.id,
+                    _channel.code,
+                    widget.context.userPrincipal.person,
                   ),
                 );
               }

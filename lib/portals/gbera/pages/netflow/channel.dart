@@ -57,7 +57,7 @@ class _ChannelPageState extends State<ChannelPage> {
   _reloadChannel() async {
     IChannelService channelService =
         widget.context.site.getService('/netflow/channels');
-    _channel = await channelService.getChannel(_channel.id);
+    _channel = await channelService.getChannel(_channel.code);
     setState(() {});
   }
 
@@ -71,7 +71,7 @@ class _ChannelPageState extends State<ChannelPage> {
   }
 
   Future<List<ChannelMessage>> _onload() async {
-    var onchannel = widget.context.parameters['channel']?.id;
+    var onchannel = widget.context.parameters['channel']?.code;
     IChannelMessageService messageService =
         widget.context.site.getService('/channel/messages');
     var messages = await messageService.pageMessage(limit, offset, onchannel);
@@ -806,6 +806,7 @@ class __MessageOperatesPopupMenuState extends State<_MessageOperatesPopupMenu> {
       widget.context.userPrincipal.nickName ??
           widget.context.userPrincipal.accountName,
       widget.message.onChannel,
+      widget.context.userPrincipal.person,
     );
     await likeService.like(likePerson);
   }
@@ -1243,6 +1244,7 @@ class __InteractiveRegionState extends State<_InteractiveRegion> {
         widget.context.userPrincipal.nickName ??
             widget.context.userPrincipal.accountName,
         widget.message.onChannel,
+        widget.context.userPrincipal.person,
       ),
     );
   }

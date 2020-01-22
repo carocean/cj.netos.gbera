@@ -74,6 +74,7 @@ class _CreateChannelState extends State<CreateChannel> {
               }
               Channel channel = Channel(
                 '${Uuid().v1()}',
+                '${Uuid().v1()}',
                 channelName,
                 user.person,
                 widget.context.parameters['type'],
@@ -83,6 +84,7 @@ class _CreateChannelState extends State<CreateChannel> {
                 DateTime.now().millisecondsSinceEpoch,
                 DateTime.now().millisecondsSinceEpoch,
                 0,
+                widget.context.userPrincipal.person,
               );
               await channelService.addChannel(channel);
               widget.context.backward();

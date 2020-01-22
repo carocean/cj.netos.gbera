@@ -38,7 +38,7 @@ class _GeospherePublishArticleState extends State<GeospherePublishArticle> {
 
   @override
   Widget build(BuildContext context) {
-    var geo_sphere_channel_id=IChannelService.GEO_CIRCUIT_CHANNEL_ID;
+    var geo_sphere_channel_code=IChannelService.GEO_CIRCUIT_CHANNEL_CODE;
     var type = widget.context.parameters['type'];
     return Scaffold(
       appBar: AppBar(
@@ -77,12 +77,13 @@ class _GeospherePublishArticleState extends State<GeospherePublishArticle> {
                   null,
                   null,
                   null,
-                  geo_sphere_channel_id,
+                  geo_sphere_channel_code,
                   user.person,
                   DateTime.now().millisecondsSinceEpoch,
                   content,
                   wy,
                   location,
+                  widget.context.userPrincipal.person,
                 ),
               );
               for (MediaFile file in images) {
@@ -105,7 +106,8 @@ class _GeospherePublishArticleState extends State<GeospherePublishArticle> {
                     null,
                     msgid,
                     null,
-                    geo_sphere_channel_id,
+                    geo_sphere_channel_code,
+                    widget.context.userPrincipal.person,
                   ),
                 );
               }

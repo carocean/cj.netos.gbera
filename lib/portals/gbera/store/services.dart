@@ -4,9 +4,9 @@ import 'package:gbera/portals/gbera/store/entities.dart';
 mixin IPersonService {
   Future<void> empty();
 
-  Future<bool> existsPerson(id);
+  Future<bool> existsPerson(official);
 
-  Future<Person> getPerson(id);
+  Future<Person> getPerson(official);
 
   Future<void> addPerson(Person person);
 
@@ -29,12 +29,12 @@ mixin IPersonService {
 }
 mixin IChannelService {
   ///地圈管道标识
-  static const  GEO_CIRCUIT_CHANNEL_ID='59FC6F04-5C54-4C6F-80EC-BF2355856841';
+  static const  GEO_CIRCUIT_CHANNEL_CODE='59FC6F04-5C54-4C6F-80EC-BF2355856841';
   Future<void> init(UserPrincipal user);
 
-  bool isSystemChannel(channelid);
+  bool isSystemChannel(code);
 
-  String getSystemChannel(String channelid);
+  String getSystemChannel(String code);
 
   Iterable<String> listSystemChannel();
 
@@ -42,23 +42,23 @@ mixin IChannelService {
 
   Future<void> emptyOfPerson(String personid);
 
-  Future<bool> existsChannel(channelid);
+  Future<bool> existsChannel(code);
 
   Future<void> addChannel(Channel channel);
 
   Future<List<Channel>> getChannelsOfPerson(String personid);
 
-  Future<Channel> getChannel(String channelid);
+  Future<Channel> getChannel(String code);
 
   Future<bool> existsName(String channelName, String owner);
 
   Future<List<Channel>> getAllChannel();
 
-  Future<void> updateLeading(String path, String channelid);
+  Future<void> updateLeading(String path, String code);
 
-  Future<void> remove(String channelid);
+  Future<void> remove(String code);
 
-  Future<void> updateName(String channelid,String name) ;
+  Future<void> updateName(String code,String name) ;
 
 }
 mixin IInsiteMessageService {
@@ -128,45 +128,45 @@ mixin IChannelCommentService {
 
   Future<void> removeComment(String id);
 
-  Future<void> removeBy(String channelid) {}
+  Future<void> removeBy(String channelcode) {}
 }
 mixin IChannelPinService {
-  Future<void> init(String channelid);
+  Future<void> init(String channelcode);
 
-  Future<PinPersonsSettingsStrategy> getInputPersonSelector(String channelid);
+  Future<PinPersonsSettingsStrategy> getInputPersonSelector(String channelcode);
 
-  Future<PinPersonsSettingsStrategy> getOutputPersonSelector(String channelid);
+  Future<PinPersonsSettingsStrategy> getOutputPersonSelector(String channelcode);
 
-  Future<void> setOutputPersonSelector(String channelid,
+  Future<void> setOutputPersonSelector(String channelcode,
       PinPersonsSettingsStrategy outsitePersonsSettingStrategy);
 
-  Future<bool> getOutputGeoSelector(String channelid);
+  Future<bool> getOutputGeoSelector(String channelcode);
 
-  Future<void> setOutputGeoSelector(String channelid, bool isSet);
+  Future<void> setOutputGeoSelector(String channelcode, bool isSet);
 
-  Future<void> setOutputWechatCircleSelector(String channelid, bool isSet);
+  Future<void> setOutputWechatCircleSelector(String channelcode, bool isSet);
 
-  Future<void> setOutputWechatHaoYouSelector(String channelid, bool isSet);
+  Future<void> setOutputWechatHaoYouSelector(String channelcode, bool isSet);
 
   Future<void> addInputPerson(ChannelInputPerson person);
 
-  Future<void> removeInputPerson(String person, String channelid);
+  Future<void> removeInputPerson(String person, String channelcode);
 
   Future<List<ChannelInputPerson>> pageInputPerson(
-      String channelid, int limit, int offset);
+      String channelcode, int limit, int offset);
 
   Future<void> addOutputPerson(ChannelOutputPerson person);
 
-  Future<void> removeOutputPerson(String person, String channelid);
+  Future<void> removeOutputPerson(String person, String channelcode);
 
   Future<List<ChannelOutputPerson>> pageOutputPerson(
-      String channelid, int limit, int offset);
+      String channelcode, int limit, int offset);
 
-  Future<void> removePin(String channelid);
+  Future<void> removePin(String channelcode);
 
-  Future<List<ChannelOutputPerson>> listOutputPerson(String channelid);
+  Future<List<ChannelOutputPerson>> listOutputPerson(String channelcode);
 
-  Future<List<ChannelInputPerson>> listInputPerson(String channelid);
+  Future<List<ChannelInputPerson>> listInputPerson(String channelcode);
 
-  Future<void> emptyOutputPersons(String channelid);
+  Future<void> emptyOutputPersons(String channelcode);
 }

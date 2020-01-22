@@ -45,9 +45,9 @@ class _OutsitePersonsSettingsState extends State<OutsitePersonsSettings> {
 
   _load() async {
     _selected_outsite_persons_strategy =
-        await _pinService.getOutputPersonSelector(_channel.id);
+        await _pinService.getOutputPersonSelector(_channel.code);
     List<ChannelOutputPerson> outputPersons =
-        await _pinService.listOutputPerson(_channel.id);
+        await _pinService.listOutputPerson(_channel.code);
     var personList = <String>[];
     for (ChannelOutputPerson p in outputPersons) {
       personList.add(p.person);
@@ -110,7 +110,7 @@ class _OutsitePersonsSettingsState extends State<OutsitePersonsSettings> {
                     _selected_outsite_persons_strategy =
                         PinPersonsSettingsStrategy.all_except;
                     await _pinService.setOutputPersonSelector(
-                        _channel.id, _selected_outsite_persons_strategy);
+                        _channel.code, _selected_outsite_persons_strategy);
                     _persons_offset = 0;
                     await _reloadPersons();
                   },
@@ -141,7 +141,7 @@ class _OutsitePersonsSettingsState extends State<OutsitePersonsSettings> {
                     _selected_outsite_persons_strategy =
                         PinPersonsSettingsStrategy.only_select;
                     await _pinService.setOutputPersonSelector(
-                        _channel.id, _selected_outsite_persons_strategy);
+                        _channel.code, _selected_outsite_persons_strategy);
                     _persons_offset = 0;
                     await _reloadPersons();
                   },
@@ -316,21 +316,22 @@ class __SelectPersonState extends State<_SelectPerson> {
     IChannelPinService pinService =
         widget.pageContext.site.getService('/channel/pin');
     var isSeleted = _is_seleted;
-    var personFullName =
+    var official =
         '${widget.person.accountName}@${widget.person.appid}.${widget.person.tenantid}';
     switch (widget.selected_outsite_persons_strategy) {
       case PinPersonsSettingsStrategy.only_select:
         if (isSeleted) {
           //从输出公众表中移除
           await pinService.removeOutputPerson(
-              personFullName, widget.channel.id);
+              official, widget.channel.code);
         } else {
           //添加到输出公众表
           await pinService.addOutputPerson(
             ChannelOutputPerson(
               '${Uuid().v1()}',
-              widget.channel.id,
-              personFullName,
+              widget.channel.code,
+              official,
+              widget.pageContext.userPrincipal.person,
             ),
           );
         }
@@ -340,13 +341,14 @@ class __SelectPersonState extends State<_SelectPerson> {
           await pinService.addOutputPerson(
             ChannelOutputPerson(
               '${Uuid().v1()}',
-              widget.channel.id,
-              personFullName,
+              widget.channel.code,
+              official,
+              widget.pageContext.userPrincipal.person,
             ),
           );
         } else {
           await pinService.removeOutputPerson(
-              personFullName, widget.channel.id);
+              official, widget.channel.code);
         }
         break;
     }

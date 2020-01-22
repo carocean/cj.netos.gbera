@@ -44,9 +44,9 @@ class _InsitePersonsSettingsState extends State<InsitePersonsSettings> {
 
   _load() async {
     _selected_insite_persons_strategy =
-        await _pinService.getInputPersonSelector(_channel.id);
+        await _pinService.getInputPersonSelector(_channel.code);
     List<ChannelInputPerson> inputPersons =
-        await _pinService.listInputPerson(_channel.id);
+        await _pinService.listInputPerson(_channel.code);
     var personList = <String>[];
     for (var p in inputPersons) {
       personList.add(p.person);
@@ -265,13 +265,14 @@ class __SelectPersonState extends State<_SelectPerson> {
       case PinPersonsSettingsStrategy.only_select:
         if (isSeleted) {
           //从输出公众表中移除
-          await pinService.removeInputPerson(personFullName, widget.channel.id);
+          await pinService.removeInputPerson(personFullName, widget.channel.code);
         } else {
           await pinService.addInputPerson(
             ChannelInputPerson(
               '${Uuid().v1()}',
-              widget.channel.id,
+              widget.channel.code,
               personFullName,
+              widget.pageContext.userPrincipal.person,
             ),
           );
         }
@@ -281,12 +282,13 @@ class __SelectPersonState extends State<_SelectPerson> {
           await pinService.addInputPerson(
             ChannelInputPerson(
               '${Uuid().v1()}',
-              widget.channel.id,
+              widget.channel.code,
               personFullName,
+              widget.pageContext.userPrincipal.person,
             ),
           );
         } else {
-          await pinService.removeInputPerson(personFullName, widget.channel.id);
+          await pinService.removeInputPerson(personFullName, widget.channel.code);
         }
         break;
     }

@@ -35,7 +35,7 @@ class _ChannelGatewayState extends State<ChannelGateway> {
   _load() async {
     IChannelPinService pinService =
         widget.context.site.getService('/channel/pin');
-    this._isSetGeo = await pinService.getOutputGeoSelector(_channel.id);
+    this._isSetGeo = await pinService.getOutputGeoSelector(_channel.code);
     setState(() {});
   }
 
@@ -43,18 +43,18 @@ class _ChannelGatewayState extends State<ChannelGateway> {
     IChannelPinService pinService =
         widget.context.site.getService('/channel/pin');
     if (_isSetGeo) {
-      await pinService.setOutputGeoSelector(_channel.id, false);
+      await pinService.setOutputGeoSelector(_channel.code, false);
     } else {
-      await pinService.setOutputGeoSelector(_channel.id, true);
+      await pinService.setOutputGeoSelector(_channel.code, true);
     }
-    this._isSetGeo = await pinService.getOutputGeoSelector(_channel.id);
+    this._isSetGeo = await pinService.getOutputGeoSelector(_channel.code);
     setState(() {});
   }
 
   _reloadChannel() async {
     IChannelService channelService =
         widget.context.site.getService('/netflow/channels');
-    _channel = await channelService.getChannel(_channel.id);
+    _channel = await channelService.getChannel(_channel.code);
     setState(() {});
   }
 

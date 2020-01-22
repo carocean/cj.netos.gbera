@@ -53,7 +53,7 @@ class _ChannelPortalState extends State<ChannelPortal> {
   List<ChannelMessage> _messages = [];
 
   Future<List<ChannelMessage>> _loadMessages() async {
-    var onchannel = _channel?.id;
+    var onchannel = _channel?.code;
     IChannelMessageService messageService =
         widget.context.site.getService('/channel/messages');
     var person = widget.context.userPrincipal.person;
@@ -123,14 +123,21 @@ class _ChannelPortalState extends State<ChannelPortal> {
                     children: <Widget>[
                       ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
-                        child: Image.file(
-                          File(
-                            _channel?.leading,
-                          ),
-                          fit: BoxFit.cover,
-                          width: 60,
-                          height: 60,
-                        ),
+                        child: _channel.leading == null
+                            ? Image.asset(
+                                'lib/portals/gbera/images/avatar.png',
+                                fit: BoxFit.cover,
+                                width: 60,
+                                height: 60,
+                              )
+                            : Image.file(
+                                File(
+                                  _channel?.leading,
+                                ),
+                                fit: BoxFit.cover,
+                                width: 60,
+                                height: 60,
+                              ),
                       ),
                       Text(
                         '${_channel?.name}',
@@ -739,6 +746,7 @@ class __MessageOperatesPopupMenuState extends State<_MessageOperatesPopupMenu> {
       widget.context.userPrincipal.nickName ??
           widget.context.userPrincipal.accountName,
       widget.message.onChannel,
+      widget.context.userPrincipal.person,
     );
     await likeService.like(likePerson);
   }
@@ -1177,6 +1185,7 @@ class __InteractiveRegionState extends State<_InteractiveRegion> {
         widget.context.userPrincipal.nickName ??
             widget.context.userPrincipal.accountName,
         widget.message.onChannel,
+        widget.context.userPrincipal.person,
       ),
     );
   }
