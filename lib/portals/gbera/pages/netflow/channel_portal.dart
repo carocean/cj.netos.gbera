@@ -41,6 +41,7 @@ class _ChannelPortalState extends State<ChannelPortal> {
   void dispose() {
     _channel = null;
     _messages.clear();
+    _refreshController.dispose();
     super.dispose();
   }
 
