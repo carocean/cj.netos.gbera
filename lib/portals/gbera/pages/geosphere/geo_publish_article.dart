@@ -225,6 +225,51 @@ class _GeospherePublishArticleState extends State<GeospherePublishArticle> {
                             behavior: HitTestBehavior.opaque,
                             onTap: () async {
                               String cnt = _contentController.text;
+                              var image = await ImagePicker.pickImage(
+                                  source: ImageSource.gallery);
+                              if (image == null) {
+                                return;
+                              }
+                              shower_key.currentState.addImage(MediaFile(
+                                  src: image, type: MediaFileType.image));
+                              _contentController.text = cnt;
+                              _contentController.selection =
+                                  TextSelection.fromPosition(
+                                    TextPosition(
+                                      affinity: TextAffinity.downstream,
+                                      offset: cnt?.length,
+                                    ),
+                                  );
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                left: 10,
+                                right: 10,
+                                top: 5,
+                                bottom: 5,
+                              ),
+                              child: Column(
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.image,
+                                    size: 30,
+                                    color: Colors.black54,
+                                  ),
+                                  Text(
+                                    '语音',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () async {
+                              String cnt = _contentController.text;
                               var image = await ImagePicker.pickVideo(
                                 source: ImageSource.gallery,
                               );

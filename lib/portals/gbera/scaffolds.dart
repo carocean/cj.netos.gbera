@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/common/voice_widget.dart';
 
 import 'parts/bottoms.dart';
 
@@ -63,10 +64,9 @@ class _WithBottomScaffoldState extends State<WithBottomScaffold> {
               : null,
         ),
         child: PageView(
-          physics: NeverScrollableScrollPhysics(),//禁止页面左右滑动切换
+          physics: NeverScrollableScrollPhysics(), //禁止页面左右滑动切换
           controller: _pageController,
           children: parts,
-
         ),
       ),
       bottomNavigationBar: GberaBottomNavigationBar(
@@ -79,6 +79,43 @@ class _WithBottomScaffoldState extends State<WithBottomScaffold> {
           });
         },
       ),
+      floatingActionButton: selectedIndex == 2
+          ? MyFloating():null,
+    );
+  }
+
+}
+class MyFloating extends StatefulWidget {
+  @override
+  _MyFloatingState createState() => _MyFloatingState();
+}
+
+class _MyFloatingState extends State<MyFloating> {
+  var _hover=Colors.grey[500];
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      child: MyVoiceWidget(
+        startRecord: () {
+          print('-----startRecord');
+          _hover=Colors.green;
+          setState(() {
+
+          });
+        },
+        stopRecord: (path, timelength,r,a) {
+          _hover=Colors.grey[500];
+          setState(() {
+
+          });
+          print('--voice-$path');
+//                  if(a=='send') {
+          r.play();
+//                  }
+
+        },
+      ),
+      backgroundColor: _hover,
     );
   }
 }
