@@ -80,8 +80,8 @@ class _ChannelPageState extends State<ChannelPage> {
       for (var msg in messages) {
         _pageMessages.add(msg);
       }
-    }else{
-      _refreshController.finishLoad(noMore: true,success: true);
+    } else {
+      _refreshController.finishLoad(noMore: true, success: true);
     }
     return _pageMessages;
   }
@@ -207,38 +207,6 @@ class _ChannelPageState extends State<ChannelPage> {
         onLoad: _onload, //onload是上拉
 //        footer: BallPulseFooter(),
         slivers: slivers,
-      ),
-    );
-  }
-}
-
-class _MySwipeRefresh extends StatefulWidget {
-  Future<void> Function() onSwipeDown;
-  Future<void> Function() onSwipeUp;
-  List<Widget> slivers;
-
-  _MySwipeRefresh({this.onSwipeDown, this.onSwipeUp, this.slivers});
-
-  @override
-  __MySwipeRefreshState createState() => __MySwipeRefreshState();
-}
-
-class __MySwipeRefreshState extends State<_MySwipeRefresh> {
-  @override
-  Widget build(BuildContext context) {
-    return SwipeRefreshLayout(
-      onSwipeDown: () async {
-        await widget.onSwipeDown();
-        setState(() {});
-      },
-      onSwipeUp: () async {
-        await widget.onSwipeUp();
-        setState(() {});
-      },
-      child: CustomScrollView(
-        shrinkWrap: true,
-//        controller: ScrollController(keepScrollOffset: true),
-        slivers: widget.slivers,
       ),
     );
   }

@@ -1,28 +1,24 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/gbera/pages/netflow/article_entities.dart';
 import 'package:gbera/portals/gbera/pages/viewers/video_view.dart';
 import 'package:gbera/portals/gbera/store/entities.dart';
 import 'package:gbera/portals/gbera/store/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
-import 'package:video_player/video_player.dart';
 
-import 'article_entities.dart';
 
-class ChannelPublishArticle extends StatefulWidget {
+class GeospherePublishArticle extends StatefulWidget {
   PageContext context;
 
-  ChannelPublishArticle({this.context});
+  GeospherePublishArticle({this.context});
 
   @override
-  _ChannelPublishArticleState createState() => _ChannelPublishArticleState();
+  _GeospherePublishArticleState createState() => _GeospherePublishArticleState();
 }
 
-class _ChannelPublishArticleState extends State<ChannelPublishArticle> {
+class _GeospherePublishArticleState extends State<GeospherePublishArticle> {
   GlobalKey<_MediaShowerState> shower_key;
 
   TextEditingController _contentController;
@@ -42,7 +38,7 @@ class _ChannelPublishArticleState extends State<ChannelPublishArticle> {
 
   @override
   Widget build(BuildContext context) {
-    Channel _channel = widget.context.parameters['channel'];
+    var geo_sphere_channel_id=IChannelService.GEO_CIRCUIT_CHANNEL_ID;
     var type = widget.context.parameters['type'];
     return Scaffold(
       appBar: AppBar(
@@ -81,7 +77,7 @@ class _ChannelPublishArticleState extends State<ChannelPublishArticle> {
                   null,
                   null,
                   null,
-                  _channel.id,
+                  geo_sphere_channel_id,
                   user.person,
                   DateTime.now().millisecondsSinceEpoch,
                   content,
@@ -109,7 +105,7 @@ class _ChannelPublishArticleState extends State<ChannelPublishArticle> {
                     null,
                     msgid,
                     null,
-                    _channel.id,
+                    geo_sphere_channel_id,
                   ),
                 );
               }

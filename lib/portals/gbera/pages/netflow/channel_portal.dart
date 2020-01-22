@@ -152,6 +152,7 @@ class _ChannelPortalState extends State<ChannelPortal> {
                 left: 14,
                 right: 10,
                 bottom: 5,
+                top: 20,
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,

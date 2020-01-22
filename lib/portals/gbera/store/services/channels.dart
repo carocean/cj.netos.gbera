@@ -7,8 +7,9 @@ import 'package:uuid/uuid.dart';
 import '../entities.dart';
 
 class ChannelService implements IChannelService {
-  ///固定地推id，全平台一致
-  static Map<String, String> _SYSTEM_CHANNELS = {
+  ///固定管道
+  static const Map<String, String> _SYSTEM_CHANNELS = {
+    ///地推id
     'geo_channel': '4203EC25-1FC8-479D-A78F-74338FC7E769'
   };
   IChannelDAO channelDAO;

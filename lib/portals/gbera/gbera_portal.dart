@@ -11,6 +11,7 @@ import 'package:gbera/portals/gbera/pages/desktop/portlet_list.dart';
 import 'package:gbera/portals/gbera/pages/geosphere.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_discovery.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_fountain.dart';
+import 'package:gbera/portals/gbera/pages/geosphere/geo_publish_article.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_region.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_settings.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_yuanbao.dart';
@@ -461,10 +462,11 @@ class GberaPortal {
           subtitle: '',
           icon: Icons.art_track,
           url: '/netflow/channel/publish_article',
-          buildPage: (PageContext pageContext) => PublishArticle(
+          buildPage: (PageContext pageContext) => ChannelPublishArticle(
             context: pageContext,
           ),
         ),
+
         Page(
           title: '管道活动门户',
           subtitle: '',
@@ -673,6 +675,15 @@ class GberaPortal {
           icon: GalleryIcons.shrine,
           url: '/geosphere',
           buildPage: (PageContext pageContext) => Geosphere(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '发布文章',
+          subtitle: '',
+          icon: Icons.art_track,
+          url: '/geosphere/publish_article',
+          buildPage: (PageContext pageContext) => GeospherePublishArticle(
             context: pageContext,
           ),
         ),

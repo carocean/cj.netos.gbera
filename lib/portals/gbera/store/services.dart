@@ -28,6 +28,8 @@ mixin IPersonService {
 
 }
 mixin IChannelService {
+  ///地圈管道标识
+  static const  GEO_CIRCUIT_CHANNEL_ID='59FC6F04-5C54-4C6F-80EC-BF2355856841';
   Future<void> init(UserPrincipal user);
 
   bool isSystemChannel(channelid);
