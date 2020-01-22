@@ -91,12 +91,15 @@ class GeoSettings extends StatelessWidget {
                         ),
                         CardItem(
                           title: '我的动态',
-                          tipsText: '发表210篇',
+//                          tipsText: '发表210篇',
                           leading: Icon(
                             FontAwesomeIcons.images,
                             color: Colors.grey,
                             size: 25,
                           ),
+                          onItemTap: (){
+                            this.context.forward('/geosphere/portal');
+                          },
                         ),
                         Divider(
                           height: 1,

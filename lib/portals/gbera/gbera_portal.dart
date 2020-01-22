@@ -15,6 +15,7 @@ import 'package:gbera/portals/gbera/pages/geosphere/geo_publish_article.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_region.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_settings.dart';
 import 'package:gbera/portals/gbera/pages/geosphere/geo_yuanbao.dart';
+import 'package:gbera/portals/gbera/pages/geosphere/geosphere_portal.dart';
 import 'package:gbera/portals/gbera/pages/market.dart';
 import 'package:gbera/portals/gbera/pages/market/go_gogo.dart';
 import 'package:gbera/portals/gbera/pages/market/go_shopping_cart.dart';
@@ -684,6 +685,15 @@ class GberaPortal {
           icon: Icons.art_track,
           url: '/geosphere/publish_article',
           buildPage: (PageContext pageContext) => GeospherePublishArticle(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '地圈动态门户',
+          subtitle: '',
+          icon: Icons.art_track,
+          url: '/geosphere/portal',
+          buildPage: (PageContext pageContext) => GeospherePortal(
             context: pageContext,
           ),
         ),
