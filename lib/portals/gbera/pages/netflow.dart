@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/common/persistent_header_delegate.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel.dart';
 import 'package:gbera/portals/gbera/store/entities.dart';
 import 'package:gbera/portals/gbera/store/services.dart';
@@ -29,16 +30,10 @@ class Netflow extends StatefulWidget {
 }
 
 class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
-  var _controller;
   var _backgroud_transparent = true;
   bool use_wallpapper = false;
   Future<List<MessageView>> _future_getMessages;
   Future<List<_ChannelItem>> _future_loadChannels;
-
-  _NetflowState() {
-    _controller = ScrollController(initialScrollOffset: 0.0);
-    _controller.addListener(_listener);
-  }
 
   @override
   bool get wantKeepAlive {
@@ -56,31 +51,7 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
   void dispose() {
     _future_getMessages = null;
     _future_loadChannels = null;
-    _controller?.dispose();
     super.dispose();
-  }
-
-  _listener() {
-    if (!use_wallpapper) {
-      return;
-    }
-    if (_controller.offset >= 30) {
-      //48是appbar的高度，210是appbar展开发的总高
-      if (_backgroud_transparent) {
-        setState(() {
-          _backgroud_transparent = false;
-        });
-      }
-      return;
-    }
-    if (_controller.offset < 30) {
-      if (!_backgroud_transparent) {
-        setState(() {
-          _backgroud_transparent = true;
-        });
-      }
-      return;
-    }
   }
 
   @override
@@ -90,9 +61,216 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
     use_wallpapper = widget.context.parameters['use_wallpapper'];
 
     return CustomScrollView(
-      controller: _controller,
       slivers: <Widget>[
-        _sliverAppBar(),
+        SliverPersistentHeader(
+          floating: false,
+          pinned: true,
+          delegate: GberaPersistentHeaderDelegate(
+            automaticallyImplyLeading: false,
+            elevation: 0,
+            title: Text('网流'),
+            centerTitle: true,
+            actions: <Widget>[
+              PopupMenuButton<String>(
+                offset: Offset(
+                  0,
+                  50,
+                ),
+                onSelected: (value) async {
+                  if (value == null) return;
+                  var arguments = <String, Object>{};
+                  switch (value) {
+                    case '/netflow/manager/create_channel':
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return SimpleDialog(
+                              title: Text('选择管道类型'),
+                              children: <Widget>[
+                                DialogItem(
+                                  text: '开环管道',
+                                  icon: IconData(
+                                    0xe604,
+                                    fontFamily: 'netflow',
+                                  ),
+                                  color: Colors.grey[500],
+                                  subtext: '适用于无穷级网络。自行添加管道出入口的公众',
+                                  onPressed: () {
+                                    widget.context.backward(
+                                        result: <String, Object>{
+                                          'type': 'openLoop'
+                                        });
+                                  },
+                                ),
+                                DialogItem(
+                                  text: '闭环管道',
+                                  icon: IconData(
+                                    0xe62f,
+                                    fontFamily: 'netflow',
+                                  ),
+                                  color: Colors.grey[500],
+                                  subtext:
+                                      '适用于：点对点聊天、群聊。管道的入口公众全是出口公众，自行添加出口公众同时也会被添加到入口',
+                                  onPressed: () {
+                                    widget.context.backward(
+                                        result: <String, Object>{
+                                          'type': 'closeLoop'
+                                        });
+                                  },
+                                ),
+                              ],
+                            );
+                          }).then((v) {
+                        if (v == null) return;
+                        widget.context.forward(value, arguments: v).then((v) {
+                          if (_refreshChannels != null) {
+                            _refreshChannels();
+                          }
+                        });
+                      });
+                      break;
+                    case '/netflow/manager/scan_channel':
+                      String cameraScanResult = await scanner.scan();
+                      if (cameraScanResult == null) break;
+                      arguments['qrcode'] = cameraScanResult;
+                      widget.context
+                          .forward(value, arguments: arguments)
+                          .then((v) {
+                        if (_refreshChannels != null) {
+                          _refreshChannels();
+                        }
+                      });
+                      break;
+                    case '/netflow/manager/search_channel':
+                      widget.context
+                          .forward(value, arguments: arguments)
+                          .then((v) {
+                        if (_refreshChannels != null) {
+                          _refreshChannels();
+                        }
+                      });
+                      break;
+                    case '/test/services':
+                      widget.context
+                          .forward(value, arguments: arguments)
+                          .then((v) {
+                        if (_refreshChannels != null) {
+                          _refreshChannels();
+                        }
+                      });
+                      break;
+                  }
+                },
+                itemBuilder: (context) => <PopupMenuEntry<String>>[
+                  PopupMenuItem(
+                    value: '/netflow/manager/create_channel',
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            right: 10,
+                          ),
+                          child: Icon(
+                            widget.context
+                                .findPage('/netflow/manager/create_channel')
+                                ?.icon,
+                            color: Colors.grey[500],
+                            size: 15,
+                          ),
+                        ),
+                        Text(
+                          '新建管道',
+                          style: TextStyle(
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  PopupMenuDivider(),
+                  PopupMenuItem(
+                    value: '/netflow/manager/scan_channel',
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            right: 10,
+                          ),
+                          child: Icon(
+                            widget.context
+                                .findPage('/netflow/manager/scan_channel')
+                                ?.icon,
+                            color: Colors.grey[500],
+                            size: 15,
+                          ),
+                        ),
+                        Text(
+                          '扫码以连接',
+                          style: TextStyle(
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: '/netflow/manager/search_channel',
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            right: 10,
+                          ),
+                          child: Icon(
+                            widget.context
+                                .findPage('/netflow/manager/search_channel')
+                                ?.icon,
+                            color: Colors.grey[500],
+                            size: 15,
+                          ),
+                        ),
+                        Text(
+                          '搜索以连接',
+                          style: TextStyle(
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  PopupMenuDivider(),
+                  PopupMenuItem(
+                    value: '/test/services',
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            right: 10,
+                          ),
+                          child: Icon(
+                            widget.context.findPage('/test/services')?.icon,
+                            color: Colors.grey[500],
+                            size: 15,
+                          ),
+                        ),
+                        Text(
+                          '测试网流服务',
+                          style: TextStyle(
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
         SliverToBoxAdapter(
           child: Container(
             padding: EdgeInsets.only(
@@ -360,7 +538,7 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
           leading: ch.leading,
           time: TimelineUtil.format(
             ch.utime,
-            dayFormat: DayFormat.Full,
+            dayFormat: DayFormat.Simple,
           ),
           unreadMsgCount: ch.unreadMsgCount ?? 0,
           who: '$who: ',
@@ -381,7 +559,7 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
                 'channel': ch,
               },
             ).then((v) {
-              if(_refreshChannels!=null) {
+              if (_refreshChannels != null) {
                 _refreshChannels();
               }
             });
@@ -391,7 +569,7 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
               '/netflow/channel',
               arguments: {'channel': ch},
             ).then((v) {
-              if(_refreshChannels!=null) {
+              if (_refreshChannels != null) {
                 _refreshChannels();
               }
             });
@@ -401,208 +579,6 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
       );
     }
     return items;
-  }
-
-  _sliverAppBar() {
-    return SliverAppBar(
-      pinned: true,
-      automaticallyImplyLeading: false,
-      elevation: 0,
-      title: Text('网流'),
-      centerTitle: true,
-      actions: <Widget>[
-        PopupMenuButton<String>(
-          offset: Offset(
-            0,
-            50,
-          ),
-          onSelected: (value) async {
-            if (value == null) return;
-            var arguments = <String, Object>{};
-            switch (value) {
-              case '/netflow/manager/create_channel':
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return SimpleDialog(
-                        title: Text('选择管道类型'),
-                        children: <Widget>[
-                          DialogItem(
-                            text: '开环管道',
-                            icon: IconData(
-                              0xe604,
-                              fontFamily: 'netflow',
-                            ),
-                            color: Colors.grey[500],
-                            subtext: '适用于无穷级网络。自行添加管道出入口的公众',
-                            onPressed: () {
-                              widget.context.backward(
-                                  result: <String, Object>{'type': 'openLoop'});
-                            },
-                          ),
-                          DialogItem(
-                            text: '闭环管道',
-                            icon: IconData(
-                              0xe62f,
-                              fontFamily: 'netflow',
-                            ),
-                            color: Colors.grey[500],
-                            subtext:
-                                '适用于：点对点聊天、群聊。管道的入口公众全是出口公众，自行添加出口公众同时也会被添加到入口',
-                            onPressed: () {
-                              widget.context.backward(result: <String, Object>{
-                                'type': 'closeLoop'
-                              });
-                            },
-                          ),
-                        ],
-                      );
-                    }).then((v) {
-                  if (v == null) return;
-                  widget.context.forward(value, arguments: v).then((v) {
-                    if(_refreshChannels!=null) {
-                      _refreshChannels();
-                    }
-                  });
-                });
-                break;
-              case '/netflow/manager/scan_channel':
-                String cameraScanResult = await scanner.scan();
-                if (cameraScanResult == null) break;
-                arguments['qrcode'] = cameraScanResult;
-                widget.context.forward(value, arguments: arguments).then((v) {
-                  if(_refreshChannels!=null) {
-                    _refreshChannels();
-                  }
-                });
-                break;
-              case '/netflow/manager/search_channel':
-                widget.context.forward(value, arguments: arguments).then((v) {
-                  if(_refreshChannels!=null) {
-                    _refreshChannels();
-                  }
-                });
-                break;
-              case '/test/services':
-                widget.context.forward(value, arguments: arguments).then((v) {
-                  if(_refreshChannels!=null) {
-                    _refreshChannels();
-                  }
-                });
-                break;
-            }
-          },
-          itemBuilder: (context) => <PopupMenuEntry<String>>[
-            PopupMenuItem(
-              value: '/netflow/manager/create_channel',
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: 10,
-                    ),
-                    child: Icon(
-                      widget.context
-                          .findPage('/netflow/manager/create_channel')
-                          ?.icon,
-                      color: Colors.grey[500],
-                      size: 15,
-                    ),
-                  ),
-                  Text(
-                    '新建管道',
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            PopupMenuDivider(),
-            PopupMenuItem(
-              value: '/netflow/manager/scan_channel',
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: 10,
-                    ),
-                    child: Icon(
-                      widget.context
-                          .findPage('/netflow/manager/scan_channel')
-                          ?.icon,
-                      color: Colors.grey[500],
-                      size: 15,
-                    ),
-                  ),
-                  Text(
-                    '扫码以连接',
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            PopupMenuItem(
-              value: '/netflow/manager/search_channel',
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: 10,
-                    ),
-                    child: Icon(
-                      widget.context
-                          .findPage('/netflow/manager/search_channel')
-                          ?.icon,
-                      color: Colors.grey[500],
-                      size: 15,
-                    ),
-                  ),
-                  Text(
-                    '搜索以连接',
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            PopupMenuDivider(),
-            PopupMenuItem(
-              value: '/test/services',
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: 10,
-                    ),
-                    child: Icon(
-                      widget.context.findPage('/test/services')?.icon,
-                      color: Colors.grey[500],
-                      size: 15,
-                    ),
-                  ),
-                  Text(
-                    '测试网流服务',
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ],
-      backgroundColor:
-          use_wallpapper && _backgroud_transparent ? Colors.transparent : null,
-    );
   }
 
   Future<List<MessageView>> _getMessages() async {
@@ -619,7 +595,7 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
       var timeText = TimelineUtil.formatByDateTime(
               DateTime.fromMillisecondsSinceEpoch(msg.ctime),
               locale: 'zh',
-              dayFormat: DayFormat.Full)
+              dayFormat: DayFormat.Simple)
           .toString();
       var channel = await channelService.getChannel(msg.onChannel);
       var act = MessageView(
@@ -635,12 +611,14 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
               context: context,
               builder: (context) {
                 return widget.context
-                    .part('/site/insite/request', context, arguments: {
+                    .part('/site/insite/approvals', context, arguments: {
                   'message': msg,
                   'channel': channel,
                   'person': person,
                 });
-              });
+              }).then((result) {
+            print('-----$result');
+          });
         },
       );
       msgviews.add(act);

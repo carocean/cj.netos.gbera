@@ -157,6 +157,15 @@ abstract class IChannelMessageDAO {
   Future<List<ChannelMessage>> pageMessageByChannelLoopType(
       String loopType, int limit, int offset);
 
+  @Query(
+      'SELECT msg.*  FROM ChannelMessage msg  WHERE msg.onChannel=:onChannel  AND msg.creator=:person  ORDER BY ctime DESC LIMIT :limit OFFSET :offset')
+  Future<List<ChannelMessage>> pageMessageBy(
+    String onchannel,
+    String person,
+    int limit,
+    int offset,
+  );
+
   @Query('SELECT * FROM ChannelMessage WHERE id = :id')
   Future<ChannelMessage> getMessage(String id);
 

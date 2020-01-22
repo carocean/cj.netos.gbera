@@ -89,6 +89,9 @@ mixin IChannelMessageService {
   Future<void> removeMessage(String id);
 
   Future<void> emptyBy(String channelid);
+
+  Future<List<ChannelMessage>>  pageMessageBy(int limit, int offset, String onchannel, String person) ;
+
 }
 mixin IChannelMediaService {
   Future<void> addMedia(Media media);

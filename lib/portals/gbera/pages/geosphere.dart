@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/common/persistent_header_delegate.dart';
 import 'package:gbera/portals/gbera/parts/CardItem.dart';
 import 'package:gbera/portals/gbera/parts/parts.dart';
 import 'package:gbera/portals/gbera/store/entities.dart';
@@ -19,9 +20,8 @@ class Geosphere extends StatefulWidget {
   _GeosphereState createState() => _GeosphereState();
 }
 
-class _GeosphereState extends State<Geosphere> with AutomaticKeepAliveClientMixin{
-  var _controller;
-  var _backgroud_transparent = true;
+class _GeosphereState extends State<Geosphere>
+    with AutomaticKeepAliveClientMixin {
   bool use_wallpapper = false;
 
   @override
@@ -30,38 +30,11 @@ class _GeosphereState extends State<Geosphere> with AutomaticKeepAliveClientMixi
   }
 
   @override
-  void initState() {
-    _controller = ScrollController(initialScrollOffset: 0.0);
-    _controller.addListener(_listener);
-  }
-
-  _listener() {
-    if (!use_wallpapper) {
-      return;
-    }
-    if (_backgroud_transparent && _controller.offset >= 40) {
-      //48是appbar的高度，210是appbar展开发的总高
-      if (_backgroud_transparent) {
-        setState(() {
-          _backgroud_transparent = false;
-        });
-      }
-      return;
-    }
-    if (!_backgroud_transparent && _controller.offset < 40) {
-      if (!_backgroud_transparent) {
-        setState(() {
-          _backgroud_transparent = true;
-        });
-      }
-      return;
-    }
-  }
+  void initState() {}
 
   @override
   void dispose() {
     super.dispose();
-    _controller?.dispose();
   }
 
   @override
@@ -69,22 +42,21 @@ class _GeosphereState extends State<Geosphere> with AutomaticKeepAliveClientMixi
     super.build(context);
     use_wallpapper = widget.context.parameters['use_wallpapper'];
     return CustomScrollView(
-      controller: _controller,
       slivers: <Widget>[
-        SliverAppBar(
-          title: Text('地圈'),
+        SliverPersistentHeader(
+          floating: false,
           pinned: true,
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          centerTitle: true,
-          backgroundColor: use_wallpapper && _backgroud_transparent
-              ? Colors.transparent
-              : null,
-          actions: <Widget>[
-            _PopupMenu(
-              context: widget.context,
-            ),
-          ],
+          delegate: GberaPersistentHeaderDelegate(
+            title: Text('地圈'),
+            automaticallyImplyLeading: false,
+            elevation: 0,
+            centerTitle: true,
+            actions: <Widget>[
+              _PopupMenu(
+                context: widget.context,
+              ),
+            ],
+          ),
         ),
         SliverToBoxAdapter(
           child: _GeoRegion(
@@ -654,9 +626,30 @@ class __MessageCardState extends State<_MessageCard> {
   @override
   Widget build(BuildContext context) {
     var images = [
-      Media(null,'image','https://img12.360buyimg.com/n1/jfs/t1/64956/8/15150/216341/5dcbfa37Ec377dabf/b37dc8a39696eadb.jpg',null,null,null,null),
-      Media(null,'image','https://img12.360buyimg.com/n1/jfs/t30010/114/1514509429/178688/f90faa12/5ce22d74N5a7de92f.jpg',null,null,null,null),
-      Media(null,'image','https://img14.360buyimg.com/n5/s75x75_jfs/t21145/102/253959384/30146/76597635/5b07771aNbbad67a3.jpg',null,null,null,null),
+      Media(
+          null,
+          'image',
+          'https://img12.360buyimg.com/n1/jfs/t1/64956/8/15150/216341/5dcbfa37Ec377dabf/b37dc8a39696eadb.jpg',
+          null,
+          null,
+          null,
+          null),
+      Media(
+          null,
+          'image',
+          'https://img12.360buyimg.com/n1/jfs/t30010/114/1514509429/178688/f90faa12/5ce22d74N5a7de92f.jpg',
+          null,
+          null,
+          null,
+          null),
+      Media(
+          null,
+          'image',
+          'https://img14.360buyimg.com/n5/s75x75_jfs/t21145/102/253959384/30146/76597635/5b07771aNbbad67a3.jpg',
+          null,
+          null,
+          null,
+          null),
     ];
     return Card(
       shape: Border(),

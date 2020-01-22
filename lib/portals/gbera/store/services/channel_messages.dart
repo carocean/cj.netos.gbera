@@ -24,6 +24,12 @@ class ChannelMessageService implements IChannelMessageService {
     });
   }
 
+  @override
+  Future<List<ChannelMessage>> pageMessageBy(
+      int limit, int offset, String onchannel, String person) async{
+    return await channelMessageDAO.pageMessageBy(onchannel,person,limit,offset,);
+  }
+
   @transaction
   @override
   Future<Function> removeMessage(String id) async {

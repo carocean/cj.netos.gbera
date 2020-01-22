@@ -51,6 +51,7 @@ dependencies:
   #已将源码拷到工程
 #  w_popup_menu: ^0.3.0
   popup_menu: ^1.0.5
+  flutter_easyrefresh: ^2.0.8
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -149,7 +149,7 @@ class _MessagesRegionState extends State<_MessagesRegion> {
       var timeText = TimelineUtil.formatByDateTime(
               DateTime.fromMillisecondsSinceEpoch(msg.ctime),
               locale: 'zh',
-              dayFormat: DayFormat.Full)
+              dayFormat: DayFormat.Simple)
           .toString();
       var channel = await channelService.getChannel(msg.onChannel);
       var view = MessageView(
@@ -165,7 +165,7 @@ class _MessagesRegionState extends State<_MessagesRegion> {
               context: context,
               builder: (context) {
                 return widget.context
-                    .part('/site/insite/request', context, arguments: {
+                    .part('/site/insite/approvals', context, arguments: {
                   'message': msg,
                   'channel': channel,
                   'person': person,

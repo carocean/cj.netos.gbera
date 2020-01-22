@@ -39,6 +39,7 @@ import 'package:gbera/portals/gbera/pages/netflow/channel_qrcode.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channel_rename.dart';
 import 'package:gbera/portals/gbera/pages/netflow/channels_of_user.dart';
 import 'package:gbera/portals/gbera/pages/netflow/create_channel.dart';
+import 'package:gbera/portals/gbera/pages/netflow/insite_approval.dart';
 import 'package:gbera/portals/gbera/pages/netflow/insite_messages.dart';
 import 'package:gbera/portals/gbera/pages/netflow/insite_persons.dart';
 import 'package:gbera/portals/gbera/pages/netflow/insite_persons_settings.dart';
@@ -530,6 +531,16 @@ class GberaPortal {
           icon: Icons.art_track,
           url: '/site/insite/request',
           buildPage: (PageContext pageContext) => InSiteRequest(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '入站审批',
+          subtitle: '',
+          desc: '',
+          icon: Icons.art_track,
+          url: '/site/insite/approvals',
+          buildPage: (PageContext pageContext) => InsiteApprovals(
             context: pageContext,
           ),
         ),

@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/common/persistent_header_delegate.dart';
 import 'package:gbera/portals/gbera/parts/CardItem.dart';
 import 'package:gbera/portals/gbera/parts/parts.dart';
 import 'package:gbera/portals/gbera/store/entities.dart';
@@ -16,8 +17,6 @@ class Market extends StatefulWidget {
 }
 
 class _MarketState extends State<Market> with AutomaticKeepAliveClientMixin{
-  ScrollController _controller;
-  bool showAppBar = false;
 
   @override
   bool get wantKeepAlive {
@@ -26,51 +25,27 @@ class _MarketState extends State<Market> with AutomaticKeepAliveClientMixin{
 
   @override
   void initState() {
-    _controller = ScrollController(initialScrollOffset: 0.0);
-    showAppBar = false;
-    _controller.addListener(_scrollListener);
   }
 
   @override
   void dispose() {
     super.dispose();
-    _controller?.dispose();
-  }
-
-  _scrollListener() {
-    var sub = 40;
-    print('${_controller.offset}----$sub');
-    if (_controller.offset > sub) {
-      if (!showAppBar) {
-        setState(() {
-          showAppBar = true;
-        });
-      }
-      return;
-    }
-    if (_controller.offset < sub) {
-      if (showAppBar) {
-        setState(() {
-          showAppBar = false;
-        });
-      }
-      return;
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return CustomScrollView(
-      controller: _controller,
       slivers: [
-        SliverAppBar(
-          title: Text('市场'),
+        SliverPersistentHeader(
+          floating: false,
           pinned: true,
-          centerTitle: true,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          backgroundColor: showAppBar ? Colors.white : Colors.transparent,
+          delegate: GberaPersistentHeaderDelegate(
+            title: Text('市场'),
+            centerTitle: true,
+            elevation: 0,
+            automaticallyImplyLeading: false,
+          ),
         ),
         SliverToBoxAdapter(
           child: _renderDealmarketRegion(),
@@ -115,7 +90,6 @@ class _MarketState extends State<Market> with AutomaticKeepAliveClientMixin{
         top: 30,
         bottom: 20,
       ),
-      color: showAppBar ? Colors.white : null,
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

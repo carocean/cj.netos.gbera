@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/common/persistent_header_delegate.dart';
 
 class MarchantSite extends StatefulWidget {
   PageContext context;
@@ -15,81 +16,61 @@ class MarchantSite extends StatefulWidget {
 }
 
 class _MarchantSiteState extends State<MarchantSite> {
-  _MarchantSiteState()
-      : _controller = ScrollController(initialScrollOffset: 0.0),
-        showOnAppbar = false {
-    _controller.addListener(_listener);
-  }
-
-  bool showOnAppbar;
-  ScrollController _controller;
-
-  _listener() {
-    if (_controller.offset >= 40) {
-      if(!showOnAppbar) {
-        setState(() {
-          showOnAppbar = true;
-        });
-      }
-      return;
-    }
-    if (_controller.offset < 40) {
-      if(showOnAppbar) {
-        setState(() {
-          showOnAppbar = false;
-        });
-      }
-      return;
-    }
-  }
-
-
   @override
   void dispose() {
-      super.dispose();
-      _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        title: showOnAppbar ? Text('广东邮政局') : Text(''),
-        leading: IconButton(
-          onPressed: () {
-            widget.context.backward();
-          },
-          icon: Icon(
-            Icons.clear,
-          ),
-        ),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              showCupertinoModalPopup(
-                  context: context,
-                  builder: (context) {
-                    return _ActionSheet(context: widget.context,);
-                  }).then((v){
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverPersistentHeader(
+            floating: false,
+            pinned: true,
+            delegate: GberaPersistentHeaderDelegate(
+              elevation: 0,
+              backgroundColor: Colors.white,
+              isFixedBackgroundColor: true,
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              onAppBarStateChange: (d, v) {
+                if (v) {
+                  d.title = Text('广东邮政局');
+                } else {
+                  d.title = null;
+                }
+              },
+              leading: IconButton(
+                onPressed: () {
+                  widget.context.backward();
+                },
+                icon: Icon(
+                  Icons.clear,
+                ),
+              ),
+              actions: <Widget>[
+                IconButton(
+                  onPressed: () {
+                    showCupertinoModalPopup(
+                        context: context,
+                        builder: (context) {
+                          return _ActionSheet(
+                            context: widget.context,
+                          );
+                        }).then((v) {
 //                    widget.context.forward('/netflow/portal/site');
-
-              });
-            },
-            icon: Icon(
-              FontAwesomeIcons.ellipsisH,
-              size: 16,
+                    });
+                  },
+                  icon: Icon(
+                    FontAwesomeIcons.ellipsisH,
+                    size: 16,
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
-      body: CustomScrollView(
-        controller: _controller,
-        shrinkWrap: true,
-        slivers: <Widget>[
           SliverToBoxAdapter(
             child: _Header(
               context: widget.context,
@@ -216,7 +197,9 @@ class _ActionSheet extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            this.context.backward(result: <String,Object>{'action':'activies'});
+            this
+                .context
+                .backward(result: <String, Object>{'action': 'activies'});
           },
         ),
         CupertinoActionSheetAction(
@@ -227,7 +210,9 @@ class _ActionSheet extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            this.context.backward(result: <String,Object>{'action':'activies'});
+            this
+                .context
+                .backward(result: <String, Object>{'action': 'activies'});
           },
         ),
         CupertinoActionSheetAction(
@@ -238,7 +223,9 @@ class _ActionSheet extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            this.context.backward(result: <String,Object>{'action':'activies'});
+            this
+                .context
+                .backward(result: <String, Object>{'action': 'activies'});
           },
         ),
       ],

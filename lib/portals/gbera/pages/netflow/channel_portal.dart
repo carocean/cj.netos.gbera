@@ -1,11 +1,21 @@
+import 'dart:io';
+import 'dart:ui';
+
+import 'package:common_utils/common_utils.dart';
+import 'package:extended_text_field/extended_text_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/common/persistent_header_delegate.dart';
 import 'package:gbera/portals/common/util.dart';
+import 'package:gbera/portals/common/wpopup_menu/w_popup_menu.dart';
 import 'package:gbera/portals/gbera/parts/parts.dart';
 import 'package:gbera/portals/gbera/store/entities.dart';
+import 'package:gbera/portals/gbera/store/services.dart';
+import 'package:uuid/uuid.dart';
 
 class ChannelPortal extends StatefulWidget {
   PageContext context;
@@ -17,202 +27,188 @@ class ChannelPortal extends StatefulWidget {
 }
 
 class _ChannelPortalState extends State<ChannelPortal> {
-  _ChannelPortalState()
-      : _controller = ScrollController(initialScrollOffset: 0.0),
-        showAppBar = false {
-    _controller.addListener(_scrollListener);
+  Channel _channel;
+
+  @override
+  void initState() {
+    _channel = widget.context.parameters['channel'];
+    _refreshController = EasyRefreshController();
+    _loadMessages();
+    super.initState();
   }
 
   @override
   void dispose() {
+    _channel = null;
+    _messages.clear();
     super.dispose();
-    _controller?.dispose();
   }
 
-  _scrollListener() {
-    var sub = Adapt.screenH() / 3 - 60;
-    print('${_controller.offset}----$sub');
-    if (_controller.offset > sub) {
-      if (!showAppBar) {
-        setState(() {
-          showAppBar = true;
-        });
-      }
-      return;
-    }
-    if (_controller.offset < sub) {
-      if (showAppBar) {
-        setState(() {
-          showAppBar = false;
-        });
-      }
-      return;
-    }
-  }
-
-  ScrollController _controller;
   bool showAppBar = false;
+  EasyRefreshController _refreshController;
+
+  int _limit = 15;
+  int _offset = 0;
+  List<ChannelMessage> _messages = [];
+
+  Future<List<ChannelMessage>> _loadMessages() async {
+    var onchannel = _channel?.id;
+    IChannelMessageService messageService =
+        widget.context.site.getService('/channel/messages');
+    var person = widget.context.userPrincipal.person;
+    var messages =
+        await messageService.pageMessageBy(_limit, _offset, onchannel, person);
+    if (!messages.isEmpty) {
+      _offset += messages.length;
+      _messages.addAll(messages);
+      setState(() {});
+    } else {
+      _refreshController.finishLoad(success: true, noMore: true);
+    }
+
+    return _messages;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        controller: _controller,
+      body: EasyRefresh.custom(
+        controller: _refreshController,
+//        onRefresh: _onRefresh,//注释掉则不支持下拉
+        onLoad: _loadMessages,
+//        footer: BallPulseFooter(),
         slivers: <Widget>[
-          _getAppBar(),
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: 70,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: _Body(
-              context: widget.context,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  _getAppBar() {
-    return SliverAppBar(
-      titleSpacing: 0,
-      pinned: true,
-      floating: false,
-      snap: false,
-      elevation: 0,
-      expandedHeight: Adapt.screenH() / 3,
-      backgroundColor: showAppBar ? Theme.of(context).appBarTheme.color : null,
-      automaticallyImplyLeading: true,
-      centerTitle: false,
-      title: showAppBar ? Text('云台花园') : null,
-      flexibleSpace: _Header(
-        showAppBar: showAppBar,
-        context: widget.context,
-      ),
-    );
-  }
-}
-
-class _Header extends StatefulWidget {
-  bool showAppBar;
-  PageContext context;
-
-  _Header({this.showAppBar, this.context});
-
-  @override
-  __HeaderState createState() => __HeaderState();
-}
-
-class __HeaderState extends State<_Header> {
-  @override
-  Widget build(BuildContext context) {
-    if (widget.showAppBar) {
-      return Container(
-        width: 0,
-        height: 0,
-      );
-    }
-
-    return Container(
-      height: Adapt.screenH() / 3,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: NetworkImage(
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573584350457&di=348e3a088908202dd5e5aae49ff6fe17&imgtype=0&src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F2017-11-17%2F5a0e94afc140c.jpg',
-          ),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Stack(
-        overflow: Overflow.visible,
-        children: <Widget>[
-          Positioned(
-            bottom: -60,
-            left: 10,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(
-                        right: 10,
-                      ),
-                      child: GestureDetector(
-                        onTap: () {
-                          widget.context.forward('/site/personal');
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(6.0),
-                          child: Image.network(
-                            'http://cdn1.mmia.com/spfocusimg/2012/914/renwu7121.jpg',
-                            height: 60,
-                            width: 60,
-                            fit: BoxFit.cover,
+          SliverPersistentHeader(
+            floating: false,
+            pinned: true,
+            delegate: GberaPersistentHeaderDelegate(
+              expandedHeight: 260,
+              title: Text(
+                '${_channel.name}',
+                style: TextStyle(color: Colors.white),
+              ),
+              iconTheme: IconThemeData(
+                color: Colors.white,
+              ),
+              background: NetworkImage(
+                'http://47.105.165.186:7100/public/market/timg-5.jpeg',
+              ),
+              onAppBarStateChange: (d, v) {
+                print('---$v');
+                if (v) {
+                  d.title = Text(
+                    '${_channel.name}',
+                    style: TextStyle(color: Colors.black87),
+                  );
+                  d.iconTheme = IconThemeData(
+                    color: Colors.black87,
+                  );
+                  return;
+                }
+                d.title = Text(
+                  '${_channel.name}',
+                  style: TextStyle(color: Colors.white),
+                );
+                d.iconTheme = IconThemeData(
+                  color: Colors.white,
+                );
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Flex(
+                    direction: Axis.vertical,
+                    children: <Widget>[
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        child: Image.file(
+                          File(
+                            _channel?.leading,
                           ),
+                          fit: BoxFit.cover,
+                          width: 60,
+                          height: 60,
                         ),
                       ),
+                      Text(
+                        '${_channel?.name}',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              padding: EdgeInsets.only(
+                left: 14,
+                right: 10,
+                bottom: 5,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(
+                      right: 5,
                     ),
-                    Container(
-                      child: Text(
-                        '没有行囊，没有目的，我孤独的走在路上。',
+                    child: GestureDetector(
+                      onTap: () {
+//                        widget.context.forward('/site/personal');
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(4.0),
+                        child: widget.context.userPrincipal.avatar == null
+                            ? Image.asset(
+                                'lib/portals/gbera/images/avatar.png',
+                                height: 20,
+                                width: 20,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.network(
+                                '${widget.context.userPrincipal.avatar}',
+                                height: 20,
+                                width: 20,
+                                fit: BoxFit.cover,
+                              ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: Text.rich(
+                      TextSpan(
+                        text:
+                            '${widget.context.userPrincipal.nickName ?? widget.context.userPrincipal.accountName}',
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                          fontSize: 12,
+                          color: Colors.grey[800],
+                          fontSize: 16,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                        children: [],
                       ),
-                    ),
-                  ],
-                ),
-                Container(
-                  padding: EdgeInsets.only(
-                    top: 5,
-                  ),
-                  child: Text.rich(
-                    TextSpan(
-                      text: '会飞之鱼',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        color: Colors.grey[400],
-                      ),
-                      children: [
-                        TextSpan(text: '\r\n'),
-                        TextSpan(text: '的管道'),
-                        TextSpan(text: '云台花园'),
-                      ],
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: _ListRegion(
+              context: widget.context,
+              channel: _channel,
+              messages: _messages,
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _Body extends StatefulWidget {
-  PageContext context;
-
-  _Body({this.context});
-
-  @override
-  __BodyState createState() => __BodyState();
-}
-
-class __BodyState extends State<_Body> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: _ListRegion(
-        context: widget.context,
       ),
     );
   }
@@ -220,8 +216,10 @@ class __BodyState extends State<_Body> {
 
 class _ListRegion extends StatefulWidget {
   PageContext context;
+  Channel channel;
+  List<ChannelMessage> messages;
 
-  _ListRegion({this.context});
+  _ListRegion({this.context, this.channel, this.messages});
 
   @override
   __ListRegionState createState() => __ListRegionState();
@@ -230,55 +228,81 @@ class _ListRegion extends StatefulWidget {
 class __ListRegionState extends State<_ListRegion> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          _MessageCard(
-            context: widget.context,
+    if (widget.messages.isEmpty) {
+      return Container(
+        alignment: Alignment.center,
+        child: Text(
+          '他在该管道没有活动',
+          style: TextStyle(
+            color: Colors.grey[600],
           ),
-          _MessageCard(
-            context: widget.context,
-          ),
-        ],
-      ),
+        ),
+      );
+    }
+    return ListView(
+      padding: EdgeInsets.all(0),
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      children: widget.messages.map((msg) {
+        return _MessageCard(
+          context: widget.context,
+          channel: widget.channel,
+          message: msg,
+          onDeleted: (msg) {
+            widget.messages.remove(msg);
+            setState(() {});
+          },
+        );
+      }).toList(),
     );
   }
 }
 
 class _MessageCard extends StatefulWidget {
   PageContext context;
+  ChannelMessage message;
+  Channel channel;
+  void Function(ChannelMessage message) onDeleted;
 
-  _MessageCard({this.context});
+  _MessageCard({
+    this.context,
+    this.channel,
+    this.message,
+    this.onDeleted,
+  });
 
   @override
   __MessageCardState createState() => __MessageCardState();
 }
 
 class __MessageCardState extends State<_MessageCard> {
-  int maxlines = 4;
+  int maxLines = 4;
+  Future<Person> _future_getPerson;
+  Future<List<Media>> _future_getMedias;
+  _InteractiveRegionRefreshAdapter _interactiveRegionRefreshAdapter;
+
+  @override
+  void initState() {
+    _future_getPerson = _getPerson();
+    _future_getMedias = _getMedias();
+    _interactiveRegionRefreshAdapter = _InteractiveRegionRefreshAdapter();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _future_getPerson = null;
+    _future_getMedias = null;
+    _interactiveRegionRefreshAdapter = null;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var medias = [
-      Media(null,'image','https://img10.360buyimg.com/n1/jfs/t1/38567/16/12388/130326/5d395d2fEe96dc911/6dab21a2e90fa6cc.jpg',null,null,null,null),
-      Media(null,'image','https://img10.360buyimg.com/n1/jfs/t1/73939/39/6972/87180/5d511125Eb7307102/48b4456cf64402ea.jpg',null,null,null,null),
-      Media(null,'image','https://img10.360buyimg.com/n1/jfs/t1/78996/4/5354/106075/5d395d1bE465f0117/59c1c3608f69bded.jpg',null,null,null,null),
-    ];
     return Card(
-      shape: OutlineInputBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(8),
-        ),
-        borderSide: BorderSide.none,
-      ),
-      elevation: 2,
-      borderOnForeground: true,
-      semanticContainer: false,
-      margin: EdgeInsets.only(
-        bottom: 15,
-        left: 10,
-        right: 10,
-      ),
+      shape: Border(),
+      elevation: 0,
+      margin: EdgeInsets.only(bottom: 15),
       child: Container(
         padding: EdgeInsets.only(
           top: 10,
@@ -290,6 +314,24 @@ class __MessageCardState extends State<_MessageCard> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                widget.context.forward('/site/marchant');
+              },
+              child: Padding(
+                padding: EdgeInsets.only(top: 5, right: 5),
+                child: ClipOval(
+                  child: Image(
+                    image: NetworkImage(
+                        'https://sjbz-fd.zol-img.com.cn/t_s208x312c5/g5/M00/01/06/ChMkJ1w3FnmIE9dUAADdYQl3C5IAAuTxAKv7x8AAN15869.jpg'),
+                    height: 35,
+                    width: 35,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+            ),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -305,312 +347,203 @@ class __MessageCardState extends State<_MessageCard> {
                         },
                         behavior: HitTestBehavior.opaque,
                         child: Text(
-                          '今天 12:30',
+                          '${widget.message.creator}',
                           style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: Colors.grey[900],
-                            fontSize: 25,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: IconButton(
+                          padding: EdgeInsets.all(0),
+                          onPressed: () {
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return widget.context.part(
+                                      '/netflow/channel/serviceMenu', context);
+                                }).then((value) {
+                              print('-----$value');
+                              if (value == null) return;
+                              widget.context
+                                  .forward('/micro/app', arguments: value);
+                            });
+                          },
+                          icon: Icon(
+                            Icons.art_track,
+                            size: 20,
+                            color: Colors.grey[700],
                           ),
                         ),
                       ),
                     ],
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(
-                      top: 5,
-                    ),
-                    child: Divider(
-                      height: 1,
-                    ),
                   ),
                   Container(
                     //内容区
-                    padding: EdgeInsets.only(top: 10, bottom: 10),
+                    padding: EdgeInsets.only(top: 5, bottom: 10),
                     alignment: Alignment.topLeft,
                     child: Text.rich(
                       TextSpan(
-                        text:
-                            '据香港商报网官博消息，11日，马鞍山一男子疑因政见不同，遭暴徒泼易燃液体点火，造成四成皮肤二级烧伤。由全国政协副主席、前行政长官梁振英发起和成立的803基金，旗下悬红爆料网站803.hk，悬赏30万港币缉拿凶手。                      此外，还有四个新增悬赏案件分别为：11.11在葵芳站运作中的港铁车厢纵火，造成乘客惊恐走避，悬赏30万港币;11.11在路面纵火和向行驶中校巴掷汽油弹，学童和乘客受惊，悬赏30万港币;11.11向行驶中港铁列车及铁轨掷铁枝及单车，险酿意外，悬赏30万港币;11.10沙田美心皇宫被严重“装修”，继续破坏不支持暴行的商户和食肆，悬赏20万港币。',
+                        text: '${widget.message.text}',
                         style: TextStyle(
                           fontSize: 15,
                         ),
-                        recognizer: TapGestureRecognizer()..onTap=(){
-                          setState(() {
-                            if(maxlines==4) {
-                              maxlines=100;
-                            }else{
-                              maxlines=4;
-                            }
-                          });
-                        },
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            setState(() {
+                              if (maxLines == 4) {
+                                maxLines = 100;
+                              } else {
+                                maxLines = 4;
+                              }
+                            });
+                          },
                       ),
-                      maxLines: maxlines,
+                      maxLines: maxLines,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  DefaultTabController(
-                    length: medias.length,
-                    child: PageSelector(
-                      medias: medias,
-                      onMediaLongTap: (media) {
-                        widget.context.forward(
-                          '/images/viewer',
-                          arguments: {
-                            'media': media,
-                            'others': medias,
-                          },
+                  FutureBuilder<List<Media>>(
+                    future: _getMedias(),
+                    builder: (ctx, snapshot) {
+                      if (snapshot.connectionState != ConnectionState.done) {
+                        return Container(
+                          width: 0,
+                          height: 0,
                         );
-                      },
-                    ),
+                      }
+                      if (snapshot.hasError) {
+                        print('${snapshot.error}');
+                        return Container(
+                          width: 0,
+                          height: 0,
+                        );
+                      }
+                      if (snapshot.data.isEmpty) {
+                        return Container(
+                          width: 0,
+                          height: 0,
+                        );
+                      }
+                      return DefaultTabController(
+                        length: snapshot.data.length,
+                        child: PageSelector(
+                          medias: snapshot.data,
+                          onMediaLongTap: (media) {
+                            widget.context.forward(
+                              '/images/viewer',
+                              arguments: {
+                                'media': media,
+                                'others': snapshot.data,
+                                'autoPlay': true,
+                              },
+                            );
+                          },
+                        ),
+                      );
+                    },
                   ),
                   Row(
                     //内容坠
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      PopupMenuButton<String>(
-                        icon: Icon(
-                          Icons.linear_scale,
-                          size: 14,
-                          color: Colors.grey[600],
-                        ),
-                        offset: Offset(
-                          0,
-                          35,
-                        ),
-                        onSelected: (value) {
-                          Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Container(
-                              child: Text('$value'),
-                            ),
-                          ));
+                      Container(
+                        child: FutureBuilder<Person>(
+                            future: _future_getPerson,
+                            builder: (ctx, snapshot) {
+                              if (snapshot.connectionState !=
+                                  ConnectionState.done) {
+                                return Container(
+                                  width: 0,
+                                  height: 0,
+                                );
+                              }
+                              if (snapshot.hasError) {
+                                print('${snapshot.error}');
+                                return Container(
+                                  width: 0,
+                                  height: 0,
+                                );
+                              }
+                              return Text.rich(
+                                TextSpan(
+                                  text: '${TimelineUtil.format(
+                                    widget.message.ctime,
+                                    dayFormat: DayFormat.Simple,
+                                  )}',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[400],
+                                  ),
+                                  children: [
+                                    TextSpan(text: '  '),
+                                    TextSpan(
+                                        text:
+                                            '¥${(widget.message.wy * 0.001).toStringAsFixed(2)}'),
+                                    TextSpan(text: '\r\n'),
+                                    TextSpan(
+                                      text:
+                                          '${widget.context.userPrincipal?.uid == snapshot.data.uid ? '创建自 ' : '来自 '}',
+                                      children: [
+                                        TextSpan(
+                                          text:
+                                              '${widget.context.userPrincipal?.uid == snapshot.data.uid ? '我' : snapshot.data.accountName}',
+                                          style: TextStyle(
+                                            color: Colors.blueGrey,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              widget.context.forward(
+                                                  "/site/personal",
+                                                  arguments: {
+                                                    'person': snapshot.data,
+                                                  });
+                                            },
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                softWrap: true,
+                              );
+                            }),
+                      ),
+                      _MessageOperatesPopupMenu(
+                        message: widget.message,
+                        context: widget.context,
+                        onDeleted: () {
+                          if (widget.onDeleted != null) {
+                            widget.onDeleted(widget.message);
+                          }
+                          setState(() {});
                         },
-                        itemBuilder: (context) => <PopupMenuEntry<String>>[
-                          PopupMenuItem(
-                            value: 'like',
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    right: 10,
-                                  ),
-                                  child: Icon(
-                                    FontAwesomeIcons.thumbsUp,
-                                    color: Colors.grey[500],
-                                    size: 15,
-                                  ),
-                                ),
-                                Text(
-                                  '点赞',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: 'comment',
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    right: 10,
-                                  ),
-                                  child: Icon(
-                                    FontAwesomeIcons.comment,
-                                    color: Colors.grey[500],
-                                    size: 15,
-                                  ),
-                                ),
-                                Text(
-                                  '评论',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-//                          PopupMenuDivider(),
-                        ],
+                        onComment: () {
+                          _interactiveRegionRefreshAdapter.refresh('comment');
+                        },
+                        onliked: () {
+                          _interactiveRegionRefreshAdapter.refresh('liked');
+                        },
+                        onUnliked: () {
+                          _interactiveRegionRefreshAdapter.refresh('unliked');
+                        },
                       ),
                     ],
                   ),
                   Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
-                      color: Color(0xFFF5F5F5),
-                    ),
-                    padding: EdgeInsets.only(
-                      left: 10,
-                      right: 5,
-                      top: 5,
-                      bottom: 5,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      //相关操作区
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(
-                                right: 5,
-                              ),
-                              child: Icon(
-                                FontAwesomeIcons.thumbsUp,
-                                color: Colors.grey[500],
-                                size: 16,
-                              ),
-                            ),
-                            Expanded(
-                              child: Text.rich(
-                                TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: '吉儿',
-                                      style: TextStyle(
-                                        color: Colors.blueGrey,
-                                        fontWeight: FontWeight.w600,
-                                        decoration: TextDecoration.underline,
-                                      ),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () {
-                                          widget.context
-                                              .forward("/site/personal");
-                                        },
-                                    ),
-                                    TextSpan(text: ';  '),
-                                    TextSpan(
-                                      text: '布谷鸟',
-                                      style: TextStyle(
-                                        color: Colors.blueGrey,
-                                        fontWeight: FontWeight.w600,
-                                        decoration: TextDecoration.underline,
-                                      ),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () {
-                                          widget.context
-                                              .forward("/site/personal");
-                                        },
-                                    ),
-                                    TextSpan(text: ';  '),
-                                    TextSpan(
-                                      text: '大飞果果',
-                                      style: TextStyle(
-                                        color: Colors.blueGrey,
-                                        fontWeight: FontWeight.w600,
-                                        decoration: TextDecoration.underline,
-                                      ),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () {
-                                          widget.context
-                                              .forward("/site/personal");
-                                        },
-                                    ),
-                                    TextSpan(text: ';  '),
-                                    TextSpan(
-                                      text: '中国好味道',
-                                      style: TextStyle(
-                                        color: Colors.blueGrey,
-                                        fontWeight: FontWeight.w600,
-                                        decoration: TextDecoration.underline,
-                                      ),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () {
-                                          widget.context
-                                              .forward("/site/personal");
-                                        },
-                                    ),
-                                    TextSpan(text: ';  '),
-                                  ],
-                                ),
-//                                maxLines: 4,
-//                                overflow: TextOverflow.ellipsis,
-                                softWrap: true,
-                              ),
-                            ),
-                          ],
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                            bottom: 6,
-                            top: 6,
-                          ),
-                          child: Divider(
-                            height: 1,
-                          ),
-                        ),
-                        Column(
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(
-                                bottom: 5,
-                              ),
-                              child: Text.rich(
-                                //评论区
-                                TextSpan(
-                                  text: 'carocean:',
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      widget.context.forward("/site/personal");
-                                    },
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.blueGrey,
-                                  ),
-                                  children: [
-                                    TextSpan(
-                                      text: '当实现具备实时性需求时，我们一般会选择长连接的通信方式',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.normal,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                softWrap: true,
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                bottom: 5,
-                              ),
-                              child: Text.rich(
-                                //评论区
-                                TextSpan(
-                                  text: '天空的云:',
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      widget.context.forward("/site/personal");
-                                    },
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.blueGrey,
-                                  ),
-                                  children: [
-                                    TextSpan(
-                                      text:
-                                          '学习一门新的语言，第一个呈现基本都是“hello world”。那么我们知道这个是文本显示的。所以第一个我们学习Text,话不多说，直接上代码',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.normal,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                softWrap: true,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                    height: 7,
+                  ),
+
+                  ///相关交互区
+                  _InteractiveRegion(
+                    message: widget.message,
+                    context: widget.context,
+                    interactiveRegionRefreshAdapter:
+                        _interactiveRegionRefreshAdapter,
                   ),
                 ],
               ),
@@ -619,5 +552,646 @@ class __MessageCardState extends State<_MessageCard> {
         ),
       ),
     );
+  }
+
+  Future<Person> _getPerson() async {
+    IPersonService personService =
+        widget.context.site.getService('/gbera/persons');
+    var person = '';
+    if (!StringUtil.isEmpty(widget.message.upstreamPerson)) {
+      person = widget.message.upstreamPerson;
+    }
+    if (StringUtil.isEmpty(person)) {
+      person = widget.message.creator;
+    }
+    if (StringUtil.isEmpty(person)) {
+      return null;
+    }
+    return await personService.getPerson(person);
+  }
+
+  Future<List<Media>> _getMedias() async {
+    IChannelMediaService channelMediaService =
+        widget.context.site.getService('/channel/messages/medias');
+    return await channelMediaService.getMedias(widget.message.id);
+  }
+}
+
+class _CommentEditor extends StatefulWidget {
+  void Function(String content) onFinished;
+  void Function() onCloseWin;
+  PageContext context;
+
+  _CommentEditor({this.context, this.onFinished, this.onCloseWin});
+
+  @override
+  __CommentEditorState createState() => __CommentEditorState();
+}
+
+class __CommentEditorState extends State<_CommentEditor> {
+  TextEditingController _controller;
+
+  @override
+  void initState() {
+    _controller = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: 5,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Flexible(
+            //解决了无法计算边界问题
+            fit: FlexFit.tight,
+            child: ExtendedTextField(
+              controller: _controller,
+              autofocus: true,
+              onSubmitted: (v) {
+                print(v);
+              },
+              onEditingComplete: () {
+                print('----');
+              },
+              style: TextStyle(
+                fontSize: 14,
+              ),
+              maxLines: 50,
+              minLines: 4,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                prefixText: '说道>',
+                prefixStyle: TextStyle(
+                  fontSize: 14,
+                  color: Colors.black54,
+                ),
+                labelText:
+                    '${widget.context.userPrincipal.nickName ?? widget.context.userPrincipal.accountName}',
+                labelStyle: TextStyle(
+                  fontSize: 18,
+                  color: Colors.blueGrey,
+                  fontWeight: FontWeight.w500,
+                ),
+                fillColor: Colors.white,
+                filled: true,
+                hintText: '输入您的评论',
+                hintStyle: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ),
+          Column(
+            children: <Widget>[
+              IconButton(
+                icon: Icon(
+                  Icons.check,
+                  size: 14,
+                ),
+                onPressed: () async {
+                  if (widget.onFinished != null) {
+                    await widget.onFinished(_controller.text);
+                  }
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.clear,
+                  size: 14,
+                ),
+                onPressed: () async {
+                  _controller.text = '';
+                  if (widget.onCloseWin != null) {
+                    await widget.onCloseWin();
+                  }
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MessageOperatesPopupMenu extends StatefulWidget {
+  ChannelMessage message;
+  PageContext context;
+  void Function() onDeleted;
+  void Function() onComment;
+  void Function() onliked;
+  void Function() onUnliked;
+
+  _MessageOperatesPopupMenu({
+    this.message,
+    this.context,
+    this.onDeleted,
+    this.onComment,
+    this.onliked,
+    this.onUnliked,
+  });
+
+  @override
+  __MessageOperatesPopupMenuState createState() =>
+      __MessageOperatesPopupMenuState();
+}
+
+class __MessageOperatesPopupMenuState extends State<_MessageOperatesPopupMenu> {
+  Future<Map<String, bool>> _getOperatorRights() async {
+    bool isLiked = await _isLiked();
+    return {
+      'isLiked': isLiked,
+      'canComment': true,
+      'canDelete':
+          widget.message.creator == widget.context.userPrincipal.person,
+    };
+  }
+
+  Future<bool> _isLiked() async {
+    IChannelLikeService likeService =
+        widget.context.site.getService('/channel/messages/likes');
+    return await likeService.isLiked(
+        widget.message.id, widget.context.userPrincipal.person);
+  }
+
+  Future<void> _like() async {
+    IChannelLikeService likeService =
+        widget.context.site.getService('/channel/messages/likes');
+    LikePerson likePerson = LikePerson(
+      '${Uuid().v1()}',
+      widget.context.userPrincipal.person,
+      widget.context.userPrincipal.avatar,
+      widget.message.id,
+      DateTime.now().millisecondsSinceEpoch,
+      widget.context.userPrincipal.nickName ??
+          widget.context.userPrincipal.accountName,
+      widget.message.onChannel,
+    );
+    await likeService.like(likePerson);
+  }
+
+  Future<void> _unlike() async {
+    IChannelLikeService likeService =
+        widget.context.site.getService('/channel/messages/likes');
+    await likeService.unlike(
+        widget.message.id, widget.context.userPrincipal.person);
+  }
+
+  Future<void> _deleteMessage() async {
+    IChannelMessageService messageService =
+        widget.context.site.getService('/channel/messages');
+    messageService.removeMessage(widget.message.id);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _getOperatorRights(),
+      builder: (ctx, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return Center(
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+        if (snapshot.hasError) {
+          print('${snapshot.error}');
+        }
+        var rights = snapshot.data;
+
+        return Padding(
+          padding: EdgeInsets.only(
+            top: 4,
+            bottom: 4,
+          ),
+          child: WPopupMenu(
+            child: Icon(
+              IconData(
+                0xe79d,
+                fontFamily: 'ellipse',
+              ),
+              size: 22,
+            ),
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: 2,
+                    ),
+                    child: Icon(
+                      FontAwesomeIcons.thumbsUp,
+                      color: Colors.white,
+                      size: 12,
+                    ),
+                  ),
+                  Text(
+                    rights['isLiked'] ? '取消点赞' : '点赞',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: 2,
+                      top: 2,
+                    ),
+                    child: Icon(
+                      Icons.comment,
+                      color: Colors.white,
+                      size: 12,
+                    ),
+                  ),
+                  Text(
+                    '评论',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+              rights['canDelete']
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            right: 2,
+                            top: 1,
+                          ),
+                          child: Icon(
+                            Icons.remove,
+                            color: Colors.white,
+                            size: 12,
+                          ),
+                        ),
+                        Text(
+                          '删除',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    )
+                  : Container(
+                      width: 0,
+                      height: 0,
+                    ),
+            ],
+            pressType: PressType.singleClick,
+            onValueChanged: (index) {
+              switch (index) {
+                case 0: //点赞或取消
+                  if (rights['isLiked']) {
+                    _unlike().whenComplete(() {
+                      setState(() {});
+                      if (widget.onUnliked != null) {
+                        widget.onUnliked();
+                      }
+                    });
+                  } else {
+                    _like().whenComplete(() {
+                      setState(() {});
+                      if (widget.onliked != null) {
+                        widget.onliked();
+                      }
+                    });
+                  }
+                  break;
+                case 1: //评论
+                  if (widget.onComment != null) {
+                    widget.onComment();
+                  }
+                  break;
+                case 2: //删除
+                  _deleteMessage().whenComplete(() {
+                    if (widget.onDeleted != null) {
+                      widget.onDeleted();
+                    }
+                  });
+                  break;
+              }
+            },
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _InteractiveRegion extends StatefulWidget {
+  ChannelMessage message;
+  PageContext context;
+  _InteractiveRegionRefreshAdapter interactiveRegionRefreshAdapter;
+
+  _InteractiveRegion({
+    this.message,
+    this.context,
+    this.interactiveRegionRefreshAdapter,
+  });
+
+  @override
+  __InteractiveRegionState createState() => __InteractiveRegionState();
+}
+
+class __InteractiveRegionState extends State<_InteractiveRegion> {
+  bool _isShowCommentEditor = false;
+
+  @override
+  void initState() {
+    if (widget.interactiveRegionRefreshAdapter != null) {
+      widget.interactiveRegionRefreshAdapter.handler = (cause) {
+        print(cause);
+        switch (cause) {
+          case 'comment':
+            _isShowCommentEditor = true;
+            break;
+        }
+        setState(() {});
+      };
+    }
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _isShowCommentEditor = false;
+    widget.interactiveRegionRefreshAdapter = null;
+    super.dispose();
+  }
+
+  Future<Map<String, List<dynamic>>> _loadInteractiveRegion() async {
+    IChannelLikeService likeService =
+        widget.context.site.getService('/channel/messages/likes');
+    IChannelCommentService commentService =
+        widget.context.site.getService('/channel/messages/comments');
+    List<LikePerson> likes =
+        await likeService.pageLikePersons(widget.message.id, 10, 0);
+    List<ChannelComment> comments =
+        await commentService.pageComments(widget.message.id, 20, 0);
+    return <String, List<dynamic>>{"likePersons": likes, "comments": comments};
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Map<String, List>>(
+      future: _loadInteractiveRegion(),
+      builder: (ctx, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return Container(
+            width: 0,
+            height: 0,
+          );
+        }
+        if (snapshot.hasError) {
+          print('${snapshot.error}');
+          return Container(
+            width: 0,
+            height: 0,
+          );
+        }
+        if (snapshot.data == null || snapshot.data.isEmpty) {
+          return Container(
+            width: 0,
+            height: 0,
+          );
+        }
+        var comments = snapshot.data['comments'];
+        var likePersons = snapshot.data['likePersons'];
+        bool isHide =
+            comments.isEmpty && likePersons.isEmpty && !_isShowCommentEditor;
+        if (isHide) {
+          return Container(
+            width: 0,
+            height: 0,
+          );
+        }
+        var commentListWidgets = <Widget>[];
+        for (ChannelComment comment in comments) {
+          bool isMine = comment.person == widget.context.userPrincipal.person;
+          commentListWidgets.add(Padding(
+            padding: EdgeInsets.only(
+              bottom: 5,
+            ),
+            child: Text.rich(
+              //评论区
+              TextSpan(
+                text: '${comment.nickName ?? ''}:',
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () async {
+                    IPersonService personService =
+                        widget.context.site.getService('/gbera/persons');
+                    var person =
+                        await personService.getPersonFullName(comment.person);
+                    widget.context.forward("/site/personal",
+                        arguments: {'person': person});
+                  },
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.blueGrey,
+                ),
+                children: [
+                  TextSpan(
+                    text: '${comment.text ?? ''}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      color: Colors.black,
+                    ),
+                  ),
+                  TextSpan(text: '\t'),
+                  isMine
+                      ? TextSpan(
+                          text: '删除',
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () async {
+                              await _deleteComment(comment);
+                              setState(() {});
+                            },
+                          style: TextStyle(
+                            fontSize: 12,
+                          ),
+                        )
+                      : TextSpan(text: ''),
+                ],
+              ),
+              softWrap: true,
+            ),
+          ));
+        }
+        if (_isShowCommentEditor) {
+          commentListWidgets.add(
+            _CommentEditor(
+              context: widget.context,
+              onFinished: (content) async {
+                await _appendComment(content);
+                _isShowCommentEditor = false;
+                setState(() {});
+              },
+              onCloseWin: () async {
+                _isShowCommentEditor = false;
+                setState(() {});
+              },
+            ),
+          );
+        }
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(4)),
+            color: Color(0xFFF5F5F5),
+          ),
+          padding: EdgeInsets.only(
+            left: 10,
+            right: 5,
+            top: 5,
+            bottom: 5,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              ///点赞区
+              likePersons.isEmpty
+                  ? Container(
+                      width: 0,
+                      height: 0,
+                    )
+                  : Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            right: 5,
+                          ),
+                          child: Icon(
+                            FontAwesomeIcons.thumbsUp,
+                            color: Colors.grey[500],
+                            size: 12,
+                          ),
+                        ),
+                        Expanded(
+                          child: Text.rich(
+                            TextSpan(
+                              children: likePersons.map((like) {
+                                return TextSpan(
+                                  text: '${like.nickName}',
+                                  style: TextStyle(
+                                    color: Colors.blueGrey,
+                                    fontWeight: FontWeight.w600,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () async {
+                                      IPersonService personService = widget
+                                          .context.site
+                                          .getService('/gbera/persons');
+                                      var person = await personService
+                                          .getPersonFullName(like.person);
+                                      widget.context.forward("/site/personal",
+                                          arguments: {'person': person});
+                                    },
+                                  children: [
+                                    TextSpan(
+                                      text: ';  ',
+                                      style: TextStyle(
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w600,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }).toList(),
+                            ),
+//                                maxLines: 4,
+//                                overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                          ),
+                        ),
+                      ],
+                    ),
+              likePersons.isEmpty || comments.isEmpty
+                  ? Container(
+                      width: 0,
+                      height: 3,
+                    )
+                  : Padding(
+                      padding: EdgeInsets.only(
+                        bottom: 6,
+                        top: 6,
+                      ),
+                      child: Divider(
+                        height: 1,
+                      ),
+                    ),
+
+              ///评论区
+              ListView(
+                shrinkWrap: true,
+                padding: EdgeInsets.all(0),
+                physics: NeverScrollableScrollPhysics(),
+                children: commentListWidgets,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  _appendComment(String content) async {
+    IChannelCommentService commentService =
+        widget.context.site.getService('/channel/messages/comments');
+    await commentService.addComment(
+      ChannelComment(
+        '${Uuid().v1()}',
+        widget.context.userPrincipal.person,
+        widget.context.userPrincipal.avatar,
+        widget.message.id,
+        content,
+        DateTime.now().millisecondsSinceEpoch,
+        widget.context.userPrincipal.nickName ??
+            widget.context.userPrincipal.accountName,
+        widget.message.onChannel,
+      ),
+    );
+  }
+
+  _deleteComment(ChannelComment comment) async {
+    IChannelCommentService commentService =
+        widget.context.site.getService('/channel/messages/comments');
+    await commentService.removeComment(comment.id);
+  }
+}
+
+class _InteractiveRegionRefreshAdapter {
+  void Function(String cause) handler;
+
+  void refresh(String cause) {
+    if (handler != null) {
+      handler(cause);
+    }
   }
 }

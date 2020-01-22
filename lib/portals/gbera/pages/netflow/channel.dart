@@ -162,6 +162,7 @@ class _ChannelPageState extends State<ChannelPage> {
                 context: widget.context,
                 refresh: () {
                   _reloadChannel();
+                  _refreshMessages();
                 },
               ),
             ),
@@ -602,7 +603,7 @@ class __MessageCardState extends State<_MessageCard> {
                                 TextSpan(
                                   text: '${TimelineUtil.format(
                                     widget.message.ctime,
-                                    dayFormat: DayFormat.Full,
+                                    dayFormat: DayFormat.Simple,
                                   )}',
                                   style: TextStyle(
                                     fontSize: 12,
@@ -756,6 +757,7 @@ class __CommentEditorState extends State<_CommentEditor> {
               maxLines: 50,
               minLines: 4,
               decoration: InputDecoration(
+                border: InputBorder.none,
                 prefixText: '说道>',
                 prefixStyle: TextStyle(
                   fontSize: 14,

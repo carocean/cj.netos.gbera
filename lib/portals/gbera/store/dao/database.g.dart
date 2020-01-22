@@ -691,6 +691,15 @@ class _$IChannelMessageDAO extends IChannelMessageDAO {
   }
 
   @override
+  Future<List<ChannelMessage>> pageMessageBy(
+      String onchannel, String person, int limit, int offset) async {
+    return _queryAdapter.queryList(
+        'SELECT msg.* FROM ChannelMessage msg WHERE msg.onChannel=? AND msg.creator=? ORDER BY ctime DESC LIMIT ? OFFSET ?',
+        arguments: <dynamic>[onchannel, person, limit, offset],
+        mapper: _channelMessageMapper);
+  }
+
+  @override
   Future<ChannelMessage> getMessage(String id) async {
     return _queryAdapter.query('SELECT * FROM ChannelMessage WHERE id = ?',
         arguments: <dynamic>[id], mapper: _channelMessageMapper);

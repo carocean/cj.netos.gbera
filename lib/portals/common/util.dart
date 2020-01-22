@@ -2,14 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
 
-class StringUtil {
-  static bool isEmpty(String str) {
-    if (str == null || str.isEmpty) {
-      return true;
-    }
-    return false;
-  }
-}
+
 
 //屏自适应
 class Adapt {

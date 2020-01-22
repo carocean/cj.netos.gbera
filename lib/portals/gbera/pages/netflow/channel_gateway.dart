@@ -51,13 +51,11 @@ class _ChannelGatewayState extends State<ChannelGateway> {
     setState(() {});
   }
 
-  _reloadChannel()async {
+  _reloadChannel() async {
     IChannelService channelService =
         widget.context.site.getService('/netflow/channels');
-    _channel =await channelService.getChannel(_channel.id);
-    setState(() {
-
-    });
+    _channel = await channelService.getChannel(_channel.id);
+    setState(() {});
   }
 
   @override
@@ -125,17 +123,15 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                   ),
                   _CardItem(
                     title: '管道动态',
-                    images: [
-                      'http://b-ssl.duitang.com/uploads/item/201805/24/20180524220406_hllbq.jpg',
-                      'http://b-ssl.duitang.com/uploads/item/201510/10/20151010054541_3YmaC.jpeg',
-                    ],
                     onItemTap: () {
                       widget.context.forward(
                         '/netflow/portal/channel',
                         arguments: {
                           'channel': _channel,
                         },
-                      );
+                      ).then((v) {
+                        setState(() {});
+                      });
                     },
                   ),
                 ],
@@ -183,7 +179,7 @@ class _ChannelGatewayState extends State<ChannelGateway> {
                     tipsText: '是否充许本管道的信息推送到我的地圈',
                     operator: _MySwitch(
                       value: _isSetGeo,
-                      onTap:(){
+                      onTap: () {
                         _setGeo();
                       },
                     ),
@@ -256,7 +252,8 @@ class _ChannelGatewayState extends State<ChannelGateway> {
 class _MySwitch extends StatefulWidget {
   bool value;
   Function() onTap;
-  _MySwitch({this.onTap,this.value = false});
+
+  _MySwitch({this.onTap, this.value = false});
 
   @override
   __MySwitchState createState() => __MySwitchState();
@@ -270,7 +267,7 @@ class __MySwitchState extends State<_MySwitch> {
       child: Switch.adaptive(
         value: widget.value,
         onChanged: (value) {
-          if(widget.onTap!=null) {
+          if (widget.onTap != null) {
             widget.onTap();
           }
           setState(() {

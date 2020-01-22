@@ -2,6 +2,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/common/persistent_header_delegate.dart';
 import 'package:gbera/portals/common/portlet_market.dart';
 import 'package:intl/intl.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
@@ -17,9 +18,7 @@ class Desktop extends StatefulWidget {
   _DesktopState createState() => _DesktopState();
 }
 
-class _DesktopState extends State<Desktop> with AutomaticKeepAliveClientMixin{
-  var _controller;
-  var _backgroud_transparent = true;
+class _DesktopState extends State<Desktop> with AutomaticKeepAliveClientMixin {
   bool use_wallpapper = false;
 
   @override
@@ -30,35 +29,6 @@ class _DesktopState extends State<Desktop> with AutomaticKeepAliveClientMixin{
   @override
   void dispose() {
     super.dispose();
-    _controller?.dispose();
-  }
-
-  _listener() {
-    if (!use_wallpapper) {
-      return;
-    }
-    if (_controller.offset >= 210 - 48) {
-      //48是appbar的默认高度，210是appbar展开发的总高
-      if (_backgroud_transparent) {
-        setState(() {
-          _backgroud_transparent = false;
-        });
-      }
-      return;
-    }
-    if (_controller.offset < 210 - 48) {
-      if (!_backgroud_transparent) {
-        setState(() {
-          _backgroud_transparent = true;
-        });
-      }
-      return;
-    }
-  }
-
-  _DesktopState() {
-    _controller = ScrollController(initialScrollOffset: 0.0);
-    _controller.addListener(_listener);
   }
 
   @override
@@ -85,203 +55,201 @@ class _DesktopState extends State<Desktop> with AutomaticKeepAliveClientMixin{
             widget.context.findPage('${widget.context.page.portal}:/$url');
 
         var _slivers = <Widget>[
-          SliverAppBar(
-            pinned: true,
-            expandedHeight: 210,
+          SliverPersistentHeader(
             floating: false,
-            title: Text(
-              scaffold?.title ?? '',
-            ),
-            titleSpacing: 10,
-            centerTitle: false,
-            automaticallyImplyLeading: false,
-            elevation: 0,
-            backgroundColor: use_wallpapper && _backgroud_transparent
-                ? Colors.transparent
-                : null,
-            actions: <Widget>[
-              IconButton(
-                // Use the FontAwesomeIcons class for the IconData
-                icon: new Icon(Icons.crop_free),
-                onPressed: () async {
-                  String cameraScanResult = await scanner.scan();
-                  showDialog(
-                    context: context,
-                    barrierDismissible: true, // user must tap button!
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text('扫好友、扫地物、支付、收款等'),
-                        content: Text(cameraScanResult),
-                        actions: <Widget>[
-                          FlatButton(
-                            child: Text('YES'),
-                            onPressed: () {
-                              print('yes...');
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          FlatButton(
-                            child: Text('NO'),
-                            onPressed: () {
-                              print('no...');
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                        backgroundColor: Colors.yellowAccent,
-                        elevation: 20,
-                        semanticLabel: '哈哈哈哈',
-                        // 设置成 圆角
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                      );
-                    },
-                  );
-                },
+            pinned: true,
+            delegate: GberaPersistentHeaderDelegate(
+              title: Text(
+                scaffold?.title ?? '',
               ),
-              IconButton(
-                // Use the FontAwesomeIcons class for the IconData
-                icon: new Icon(
-                  widget.context.findPage('/desktop/lets/settings')?.icon,
-                ),
-                onPressed: () {
-                  widget.context.forward(
-                    '/desktop/lets/settings',
-                    arguments: {
-                      'back_button': true,
-                    },
-                  );
-                },
-              ),
-            ],
-            flexibleSpace: FlexibleSpaceBar(
-              collapseMode: CollapseMode.parallax,
-              background: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 10,
-                      right: 10,
-                      top: 100,
-                      bottom: 20,
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: onProfileTap,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              right: 10,
+              titleSpacing: 10,
+              centerTitle: false,
+              automaticallyImplyLeading: false,
+              elevation: 0,
+              expandedHeight: 0,
+              actions: <Widget>[
+                IconButton(
+                  // Use the FontAwesomeIcons class for the IconData
+                  icon: new Icon(Icons.crop_free),
+                  onPressed: () async {
+                    String cameraScanResult = await scanner.scan();
+                    showDialog(
+                      context: context,
+                      barrierDismissible: true, // user must tap button!
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('扫好友、扫地物、支付、收款等'),
+                          content: Text(cameraScanResult),
+                          actions: <Widget>[
+                            FlatButton(
+                              child: Text('YES'),
+                              onPressed: () {
+                                print('yes...');
+                                Navigator.of(context).pop();
+                              },
                             ),
-                            child: CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  'http://pic-bucket.ws.126.net/photo/0001/2019-08-13/EMENLA1600AN0001NOS.jpg'),
+                            FlatButton(
+                              child: Text('NO'),
+                              onPressed: () {
+                                print('no...');
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                          backgroundColor: Colors.yellowAccent,
+                          elevation: 20,
+                          semanticLabel: '哈哈哈哈',
+                          // 设置成 圆角
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                        );
+                      },
+                    );
+                  },
+                ),
+                IconButton(
+                  // Use the FontAwesomeIcons class for the IconData
+                  icon: new Icon(
+                    widget.context.findPage('/desktop/lets/settings')?.icon,
+                  ),
+                  onPressed: () {
+                    widget.context.forward(
+                      '/desktop/lets/settings',
+                      arguments: {
+                        'back_button': true,
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: 10,
+                    right: 10,
+                    top: 10,
+                    bottom: 20,
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: onProfileTap,
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            right: 10,
+                          ),
+                          child: CircleAvatar(
+                            backgroundImage: NetworkImage(
+                                'http://pic-bucket.ws.126.net/photo/0001/2019-08-13/EMENLA1600AN0001NOS.jpg'),
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: onProfileTap,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                bottom: 2,
+                              ),
+                              child: Text(
+                                '${widget.context.userPrincipal?.accountName}',
+                                softWrap: true,
+                              ),
+                            ),
+                            Text(
+                              '我回家吃了饭',
+                              softWrap: true,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 10, bottom: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(left: 10, right: 20),
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => widget.context.forward(
+                              '/wallet/ty',
+                              arguments: {
+                                'back_button': true,
+                              },
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  '5400.03',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                                Text(
+                                  '帑银资产',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                        GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: onProfileTap,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: 2,
+                        VerticalDivider(
+                          width: 1,
+                          color: Colors.red,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 20, right: 10),
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => widget.context.forward(
+                              '/wallet/wy',
+                              arguments: {
+                                'back_button': true,
+                              },
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  '201.88',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                  ),
                                 ),
-                                child: Text(
-                                  '${widget.context.userPrincipal?.accountName}',
-                                  softWrap: true,
+                                Text(
+                                  '纹银资产',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                '我回家吃了饭',
-                                softWrap: true,
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(left: 10, right: 20),
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: () => widget.context.forward(
-                                '/wallet/ty',
-                                arguments: {
-                                  'back_button': true,
-                                },
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    '5400.03',
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                  Text(
-                                    '帑银资产',
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          VerticalDivider(
-                            width: 1,
-                            color: Colors.red,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 20, right: 10),
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: () => widget.context.forward(
-                                '/wallet/wy',
-                                arguments: {
-                                  'back_button': true,
-                                },
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    '201.88',
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                  Text(
-                                    '纹银资产',
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           SliverToBoxAdapter(
@@ -361,7 +329,6 @@ class _DesktopState extends State<Desktop> with AutomaticKeepAliveClientMixin{
         _slivers.add(lets_region);
 
         var myarea = CustomScrollView(
-          controller: use_wallpapper ? _controller : null,
           slivers: _slivers,
         );
         return myarea;

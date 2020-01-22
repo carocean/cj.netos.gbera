@@ -5,6 +5,7 @@ class CardItem extends StatefulWidget {
   String title;
   Widget subtitle;
   Color titleColor;
+  double titleSize;
   IconData tipsIconData;
   String tipsText;
   Widget tail;
@@ -17,6 +18,7 @@ class CardItem extends StatefulWidget {
     this.title,
     this.subtitle,
     this.titleColor,
+    this.titleSize,
     this.tipsText = '',
     this.tipsIconData,
     this.tail,
@@ -76,7 +78,7 @@ class CardItemState extends State<CardItem> {
                         style: TextStyle(
                           color: widget.titleColor,
                           fontWeight: FontWeight.w600,
-                          fontSize: 15,
+                          fontSize:widget.titleSize?? 15,
                         ),
                       ),
                       softWrap: true,
