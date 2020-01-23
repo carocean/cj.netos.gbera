@@ -1,9 +1,15 @@
+import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/common/voice_widget.dart';
 import 'package:gbera/portals/gbera/pages/viewers/video_view.dart';
 import 'package:gbera/portals/gbera/store/entities.dart';
+import 'package:just_audio/just_audio.dart';
 
 ///简单的卡片头：图 标题              折叠按钮
 class _CardHeaderBase extends StatelessWidget {
@@ -123,12 +129,14 @@ class PageSelector extends StatefulWidget {
 }
 
 class _PageSelectorState extends State<PageSelector> {
-  bool isZoom=false;
+  bool isZoom = false;
+
   @override
   void dispose() {
-    isZoom=false;
+    isZoom = false;
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     var _controller = DefaultTabController.of(context);
@@ -162,6 +170,9 @@ class _PageSelectorState extends State<PageSelector> {
                   );
                   break;
                 case 'audio':
+                  mediaRender = MyAudioWidget(
+                    audioFile: src,
+                  );
                   break;
                 default:
                   print('unknown media type');
@@ -177,22 +188,23 @@ class _PageSelectorState extends State<PageSelector> {
               return GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onLongPress: () {
-                  if (widget.onMediaLongTap != null) {
+                  if (widget.onMediaLongTap != null&&media.type!='audio') {
                     widget.onMediaLongTap(media);
                   }
                 },
                 onTap: () {
-                  if(isZoom){
-                    widget.height=150;
-                  }else{
-                    widget.height=500;
+                  if (isZoom) {
+                    widget.height = 150;
+                  } else {
+                    if (media.type != 'audio') {
+                      widget.height = 500;
+                    }
                   }
-                  isZoom=!isZoom;
+                  isZoom = !isZoom;
                   setState(() {});
                   if (widget.onMediaTap != null) {
                     widget.onMediaTap(media);
                   }
-
                 },
                 child: Container(
                   alignment: Alignment.center,
@@ -213,6 +225,222 @@ class _PageSelectorState extends State<PageSelector> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class VoiceFloatingButton extends StatefulWidget {
+  PageContext context;
+
+  VoiceFloatingButton({this.context});
+
+  @override
+  _VoiceFloatingButtonState createState() => _VoiceFloatingButtonState();
+}
+
+class _VoiceFloatingButtonState extends State<VoiceFloatingButton> {
+  var _hover = Colors.grey[500];
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      child: MyVoiceWidget(
+        startRecord: () {
+          var handler = widget.context.parameters['onStartRecord'];
+          if (handler != null) {
+            handler();
+          }
+          _hover = Colors.green;
+          setState(() {});
+        },
+        stopRecord: (path, timelength, r, a) {
+          var handler = widget.context.parameters['onStopRecord'];
+          if (handler != null) {
+            handler(path, timelength, r, a);
+          }
+          _hover = Colors.grey[500];
+          setState(() {});
+        },
+      ),
+      backgroundColor: _hover,
+    );
+  }
+}
+
+class MyAudioWidget extends StatefulWidget {
+  String audioFile;
+
+  MyAudioWidget({this.audioFile});
+
+  @override
+  _MyAudioWidgetState createState() => _MyAudioWidgetState();
+}
+
+class _MyAudioWidgetState extends State<MyAudioWidget> {
+  AudioPlayer _player;
+
+  @override
+  void initState() {
+    _player = AudioPlayer();
+    _player.setFilePath(widget.audioFile);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _player.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          StreamBuilder<AudioPlaybackState>(
+            stream: _player.playbackStateStream,
+            builder: (context, snapshot) {
+              final state = snapshot.data;
+              print(state);
+              if (state == AudioPlaybackState.completed) {
+                _player.stop();
+              }
+              return Center(
+                child: IconButton(
+//                  padding: EdgeInsets.all(0),
+                  onPressed: () {
+                    switch (state) {
+                      case AudioPlaybackState.stopped:
+                        _player.play();
+                        break;
+                      case AudioPlaybackState.paused:
+                        _player.play();
+                        break;
+                      case AudioPlaybackState.playing:
+                        _player.pause();
+                        break;
+                      case AudioPlaybackState.none:
+                        break;
+                      case AudioPlaybackState.buffering:
+                      case AudioPlaybackState.connecting:
+                        break;
+                      case AudioPlaybackState.completed:
+                        break;
+                    }
+                  },
+                  icon: Icon(
+                    state == AudioPlaybackState.playing
+                        ? FontAwesomeIcons.volumeUp
+                        : FontAwesomeIcons.volumeDown,
+                    size: 30,
+                    color: Colors.green,
+                  ),
+                ),
+              );
+            },
+          ),
+          StreamBuilder<Duration>(
+            stream: _player.durationStream,
+            builder: (context, snapshot) {
+              final duration = snapshot.data ?? Duration.zero;
+              return StreamBuilder<Duration>(
+                stream: _player.getPositionStream(),
+                builder: (context, snapshot) {
+                  var position = snapshot.data ?? Duration.zero;
+                  if (position > duration) {
+                    position = duration;
+                  }
+                  var progress = ((position?.inMilliseconds ?? 0.0) * 1.0) /
+                      ((duration?.inMilliseconds ?? 1.0) * 1.0);
+                  var value = (progress * 100);
+                  var per = (value.isNaN ? '0.00' : value.toStringAsFixed(2));
+                  return Column(
+                    children: <Widget>[
+                      Container(
+                        child: Text(
+                          '$per%',
+                          style: TextStyle(
+                            color: Colors.grey[500],
+                            fontSize: 12,
+                          ),
+                        ),
+                        padding: EdgeInsets.only(
+                          bottom: 5,
+                        ),
+                      ),
+//                      SizedBox(
+//                        height: 1,
+//                        child: LinearProgressIndicator(
+//                          value: progress.isNaN ? 0.0 : progress,
+//                          valueColor: AlwaysStoppedAnimation(
+//                            Colors.green,
+//                          ),
+//                          backgroundColor: Colors.grey[300],
+//                        ),
+                      SeekBar(
+                        duration: duration,
+                        position: position,
+                        onChangeEnd: (newPosition) {
+                          _player.seek(newPosition);
+                        },
+                      ),
+//                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SeekBar extends StatefulWidget {
+  final Duration duration;
+  final Duration position;
+  final ValueChanged<Duration> onChanged;
+  final ValueChanged<Duration> onChangeEnd;
+
+  SeekBar({
+    @required this.duration,
+    @required this.position,
+    this.onChanged,
+    this.onChangeEnd,
+  });
+
+  @override
+  _SeekBarState createState() => _SeekBarState();
+}
+
+class _SeekBarState extends State<SeekBar> {
+  double _dragValue;
+
+  @override
+  Widget build(BuildContext context) {
+    return Slider(
+      min: 0.0,
+      max: widget.duration.inMilliseconds.toDouble(),
+      value: _dragValue ?? widget.position.inMilliseconds.toDouble(),
+      onChanged: (value) {
+        setState(() {
+          _dragValue = value;
+        });
+        if (widget.onChanged != null) {
+          widget.onChanged(Duration(milliseconds: value.round()));
+        }
+      },
+      onChangeEnd: (value) {
+        _dragValue = null;
+        if (widget.onChangeEnd != null) {
+          widget.onChangeEnd(Duration(milliseconds: value.round()));
+        }
+      },
+      inactiveColor: Colors.grey[300],
+      activeColor: Colors.green,
     );
   }
 }

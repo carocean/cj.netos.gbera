@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_plugin_record/index.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/pages/netflow/article_entities.dart';
 import 'package:gbera/portals/gbera/pages/viewers/video_view.dart';
@@ -8,14 +9,14 @@ import 'package:gbera/portals/gbera/store/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
-
 class GeospherePublishArticle extends StatefulWidget {
   PageContext context;
 
   GeospherePublishArticle({this.context});
 
   @override
-  _GeospherePublishArticleState createState() => _GeospherePublishArticleState();
+  _GeospherePublishArticleState createState() =>
+      _GeospherePublishArticleState();
 }
 
 class _GeospherePublishArticleState extends State<GeospherePublishArticle> {
@@ -38,7 +39,7 @@ class _GeospherePublishArticleState extends State<GeospherePublishArticle> {
 
   @override
   Widget build(BuildContext context) {
-    var geo_sphere_channel_code=IChannelService.GEO_CIRCUIT_CHANNEL_CODE;
+    var geo_sphere_channel_code = IChannelService.GEO_CIRCUIT_CHANNEL_CODE;
     var type = widget.context.parameters['type'];
     return Scaffold(
       appBar: AppBar(
@@ -212,51 +213,6 @@ class _GeospherePublishArticleState extends State<GeospherePublishArticle> {
                                   ),
                                   Text(
                                     '选图片',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: () async {
-                              String cnt = _contentController.text;
-                              var image = await ImagePicker.pickImage(
-                                  source: ImageSource.gallery);
-                              if (image == null) {
-                                return;
-                              }
-                              shower_key.currentState.addImage(MediaFile(
-                                  src: image, type: MediaFileType.image));
-                              _contentController.text = cnt;
-                              _contentController.selection =
-                                  TextSelection.fromPosition(
-                                    TextPosition(
-                                      affinity: TextAffinity.downstream,
-                                      offset: cnt?.length,
-                                    ),
-                                  );
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                left: 10,
-                                right: 10,
-                                top: 5,
-                                bottom: 5,
-                              ),
-                              child: Column(
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.image,
-                                    size: 30,
-                                    color: Colors.black54,
-                                  ),
-                                  Text(
-                                    '语音',
                                     style: TextStyle(
                                       fontSize: 10,
                                       color: Colors.grey,

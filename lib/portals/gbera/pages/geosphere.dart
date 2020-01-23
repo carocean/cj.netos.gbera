@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:flutter_plugin_record/flutter_plugin_record.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/persistent_header_delegate.dart';
@@ -43,6 +44,7 @@ class _GeosphereState extends State<Geosphere>
   void initState() {
     _messages.clear();
     _refreshController = EasyRefreshController();
+    widget.context.parameters['onStopRecord'] = _onStopRecord;
     _onload().then((v) {
       setState(() {});
     });
@@ -54,6 +56,57 @@ class _GeosphereState extends State<Geosphere>
     _offset = 0;
     _refreshController.dispose();
     super.dispose();
+  }
+
+  _onStopRecord(String path, double audioTimeLength,
+      FlutterPluginRecord recordPlugin, String action) {
+    if (action != 'send') {
+      return;
+    }
+    _publishVoice(path, audioTimeLength).then((v) {
+      _resetAndRefresh();
+    });
+  }
+
+  Future<void> _publishVoice(String path, double audioTimeLength) async {
+    UserPrincipal user = widget.context.userPrincipal;
+    var content = '语音翻译文本！接口：科大讯飞语音听写'; //将来根据文件同声转译成文本
+
+    ///纹银价格从app的更新管理中心或消息中心获取
+    double wy = 38388.38827772;
+    var location = null;
+    IChannelMessageService channelMessageService =
+        widget.context.site.getService('/channel/messages');
+    IChannelMediaService channelMediaService =
+        widget.context.site.getService('/channel/messages/medias');
+    var msgid = '${Uuid().v1()}';
+    await channelMessageService.addMessage(
+      ChannelMessage(
+        msgid,
+        null,
+        null,
+        null,
+        IChannelService.GEO_CIRCUIT_CHANNEL_CODE,
+        user.person,
+        DateTime.now().millisecondsSinceEpoch,
+        content,
+        wy,
+        location,
+        widget.context.userPrincipal.person,
+      ),
+    );
+    await channelMediaService.addMedia(
+      Media(
+        '${Uuid().v1()}',
+        'audio',
+        path,
+        null,
+        msgid,
+        null,
+        IChannelService.GEO_CIRCUIT_CHANNEL_CODE,
+        widget.context.userPrincipal.person,
+      ),
+    );
   }
 
   _resetAndRefresh() async {

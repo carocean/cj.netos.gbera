@@ -6,7 +6,7 @@ typedef startRecord = Future Function();
 typedef stopRecord = Future Function();
 
 class MyVoiceWidget extends StatefulWidget {
-  final Function startRecord;
+  final Function() startRecord;
   final Function(String path,double audioTimeLength,FlutterPluginRecord recordPlugin,String action) stopRecord;
   /// startRecord 开始录制回调  stopRecord回调  onAction=send|cancel
   const MyVoiceWidget({Key key, this.startRecord, this.stopRecord,})
@@ -28,12 +28,11 @@ class _MyVoiceWidgetState extends State<MyVoiceWidget> {
   bool voiceState = true;
   OverlayEntry overlayEntry;
   FlutterPluginRecord recordPlugin;
-
   @override
   void initState() {
     super.initState();
     recordPlugin = new FlutterPluginRecord();
-
+    isUp=false;
     _init();
 
     ///初始化方法的监听
@@ -50,9 +49,10 @@ class _MyVoiceWidgetState extends State<MyVoiceWidget> {
       if (data.msg == "onStop") {
         ///结束录制时会返回录制文件的地址方便上传服务器
         print("onStop  " + data?.path);
-        widget.stopRecord(data?.path, data?.audioTimeLength,recordPlugin,isUp==true?'send':'cancel');
+        widget.stopRecord(data?.path, data?.audioTimeLength,recordPlugin,isUp?'cancel':'send');
       } else if (data?.msg == "onStart") {
         print("onStart --");
+        isUp=false;
         widget.startRecord();
       }
     });
@@ -172,7 +172,7 @@ class _MyVoiceWidgetState extends State<MyVoiceWidget> {
     // print(offset - start);
     setState(() {
       isUp = (starty - offset > 100 )? true : false;
-      print('----s----${starty - offset}');
+      print('----s----${isUp}');
       if (isUp) {
         textShow = "松开手指,取消发送";
         toastShow = textShow;
@@ -230,6 +230,7 @@ class _MyVoiceWidgetState extends State<MyVoiceWidget> {
     if (recordPlugin != null) {
       recordPlugin.dispose();
     }
+    isUp=false;
     super.dispose();
   }
 }
