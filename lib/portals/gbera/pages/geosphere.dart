@@ -71,7 +71,7 @@ class _GeosphereState extends State<Geosphere>
 
   Future<void> _publishVoice(String path, double audioTimeLength) async {
     UserPrincipal user = widget.context.userPrincipal;
-    var content = '语音翻译文本！接口：科大讯飞语音听写'; //将来根据文件同声转译成文本
+    var content = ''; //将来根据文件同声转译成文本。语音翻译文本！接口：科大讯飞语音听写
 
     ///纹银价格从app的更新管理中心或消息中心获取
     double wy = 38388.38827772;
