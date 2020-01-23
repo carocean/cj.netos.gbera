@@ -65,6 +65,7 @@ class _GeosphereState extends State<Geosphere>
     }
     _publishVoice(path, audioTimeLength).then((v) {
       _resetAndRefresh();
+      recordPlugin.play();
     });
   }
 
