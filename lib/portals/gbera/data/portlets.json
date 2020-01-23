@@ -22,5 +22,13 @@
     "deskletUrl": "/store",
     "imgSrc": "http://pic-bucket.ws.126.net/photo/0001/2019-10-22/ES4E491700AO0001NOS.jpg",
     "renderMethod": "renderByDeskletConfig"
+  },
+  {
+    "id": "77362637889939",
+    "title": "平聊",
+    "desc": "平台官方提供的即时聊天栏目",
+    "deskletUrl": "/p2p",
+    "imgSrc": "http://pic-bucket.ws.126.net/photo/0001/2019-10-22/ES4E491700AO0001NOS.jpg",
+    "renderMethod": "renderByDeskletConfig"
   }
 ]

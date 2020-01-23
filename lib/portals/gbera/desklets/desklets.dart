@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/util.dart';
+import 'package:gbera/portals/gbera/desklets/sessions/chat_sessions.dart';
 import 'package:gbera/portals/gbera/pages/desktop.dart';
 import 'package:gbera/portals/gbera/parts/parts.dart';
 
@@ -30,8 +31,7 @@ List<Desklet> buildDesklets(portal, site) {
                             width: 20.0,
                             height: 20.0,
                             fit: BoxFit.cover,
-                            image: NetworkImage(
-                                portlet?.imgSrc),
+                            image: NetworkImage(portlet?.imgSrc),
                           ),
                           Padding(
                             padding: EdgeInsets.only(left: 5),
@@ -237,6 +237,19 @@ List<Desklet> buildDesklets(portal, site) {
               ),
             ],
           ),
+        );
+      },
+    ),
+    Desklet(
+      title: '即时通讯',
+      url: '/p2p',
+      icon: Icons.store_mall_directory,
+      desc: '点对点通讯',
+      buildDesklet: (portlet, desklet, desktopContext) {
+        return ChatSessionsPortlet(
+          desklet: desklet,
+          desktopContext: desktopContext,
+          portlet: portlet,
         );
       },
     ),
