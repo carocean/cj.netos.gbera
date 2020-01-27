@@ -8,8 +8,9 @@ typedef stopRecord = Future Function();
 class MyVoiceWidget extends StatefulWidget {
   final Function() startRecord;
   final Function(String path,double audioTimeLength,FlutterPluginRecord recordPlugin,String action) stopRecord;
+  final double iconSize;
   /// startRecord 开始录制回调  stopRecord回调  onAction=send|cancel
-  const MyVoiceWidget({Key key, this.startRecord, this.stopRecord,})
+  const MyVoiceWidget({Key key, this.startRecord, this.stopRecord,this.iconSize,})
       : super(key: key);
 
   @override
@@ -218,7 +219,7 @@ class _MyVoiceWidgetState extends State<MyVoiceWidget> {
 //          color: Colors.blue,
 //          margin: EdgeInsets.fromLTRB(50, 0, 50, 20),
           child: Center(
-            child: Icon(FontAwesomeIcons.microphone,),
+            child: Icon(FontAwesomeIcons.microphone,size:widget.iconSize??24,),
           ),
         ),
       ),

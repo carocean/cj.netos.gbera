@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/util.dart';
 import 'package:gbera/portals/gbera/desklets/sessions/chat_sessions.dart';
@@ -243,12 +244,12 @@ List<Desklet> buildDesklets(portal, site) {
     Desklet(
       title: '即时通讯',
       url: '/p2p',
-      icon: Icons.store_mall_directory,
-      desc: '点对点通讯',
+      icon: Icons.chat_bubble,
+      desc: '聊天、群、聊天室等',
       buildDesklet: (portlet, desklet, desktopContext) {
         return ChatSessionsPortlet(
           desklet: desklet,
-          desktopContext: desktopContext,
+          content: desktopContext,
           portlet: portlet,
         );
       },

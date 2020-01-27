@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/icons.dart';
+import 'package:gbera/portals/gbera/desklets/sessions/chat_talk.dart';
 import 'package:gbera/portals/gbera/errors/errors.dart';
 import 'package:gbera/portals/gbera/pages/desktop.dart';
 import 'package:gbera/portals/gbera/pages/desktop/desklets_settings.dart';
@@ -1204,6 +1205,16 @@ class GberaPortal {
           icon: GalleryIcons.shrine,
           url: '/goGOGO/category/filter',
           buildPage: (PageContext pageContext) => SelectGoGoGoCategory(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '对话框',
+          subtitle: '',
+          desc: '聊天对话',
+          icon: GalleryIcons.shrine,
+          url: '/portlet/chat/talk',
+          buildPage: (PageContext pageContext) => ChatTalk(
             context: pageContext,
           ),
         ),

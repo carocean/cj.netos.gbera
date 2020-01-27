@@ -231,8 +231,8 @@ class _PageSelectorState extends State<PageSelector> {
 
 class VoiceFloatingButton extends StatefulWidget {
   PageContext context;
-
-  VoiceFloatingButton({this.context});
+  double iconSize;
+  VoiceFloatingButton({this.context,this.iconSize});
 
   @override
   _VoiceFloatingButtonState createState() => _VoiceFloatingButtonState();
@@ -245,6 +245,7 @@ class _VoiceFloatingButtonState extends State<VoiceFloatingButton> {
   Widget build(BuildContext context) {
     return FloatingActionButton(
       child: MyVoiceWidget(
+        iconSize: widget.iconSize,
         startRecord: () {
           var handler = widget.context.parameters['onStartRecord'];
           if (handler != null) {
