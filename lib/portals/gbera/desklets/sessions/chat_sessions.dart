@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:uuid/uuid.dart';
 
+import 'contact_searcher.dart';
+
 class ChatSessionsPortlet extends StatefulWidget {
   Portlet portlet;
   Desklet desklet;
-  PageContext content;
+  PageContext context;
 
-  ChatSessionsPortlet({this.portlet, this.desklet, this.content});
+  ChatSessionsPortlet({this.portlet, this.desklet, this.context});
 
   @override
   _ChatSessionsPortletState createState() => _ChatSessionsPortletState();
@@ -24,7 +26,7 @@ class _ChatSessionsPortletState extends State<ChatSessionsPortlet> {
     for (var i = 0; i < 5; i++) {
       items.add(
         _ChatSessionItem(
-          context: widget.content,
+          context: widget.context,
           title: '一缕云烟',
           leading: Image.network(
             'http://47.105.165.186:7100/public/avatar/341d5e0f2d4fbd21ff5a2acafcf44cdb.jpg',
@@ -38,8 +40,8 @@ class _ChatSessionsPortletState extends State<ChatSessionsPortlet> {
           showNewest: true,
           subtitle: '哈喽，请问你这边还需要找办公公寓吗',
           who: 'tom',
-          onTap: (sid){
-            widget.content.forward('/portlet/chat/talk');
+          onTap: (sid) {
+            widget.context.forward('/portlet/chat/talk');
           },
         ),
       );
@@ -55,6 +57,7 @@ class _ChatSessionsPortletState extends State<ChatSessionsPortlet> {
           right: 0,
           top: 0,
         ),
+        elevation: 0,
         child: ListView(
           padding: EdgeInsets.all(0),
           shrinkWrap: true,
@@ -88,7 +91,13 @@ class _ChatSessionsPortletState extends State<ChatSessionsPortlet> {
                   ),
                   GestureDetector(
                     behavior: HitTestBehavior.opaque,
-                    onTap: () {},
+                    onTap: () async {
+                      var selected = await showSearch(
+                        context: context,
+                        delegate: ContactSearchDelegate(context:widget.context),
+                      );
+                      print('------$selected');
+                    },
                     child: Icon(
                       Icons.contacts,
                       size: 14,
@@ -105,7 +114,7 @@ class _ChatSessionsPortletState extends State<ChatSessionsPortlet> {
               children: items,
             ),
             _MessagesExpansionPanel(
-              context: widget.content,
+              context: widget.context,
             ),
           ],
         ),
@@ -353,7 +362,8 @@ class _ChatSessionItem extends StatefulWidget {
     return __ChatSessionItem();
   }
 }
-class __ChatSessionItem extends State<_ChatSessionItem>{
+
+class __ChatSessionItem extends State<_ChatSessionItem> {
   @override
   Widget build(BuildContext context) {
     Widget imgSrc = null;
@@ -376,140 +386,144 @@ class __ChatSessionItem extends State<_ChatSessionItem>{
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          GestureDetector(behavior: HitTestBehavior.opaque,onTap: (){
-            if(widget.onTap!=null) {
-              widget.onTap('xxx');
-            }
-          },child: Container(
-            margin: EdgeInsets.only(
-              bottom: 15,
-              left: 10,
-              right: 10,
-              top: 15,
-            ),
-            child: Row(
-              crossAxisAlignment: widget.showNewest
-                  ? CrossAxisAlignment.start
-                  : CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: 10,
-                  ),
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    child: Stack(
-                      overflow: Overflow.visible,
-                      children: <Widget>[
-                        SizedBox(
-                          width: 40,
-                          height: 40,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(6.0),
-                            child: imgSrc,
-                          ),
-                        ),
-                        Positioned(
-                          top: -10,
-                          right: -3,
-                          child: Badge(
-                            position: BadgePosition.topRight(
-                              right: -3,
-                              top: 3,
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              if (widget.onTap != null) {
+                widget.onTap('xxx');
+              }
+            },
+            child: Container(
+              margin: EdgeInsets.only(
+                bottom: 15,
+                left: 10,
+                right: 10,
+                top: 15,
+              ),
+              child: Row(
+                crossAxisAlignment: widget.showNewest
+                    ? CrossAxisAlignment.start
+                    : CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: 10,
+                    ),
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      child: Stack(
+                        overflow: Overflow.visible,
+                        children: <Widget>[
+                          SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(6.0),
+                              child: imgSrc,
                             ),
-                            elevation: 0,
-                            showBadge: widget.unreadMsgCount != 0,
-                            badgeContent: Text(
-                              '',
-                            ),
-                            child: null,
                           ),
-                        ),
-                      ],
+                          Positioned(
+                            top: -10,
+                            right: -3,
+                            child: Badge(
+                              position: BadgePosition.topRight(
+                                right: -3,
+                                top: 3,
+                              ),
+                              elevation: 0,
+                              showBadge: widget.unreadMsgCount != 0,
+                              badgeContent: Text(
+                                '',
+                              ),
+                              child: null,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                          bottom: 5,
-                          right: 5,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Text.rich(
-                              TextSpan(
-                                text: widget.title,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              '${widget.time}',
-                              style: TextStyle(
-                                color: Colors.grey[500],
-                                fontWeight: FontWeight.normal,
-                                fontSize: 11,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      widget.showNewest
-                          ? Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        alignment: WrapAlignment.start,
-                        spacing: 5,
-                        runSpacing: 3,
-                        children: <Widget>[
-                          Text.rich(
-                            TextSpan(
-                              text:
-                              '[${widget.unreadMsgCount != 0 ? widget.unreadMsgCount : ''}条]',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey[600],
-                              ),
-                              children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 5,
+                            right: 5,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text.rich(
                                 TextSpan(
-                                  text: ' ',
+                                  text: widget.title,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                  ),
                                 ),
+                              ),
+                              Text(
+                                '${widget.time}',
+                                style: TextStyle(
+                                  color: Colors.grey[500],
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        widget.showNewest
+                            ? Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                alignment: WrapAlignment.start,
+                                spacing: 5,
+                                runSpacing: 3,
+                                children: <Widget>[
+                                  Text.rich(
+                                    TextSpan(
+                                      text:
+                                          '[${widget.unreadMsgCount != 0 ? widget.unreadMsgCount : ''}条]',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey[600],
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: ' ',
+                                        ),
 //                                      TextSpan(
 //                                        text: '${this.who}: ',
 //                                      ),
-                                TextSpan(
-                                  text: '${widget.subtitle}',
-                                  style: TextStyle(
-                                    color: Colors.black54,
+                                        TextSpan(
+                                          text: '${widget.subtitle}',
+                                          style: TextStyle(
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                ),
-                              ],
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      )
-                          : Container(
-                        width: 0,
-                        height: 0,
-                      ),
-                    ],
+                                ],
+                              )
+                            : Container(
+                                width: 0,
+                                height: 0,
+                              ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),),
+          ),
           Divider(
             height: 1,
             indent: 60,

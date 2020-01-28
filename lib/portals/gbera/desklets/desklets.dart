@@ -249,7 +249,7 @@ List<Desklet> buildDesklets(portal, site) {
       buildDesklet: (portlet, desklet, desktopContext) {
         return ChatSessionsPortlet(
           desklet: desklet,
-          content: desktopContext,
+          context: desktopContext,
           portlet: portlet,
         );
       },

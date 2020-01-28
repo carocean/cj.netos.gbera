@@ -3,7 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/icons.dart';
+import 'package:gbera/portals/gbera/desklets/sessions/AddFriend.dart';
 import 'package:gbera/portals/gbera/desklets/sessions/chat_talk.dart';
+import 'package:gbera/portals/gbera/desklets/sessions/contact_searcher.dart';
 import 'package:gbera/portals/gbera/errors/errors.dart';
 import 'package:gbera/portals/gbera/pages/desktop.dart';
 import 'package:gbera/portals/gbera/pages/desktop/desklets_settings.dart';
@@ -104,6 +106,7 @@ import 'package:gbera/portals/gbera/store/services/insite_messages.dart';
 import 'package:gbera/portals/gbera/store/services/persons.dart';
 
 import 'desklets/desklets.dart';
+import 'desklets/sessions/session_settings.dart';
 import 'login.dart';
 import 'login2.dart';
 import 'pages/desktop/wallpappers.dart';
@@ -1215,6 +1218,26 @@ class GberaPortal {
           icon: GalleryIcons.shrine,
           url: '/portlet/chat/talk',
           buildPage: (PageContext pageContext) => ChatTalk(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '会话设置',
+          subtitle: '',
+          desc: '对话、群设置',
+          icon: GalleryIcons.shrine,
+          url: '/portlet/chat/sessionsettings',
+          buildPage: (PageContext pageContext) => SessionSettings(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '添加朋友',
+          subtitle: '',
+          desc: '',
+          icon: GalleryIcons.shrine,
+          url: '/portlet/chat/add_friend',
+          buildPage: (PageContext pageContext) => AddFriend(
             context: pageContext,
           ),
         ),

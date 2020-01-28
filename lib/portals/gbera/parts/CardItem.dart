@@ -12,6 +12,8 @@ class CardItem extends StatefulWidget {
   Widget leading;
   double paddingTop;
   double paddingBottom;
+  double paddingLeft;
+  double paddingRight;
   Function() onItemTap;
 
   CardItem({
@@ -25,6 +27,8 @@ class CardItem extends StatefulWidget {
     this.leading,
     this.paddingBottom,
     this.paddingTop,
+    this.paddingLeft,
+    this.paddingRight,
     this.onItemTap,
   }) {
     if (tail == null) {
@@ -50,6 +54,8 @@ class CardItemState extends State<CardItem> {
         padding: EdgeInsets.only(
           top: widget.paddingTop == null ? 15 : widget.paddingTop,
           bottom: widget.paddingBottom == null ? 15 : widget.paddingBottom,
+          left: widget.paddingLeft == null ? 0 : widget.paddingLeft,
+          right: widget.paddingRight == null ? 0 : widget.paddingRight,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.max,
@@ -67,26 +73,7 @@ class CardItemState extends State<CardItem> {
                     ),
                     child: widget.leading,
                   ),
-            widget.subtitle == null
-                ? Container(
-                    padding: EdgeInsets.only(
-                      right: 10,
-                    ),
-                    child: Text.rich(
-                      TextSpan(
-                        text: widget.title,
-                        style: TextStyle(
-                          color: widget.titleColor,
-                          fontWeight: FontWeight.w600,
-                          fontSize:widget.titleSize?? 15,
-                        ),
-                      ),
-                      softWrap: true,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  )
-                : Flexible(
+            Flexible(
                     fit: FlexFit.tight,
                     child: Container(
                       padding: EdgeInsets.only(
@@ -109,7 +96,8 @@ class CardItemState extends State<CardItem> {
                               ),
                             ),
                           ),
-                          Flexible(
+                          widget.subtitle == null
+                              ? Container(width: 0,height: 0,):Flexible(
                             fit: FlexFit.loose,
                             child: widget.subtitle,
                           ),
@@ -117,51 +105,56 @@ class CardItemState extends State<CardItem> {
                       ),
                     ),
                   ),
-            Flexible(
-              fit: FlexFit.loose,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: StringUtil.isEmpty(widget.tipsText)
-                        ? Container(
-                            width: 0,
-                            height: 0,
-                          )
-                        : Container(
-                            alignment: Alignment.centerRight,
-                            padding: EdgeInsets.only(left: 5),
-                            child: Text(
-                              widget.tipsText,
-                              softWrap: true,
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 12,
-                              ),
-                              textDirection: TextDirection.rtl,
-                            ),
-                          ),
-                  ),
-                  widget.tipsIconData == null
-                      ? Container(
-                          width: 0,
-                          height: 0,
-                        )
-                      : Padding(
-                          padding: EdgeInsets.only(left: 5),
-                          child: Icon(
-                            widget.tipsIconData,
-                            size: 12,
-                            color: Colors.grey[500],
-                          ),
-                        ),
-                  Padding(
+            StringUtil.isEmpty(widget.tipsText) && widget.tipsIconData == null
+                ? Padding(
                     padding: EdgeInsets.only(left: 5),
                     child: widget.tail,
+                  )
+                : Flexible(
+                    fit: FlexFit.loose,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: StringUtil.isEmpty(widget.tipsText)
+                              ? Container(
+                                  width: 0,
+                                  height: 0,
+                                )
+                              : Container(
+                                  alignment: Alignment.centerRight,
+                                  padding: EdgeInsets.only(left: 5),
+                                  child: Text(
+                                    widget.tipsText,
+                                    softWrap: true,
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontSize: 12,
+                                    ),
+                                    textDirection: TextDirection.rtl,
+                                  ),
+                                ),
+                        ),
+                        widget.tipsIconData == null
+                            ? Container(
+                                width: 0,
+                                height: 0,
+                              )
+                            : Padding(
+                                padding: EdgeInsets.only(left: 5),
+                                child: Icon(
+                                  widget.tipsIconData,
+                                  size: 12,
+                                  color: Colors.grey[500],
+                                ),
+                              ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 5),
+                          child: widget.tail,
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
           ],
         ),
       ),

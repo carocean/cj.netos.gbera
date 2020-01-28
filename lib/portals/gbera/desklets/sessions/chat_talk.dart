@@ -187,9 +187,11 @@ class _ChatTalkState extends State<ChatTalk> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              widget.context.forward('/portlet/chat/sessionsettings');
+            },
             icon: Icon(
-              Icons.more_horiz,
+              Icons.more_vert,
             ),
           ),
         ],
@@ -384,6 +386,7 @@ class __ChatSenderState extends State<_ChatSender> {
       _contentFocusNode.unfocus();
       setState(() {});
     });
+    _contentFocusNode.unfocus();
     super.initState();
   }
 
@@ -425,7 +428,7 @@ class __ChatSenderState extends State<_ChatSender> {
                       onSubmitted: (v) {
                         print('-----$v');
                       },
-                      autofocus: _action == null,
+                      autofocus: false,
                       onTap: () {
                         _action = null;
                         if(widget.textRegionController!=null) {
