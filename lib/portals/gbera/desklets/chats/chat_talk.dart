@@ -23,14 +23,18 @@ class _ChatTalkState extends State<ChatTalk> {
 
   EasyRefreshController _controller;
   ScrollController _scrollController;
+  String _title = '妖精买';
+  _RoomMode _roomMode;
 
   @override
   void initState() {
     super.initState();
     _controller = EasyRefreshController();
     _scrollController = ScrollController();
-    Timer(Duration(milliseconds: 500),
-            () => _scrollController.jumpTo(_scrollController.position.maxScrollExtent));
+    Timer(
+        Duration(milliseconds: 500),
+        () => _scrollController
+            .jumpTo(_scrollController.position.maxScrollExtent));
   }
 
   @override
@@ -180,15 +184,27 @@ class _ChatTalkState extends State<ChatTalk> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'A Winnie 晴晴',
+        title: Text.rich(
+          TextSpan(
+            text: '$_title',
+            children: [
+              TextSpan(
+                text: _roomMode == null || _roomMode == _RoomMode.p2p
+                    ? ' 聊天'
+                    : ' 服务',
+                style: TextStyle(
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
         ),
         elevation: 0,
         centerTitle: true,
         actions: <Widget>[
           IconButton(
             onPressed: () {
-              widget.context.forward('/portlet/chat/sessionsettings');
+              widget.context.forward('/portlet/chat/room/settings');
             },
             icon: Icon(
               Icons.more_vert,
@@ -225,6 +241,10 @@ class _ChatTalkState extends State<ChatTalk> {
             plusPanel: _PlusPannel(),
             stickerPanel: _StickerPanel(),
             textRegionController: _scrollController,
+            onRoomModeChanged: (m) {
+              _roomMode = m;
+              setState(() {});
+            },
           ),
         ],
       ),
@@ -352,12 +372,21 @@ enum _Action {
   plus,
   sticker,
 }
+enum _RoomMode {
+  ///p2p互聊，普通群
+  p2p,
+
+  ///B2P互聊，企业客服到用户
+  b2p,
+}
 
 class _ChatSender extends StatefulWidget {
   PageContext context;
   Widget plusPanel;
   Widget stickerPanel;
   ScrollController textRegionController;
+  Function(_RoomMode roomMode) onRoomModeChanged;
+
   List<Function()> onTapEvents;
 
   _ChatSender({
@@ -366,6 +395,7 @@ class _ChatSender extends StatefulWidget {
     this.plusPanel,
     this.stickerPanel,
     this.textRegionController,
+    this.onRoomModeChanged,
   });
 
   @override
@@ -376,6 +406,7 @@ class __ChatSenderState extends State<_ChatSender> {
   _Action _action;
   TextEditingController _controller;
   FocusNode _contentFocusNode;
+  _RoomMode _roomMode = _RoomMode.p2p;
 
   @override
   void initState() {
@@ -392,6 +423,7 @@ class __ChatSenderState extends State<_ChatSender> {
 
   @override
   void dispose() {
+    _roomMode = _RoomMode.p2p;
     _contentFocusNode.dispose();
     _controller.dispose();
     widget.onTapEvents.clear();
@@ -431,8 +463,9 @@ class __ChatSenderState extends State<_ChatSender> {
                       autofocus: false,
                       onTap: () {
                         _action = null;
-                        if(widget.textRegionController!=null) {
-                          widget.textRegionController.jumpTo(widget.textRegionController.position.maxScrollExtent);
+                        if (widget.textRegionController != null) {
+                          widget.textRegionController.jumpTo(widget
+                              .textRegionController.position.maxScrollExtent);
                         }
                         setState(() {});
                       },
@@ -443,6 +476,8 @@ class __ChatSenderState extends State<_ChatSender> {
                       decoration: InputDecoration(
                         fillColor: Colors.white,
                         filled: true,
+                        hintText:
+                            _roomMode == _RoomMode.p2p ? '聊天中...' : '服务中...',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.only(
                             bottomRight: Radius.circular(0),
@@ -456,22 +491,37 @@ class __ChatSenderState extends State<_ChatSender> {
                           top: 15,
                           bottom: 15,
                         ),
-                        prefixIcon: Icon(
-                          Icons.text_fields,
-                          size: 25,
-                          color: Colors.grey[500],
+                        prefixIcon: GestureDetector(
+                          child: Icon(
+                            _roomMode == _RoomMode.p2p
+                                ? IconData(0xe60c, fontFamily: 'chats')
+                                : IconData(0xe6bc, fontFamily: 'chats'),
+                            size: 25,
+                            color: Colors.grey[500],
+                          ),
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            _roomMode = _roomMode == _RoomMode.p2p
+                                ? _RoomMode.b2p
+                                : _RoomMode.p2p;
+                            if (widget.onRoomModeChanged != null) {
+                              widget.onRoomModeChanged(_roomMode);
+                            }
+                            _contentFocusNode.unfocus();
+                            setState(() {});
+                          },
                         ),
                       ),
                     ),
                     Positioned(
-                      right: 8,
-                      bottom: 12,
+                      right: 7,
+                      bottom: 9,
                       child: SizedBox(
-                        width: 25,
-                        height: 25,
+                        width: 30,
+                        height: 30,
                         child: VoiceFloatingButton(
                           context: widget.context,
-                          iconSize: 14,
+                          iconSize: 18,
                         ),
                       ),
                     ),
@@ -481,8 +531,9 @@ class __ChatSenderState extends State<_ChatSender> {
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
-                  if(widget.textRegionController!=null) {
-                    widget.textRegionController.jumpTo(widget.textRegionController.position.maxScrollExtent);
+                  if (widget.textRegionController != null) {
+                    widget.textRegionController.jumpTo(
+                        widget.textRegionController.position.maxScrollExtent);
                   }
                   _action = _Action.sticker;
                   _contentFocusNode.unfocus();
@@ -504,8 +555,9 @@ class __ChatSenderState extends State<_ChatSender> {
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
-                  if(widget.textRegionController!=null) {
-                    widget.textRegionController.jumpTo(widget.textRegionController.position.maxScrollExtent);
+                  if (widget.textRegionController != null) {
+                    widget.textRegionController.jumpTo(
+                        widget.textRegionController.position.maxScrollExtent);
                   }
                   _action = _Action.plus;
                   _contentFocusNode.unfocus();

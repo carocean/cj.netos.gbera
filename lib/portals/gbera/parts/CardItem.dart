@@ -15,7 +15,7 @@ class CardItem extends StatefulWidget {
   double paddingLeft;
   double paddingRight;
   Function() onItemTap;
-
+  Function() onItemLongPress;
   CardItem({
     this.title,
     this.subtitle,
@@ -30,6 +30,7 @@ class CardItem extends StatefulWidget {
     this.paddingLeft,
     this.paddingRight,
     this.onItemTap,
+    this.onItemLongPress,
   }) {
     if (tail == null) {
       this.tail = Icon(
@@ -50,6 +51,7 @@ class CardItemState extends State<CardItem> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: widget.onItemTap,
+      onLongPress: widget.onItemLongPress,
       child: Container(
         padding: EdgeInsets.only(
           top: widget.paddingTop == null ? 15 : widget.paddingTop,

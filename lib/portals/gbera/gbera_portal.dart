@@ -3,9 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/icons.dart';
-import 'package:gbera/portals/gbera/desklets/sessions/AddFriend.dart';
-import 'package:gbera/portals/gbera/desklets/sessions/chat_talk.dart';
-import 'package:gbera/portals/gbera/desklets/sessions/contact_searcher.dart';
 import 'package:gbera/portals/gbera/errors/errors.dart';
 import 'package:gbera/portals/gbera/pages/desktop.dart';
 import 'package:gbera/portals/gbera/pages/desktop/desklets_settings.dart';
@@ -64,6 +61,7 @@ import 'package:gbera/portals/gbera/pages/profile/editor.dart';
 import 'package:gbera/portals/gbera/pages/profile/face.dart';
 import 'package:gbera/portals/gbera/pages/profile/more.dart';
 import 'package:gbera/portals/gbera/pages/profile/qrcode.dart';
+import 'package:gbera/portals/gbera/pages/site/friend_site.dart';
 import 'package:gbera/portals/gbera/pages/site/insite_request.dart';
 import 'package:gbera/portals/gbera/pages/site/marchant_site.dart';
 import 'package:gbera/portals/gbera/pages/site/micro_app.dart';
@@ -98,15 +96,21 @@ import 'package:gbera/portals/gbera/pages/wallet/ty.dart';
 import 'package:gbera/portals/gbera/pages/wallet/wy.dart';
 import 'package:gbera/portals/gbera/scaffolds.dart';
 import 'package:gbera/portals/gbera/store/dao/database.dart';
+import 'package:gbera/portals/gbera/store/services.dart';
 import 'package:gbera/portals/gbera/store/services/channel_extra.dart';
 import 'package:gbera/portals/gbera/store/services/channel_messages.dart';
 import 'package:gbera/portals/gbera/store/services/channel_pin.dart';
 import 'package:gbera/portals/gbera/store/services/channels.dart';
+import 'package:gbera/portals/gbera/store/services/chat_rooms.dart';
 import 'package:gbera/portals/gbera/store/services/insite_messages.dart';
 import 'package:gbera/portals/gbera/store/services/persons.dart';
 
+import 'desklets/chats/add_friend.dart';
+import 'desklets/chats/chat_talk.dart';
+import 'desklets/chats/friend_page.dart';
+import 'desklets/chats/import_persons.dart';
+import 'desklets/chats/room_settings.dart';
 import 'desklets/desklets.dart';
-import 'desklets/sessions/session_settings.dart';
 import 'login.dart';
 import 'login2.dart';
 import 'pages/desktop/wallpappers.dart';
@@ -126,6 +130,7 @@ class GberaPortal {
       buildPortalStore: (Portal portal, IServiceProvider site) => PortalStore(
         services: {
           "/gbera/persons": PersonService(site: site),
+          "/gbera/friends": FriendService(site: site),
           '/netflow/channels': ChannelService(site: site),
           '/insite/messages': InsiteMessageService(site: site),
           '/channel/pin': ChannelPinService(site: site),
@@ -133,6 +138,7 @@ class GberaPortal {
           '/channel/messages/medias': ChannelMediaService(site: site),
           '/channel/messages/likes': ChannelLikeService(site: site),
           '/channel/messages/comments': ChannelCommentService(site: site),
+          '/chat/rooms': ChatRoomService(site: site),
         },
         loadDatabase: () async {
           final database = await $FloorAppDatabase
@@ -528,6 +534,16 @@ class GberaPortal {
           icon: Icons.art_track,
           url: '/site/personal',
           buildPage: (PageContext pageContext) => PersonalSite(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '朋友站点',
+          subtitle: '',
+          desc: '',
+          icon: Icons.art_track,
+          url: '/site/friend',
+          buildPage: (PageContext pageContext) => FriendSite(
             context: pageContext,
           ),
         ),
@@ -1226,8 +1242,8 @@ class GberaPortal {
           subtitle: '',
           desc: '对话、群设置',
           icon: GalleryIcons.shrine,
-          url: '/portlet/chat/sessionsettings',
-          buildPage: (PageContext pageContext) => SessionSettings(
+          url: '/portlet/chat/room/settings',
+          buildPage: (PageContext pageContext) => ChatRoomSettings(
             context: pageContext,
           ),
         ),
@@ -1238,6 +1254,26 @@ class GberaPortal {
           icon: GalleryIcons.shrine,
           url: '/portlet/chat/add_friend',
           buildPage: (PageContext pageContext) => AddFriend(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '导入公众',
+          subtitle: '',
+          desc: '',
+          icon: GalleryIcons.shrine,
+          url: '/portlet/chat/imports/persons',
+          buildPage: (PageContext pageContext) => ImportPersons(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '好友',
+          subtitle: '',
+          desc: '',
+          icon: GalleryIcons.shrine,
+          url: '/portlet/chat/friends',
+          buildPage: (PageContext pageContext) => FriendPage(
             context: pageContext,
           ),
         ),

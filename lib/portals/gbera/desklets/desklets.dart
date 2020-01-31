@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/util.dart';
-import 'package:gbera/portals/gbera/desklets/sessions/chat_sessions.dart';
 import 'package:gbera/portals/gbera/pages/desktop.dart';
 import 'package:gbera/portals/gbera/parts/parts.dart';
+
+import 'chats/chat_rooms.dart';
 
 List<Desklet> buildDesklets(portal, site) {
   return <Desklet>[
@@ -247,7 +248,7 @@ List<Desklet> buildDesklets(portal, site) {
       icon: Icons.chat_bubble,
       desc: '聊天、群、聊天室等',
       buildDesklet: (portlet, desklet, desktopContext) {
-        return ChatSessionsPortlet(
+        return ChatRoomsPortlet(
           desklet: desklet,
           context: desktopContext,
           portlet: portlet,

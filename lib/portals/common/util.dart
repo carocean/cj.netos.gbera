@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/widgets.dart';
 
 
-
 //屏自适应
 class Adapt {
   static MediaQueryData mediaQuery = MediaQueryData.fromWindow(window);

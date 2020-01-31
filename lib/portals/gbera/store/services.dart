@@ -21,15 +21,17 @@ mixin IPersonService {
 
   Future<List<Person>> listPersonWith(List<String> personList);
 
-  Future<Person> getPersonByUID(String uid) ;
+  Future<Person> getPersonByUID(String uid);
 
   Future<Person> getPersonFullName(String person);
 
-
+  Future<List<Person>> pagePersonLikeName(String query, int limit, int offset);
 }
 mixin IChannelService {
   ///地圈管道标识
-  static const  GEO_CIRCUIT_CHANNEL_CODE='59FC6F04-5C54-4C6F-80EC-BF2355856841';
+  static const GEO_CIRCUIT_CHANNEL_CODE =
+      '59FC6F04-5C54-4C6F-80EC-BF2355856841';
+
   Future<void> init(UserPrincipal user);
 
   bool isSystemChannel(code);
@@ -58,8 +60,7 @@ mixin IChannelService {
 
   Future<void> remove(String code);
 
-  Future<void> updateName(String code,String name) ;
-
+  Future<void> updateName(String code, String name);
 }
 mixin IInsiteMessageService {
   Future<void> empty();
@@ -92,8 +93,8 @@ mixin IChannelMessageService {
 
   Future<void> emptyBy(String channelid);
 
-  Future<List<ChannelMessage>>  pageMessageBy(int limit, int offset, String onchannel, String person) ;
-
+  Future<List<ChannelMessage>> pageMessageBy(
+      int limit, int offset, String onchannel, String person);
 }
 mixin IChannelMediaService {
   Future<void> addMedia(Media media);
@@ -135,7 +136,8 @@ mixin IChannelPinService {
 
   Future<PinPersonsSettingsStrategy> getInputPersonSelector(String channelcode);
 
-  Future<PinPersonsSettingsStrategy> getOutputPersonSelector(String channelcode);
+  Future<PinPersonsSettingsStrategy> getOutputPersonSelector(
+      String channelcode);
 
   Future<void> setOutputPersonSelector(String channelcode,
       PinPersonsSettingsStrategy outsitePersonsSettingStrategy);
@@ -170,3 +172,32 @@ mixin IChannelPinService {
 
   Future<void> emptyOutputPersons(String channelcode);
 }
+mixin IFriendService {
+  Future<bool> exists(String official) {}
+
+  Future<void> addFriend(Friend friend) {}
+
+  Future<List<Friend>> pageFriend(int limit, int offset) {}
+
+  Future<List<Friend>> pageFriendLikeName(
+      String name, List<String> officials, int limit, int offset) {}
+
+  Future<void> removeFriendById(String id) {}
+
+  Future<Friend> getFriendByOfficial(String official) {}
+}
+mixin IChatRoomService {
+  Future<void> addRoom(ChatRoom chatRoom) {}
+
+  Future<void> addMember(RoomMember roomMember) {}
+
+  Future<List<ChatRoom>> listChatRoom() {}
+
+  Future<List<RoomMember>> topMember10(String code) {}
+
+  Future<void> removeChatRoomById(String id) {}
+
+  Future<List<Friend>> listWhoAddMember(String roomCode,String creator) {}
+
+}
+mixin IP2PService {}

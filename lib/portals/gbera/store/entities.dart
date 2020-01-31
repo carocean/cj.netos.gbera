@@ -14,9 +14,23 @@ class Person {
   final String rights;
   final String nickName;
   final String signature;
+  final String pyname;
   final String sandbox;
-  Person(this.id,this.official, this.uid, this.accountid, this.accountName, this.appid,
-      this.tenantid, this.avatar, this.rights, this.nickName, this.signature,this.sandbox);
+
+  Person(
+      this.id,
+      this.official,
+      this.uid,
+      this.accountid,
+      this.accountName,
+      this.appid,
+      this.tenantid,
+      this.avatar,
+      this.rights,
+      this.nickName,
+      this.signature,
+      this.pyname,
+      this.sandbox);
 }
 
 @entity
@@ -27,7 +41,8 @@ class MicroSite {
   final String leading;
   final String desc;
   final String sandbox;
-  MicroSite(this.id, this.name, this.leading, this.desc,this.sandbox);
+
+  MicroSite(this.id, this.name, this.leading, this.desc, this.sandbox);
 }
 
 @entity
@@ -37,7 +52,8 @@ class MicroApp {
   final String site;
   final String leading;
   final String sandbox;
-  MicroApp(this.id, this.site, this.leading,this.sandbox);
+
+  MicroApp(this.id, this.site, this.leading, this.sandbox);
 }
 
 @entity
@@ -55,8 +71,20 @@ class Channel {
   int utime = DateTime.now().millisecondsSinceEpoch;
   int unreadMsgCount = 0;
   final String sandbox;
-  Channel(this.id, this.code,this.name, this.owner, this.loopType, this.leading,
-      this.site, this.tips, this.ctime, this.utime, this.unreadMsgCount,this.sandbox);
+
+  Channel(
+      this.id,
+      this.code,
+      this.name,
+      this.owner,
+      this.loopType,
+      this.leading,
+      this.site,
+      this.tips,
+      this.ctime,
+      this.utime,
+      this.unreadMsgCount,
+      this.sandbox);
 }
 
 @entity
@@ -73,6 +101,7 @@ class InsiteMessage {
   final double wy;
   final String location;
   final String sandbox;
+
   InsiteMessage(
     this.id,
     this.upstreamPerson,
@@ -84,7 +113,7 @@ class InsiteMessage {
     this.digests,
     this.wy,
     this.location,
-      this.sandbox,
+    this.sandbox,
   );
 }
 
@@ -102,6 +131,7 @@ class ChannelMessage {
   final double wy;
   final String location;
   final String sandbox;
+
   ChannelMessage(
     this.id,
     this.upstreamPerson,
@@ -113,7 +143,7 @@ class ChannelMessage {
     this.text,
     this.wy,
     this.location,
-      this.sandbox,
+    this.sandbox,
   );
 }
 
@@ -128,8 +158,9 @@ class LikePerson {
   final String nickName;
   final String onChannel;
   final String sandbox;
+
   LikePerson(this.id, this.person, this.avatar, this.msgid, this.ctime,
-      this.nickName, this.onChannel,this.sandbox);
+      this.nickName, this.onChannel, this.sandbox);
 }
 
 @entity
@@ -144,8 +175,9 @@ class ChannelComment {
   final String nickName;
   final String onChannel;
   final String sandbox;
+
   ChannelComment(this.id, this.person, this.avatar, this.msgid, this.text,
-      this.ctime, this.nickName, this.onChannel,this.sandbox);
+      this.ctime, this.nickName, this.onChannel, this.sandbox);
 }
 
 @entity
@@ -159,8 +191,9 @@ class Media {
   final String text;
   final String onChannel;
   final String sandbox;
+
   Media(this.id, this.type, this.src, this.leading, this.msgid, this.text,
-      this.onChannel,this.sandbox);
+      this.onChannel, this.sandbox);
 }
 
 @entity
@@ -177,17 +210,20 @@ class ChannelPin {
   final String inRights;
   final String outRights;
   final String sandbox;
+
   ChannelPin(
-      this.id,
-      this.channel,
-      this.inPersonSelector,
-      this.outPersonSelector,
-      this.outGeoSelector,
-      this.outWechatPenYouSelector,
-      this.outWechatHaoYouSelector,
-      this.outContractSelector,
-      this.inRights,
-      this.outRights,this.sandbox,);
+    this.id,
+    this.channel,
+    this.inPersonSelector,
+    this.outPersonSelector,
+    this.outGeoSelector,
+    this.outWechatPenYouSelector,
+    this.outWechatHaoYouSelector,
+    this.outContractSelector,
+    this.inRights,
+    this.outRights,
+    this.sandbox,
+  );
 }
 
 @entity
@@ -197,11 +233,12 @@ class ChannelInputPerson {
   final String channel;
   final String person;
   final String sandbox;
+
   ChannelInputPerson(
     this.id,
     this.channel,
     this.person,
-      this.sandbox,
+    this.sandbox,
   );
 }
 
@@ -212,10 +249,143 @@ class ChannelOutputPerson {
   final String channel;
   final String person;
   final String sandbox;
+
   ChannelOutputPerson(this.id, this.channel, this.person, this.sandbox);
 }
 
 enum PinPersonsSettingsStrategy {
   only_select,
   all_except,
+}
+
+@entity
+class Friend {
+  @primaryKey
+  final String id;
+  final String official;
+  final String source;
+  final String uid;
+  final String accountid;
+  final String accountName;
+  final String appid;
+  final String tenantid;
+  final String avatar;
+  final String rights;
+  final String nickName;
+  final String signature;
+  final String pyname;
+  final String sandbox;
+
+  Friend(
+      this.id,
+      this.official,
+      this.source,
+      this.uid,
+      this.accountid,
+      this.accountName,
+      this.appid,
+      this.tenantid,
+      this.avatar,
+      this.rights,
+      this.nickName,
+      this.signature,
+      this.pyname,
+      this.sandbox);
+}
+
+@entity
+class ChatRoom {
+  @primaryKey
+  final String id;
+  final String code;
+  final String title;
+  final String leading;
+  final String creator;
+  final int ctime;
+  final int utime;
+  final String tips;
+  final int unreadMsgCount;
+  final String notice;
+  final String p2pBackground;
+  final String isDisplayNick;
+  final String microsite;
+  final String sandbox;
+
+  ChatRoom(
+    this.id,
+    this.code,
+    this.title,
+    this.leading,
+    this.creator,
+    this.ctime,
+    this.utime,
+    this.tips,
+    this.unreadMsgCount,
+    this.notice,
+    this.p2pBackground,
+    this.isDisplayNick,
+    this.microsite,
+    this.sandbox,
+  );
+}
+
+@entity
+class RoomMember {
+  @primaryKey
+  final String id;
+  final String room;
+  final String person;
+  final String whoAdd;
+  final String sandbox;
+
+  RoomMember(
+    this.id,
+    this.room,
+    this.person,
+    this.whoAdd,
+    this.sandbox,
+  );
+}
+
+@entity
+class RoomNick {
+  @primaryKey
+  final String id;
+  final String person;
+  final String room;
+  final String nickName;
+  final String sandbox;
+
+  RoomNick(this.id, this.person, this.room, this.nickName, this.sandbox);
+}
+
+@entity
+class P2PMessage {
+  @primaryKey
+  final String id;
+  final String sender;
+  final String receiver;
+  final String room;
+  final String type;
+  final String content;
+  final String state;
+  final int ctime;
+  final int atime;
+  final int rtime;
+  final int dtime;
+  final String sandbox;
+
+  P2PMessage(
+      this.id,
+      this.sender,
+      this.receiver,
+      this.room,
+      this.type,
+      this.content,
+      this.state,
+      this.ctime,
+      this.atime,
+      this.rtime,
+      this.dtime,
+      this.sandbox);
 }

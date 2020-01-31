@@ -36,7 +36,27 @@ class _AddFriendState extends State<AddFriend> {
               ),
               title: '公众',
               subtitle: Text(
-                '向网流或地圈中的公众申请成为朋友',
+                '向网流的公众申请成为朋友',
+                style: TextStyle(
+                  color: Colors.grey[500],
+                  fontSize: 12,
+                ),
+              ),
+              onItemTap: () {
+                widget.context.forward('/portlet/chat/imports/persons');
+              },
+            ),
+            Divider(
+              height: 1,
+              indent: 40,
+            ),
+            CardItem(
+              leading: Icon(
+                FontAwesomeIcons.phone,
+              ),
+              title: '行人',
+              subtitle: Text(
+                '向地圈的行人申请成为朋友',
                 style: TextStyle(
                   color: Colors.grey[500],
                   fontSize: 12,
@@ -54,23 +74,6 @@ class _AddFriendState extends State<AddFriend> {
               title: '扫一扫',
               subtitle: Text(
                 '扫描二维码名片',
-                style: TextStyle(
-                  color: Colors.grey[500],
-                  fontSize: 12,
-                ),
-              ),
-            ),
-            Divider(
-              height: 1,
-              indent: 40,
-            ),
-            CardItem(
-              leading: Icon(
-                FontAwesomeIcons.phone,
-              ),
-              title: '手机通讯录',
-              subtitle: Text(
-                '从手机通讯录中添加，需要授予权限',
                 style: TextStyle(
                   color: Colors.grey[500],
                   fontSize: 12,

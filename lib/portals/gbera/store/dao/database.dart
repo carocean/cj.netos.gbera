@@ -21,6 +21,11 @@ part 'database.g.dart';
   ChannelPin,
   ChannelInputPerson,
   ChannelOutputPerson,
+  Friend,
+  ChatRoom,
+  RoomMember,
+  RoomNick,
+  P2PMessage,
 ])
 abstract class AppDatabase extends FloorDatabase {
   IPersonDAO get upstreamPersonDAO;
@@ -46,4 +51,14 @@ abstract class AppDatabase extends FloorDatabase {
   IChannelInputPersonDAO get channelInputPersonDAO;
 
   IChannelOutputPersonDAO get channelOutputPersonDAO;
+
+  IFriendDAO get friendDAO;
+
+  IChatRoomDAO get chatRoomDAO;
+
+  IRoomMemberDAO get roomMemberDAO;
+
+  IRoomNickDAO get roomNickDAO;
+
+  IP2PMessageDAO get p2pMessageDAO;
 }

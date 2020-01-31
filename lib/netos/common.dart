@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:floor/floor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_k_chart/utils/date_format_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'errors.dart';
@@ -449,7 +448,18 @@ mixin StringUtil {
     return qs == null || '' == qs;
   }
 }
+mixin PersonUtil{
+  static String official(accountName,appid,tenantid){
+    return '$accountName@$appid.$tenantid';
+  }
 
+  static String officialBy(var person) {
+    if(!StringUtil.isEmpty(person.official)) {
+      return person.official;
+    }
+    return '${person.accountName}@${person.appid}.${person.tenantid}';
+  }
+}
 mixin IServiceProvider {
   getService(String name);
 }

@@ -81,6 +81,16 @@ class _$AppDatabase extends AppDatabase {
 
   IChannelOutputPersonDAO _channelOutputPersonDAOInstance;
 
+  IFriendDAO _friendDAOInstance;
+
+  IChatRoomDAO _chatRoomDAOInstance;
+
+  IRoomMemberDAO _roomMemberDAOInstance;
+
+  IRoomNickDAO _roomNickDAOInstance;
+
+  IP2PMessageDAO _p2pMessageDAOInstance;
+
   Future<sqflite.Database> open(String name, List<Migration> migrations,
       [Callback callback]) async {
     final path = join(await sqflite.getDatabasesPath(), name);
@@ -102,7 +112,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Person` (`id` TEXT, `official` TEXT, `uid` TEXT, `accountid` TEXT, `accountName` TEXT, `appid` TEXT, `tenantid` TEXT, `avatar` TEXT, `rights` TEXT, `nickName` TEXT, `signature` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Person` (`id` TEXT, `official` TEXT, `uid` TEXT, `accountid` TEXT, `accountName` TEXT, `appid` TEXT, `tenantid` TEXT, `avatar` TEXT, `rights` TEXT, `nickName` TEXT, `signature` TEXT, `pyname` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `MicroSite` (`id` TEXT, `name` TEXT, `leading` TEXT, `desc` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
@@ -125,6 +135,16 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `ChannelInputPerson` (`id` TEXT, `channel` TEXT, `person` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `ChannelOutputPerson` (`id` TEXT, `channel` TEXT, `person` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Friend` (`id` TEXT, `official` TEXT, `source` TEXT, `uid` TEXT, `accountid` TEXT, `accountName` TEXT, `appid` TEXT, `tenantid` TEXT, `avatar` TEXT, `rights` TEXT, `nickName` TEXT, `signature` TEXT, `pyname` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `ChatRoom` (`id` TEXT, `code` TEXT, `title` TEXT, `leading` TEXT, `creator` TEXT, `ctime` INTEGER, `utime` INTEGER, `tips` TEXT, `unreadMsgCount` INTEGER, `notice` TEXT, `p2pBackground` TEXT, `isDisplayNick` TEXT, `microsite` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `RoomMember` (`id` TEXT, `room` TEXT, `person` TEXT, `whoAdd` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `RoomNick` (`id` TEXT, `person` TEXT, `room` TEXT, `nickName` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `P2PMessage` (`id` TEXT, `sender` TEXT, `receiver` TEXT, `room` TEXT, `type` TEXT, `content` TEXT, `state` TEXT, `ctime` INTEGER, `atime` INTEGER, `rtime` INTEGER, `dtime` INTEGER, `sandbox` TEXT, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -199,6 +219,33 @@ class _$AppDatabase extends AppDatabase {
     return _channelOutputPersonDAOInstance ??=
         _$IChannelOutputPersonDAO(database, changeListener);
   }
+
+  @override
+  IFriendDAO get friendDAO {
+    return _friendDAOInstance ??= _$IFriendDAO(database, changeListener);
+  }
+
+  @override
+  IChatRoomDAO get chatRoomDAO {
+    return _chatRoomDAOInstance ??= _$IChatRoomDAO(database, changeListener);
+  }
+
+  @override
+  IRoomMemberDAO get roomMemberDAO {
+    return _roomMemberDAOInstance ??=
+        _$IRoomMemberDAO(database, changeListener);
+  }
+
+  @override
+  IRoomNickDAO get roomNickDAO {
+    return _roomNickDAOInstance ??= _$IRoomNickDAO(database, changeListener);
+  }
+
+  @override
+  IP2PMessageDAO get p2pMessageDAO {
+    return _p2pMessageDAOInstance ??=
+        _$IP2PMessageDAO(database, changeListener);
+  }
 }
 
 class _$IPersonDAO extends IPersonDAO {
@@ -219,6 +266,7 @@ class _$IPersonDAO extends IPersonDAO {
                   'rights': item.rights,
                   'nickName': item.nickName,
                   'signature': item.signature,
+                  'pyname': item.pyname,
                   'sandbox': item.sandbox
                 });
 
@@ -240,6 +288,7 @@ class _$IPersonDAO extends IPersonDAO {
       row['rights'] as String,
       row['nickName'] as String,
       row['signature'] as String,
+      row['pyname'] as String,
       row['sandbox'] as String);
 
   final InsertionAdapter<Person> _personInsertionAdapter;
@@ -320,6 +369,31 @@ class _$IPersonDAO extends IPersonDAO {
     return _queryAdapter.query(
         'SELECT * FROM Person WHERE sandbox =? and uid = ? LIMIT 1 OFFSET 0',
         arguments: <dynamic>[sandbox, uid],
+        mapper: _personMapper);
+  }
+
+  @override
+  Future<List<Person>> pagePersonNotFriends(
+      String sandbox, int limit, int offset) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Person where sandbox=? and official NOT IN (select official from Friend) LIMIT ? OFFSET ?',
+        arguments: <dynamic>[sandbox, limit, offset],
+        mapper: _personMapper);
+  }
+
+  @override
+  Future<List<Person>> pagePersonLikeName(String sandbox, String accountName,
+      String nickName, String pyname, int limit, int offset) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Person where sandbox=? and (accountName LIKE ? OR nickName LIKE ? OR pyname LIKE ?) and official NOT IN (select official from Friend) LIMIT ? OFFSET ?',
+        arguments: <dynamic>[
+          sandbox,
+          accountName,
+          nickName,
+          pyname,
+          limit,
+          offset
+        ],
         mapper: _personMapper);
   }
 
@@ -552,7 +626,7 @@ class _$IChannelDAO extends IChannelDAO {
   Future<List<Channel>> getChannelsOfPerson(
       String sandbox, String person) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM Channel WHERE sandbox=? owner = ?',
+        'SELECT * FROM Channel WHERE sandbox=? and owner = ?',
         arguments: <dynamic>[sandbox, person],
         mapper: _channelMapper);
   }
@@ -1302,4 +1376,281 @@ class _$IChannelOutputPersonDAO extends IChannelOutputPersonDAO {
     await _channelOutputPersonInsertionAdapter.insert(
         person, sqflite.ConflictAlgorithm.abort);
   }
+}
+
+class _$IFriendDAO extends IFriendDAO {
+  _$IFriendDAO(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _friendInsertionAdapter = InsertionAdapter(
+            database,
+            'Friend',
+            (Friend item) => <String, dynamic>{
+                  'id': item.id,
+                  'official': item.official,
+                  'source': item.source,
+                  'uid': item.uid,
+                  'accountid': item.accountid,
+                  'accountName': item.accountName,
+                  'appid': item.appid,
+                  'tenantid': item.tenantid,
+                  'avatar': item.avatar,
+                  'rights': item.rights,
+                  'nickName': item.nickName,
+                  'signature': item.signature,
+                  'pyname': item.pyname,
+                  'sandbox': item.sandbox
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  static final _friendMapper = (Map<String, dynamic> row) => Friend(
+      row['id'] as String,
+      row['official'] as String,
+      row['source'] as String,
+      row['uid'] as String,
+      row['accountid'] as String,
+      row['accountName'] as String,
+      row['appid'] as String,
+      row['tenantid'] as String,
+      row['avatar'] as String,
+      row['rights'] as String,
+      row['nickName'] as String,
+      row['signature'] as String,
+      row['pyname'] as String,
+      row['sandbox'] as String);
+
+  final InsertionAdapter<Friend> _friendInsertionAdapter;
+
+  @override
+  Future<Friend> getFriend(String official, String sandbox) async {
+    return _queryAdapter.query(
+        'select * FROM Friend WHERE official=? and sandbox=? LIMIT 1 OFFSET 0',
+        arguments: <dynamic>[official, sandbox],
+        mapper: _friendMapper);
+  }
+
+  @override
+  Future<List<Friend>> pageFriendLikeName(
+      String person,
+      String accountName,
+      String nickName,
+      String pyname,
+      List<String> officials,
+      int limit,
+      int offset) async {
+    final valueList1 = officials.map((value) => "'$value'").join(', ');
+    return _queryAdapter.queryList(
+        'SELECT * FROM Friend where sandbox=? and (accountName LIKE ? OR nickName LIKE ? OR pyname LIKE ?) and official NOT IN ($valueList1) LIMIT ? OFFSET ?',
+        arguments: <dynamic>[
+          person,
+          accountName,
+          nickName,
+          pyname,
+          limit,
+          offset
+        ],
+        mapper: _friendMapper);
+  }
+
+  @override
+  Future<List<Friend>> pageFriend(String sandbox, int limit, int offset) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Friend where sandbox=? LIMIT ? OFFSET ?',
+        arguments: <dynamic>[sandbox, limit, offset],
+        mapper: _friendMapper);
+  }
+
+  @override
+  Future<void> removeFriendById(String id, String sandbox) async {
+    await _queryAdapter.queryNoReturn(
+        'delete FROM Friend WHERE id = ? AND sandbox=?',
+        arguments: <dynamic>[id, sandbox]);
+  }
+
+  @override
+  Future<Friend> getFriendByOfficial(String sandbox, String official) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Friend where sandbox=? and official=? LIMIT 1 OFFSET 0',
+        arguments: <dynamic>[sandbox, official],
+        mapper: _friendMapper);
+  }
+
+  @override
+  Future<void> addFriend(Friend friend) async {
+    await _friendInsertionAdapter.insert(
+        friend, sqflite.ConflictAlgorithm.abort);
+  }
+}
+
+class _$IChatRoomDAO extends IChatRoomDAO {
+  _$IChatRoomDAO(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _chatRoomInsertionAdapter = InsertionAdapter(
+            database,
+            'ChatRoom',
+            (ChatRoom item) => <String, dynamic>{
+                  'id': item.id,
+                  'code': item.code,
+                  'title': item.title,
+                  'leading': item.leading,
+                  'creator': item.creator,
+                  'ctime': item.ctime,
+                  'utime': item.utime,
+                  'tips': item.tips,
+                  'unreadMsgCount': item.unreadMsgCount,
+                  'notice': item.notice,
+                  'p2pBackground': item.p2pBackground,
+                  'isDisplayNick': item.isDisplayNick,
+                  'microsite': item.microsite,
+                  'sandbox': item.sandbox
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  static final _chatRoomMapper = (Map<String, dynamic> row) => ChatRoom(
+      row['id'] as String,
+      row['code'] as String,
+      row['title'] as String,
+      row['leading'] as String,
+      row['creator'] as String,
+      row['ctime'] as int,
+      row['utime'] as int,
+      row['tips'] as String,
+      row['unreadMsgCount'] as int,
+      row['notice'] as String,
+      row['p2pBackground'] as String,
+      row['isDisplayNick'] as String,
+      row['microsite'] as String,
+      row['sandbox'] as String);
+
+  final InsertionAdapter<ChatRoom> _chatRoomInsertionAdapter;
+
+  @override
+  Future<List<ChatRoom>> listChatRoom(String sandbox) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM ChatRoom where sandbox=? ORDER BY utime DESC,ctime DESC',
+        arguments: <dynamic>[sandbox],
+        mapper: _chatRoomMapper);
+  }
+
+  @override
+  Future<void> removeChatRoomById(String id, String sandbox) async {
+    await _queryAdapter.queryNoReturn(
+        'delete FROM ChatRoom WHERE id = ? AND sandbox=?',
+        arguments: <dynamic>[id, sandbox]);
+  }
+
+  @override
+  Future<ChatRoom> getChatRoomById(String code, String sandbox) async {
+    return _queryAdapter.query(
+        'SELECT * FROM ChatRoom where id=? and sandbox=?',
+        arguments: <dynamic>[code, sandbox],
+        mapper: _chatRoomMapper);
+  }
+
+  @override
+  Future<void> addRoom(ChatRoom chatRoom) async {
+    await _chatRoomInsertionAdapter.insert(
+        chatRoom, sqflite.ConflictAlgorithm.abort);
+  }
+}
+
+class _$IRoomMemberDAO extends IRoomMemberDAO {
+  _$IRoomMemberDAO(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _roomMemberInsertionAdapter = InsertionAdapter(
+            database,
+            'RoomMember',
+            (RoomMember item) => <String, dynamic>{
+                  'id': item.id,
+                  'room': item.room,
+                  'person': item.person,
+                  'whoAdd': item.whoAdd,
+                  'sandbox': item.sandbox
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  static final _roomMemberMapper = (Map<String, dynamic> row) => RoomMember(
+      row['id'] as String,
+      row['room'] as String,
+      row['person'] as String,
+      row['whoAdd'] as String,
+      row['sandbox'] as String);
+
+  static final _friendMapper = (Map<String, dynamic> row) => Friend(
+      row['id'] as String,
+      row['official'] as String,
+      row['source'] as String,
+      row['uid'] as String,
+      row['accountid'] as String,
+      row['accountName'] as String,
+      row['appid'] as String,
+      row['tenantid'] as String,
+      row['avatar'] as String,
+      row['rights'] as String,
+      row['nickName'] as String,
+      row['signature'] as String,
+      row['pyname'] as String,
+      row['sandbox'] as String);
+
+  final InsertionAdapter<RoomMember> _roomMemberInsertionAdapter;
+
+  @override
+  Future<List<RoomMember>> topMember10(String sandbox, String roomcode) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM RoomMember where sandbox=? and room=?',
+        arguments: <dynamic>[sandbox, roomcode],
+        mapper: _roomMemberMapper);
+  }
+
+  @override
+  Future<void> removeChatRoomByRoomCode(String roomCode, String sandbox) async {
+    await _queryAdapter.queryNoReturn(
+        'delete FROM RoomMember WHERE room = ? AND sandbox=?',
+        arguments: <dynamic>[roomCode, sandbox]);
+  }
+
+  @override
+  Future<List<Friend>> listWhoAddMember(
+      String sandbox, String roomCode, String whoAdd) async {
+    return _queryAdapter.queryList(
+        'SELECT f.* FROM RoomMember m,Friend f where m.person=f.official and m.sandbox=? and m.room=? and m.whoAdd=?',
+        arguments: <dynamic>[sandbox, roomCode, whoAdd],
+        mapper: _friendMapper);
+  }
+
+  @override
+  Future<void> addMember(RoomMember roomMember) async {
+    await _roomMemberInsertionAdapter.insert(
+        roomMember, sqflite.ConflictAlgorithm.abort);
+  }
+}
+
+class _$IRoomNickDAO extends IRoomNickDAO {
+  _$IRoomNickDAO(this.database, this.changeListener);
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+}
+
+class _$IP2PMessageDAO extends IP2PMessageDAO {
+  _$IP2PMessageDAO(this.database, this.changeListener);
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
 }

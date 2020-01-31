@@ -42,15 +42,17 @@ class _PersonalSiteState extends State<PersonalSite> {
   var _controller;
   Person _person;
   List<Channel> _myChannels = [];
-  var _personName='';
+
   @override
   void initState() {
     _controller = ScrollController(initialScrollOffset: 0.0);
     _controller.addListener(_listener);
     _person = widget.context.parameters['person'];
+
     _load();
     super.initState();
   }
+
   @override
   void dispose() {
     this._myChannels.clear();
@@ -60,26 +62,32 @@ class _PersonalSiteState extends State<PersonalSite> {
   }
 
   _load() async {
-    if(_person==null) {
-     await _test();
+    if (_person == null) {
+      await _test();
     }
-    _personName = '${_person.nickName ?? _person.accountName}';
+
+    String official =
+        '${_person.accountName}@${_person.appid}.${_person.tenantid}';
     IChannelService channelService =
         widget.context.site.getService('/netflow/channels');
-    _myChannels = await channelService.getChannelsOfPerson(
-        _personName);
+    _myChannels = await channelService.getChannelsOfPerson(official);
 
     setState(() {});
   }
-  //用于测试，随时删除
-  Future<void> _test()async{
-    IPersonService personService =
-    widget.context.site.getService('/gbera/persons');
-    _person=await personService.getPersonByUID('0020011912411634');
+
+  String get personName {
+    return '${_person.nickName ?? _person.accountName}';
   }
+
+  //用于测试，随时删除
+  Future<void> _test() async {
+    IPersonService personService =
+        widget.context.site.getService('/gbera/persons');
+    _person = await personService.getPersonByUID('0020011912411634');
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -95,7 +103,7 @@ class _PersonalSiteState extends State<PersonalSite> {
             Icons.clear,
           ),
         ),
-        title: showOnAppbar ? Text(_personName) : Text(''),
+        title: showOnAppbar ? Text(personName) : Text(''),
         actions: <Widget>[
           IconButton(
             onPressed: () {
@@ -211,10 +219,9 @@ class _PersonalSiteState extends State<PersonalSite> {
           SliverToBoxAdapter(
             child: _Header(
               imgSrc: _person?.avatar,
-              title: _personName,
+              title: personName,
               uid: '${_person?.uid}',
-              person:
-                  _personName,
+              person: personName,
               signText: '${_person?.signature ?? ''}',
             ),
           ),
@@ -500,12 +507,17 @@ class __HeaderState extends State<_Header> {
                   borderRadius: BorderRadius.all(
                     Radius.circular(6),
                   ),
-                  child: widget.imgSrc==null?Container(width: 0,height: 0,): Image.file(
-                    File(widget.imgSrc),
-                    width: 80,
-                    height: 80,
-                    fit: BoxFit.fitWidth,
-                  ),
+                  child: widget.imgSrc == null
+                      ? Container(
+                          width: 0,
+                          height: 0,
+                        )
+                      : Image.file(
+                          File(widget.imgSrc),
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.fitWidth,
+                        ),
                 ),
               ),
               Expanded(

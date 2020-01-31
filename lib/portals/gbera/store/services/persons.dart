@@ -51,6 +51,11 @@ class PersonService implements IPersonService {
   }
 
   @override
+  Future<List<Person>> pagePersonLikeName(String name, int limit, int offset) async {
+    return await this.personDAO.pagePersonLikeName(env?.userPrincipal?.person,name,name,name,limit,offset);
+  }
+
+  @override
   Future<List<Person>> pagePerson(int limit, int offset) async {
     return await this.personDAO.pagePerson(env?.userPrincipal?.person,limit, offset);
   }

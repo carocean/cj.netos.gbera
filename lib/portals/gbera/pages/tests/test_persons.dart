@@ -7,6 +7,7 @@ import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/store/entities.dart';
 import 'package:gbera/portals/gbera/store/pics/downloads.dart';
 import 'package:gbera/portals/gbera/store/services.dart';
+import 'package:lpinyin/lpinyin.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -66,6 +67,7 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
                       obj['rights'],
                       obj['nickName'],
                       obj['signature'],
+                      StringUtil.isEmpty(obj['nickName'])?null:PinyinHelper.getPinyin(obj['nickName']),
                       widget.context.userPrincipal.person,
                     );
                     await personService.addPerson(person);
