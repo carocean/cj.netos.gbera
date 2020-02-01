@@ -94,10 +94,7 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
                         och['loopType'],
                         leading,
                         och['site'],
-                        och['tips'],
                         DateTime.now().millisecondsSinceEpoch,
-                        DateTime.now().millisecondsSinceEpoch,
-                        och['unreadMsgCount']??0,
                         widget.context.userPrincipal.person,
                       );
                       channelService.addChannel(ch);

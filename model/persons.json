@@ -29,17 +29,14 @@
         "name": "Java编程",
         "owner": "cj@gbera.netos",
         "loopType": "closeLoop",
-        "leading": "http://47.105.165.186:7100/public/avatar/timg.jpeg",
-        "unreadMsgCount": 0
+        "leading": "http://47.105.165.186:7100/public/avatar/timg.jpeg"
       },
       {
         "code": "0929122D-FB4A-4BC8-BF5E-510F254FCD15",
         "name": "Flutter交流",
         "owner": "tom@gbera.netos",
         "loopType": "openLoop",
-        "leading": "http://47.105.165.186:7100/public/avatar/1b010adb79a5ed5f9f83cb18d6d07209.jpg",
-        "tips": "简书:>由于是第一次做flutter项目，加上团队小伙伴开发经验不是很足，在满足需求的同时",
-        "unreadMsgCount": 38
+        "leading": "http://47.105.165.186:7100/public/avatar/1b010adb79a5ed5f9f83cb18d6d07209.jpg"
       }
     ]
   },
@@ -59,18 +56,14 @@
         "name": "中国投资协会",
         "owner": "tom@gbera.netos",
         "loopType": "openLoop",
-        "leading": "http://47.105.165.186:7100/public/avatar/04527423f1b29493f99014144361a586.jpg",
-        "tips": "小王:>南航获得中邮投资",
-        "unreadMsgCount": 12
+        "leading": "http://47.105.165.186:7100/public/avatar/04527423f1b29493f99014144361a586.jpg"
       },
       {
         "code": "6EF3B666-A33F-46A9-BC6D-0537A12AFF4B",
         "name": "汉服园",
         "owner": "tom@gbera.netos",
         "loopType": "closeLoop",
-        "leading": "http://47.105.165.186:7100/public/avatar/28ab4dbc08306fde51923becef0bd721.jpg",
-        "tips": "刘天明:>想问问同袍们，齐胸襦裙一直掉，用了防掉神器一点用都没有，想用一种方法把它缝",
-        "unreadMsgCount": 231
+        "leading": "http://47.105.165.186:7100/public/avatar/28ab4dbc08306fde51923becef0bd721.jpg"
       }
     ]
   }

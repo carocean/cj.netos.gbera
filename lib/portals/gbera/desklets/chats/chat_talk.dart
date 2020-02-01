@@ -1,13 +1,18 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:common_utils/common_utils.dart';
 import 'package:extended_text_field/extended_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:flutter_plugin_record/flutter_plugin_record.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/pages/market/tab_page.dart';
 import 'package:gbera/portals/gbera/parts/parts.dart';
+import 'package:gbera/portals/gbera/store/entities.dart';
+import 'package:gbera/portals/gbera/store/services.dart';
+import 'package:uuid/uuid.dart';
 
 class ChatTalk extends StatefulWidget {
   PageContext context;
@@ -21,181 +26,127 @@ class ChatTalk extends StatefulWidget {
 class _ChatTalkState extends State<ChatTalk> {
   List<Function()> _onTapEvents = [];
 
+  ChatRoom _chatRoom;
   EasyRefreshController _controller;
   ScrollController _scrollController;
-  String _title = '妖精买';
   _RoomMode _roomMode;
-
+  List<P2PMessage> _p2pMessages;
+  int _limit = 12, _offset = 0;
+  String _displayRoomTitle;
   @override
   void initState() {
+    _p2pMessages = [];
+    _chatRoom = widget.context.parameters['chatRoom'];
+    _displayRoomTitle=widget.context.parameters['displayRoomTitle'];
+    _onRefresh().then((v) {
+      setState(() {
+        _goEnd();
+      });
+    });
     super.initState();
     _controller = EasyRefreshController();
     _scrollController = ScrollController();
+  }
+
+  void _goEnd([int milliseconds=300]) {
     Timer(
-        Duration(milliseconds: 500),
-        () => _scrollController
-            .jumpTo(_scrollController.position.maxScrollExtent));
+        Duration(
+          milliseconds: milliseconds,
+        ), () {
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    });
   }
 
   @override
   void dispose() {
+    _p2pMessages.clear();
+    _chatRoom = null;
     _controller.dispose();
     _scrollController.dispose();
     super.dispose();
   }
 
-  Future<void> _onRefresh() {}
+  _resetMessages() {
+    _p2pMessages.clear();
+    _offset = 0;
+    _controller.resetRefreshState();
+  }
+
+  Future<void> _onRefresh() async {
+    IP2PMessageService messageService =
+        widget.context.site.getService('/chat/p2p/messages');
+    List<P2PMessage> messages =
+        await messageService.pageMessage(_chatRoom.code,_limit, _offset);
+    if (messages.isEmpty) {
+      _controller.finishRefresh(success: true, noMore: true);
+      return;
+    }
+    _offset += messages.length;
+    _p2pMessages.addAll(messages);
+  }
+
+  Future<void> _doCommand(_ChatCommand cmd) async {
+    IP2PMessageService messageService =
+        widget.context.site.getService('/chat/p2p/messages');
+    switch (cmd.cmd) {
+      case 'sendText':
+        await messageService.addMessage(
+          P2PMessage(
+            Uuid().v1(),
+            widget.context.userPrincipal.person,
+            null,
+            _chatRoom.code,
+            'text',
+            cmd.message,
+            'sended',
+            DateTime.now().millisecondsSinceEpoch,
+            null,
+            null,
+            null,
+            widget.context.userPrincipal.person,
+          ),
+        );
+        break;
+      case 'sendAudio':
+        var msg = cmd.message as Map;
+        var map = {'path': msg['path'], 'timelength': msg['timelength']};
+        String text = jsonEncode(map);
+        await messageService.addMessage(
+          P2PMessage(
+            Uuid().v1(),
+            widget.context.userPrincipal.person,
+            null,
+            _chatRoom.code,
+            'audio',
+            text,
+            'sended',
+            DateTime.now().millisecondsSinceEpoch,
+            null,
+            null,
+            null,
+            widget.context.userPrincipal.person,
+          ),
+        );
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    var items = <Widget>[];
-    for (var i = 0; i < 50; i++) {
-      //接收消息项
-      items.add(
-        Container(
-          margin: EdgeInsets.only(
-            top: 10,
-            bottom: 10,
-          ),
-          padding: EdgeInsets.only(
-            left: 10,
-            right: 60,
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(
-                  right: 10,
-                ),
-                child: SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(5),
-                    ),
-                    child: Image.network(
-                      'http://47.105.165.186:7100/public/avatar/24f8e8d3f423d40b5b390691fbbfb5d7.jpg',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Wrap(
-                  runSpacing: 5,
-                  direction: Axis.horizontal,
-                  children: <Widget>[
-                    Text(
-                      TimelineUtil.format(
-                        DateTime.now().millisecondsSinceEpoch,
-                      ),
-                      style: TextStyle(
-                        color: Colors.grey[400],
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text.rich(
-                      TextSpan(
-                        text: '',
-                        children: [
-                          TextSpan(
-                            text:
-                                '新京报快讯 据贵州省卫生健康委员会官方微博消息，1月26日晚，贵州省疫情防控工作领导小组接报，泰国亚洲航空公司FD428航班将于当晚22时50分落地贵阳，机上一名有武汉旅行史的福建旅客林某某（男，44岁）和一名贵州省六盘水市旅客康某某（女，7岁）出现发热状况。',
-                          ),
-                        ],
-                      ),
-                      softWrap: true,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-      items.add(
-        Container(
-          margin: EdgeInsets.only(
-            top: 10,
-            bottom: 10,
-          ),
-          padding: EdgeInsets.only(
-            left: 60,
-            right: 10,
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                child: Wrap(
-                  runSpacing: 5,
-                  alignment: WrapAlignment.end,
-                  direction: Axis.horizontal,
-                  children: <Widget>[
-                    Text(
-                      TimelineUtil.format(
-                        DateTime.now().millisecondsSinceEpoch,
-                      ),
-                      style: TextStyle(
-                        color: Colors.grey[400],
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text.rich(
-                      TextSpan(
-                        text: '',
-                        children: [
-                          TextSpan(
-                            text:
-                                '据义乌公安，近日，王某成、邵某娟、毛某娟、邵某燕、鲁某科等人因涉嫌销售伪劣产品罪被警方依法刑事拘留，田某军在逃。下ー步，公安机关将加大案件侦办力度，对制假售假行为实行全链条打击',
-                          ),
-                        ],
-                      ),
-                      softWrap: true,
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  left: 10,
-                ),
-                child: SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(5),
-                    ),
-                    child: Image.network(
-                      'http://47.105.165.186:7100/public/avatar/06aa9aeb1ece0f4bc63a664ddef0404a.jpg',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: Text.rich(
           TextSpan(
-            text: '$_title',
+            text: '$_displayRoomTitle',
             children: [
-              TextSpan(
-                text: _roomMode == null || _roomMode == _RoomMode.p2p
-                    ? ' 聊天'
-                    : ' 服务',
-                style: TextStyle(
-                  fontSize: 12,
-                ),
-              ),
+//              TextSpan(
+//                text: _roomMode == null || _roomMode == _RoomMode.p2p
+//                    ? ' 聊天'
+//                    : ' 服务',
+//                style: TextStyle(
+//                  fontSize: 12,
+//                ),
+//              ),
             ],
           ),
         ),
@@ -204,7 +155,7 @@ class _ChatTalkState extends State<ChatTalk> {
         actions: <Widget>[
           IconButton(
             onPressed: () {
-              widget.context.forward('/portlet/chat/room/settings');
+              widget.context.forward('/portlet/chat/room/settings',arguments: {'chatRoom':_chatRoom});
             },
             icon: Icon(
               Icons.more_vert,
@@ -226,8 +177,22 @@ class _ChatTalkState extends State<ChatTalk> {
                 shrinkWrap: true,
                 scrollController: _scrollController,
                 controller: _controller,
-                onRefresh: _onRefresh,
-                slivers: items.map((item) {
+                onRefresh: () async {
+                  _onRefresh().then((v) {
+                    setState(() {});
+                  });
+                },
+                slivers: _p2pMessages.reversed.map((msg) {
+                  var item;
+                  if (msg.sender == widget.context.userPrincipal.person) {
+                    item = _SendMessageItem(
+                      p2pMessage: msg,
+                    );
+                  } else {
+                    item = _ReceiveMessageItem(
+                      p2pMessage: msg,
+                    );
+                  }
                   return SliverToBoxAdapter(
                     child: item,
                   );
@@ -244,6 +209,14 @@ class _ChatTalkState extends State<ChatTalk> {
             onRoomModeChanged: (m) {
               _roomMode = m;
               setState(() {});
+            },
+            onCommand: (cmd) async {
+              await _doCommand(cmd);
+              _resetMessages();
+              await _onRefresh();
+              setState(() {
+                _goEnd(500);
+              });
             },
           ),
         ],
@@ -380,12 +353,20 @@ enum _RoomMode {
   b2p,
 }
 
+class _ChatCommand {
+  String cmd;
+  Object message;
+
+  _ChatCommand({this.cmd, this.message});
+}
+
 class _ChatSender extends StatefulWidget {
   PageContext context;
   Widget plusPanel;
   Widget stickerPanel;
   ScrollController textRegionController;
   Function(_RoomMode roomMode) onRoomModeChanged;
+  Function(_ChatCommand cmd) onCommand;
 
   List<Function()> onTapEvents;
 
@@ -396,6 +377,7 @@ class _ChatSender extends StatefulWidget {
     this.stickerPanel,
     this.textRegionController,
     this.onRoomModeChanged,
+    this.onCommand,
   });
 
   @override
@@ -458,7 +440,16 @@ class __ChatSenderState extends State<_ChatSender> {
                       keyboardType: TextInputType.text,
                       textInputAction: TextInputAction.send,
                       onSubmitted: (v) {
-                        print('-----$v');
+                        _controller.clear();
+                        if (widget.onCommand != null) {
+                          widget.onCommand(
+                            _ChatCommand(
+                              cmd: 'sendText',
+                              message: v,
+                            ),
+                          );
+                          _contentFocusNode.requestFocus();
+                        }
                       },
                       autofocus: false,
                       onTap: () {
@@ -522,6 +513,23 @@ class __ChatSenderState extends State<_ChatSender> {
                         child: VoiceFloatingButton(
                           context: widget.context,
                           iconSize: 18,
+                          onStopRecord: (a, b,FlutterPluginRecord c, d) {
+                            if(d!='send') {
+                              return;
+                            }
+                            if (widget.onCommand != null) {
+                              widget.onCommand(
+                                _ChatCommand(
+                                  cmd: 'sendAudio',
+                                  message: {
+                                    'path': a,
+                                    'timelength': b,
+                                    'action': d,
+                                  },
+                                ),
+                              );
+                            }
+                          },
                         ),
                       ),
                     ),
@@ -598,6 +606,181 @@ class __ChatSenderState extends State<_ChatSender> {
                   ),
                   child: panel,
                 ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ReceiveMessageItem extends StatefulWidget {
+  P2PMessage p2pMessage;
+
+  _ReceiveMessageItem({this.p2pMessage});
+
+  @override
+  _ReceiveMessageItemState createState() => _ReceiveMessageItemState();
+}
+
+class _ReceiveMessageItemState extends State<_ReceiveMessageItem> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(
+        top: 10,
+        bottom: 10,
+      ),
+      padding: EdgeInsets.only(
+        left: 10,
+        right: 60,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(
+              right: 10,
+            ),
+            child: SizedBox(
+              width: 40,
+              height: 40,
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(5),
+                ),
+                child: Image.network(
+                  'http://47.105.165.186:7100/public/avatar/24f8e8d3f423d40b5b390691fbbfb5d7.jpg',
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Wrap(
+              runSpacing: 5,
+              direction: Axis.horizontal,
+              children: <Widget>[
+                Text(
+                  TimelineUtil.format(
+                    DateTime.now().millisecondsSinceEpoch,
+                  ),
+                  style: TextStyle(
+                    color: Colors.grey[400],
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text.rich(
+                  TextSpan(
+                    text: '',
+                    children: [
+                      TextSpan(
+                        text:
+                            '新京报快讯 据贵州省卫生健康委员会官方微博消息，1月26日晚，贵州省疫情防控工作领导小组接报，泰国亚洲航空公司FD428航班将于当晚22时50分落地贵阳，机上一名有武汉旅行史的福建旅客林某某（男，44岁）和一名贵州省六盘水市旅客康某某（女，7岁）出现发热状况。',
+                      ),
+                    ],
+                  ),
+                  softWrap: true,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SendMessageItem extends StatefulWidget {
+  P2PMessage p2pMessage;
+
+  _SendMessageItem({this.p2pMessage});
+
+  @override
+  __SendMessageItemState createState() => __SendMessageItemState();
+}
+
+class __SendMessageItemState extends State<_SendMessageItem> {
+  @override
+  Widget build(BuildContext context) {
+    var display;
+    switch (widget.p2pMessage.type) {
+      case 'text':
+        display = Text.rich(
+          TextSpan(
+            text: '',
+            children: [
+              TextSpan(
+                text: '${widget.p2pMessage.content ?? ''}',
+              ),
+            ],
+          ),
+          softWrap: true,
+          overflow: TextOverflow.visible,
+        );
+        break;
+      case 'audio':
+        var json=widget.p2pMessage.content;
+        Map<String,dynamic> map=jsonDecode(json);
+        display = MyAudioWidget(
+          audioFile: map['path'],
+          timeLength: map['timelength'],
+        );
+        break;
+      default:
+        print('未识别的消息类型:${widget.p2pMessage.type}');
+        display = Container(
+          width: 0,
+          height: 0,
+        );
+        break;
+    }
+    return Container(
+      margin: EdgeInsets.only(
+        top: 10,
+        bottom: 10,
+      ),
+      padding: EdgeInsets.only(
+        left: 60,
+        right: 10,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  TimelineUtil.format(
+                    widget.p2pMessage.ctime,
+                  ),
+                  style: TextStyle(
+                    color: Colors.grey[400],
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                display,
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              left: 10,
+            ),
+            child: SizedBox(
+              width: 40,
+              height: 40,
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(5),
+                ),
+                child: Image.network(
+                  'http://47.105.165.186:7100/public/avatar/06aa9aeb1ece0f4bc63a664ddef0404a.jpg',
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

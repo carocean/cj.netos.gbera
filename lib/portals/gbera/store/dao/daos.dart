@@ -71,7 +71,7 @@ abstract class IChannelDAO {
   Future<Channel> getChannel(String sandbox, String code);
 
   @Query(
-      'SELECT * FROM Channel where sandbox=:sandbox ORDER BY utime DESC,ctime DESC')
+      'SELECT * FROM Channel where sandbox=:sandbox ORDER BY ctime DESC')
   Future<List<Channel>> getAllChannel(String sandbox);
 
   @Query('delete FROM Channel where sandbox=:sandbox')
@@ -418,8 +418,7 @@ abstract class IChatRoomDAO {
   @insert
   Future<void> addRoom(ChatRoom chatRoom) {}
 
-  @Query(
-      'SELECT *  FROM ChatRoom where sandbox=:sandbox ORDER BY utime DESC,ctime DESC ')
+  @Query('SELECT *  FROM ChatRoom where sandbox=:sandbox ORDER BY ctime DESC ')
   Future<List<ChatRoom>> listChatRoom(String sandbox) {}
 
   @Query('delete FROM ChatRoom WHERE id = :id AND sandbox=:sandbox')
@@ -430,6 +429,17 @@ abstract class IChatRoomDAO {
     String code,
     String sandbox,
   ) {}
+
+  @Query(
+      'UPDATE ChatRoom SET leading = :path WHERE sandbox=:sandbox and id = :roomid')
+  Future<void> updateRoomLeading(
+    String path,
+    String sandbox,
+    String roomid,
+  ) {}
+  @Query('SELECT *  FROM RoomMember where sandbox=:sandbox and room=:room LIMIT 20')
+  Future<List<RoomMember>> top20Members(String sandbox, String room) {}
+
 }
 
 @dao
@@ -445,11 +455,19 @@ abstract class IRoomMemberDAO {
 
   @Query(
       'SELECT f.*  FROM RoomMember m,Friend f where m.person=f.official and m.sandbox=:sandbox and m.room=:roomCode and m.whoAdd=:whoAdd ')
-  Future<List<Friend>> listWhoAddMember(String sandbox,String roomCode, String whoAdd) {}
+  Future<List<Friend>> listWhoAddMember(
+      String sandbox, String roomCode, String whoAdd) {}
 }
 
 @dao
 abstract class IRoomNickDAO {}
 
 @dao
-abstract class IP2PMessageDAO {}
+abstract class IP2PMessageDAO {
+  @insert
+  Future<void> addMessage(P2PMessage message) {}
+  @Query(
+      'SELECT *  FROM P2PMessage where sandbox=:sandbox and room=:roomCode ORDER BY ctime DESC LIMIT :limit OFFSET  :offset')
+  Future<List<P2PMessage>> pageMessage(String sandbox,String roomCode, int limit, int offset) {}
+
+}

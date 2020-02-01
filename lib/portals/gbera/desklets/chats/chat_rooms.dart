@@ -35,9 +35,6 @@ class _ChatRoomsPortletState extends State<ChatRoomsPortlet> {
         null,
         null,
         widget.context.userPrincipal.person,
-        DateTime.now().millisecondsSinceEpoch,
-        null,
-        null,
         0,
         null,
         null,
@@ -67,7 +64,7 @@ class _ChatRoomsPortletState extends State<ChatRoomsPortlet> {
     List<_ChatRoomModel> models = [];
     for (var room in rooms) {
       List<Friend> friends =
-          await chatRoomService.listWhoAddMember(room.code,room.creator);
+          await chatRoomService.listWhoAddMember(room.code, room.creator);
       models.add(
         _ChatRoomModel(
           chatRoom: room,
@@ -83,6 +80,12 @@ class _ChatRoomsPortletState extends State<ChatRoomsPortlet> {
         widget.context.site.getService('/chat/rooms');
     await chatRoomService.removeChatRoomById(room.id);
     return;
+  }
+
+  Future<void> _updateRoomLeading(String roomid, String file) async {
+    IChatRoomService chatRoomService =
+        widget.context.site.getService('/chat/rooms');
+    await chatRoomService.updateRoomLeading(roomid, file);
   }
 
   @override
@@ -229,22 +232,47 @@ class _ChatRoomsPortletState extends State<ChatRoomsPortlet> {
                         isBottomItem: false,
                         context: widget.context,
                         title: model.displayRoomTitle,
-                        leading: Image.network(
-                          'http://47.105.165.186:7100/public/avatar/341d5e0f2d4fbd21ff5a2acafcf44cdb.jpg',
-                          fit: BoxFit.fill,
-                        ),
-                        time: model.chatRoom.utime == null
+                        leading: model.chatRoom.leading == null
+                            ? Image.network(
+                                'http://47.105.165.186:7100/public/avatar/341d5e0f2d4fbd21ff5a2acafcf44cdb.jpg',
+                                fit: BoxFit.fill,
+                              )
+                            : Image.file(
+                                File(model.chatRoom.leading),
+                                fit: BoxFit.fill,
+                              ),
+                        time: model.unreadMessage == null
                             ? ''
                             : TimelineUtil.format(
-                                model.chatRoom.utime,
+                                model.unreadMessage.atime,
                                 dayFormat: DayFormat.Simple,
                               ),
-                        unreadMsgCount: model.chatRoom.unreadMsgCount ?? 0,
-                        showNewest: true,
-                        subtitle: '${model.chatRoom.tips ?? ''}',
+                        unreadMsgCount: model.unreadMsgCount ?? 0,
+                        showNewest: model.unreadMsgCount ?? 0>0,
+                        subtitle: '${model.unreadMessage?.content ?? ''}',
                         who: '',
-                        onTap: (sid) {
-                          widget.context.forward('/portlet/chat/talk');
+                        onOpenRoom: () {
+                          widget.context.forward('/portlet/chat/talk',arguments: {'chatRoom':model.chatRoom,'displayRoomTitle':model.displayRoomTitle,});
+                        },
+                        onOpenAvatar: () {
+                          widget.context
+                              .forward(
+                            '/portlet/chat/room/avatar',
+                          )
+                              .then((v) {
+                            if (v == null) {
+                              return;
+                            }
+                            var result = v as Map<String, Object>;
+                            if (StringUtil.isEmpty(result['image'])) {
+                              return;
+                            }
+                            String fileName = result['image'];
+                            _updateRoomLeading(model.chatRoom.id, fileName)
+                                .then((v) {
+                              setState(() {});
+                            });
+                          });
                         },
                         onRemoveAction: () {
                           _removeChatRoom(model.chatRoom).then((v) {
@@ -257,6 +285,7 @@ class _ChatRoomsPortletState extends State<ChatRoomsPortlet> {
                   ),
                 if (!expandRooms.isEmpty)
                   _MessagesExpansionPanel(
+                    updateRoomLeading: _updateRoomLeading,
                     context: widget.context,
                     expandRooms: expandRooms,
                     onRemoveChatRoom: (ChatRoom room) {
@@ -279,11 +308,13 @@ class _MessagesExpansionPanel extends StatefulWidget {
   PageContext context;
   List<_ChatRoomModel> expandRooms;
   Function(ChatRoom) onRemoveChatRoom;
+  Function(String, String) updateRoomLeading;
 
   _MessagesExpansionPanel({
     this.context,
     this.expandRooms,
     this.onRemoveChatRoom,
+    this.updateRoomLeading,
   });
 
   @override
@@ -299,7 +330,7 @@ class __MessagesExpansionPanelState extends State<_MessagesExpansionPanel> {
     List<_ChatRoomModel> topTwo = [];
     for (var i = 0; i < widget.expandRooms.length; i++) {
       var model = widget.expandRooms[i];
-      if (StringUtil.isEmpty(model.chatRoom.tips)) {
+      if (StringUtil.isEmpty(model.unreadMessage?.content)) {
         continue;
       }
       if (topTwo.length > 2) {
@@ -366,7 +397,7 @@ class __MessagesExpansionPanelState extends State<_MessagesExpansionPanel> {
                                 children: [
                                   TextSpan(
                                     text: TimelineUtil.format(
-                                      model.chatRoom.utime,
+                                      model.unreadMessage?.atime,
                                       dayFormat: DayFormat.Simple,
                                     ),
                                     style: TextStyle(
@@ -374,7 +405,8 @@ class __MessagesExpansionPanelState extends State<_MessagesExpansionPanel> {
                                     ),
                                   ),
                                   TextSpan(
-                                    text: '${model.chatRoom.tips}',
+                                    text:
+                                        '${model.unreadMessage?.content ?? ''}',
                                     style: TextStyle(
                                       color: Colors.grey[700],
                                       fontWeight: FontWeight.w500,
@@ -431,18 +463,39 @@ class __MessagesExpansionPanelState extends State<_MessagesExpansionPanel> {
                       'http://47.105.165.186:7100/public/avatar/341d5e0f2d4fbd21ff5a2acafcf44cdb.jpg',
                       fit: BoxFit.fill,
                     ),
-                    time: model.chatRoom.utime == null
+                    time: model.unreadMessage == null
                         ? ''
                         : TimelineUtil.format(
-                            model.chatRoom.utime,
+                            model.unreadMessage?.atime,
                             dayFormat: DayFormat.Simple,
                           ),
-                    unreadMsgCount: model.chatRoom.unreadMsgCount ?? 0,
-                    showNewest: true,
-                    subtitle: '${model.chatRoom.tips ?? ''}',
+                    unreadMsgCount: model.unreadMsgCount ?? 0,
+                    showNewest: model.unreadMsgCount ?? 0>0,
+                    subtitle: '${model.unreadMessage?.content ?? ''}',
                     who: '',
-                    onTap: (sid) {
-                      widget.context.forward('/portlet/chat/talk');
+                    onOpenRoom: () {
+                      widget.context.forward('/portlet/chat/talk',arguments: {'chatRoom':model.chatRoom,'displayRoomTitle':model.displayRoomTitle,});
+                    },
+                    onOpenAvatar: () {
+                      widget.context
+                          .forward(
+                        '/portlet/chat/room/avatar',
+                      )
+                          .then((v) {
+                        if (v == null) {
+                          return;
+                        }
+                        var result = v as Map<String, Object>;
+                        if (StringUtil.isEmpty(result['image'])) {
+                          return;
+                        }
+                        String fileName = result['image'];
+                        widget
+                            .updateRoomLeading(model.chatRoom.id, fileName)
+                            .then((v) {
+                          setState(() {});
+                        });
+                      });
                     },
                     onRemoveAction: () {
                       if (widget.onRemoveChatRoom == null) {
@@ -495,8 +548,9 @@ class _ChatRoomItem extends StatefulWidget {
   String time;
   bool showNewest;
   int unreadMsgCount;
-  Function(String sessionid) onTap;
+  Function() onOpenRoom;
   Function() onRemoveAction;
+  Function() onOpenAvatar;
   bool isBottomItem;
 
   _ChatRoomItem({
@@ -508,18 +562,19 @@ class _ChatRoomItem extends StatefulWidget {
     this.unreadMsgCount,
     this.time,
     this.showNewest,
-    this.onTap,
+    this.onOpenRoom,
     this.onRemoveAction,
+    this.onOpenAvatar,
     this.isBottomItem,
   });
 
   @override
   State createState() {
-    return __ChatSessionItem();
+    return __ChatRoomItem();
   }
 }
 
-class __ChatSessionItem extends State<_ChatRoomItem> {
+class __ChatRoomItem extends State<_ChatRoomItem> {
   @override
   Widget build(BuildContext context) {
     Widget imgSrc = null;
@@ -542,71 +597,75 @@ class __ChatSessionItem extends State<_ChatRoomItem> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              if (widget.onTap != null) {
-                widget.onTap('xxx');
-              }
-            },
-            child: Container(
-              margin: EdgeInsets.only(
-                bottom: 15,
-                left: 10,
-                right: 10,
-                top: 15,
-              ),
-              child: Row(
-                crossAxisAlignment: widget.showNewest
-                    ? CrossAxisAlignment.start
-                    : CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: 10,
-                    ),
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      child: Stack(
-                        overflow: Overflow.visible,
-                        children: <Widget>[
-                          SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(6.0),
-                              child: imgSrc,
-                            ),
+          Container(
+            margin: EdgeInsets.only(
+              bottom: 15,
+              left: 10,
+              right: 10,
+              top: 15,
+            ),
+            child: Row(
+              crossAxisAlignment: widget.showNewest
+                  ? CrossAxisAlignment.start
+                  : CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: 10,
+                  ),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      if (widget.onOpenAvatar != null) {
+                        widget.onOpenAvatar();
+                      }
+                    },
+                    child: Stack(
+                      overflow: Overflow.visible,
+                      children: <Widget>[
+                        SizedBox(
+                          width: 40,
+                          height: 40,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(6.0),
+                            child: imgSrc,
                           ),
-                          Positioned(
-                            top: -10,
-                            right: -3,
-                            child: Badge(
-                              position: BadgePosition.topRight(
-                                right: -3,
-                                top: 3,
-                              ),
-                              elevation: 0,
-                              showBadge: widget.unreadMsgCount != 0,
-                              badgeContent: Text(
-                                '',
-                              ),
-                              child: null,
+                        ),
+                        Positioned(
+                          top: -10,
+                          right: -3,
+                          child: Badge(
+                            position: BadgePosition.topRight(
+                              right: -3,
+                              top: 3,
                             ),
+                            elevation: 0,
+                            showBadge: widget.unreadMsgCount != 0,
+                            badgeContent: Text(
+                              '',
+                            ),
+                            child: null,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  Expanded(
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      if (widget.onOpenRoom != null) {
+                        widget.onOpenRoom();
+                      }
+                    },
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.only(
-                            bottom: 5,
                             right: 5,
                           ),
                           child: Row(
@@ -634,53 +693,49 @@ class __ChatSessionItem extends State<_ChatRoomItem> {
                             ],
                           ),
                         ),
-                        widget.showNewest
-                            ? Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                alignment: WrapAlignment.start,
-                                spacing: 5,
-                                runSpacing: 3,
-                                children: <Widget>[
-                                  Text.rich(
+                        if (widget.showNewest)
+                          Padding(padding: EdgeInsets.only(top: 5,),child: Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            alignment: WrapAlignment.start,
+                            spacing: 5,
+                            runSpacing: 3,
+                            children: <Widget>[
+                              Text.rich(
+                                TextSpan(
+                                  text: '',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[600],
+                                  ),
+                                  children: [
+                                    if (widget.unreadMsgCount > 0)
+                                      TextSpan(
+                                          text:
+                                          '[${widget.unreadMsgCount != 0 ? widget.unreadMsgCount : ''}条]'),
                                     TextSpan(
-                                      text: '',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey[600],
-                                      ),
-                                      children: [
-                                        if (widget.unreadMsgCount > 0)
-                                          TextSpan(
-                                              text:
-                                                  '[${widget.unreadMsgCount != 0 ? widget.unreadMsgCount : ''}条]'),
-                                        TextSpan(
-                                          text: ' ',
-                                        ),
+                                      text: ' ',
+                                    ),
 //                                      TextSpan(
 //                                        text: '${this.who}: ',
 //                                      ),
-                                        TextSpan(
-                                          text: '${widget.subtitle}',
-                                          style: TextStyle(
-                                            color: Colors.black54,
-                                          ),
-                                        ),
-                                      ],
+                                    TextSpan(
+                                      text: '${widget.subtitle}',
+                                      style: TextStyle(
+                                        color: Colors.black54,
+                                      ),
                                     ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              )
-                            : Container(
-                                width: 0,
-                                height: 0,
+                                  ],
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
+                            ],
+                          ),),
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           if (!widget.isBottomItem)
@@ -760,31 +815,34 @@ class __ChatSessionItem extends State<_ChatRoomItem> {
 class _ChatRoomModel {
   ChatRoom chatRoom;
   List<Friend> creatorAddMembers;
+  P2PMessage unreadMessage;
+  int unreadMsgCount = 0;
 
   _ChatRoomModel(
       {this.chatRoom,
-      this.creatorAddMembers});
+      this.creatorAddMembers,
+      this.unreadMessage,
+      this.unreadMsgCount});
+
   ///创建者添加的成员,当聊天室无标题和头像时根据创建者添加的成员生成它
   String get displayRoomTitle {
-    if(!StringUtil.isEmpty(chatRoom.title)) {
+    if (!StringUtil.isEmpty(chatRoom.title)) {
       return chatRoom.title;
     }
-    if(creatorAddMembers==null||creatorAddMembers.isEmpty) {
+    if (creatorAddMembers == null || creatorAddMembers.isEmpty) {
       return "";
     }
-    String name='';
-    for(int i=0;i<creatorAddMembers.length;i++) {
-      var f=creatorAddMembers[i];
-      name+='${f.nickName??f.accountName},';
-      if(i>=6) {
+    String name = '';
+    for (int i = 0; i < creatorAddMembers.length; i++) {
+      var f = creatorAddMembers[i];
+      name += '${f.nickName ?? f.accountName},';
+      if (i >= 6) {
         break;
       }
     }
-    if(name.endsWith(',')) {
-      name=name.substring(0,name.length-1);
+    if (name.endsWith(',')) {
+      name = name.substring(0, name.length - 1);
     }
     return name;
   }
-
-
 }

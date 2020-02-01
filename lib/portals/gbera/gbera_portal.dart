@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/icons.dart';
+import 'package:gbera/portals/gbera/desklets/chats/avatar.dart';
 import 'package:gbera/portals/gbera/errors/errors.dart';
 import 'package:gbera/portals/gbera/pages/desktop.dart';
 import 'package:gbera/portals/gbera/pages/desktop/desklets_settings.dart';
@@ -139,6 +140,7 @@ class GberaPortal {
           '/channel/messages/likes': ChannelLikeService(site: site),
           '/channel/messages/comments': ChannelCommentService(site: site),
           '/chat/rooms': ChatRoomService(site: site),
+          '/chat/p2p/messages': P2PMessageService(site: site),
         },
         loadDatabase: () async {
           final database = await $FloorAppDatabase
@@ -1274,6 +1276,16 @@ class GberaPortal {
           icon: GalleryIcons.shrine,
           url: '/portlet/chat/friends',
           buildPage: (PageContext pageContext) => FriendPage(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '聊天室头像',
+          subtitle: '',
+          desc: '',
+          icon: GalleryIcons.shrine,
+          url: '/portlet/chat/room/avatar',
+          buildPage: (PageContext pageContext) => ChatRoomAvatar(
             context: pageContext,
           ),
         ),

@@ -38,21 +38,21 @@ class _MyVoiceWidgetState extends State<MyVoiceWidget> {
 
     ///初始化方法的监听
     recordPlugin.responseFromInit.listen((data) {
-      if (data) {
-        print("初始化成功");
-      } else {
-        print("初始化失败");
-      }
+//      if (data) {
+//        print("初始化成功");
+//      } else {
+//        print("初始化失败");
+//      }
     });
 
     /// 开始录制或结束录制的监听
     recordPlugin.response.listen((data) {
       if (data.msg == "onStop") {
         ///结束录制时会返回录制文件的地址方便上传服务器
-        print("onStop  " + data?.path);
+//        print("onStop  " + data?.path);
         widget.stopRecord(data?.path, data?.audioTimeLength,recordPlugin,isUp?'cancel':'send');
       } else if (data?.msg == "onStart") {
-        print("onStart --");
+//        print("onStart --");
         isUp=false;
         widget.startRecord();
       }
@@ -84,7 +84,7 @@ class _MyVoiceWidgetState extends State<MyVoiceWidget> {
         }
       });
 
-      print("振幅大小   " + voiceData.toString() + "  " + voiceIco);
+//      print("振幅大小   " + voiceData.toString() + "  " + voiceIco);
     });
   }
 
@@ -162,18 +162,18 @@ class _MyVoiceWidgetState extends State<MyVoiceWidget> {
       overlayEntry = null;
     }
 
-    if (isUp) {
-      print("取消发送");
-    } else {
-      print("进行发送");
-    }
+//    if (isUp) {
+//      print("取消发送");
+//    } else {
+//      print("进行发送");
+//    }
   }
 
   moveVoiceView() {
     // print(offset - start);
     setState(() {
       isUp = (starty - offset > 100 )? true : false;
-      print('----s----${isUp}');
+//      print('----s----${isUp}');
       if (isUp) {
         textShow = "松开手指,取消发送";
         toastShow = textShow;

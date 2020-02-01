@@ -197,7 +197,15 @@ mixin IChatRoomService {
 
   Future<void> removeChatRoomById(String id) {}
 
-  Future<List<Friend>> listWhoAddMember(String roomCode,String creator) {}
+  Future<List<Friend>> listWhoAddMember(String roomCode, String creator) {}
+
+  Future<void> updateRoomLeading(String roomid, String file) {}
+
+  Future<List<RoomMember>> top20Members(String code) {}
 
 }
-mixin IP2PService {}
+mixin IP2PMessageService {
+  Future<void> addMessage(P2PMessage message);
+
+  Future<List<P2PMessage>> pageMessage(String roomCode,int limit, int offset) {}
+}

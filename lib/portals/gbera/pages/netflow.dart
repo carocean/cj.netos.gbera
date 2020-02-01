@@ -517,31 +517,21 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
     }
     var items = List<_ChannelItem>();
     for (var ch in list) {
-      var tips = ch.tips;
-      var who = '';
-      var newest = '';
-      if (tips != null) {
-        int pos = tips.indexOf(':>');
-        if (pos > -1) {
-          who = tips.substring(0, pos);
-          newest = tips.substring(pos + 2, tips.length);
-        }
-      }
-
       items.add(
         _ChannelItem(
           context: widget.context,
           code: ch.code,
           title: ch.name,
-          subtitle: '$newest',
-          showNewest: !StringUtil.isEmpty(tips),
+          subtitle: '',
+          showNewest: false,
           leading: ch.leading,
-          time: TimelineUtil.format(
-            ch.utime,
-            dayFormat: DayFormat.Simple,
-          ),
-          unreadMsgCount: ch.unreadMsgCount ?? 0,
-          who: '$who: ',
+          time: '',
+//          time: TimelineUtil.format(
+//            ch.atime,
+//            dayFormat: DayFormat.Simple,
+//          ),
+          unreadMsgCount: 0,
+          who: ': ',
           loopType: ch.loopType,
           openAvatar: () {
             //如果不是自己的管道则不能改图标
@@ -919,71 +909,62 @@ class _ChannelItem extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(
-                            bottom: 5,
+                    Row(
+                    mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text.rich(
+                          TextSpan(
+                            text: this.title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                            ),
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                        ),
+                      ],
+                    ),
+                        if (showNewest)
+                          Padding(padding: EdgeInsets.only(top: 5,),child: Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            alignment: WrapAlignment.start,
+                            spacing: 5,
+                            runSpacing: 3,
                             children: <Widget>[
                               Text.rich(
                                 TextSpan(
-                                  text: this.title,
+                                  text:
+                                  '[${this.unreadMsgCount != 0 ? this.unreadMsgCount : ''}条]',
                                   style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16,
+                                    fontSize: 12,
+                                    color: Colors.grey[600],
                                   ),
+                                  children: [
+                                    TextSpan(
+                                      text: ' ',
+                                    ),
+                                    TextSpan(
+                                      text: '${this.subtitle}',
+                                      style: TextStyle(
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                '${this.time}',
+                                style: TextStyle(
+                                  color: Colors.grey[500],
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 11,
                                 ),
                               ),
                             ],
-                          ),
-                        ),
-                        showNewest
-                            ? Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                alignment: WrapAlignment.start,
-                                spacing: 5,
-                                runSpacing: 3,
-                                children: <Widget>[
-                                  Text.rich(
-                                    TextSpan(
-                                      text:
-                                          '[${this.unreadMsgCount != 0 ? this.unreadMsgCount : ''}条]',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey[600],
-                                      ),
-                                      children: [
-                                        TextSpan(
-                                          text: ' ',
-                                        ),
-                                        TextSpan(
-                                          text: '${this.subtitle}',
-                                          style: TextStyle(
-                                            color: Colors.black54,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Text(
-                                    '${this.time}',
-                                    style: TextStyle(
-                                      color: Colors.grey[500],
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: 11,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : Container(
-                                width: 0,
-                                height: 0,
-                              ),
+                          ),),
                       ],
                     ),
                   ),

@@ -65,6 +65,16 @@ class ChatRoomService implements IChatRoomService {
   }
 
   @override
+  Future<List<RoomMember>> top20Members(String code) async{
+    return chatRoomDAO.top20Members(env.userPrincipal.person,code);
+  }
+
+  @override
+  Future<Function> updateRoomLeading(String roomid, String file) async{
+    await chatRoomDAO.updateRoomLeading(file,env.userPrincipal.person,roomid,);
+  }
+
+  @override
   Future<List<Friend>> listWhoAddMember(String roomCode,String whoAdd) async{
     return await roomMemberDAO.listWhoAddMember(env.userPrincipal.person,roomCode,whoAdd);
   }
@@ -98,5 +108,26 @@ class ChatRoomService implements IChatRoomService {
     }
     await chatRoomDAO.removeChatRoomById(id,env.userPrincipal.person);
     await roomMemberDAO.removeChatRoomByRoomCode(room.code,env.userPrincipal.person);
+  }
+}
+
+class P2PMessageService implements IP2PMessageService{
+  Environment env;
+  IP2PMessageDAO p2pMessageDAO;
+  P2PMessageService({ServiceSite site}) {
+    site.onready.add(() {
+      AppDatabase db = site.database;
+      env = site.getService('@.environment');
+      p2pMessageDAO = db.p2pMessageDAO;
+    });
+  }
+  @override
+  Future<Function> addMessage(P2PMessage message) async{
+    await p2pMessageDAO.addMessage(message);
+  }
+
+  @override
+  Future<List<P2PMessage>> pageMessage(String roomCode,int limit, int offset) {
+    return p2pMessageDAO.pageMessage(env.userPrincipal.person,roomCode,limit,offset);
   }
 }

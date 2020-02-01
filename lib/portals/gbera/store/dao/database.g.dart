@@ -118,9 +118,9 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `MicroApp` (`id` TEXT, `site` TEXT, `leading` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Channel` (`id` TEXT, `code` TEXT, `name` TEXT, `owner` TEXT, `loopType` TEXT, `leading` TEXT, `site` TEXT, `tips` TEXT, `ctime` INTEGER, `utime` INTEGER, `unreadMsgCount` INTEGER, `sandbox` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Channel` (`id` TEXT, `code` TEXT, `name` TEXT, `owner` TEXT, `loopType` TEXT, `leading` TEXT, `site` TEXT, `ctime` INTEGER, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `InsiteMessage` (`id` TEXT, `upstreamPerson` TEXT, `sourceSite` TEXT, `sourceApp` TEXT, `onChannel` TEXT, `creator` TEXT, `ctime` INTEGER, `digests` TEXT, `wy` REAL, `location` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `InsiteMessage` (`id` TEXT, `upstreamPerson` TEXT, `sourceSite` TEXT, `sourceApp` TEXT, `onChannel` TEXT, `creator` TEXT, `ctime` INTEGER, `atime` INTEGER, `rtime` INTEGER, `dtime` INTEGER, `state` TEXT, `digests` TEXT, `wy` REAL, `location` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `ChannelMessage` (`id` TEXT, `upstreamPerson` TEXT, `sourceSite` TEXT, `sourceApp` TEXT, `onChannel` TEXT, `creator` TEXT, `ctime` INTEGER, `text` TEXT, `wy` REAL, `location` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
@@ -138,7 +138,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Friend` (`id` TEXT, `official` TEXT, `source` TEXT, `uid` TEXT, `accountid` TEXT, `accountName` TEXT, `appid` TEXT, `tenantid` TEXT, `avatar` TEXT, `rights` TEXT, `nickName` TEXT, `signature` TEXT, `pyname` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `ChatRoom` (`id` TEXT, `code` TEXT, `title` TEXT, `leading` TEXT, `creator` TEXT, `ctime` INTEGER, `utime` INTEGER, `tips` TEXT, `unreadMsgCount` INTEGER, `notice` TEXT, `p2pBackground` TEXT, `isDisplayNick` TEXT, `microsite` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `ChatRoom` (`id` TEXT, `code` TEXT, `title` TEXT, `leading` TEXT, `creator` TEXT, `ctime` INTEGER, `notice` TEXT, `p2pBackground` TEXT, `isDisplayNick` TEXT, `microsite` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `RoomMember` (`id` TEXT, `room` TEXT, `person` TEXT, `whoAdd` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
@@ -548,10 +548,7 @@ class _$IChannelDAO extends IChannelDAO {
                   'loopType': item.loopType,
                   'leading': item.leading,
                   'site': item.site,
-                  'tips': item.tips,
                   'ctime': item.ctime,
-                  'utime': item.utime,
-                  'unreadMsgCount': item.unreadMsgCount,
                   'sandbox': item.sandbox
                 });
 
@@ -569,10 +566,7 @@ class _$IChannelDAO extends IChannelDAO {
       row['loopType'] as String,
       row['leading'] as String,
       row['site'] as String,
-      row['tips'] as String,
       row['ctime'] as int,
-      row['utime'] as int,
-      row['unreadMsgCount'] as int,
       row['sandbox'] as String);
 
   final InsertionAdapter<Channel> _channelInsertionAdapter;
@@ -604,7 +598,7 @@ class _$IChannelDAO extends IChannelDAO {
   @override
   Future<List<Channel>> getAllChannel(String sandbox) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM Channel where sandbox=? ORDER BY utime DESC,ctime DESC',
+        'SELECT * FROM Channel where sandbox=? ORDER BY ctime DESC',
         arguments: <dynamic>[sandbox],
         mapper: _channelMapper);
   }
@@ -675,6 +669,10 @@ class _$IInsiteMessageDAO extends IInsiteMessageDAO {
                   'onChannel': item.onChannel,
                   'creator': item.creator,
                   'ctime': item.ctime,
+                  'atime': item.atime,
+                  'rtime': item.rtime,
+                  'dtime': item.dtime,
+                  'state': item.state,
                   'digests': item.digests,
                   'wy': item.wy,
                   'location': item.location,
@@ -696,6 +694,10 @@ class _$IInsiteMessageDAO extends IInsiteMessageDAO {
           row['onChannel'] as String,
           row['creator'] as String,
           row['ctime'] as int,
+          row['atime'] as int,
+          row['rtime'] as int,
+          row['dtime'] as int,
+          row['state'] as String,
           row['digests'] as String,
           row['wy'] as double,
           row['location'] as String,
@@ -1499,9 +1501,6 @@ class _$IChatRoomDAO extends IChatRoomDAO {
                   'leading': item.leading,
                   'creator': item.creator,
                   'ctime': item.ctime,
-                  'utime': item.utime,
-                  'tips': item.tips,
-                  'unreadMsgCount': item.unreadMsgCount,
                   'notice': item.notice,
                   'p2pBackground': item.p2pBackground,
                   'isDisplayNick': item.isDisplayNick,
@@ -1522,13 +1521,17 @@ class _$IChatRoomDAO extends IChatRoomDAO {
       row['leading'] as String,
       row['creator'] as String,
       row['ctime'] as int,
-      row['utime'] as int,
-      row['tips'] as String,
-      row['unreadMsgCount'] as int,
       row['notice'] as String,
       row['p2pBackground'] as String,
       row['isDisplayNick'] as String,
       row['microsite'] as String,
+      row['sandbox'] as String);
+
+  static final _roomMemberMapper = (Map<String, dynamic> row) => RoomMember(
+      row['id'] as String,
+      row['room'] as String,
+      row['person'] as String,
+      row['whoAdd'] as String,
       row['sandbox'] as String);
 
   final InsertionAdapter<ChatRoom> _chatRoomInsertionAdapter;
@@ -1536,7 +1539,7 @@ class _$IChatRoomDAO extends IChatRoomDAO {
   @override
   Future<List<ChatRoom>> listChatRoom(String sandbox) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM ChatRoom where sandbox=? ORDER BY utime DESC,ctime DESC',
+        'SELECT * FROM ChatRoom where sandbox=? ORDER BY ctime DESC',
         arguments: <dynamic>[sandbox],
         mapper: _chatRoomMapper);
   }
@@ -1554,6 +1557,22 @@ class _$IChatRoomDAO extends IChatRoomDAO {
         'SELECT * FROM ChatRoom where id=? and sandbox=?',
         arguments: <dynamic>[code, sandbox],
         mapper: _chatRoomMapper);
+  }
+
+  @override
+  Future<void> updateRoomLeading(
+      String path, String sandbox, String roomid) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE ChatRoom SET leading = ? WHERE sandbox=? and id = ?',
+        arguments: <dynamic>[path, sandbox, roomid]);
+  }
+
+  @override
+  Future<List<RoomMember>> top20Members(String sandbox, String room) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM RoomMember where sandbox=? and room=? LIMIT 20',
+        arguments: <dynamic>[sandbox, room],
+        mapper: _roomMemberMapper);
   }
 
   @override
@@ -1648,9 +1667,60 @@ class _$IRoomNickDAO extends IRoomNickDAO {
 }
 
 class _$IP2PMessageDAO extends IP2PMessageDAO {
-  _$IP2PMessageDAO(this.database, this.changeListener);
+  _$IP2PMessageDAO(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _p2PMessageInsertionAdapter = InsertionAdapter(
+            database,
+            'P2PMessage',
+            (P2PMessage item) => <String, dynamic>{
+                  'id': item.id,
+                  'sender': item.sender,
+                  'receiver': item.receiver,
+                  'room': item.room,
+                  'type': item.type,
+                  'content': item.content,
+                  'state': item.state,
+                  'ctime': item.ctime,
+                  'atime': item.atime,
+                  'rtime': item.rtime,
+                  'dtime': item.dtime,
+                  'sandbox': item.sandbox
+                });
 
   final sqflite.DatabaseExecutor database;
 
   final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  static final _p2PMessageMapper = (Map<String, dynamic> row) => P2PMessage(
+      row['id'] as String,
+      row['sender'] as String,
+      row['receiver'] as String,
+      row['room'] as String,
+      row['type'] as String,
+      row['content'] as String,
+      row['state'] as String,
+      row['ctime'] as int,
+      row['atime'] as int,
+      row['rtime'] as int,
+      row['dtime'] as int,
+      row['sandbox'] as String);
+
+  final InsertionAdapter<P2PMessage> _p2PMessageInsertionAdapter;
+
+  @override
+  Future<List<P2PMessage>> pageMessage(
+      String sandbox, String roomCode, int limit, int offset) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM P2PMessage where sandbox=? and room=? ORDER BY ctime DESC LIMIT ? OFFSET ?',
+        arguments: <dynamic>[sandbox, roomCode, limit, offset],
+        mapper: _p2PMessageMapper);
+  }
+
+  @override
+  Future<void> addMessage(P2PMessage message) async {
+    await _p2PMessageInsertionAdapter.insert(
+        message, sqflite.ConflictAlgorithm.abort);
+  }
 }

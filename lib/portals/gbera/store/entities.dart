@@ -66,10 +66,7 @@ class Channel {
   final String loopType;
   final String leading;
   final String site;
-  final String tips;
   int ctime = DateTime.now().millisecondsSinceEpoch;
-  int utime = DateTime.now().millisecondsSinceEpoch;
-  int unreadMsgCount = 0;
   final String sandbox;
 
   Channel(
@@ -80,10 +77,7 @@ class Channel {
       this.loopType,
       this.leading,
       this.site,
-      this.tips,
       this.ctime,
-      this.utime,
-      this.unreadMsgCount,
       this.sandbox);
 }
 
@@ -97,6 +91,10 @@ class InsiteMessage {
   final String onChannel;
   final String creator;
   final int ctime;
+  final int atime;
+  final int rtime;
+  final int dtime;
+  final String state;
   final String digests;
   final double wy;
   final String location;
@@ -110,6 +108,10 @@ class InsiteMessage {
     this.onChannel,
     this.creator,
     this.ctime,
+    this.atime,
+    this.rtime,
+    this.dtime,
+    this.state,
     this.digests,
     this.wy,
     this.location,
@@ -302,9 +304,6 @@ class ChatRoom {
   final String leading;
   final String creator;
   final int ctime;
-  final int utime;
-  final String tips;
-  final int unreadMsgCount;
   final String notice;
   final String p2pBackground;
   final String isDisplayNick;
@@ -318,9 +317,6 @@ class ChatRoom {
     this.leading,
     this.creator,
     this.ctime,
-    this.utime,
-    this.tips,
-    this.unreadMsgCount,
     this.notice,
     this.p2pBackground,
     this.isDisplayNick,

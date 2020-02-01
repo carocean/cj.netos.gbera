@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/parts/CardItem.dart';
+import 'package:gbera/portals/gbera/store/entities.dart';
+import 'package:gbera/portals/gbera/store/services.dart';
 
 class ChatRoomSettings extends StatefulWidget {
   PageContext context;
@@ -14,187 +16,32 @@ class ChatRoomSettings extends StatefulWidget {
 
 class _ChatRoomSettingsState extends State<ChatRoomSettings> {
   bool _showNickName = false;
+  ChatRoom _chatRoom;
+
+  @override
+  void initState() {
+    _chatRoom = widget.context.parameters['chatRoom'];
+    super.initState();
+    _loadTop20Members().then((v) {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  Future<List<RoomMember>> _loadTop20Members() async {
+    IChatRoomService chatRoomService =
+        widget.context.site.getService('/chat/rooms');
+    List<RoomMember> members =
+        await chatRoomService.top20Members(_chatRoom.code);
+    return members;
+  }
 
   @override
   Widget build(BuildContext context) {
-    var contacts_servicers = <Widget>[];
-    for (var i = 0; i < 4; i++) {
-      contacts_servicers.add(
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(
-                bottom: 2,
-              ),
-              child: SizedBox(
-                width: 40,
-                height: 40,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(4),
-                  ),
-                  child: Image.network(
-                    'http://47.105.165.186:7100/public/avatar/24f8e8d3f423d40b5b390691fbbfb5d7.jpg',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-            Text(
-              '黄荣晖gggg3232332',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.black54,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
-      );
-    }
-    contacts_servicers.add(
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () async {
-              widget.context.forward('/portlet/chat/friends');
-            },
-            child: Padding(
-              padding: EdgeInsets.only(
-                bottom: 2,
-              ),
-              child: SizedBox(
-                width: 40,
-                height: 40,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(4),
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(4),
-                      ),
-                      border: Border.all(
-                        color: Colors.grey[300],
-                        width: 1,
-                        style: BorderStyle.solid,
-                      ),
-                    ),
-                    child: Icon(
-                      Icons.add,
-                      color: Colors.grey[500],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Text(
-            '',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.black54,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
-    var contacts_members = <Widget>[];
-    for (var i = 0; i < 19; i++) {
-      contacts_members.add(
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(
-                bottom: 2,
-              ),
-              child: SizedBox(
-                width: 40,
-                height: 40,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(4),
-                  ),
-                  child: Image.network(
-                    'http://47.105.165.186:7100/public/avatar/24f8e8d3f423d40b5b390691fbbfb5d7.jpg',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-            Text(
-              '黄荣晖gggg3232332',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.black54,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
-      );
-    }
-    contacts_members.add(
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () async {
-              widget.context.forward('/portlet/chat/friends');
-            },
-            child: Padding(
-              padding: EdgeInsets.only(
-                bottom: 2,
-              ),
-              child: SizedBox(
-                width: 40,
-                height: 40,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(4),
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(4),
-                      ),
-                      border: Border.all(
-                        color: Colors.grey[300],
-                        width: 1,
-                        style: BorderStyle.solid,
-                      ),
-                    ),
-                    child: Icon(
-                      Icons.add,
-                      color: Colors.grey[500],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Text(
-            '',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.black54,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
@@ -215,21 +62,123 @@ class _ChatRoomSettingsState extends State<ChatRoomSettings> {
                 bottom: 10,
               ),
               padding: EdgeInsets.all(10),
-              child: GridView(
-                padding: EdgeInsets.all(0),
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 70,
-                  crossAxisSpacing: 5,
-                  mainAxisSpacing: 5,
-                ),
-                children: contacts_servicers.map((c) {
-                  return c;
-                }).toList(),
+              child: FutureBuilder<List<RoomMember>>(
+                future: _loadTop20Members(),
+                builder: (ctx, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return Center(
+                      child: SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                  var members = snapshot.data;
+                  var plusMemberButton = Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () async {
+                          widget.context.forward('/portlet/chat/friends');
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 2,
+                          ),
+                          child: SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(4),
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(4),
+                                  ),
+                                  border: Border.all(
+                                    color: Colors.grey[300],
+                                    width: 1,
+                                    style: BorderStyle.solid,
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.add,
+                                  color: Colors.grey[500],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Text(
+                        '',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.black54,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  );
+                  if (members == null || members.isEmpty) {
+                    return plusMemberButton;
+                  }
+                  var items = snapshot.data.map((member) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 2,
+                          ),
+                          child: SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(4),
+                              ),
+                              child: Image.network(
+                                'http://47.105.165.186:7100/public/avatar/24f8e8d3f423d40b5b390691fbbfb5d7.jpg',
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          member.person,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black54,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    );
+                  }).toList();
+                  items.add(plusMemberButton);
+                  return GridView(
+                    padding: EdgeInsets.all(0),
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 70,
+                      crossAxisSpacing: 5,
+                      mainAxisSpacing: 5,
+                    ),
+                    children: items,
+                  );
+                },
               ),
             ),
           ),
+          /*
           SliverToBoxAdapter(
             child: Container(
               padding: EdgeInsets.only(
@@ -267,6 +216,8 @@ class _ChatRoomSettingsState extends State<ChatRoomSettings> {
               ),
             ),
           ),
+
+           */
           SliverToBoxAdapter(
             child: Container(
               color: Colors.white,

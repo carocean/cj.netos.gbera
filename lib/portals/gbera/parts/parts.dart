@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_plugin_record/flutter_plugin_record.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/common/voice_widget.dart';
@@ -188,7 +189,7 @@ class _PageSelectorState extends State<PageSelector> {
               return GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onLongPress: () {
-                  if (widget.onMediaLongTap != null&&media.type!='audio') {
+                  if (widget.onMediaLongTap != null && media.type != 'audio') {
                     widget.onMediaLongTap(media);
                   }
                 },
@@ -232,7 +233,12 @@ class _PageSelectorState extends State<PageSelector> {
 class VoiceFloatingButton extends StatefulWidget {
   PageContext context;
   double iconSize;
-  VoiceFloatingButton({this.context,this.iconSize});
+  Function() onStartRecord;
+  Function(String path, double audioTimeLength,
+      FlutterPluginRecord recordPlugin, String action) onStopRecord;
+
+  VoiceFloatingButton(
+      {this.context, this.iconSize, this.onStartRecord, this.onStopRecord});
 
   @override
   _VoiceFloatingButtonState createState() => _VoiceFloatingButtonState();
@@ -247,7 +253,10 @@ class _VoiceFloatingButtonState extends State<VoiceFloatingButton> {
       child: MyVoiceWidget(
         iconSize: widget.iconSize,
         startRecord: () {
-          var handler = widget.context.parameters['onStartRecord'];
+          var handler = widget.onStartRecord;
+          if (handler == null) {
+            handler = widget.context.parameters['onStartRecord'];
+          }
           if (handler != null) {
             handler();
           }
@@ -255,7 +264,10 @@ class _VoiceFloatingButtonState extends State<VoiceFloatingButton> {
           setState(() {});
         },
         stopRecord: (path, timelength, r, a) {
-          var handler = widget.context.parameters['onStopRecord'];
+          var handler = widget.onStopRecord;
+          if (handler == null) {
+            handler = widget.context.parameters['onStopRecord'];
+          }
           if (handler != null) {
             handler(path, timelength, r, a);
           }
@@ -270,8 +282,9 @@ class _VoiceFloatingButtonState extends State<VoiceFloatingButton> {
 
 class MyAudioWidget extends StatefulWidget {
   String audioFile;
+  double timeLength;
 
-  MyAudioWidget({this.audioFile});
+  MyAudioWidget({this.audioFile, this.timeLength});
 
   @override
   _MyAudioWidgetState createState() => _MyAudioWidgetState();
@@ -283,7 +296,9 @@ class _MyAudioWidgetState extends State<MyAudioWidget> {
   @override
   void initState() {
     _player = AudioPlayer();
-    _player.setFilePath(widget.audioFile);
+    _player.setFilePath(widget.audioFile).then((v) {
+      setState(() {});
+    });
     super.initState();
   }
 
@@ -291,6 +306,19 @@ class _MyAudioWidgetState extends State<MyAudioWidget> {
   void dispose() {
     _player.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(MyAudioWidget oldWidget) {
+    //在列表中的项如果是有状态的，会用同一个状态而绑定新的widget，因此在initState中的初始化仅是在第一次渲染有效，之后列表变化时，widget中的变量值变了，但由于state未变（其initstate方法仅执行一次，因此列表项在同一位置有新的替代时，
+    //该状态仍是同一实例，因此需要在didUpdateWidget方法中重新为之赋值
+    if(oldWidget.audioFile!=widget.audioFile){
+      _player.setFilePath(widget.audioFile).then((v) {
+        setState(() {});
+      });
+    }
+
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -304,7 +332,6 @@ class _MyAudioWidgetState extends State<MyAudioWidget> {
             stream: _player.playbackStateStream,
             builder: (context, snapshot) {
               final state = snapshot.data;
-              print(state);
               if (state == AudioPlaybackState.completed) {
                 _player.stop();
               }
@@ -357,20 +384,23 @@ class _MyAudioWidgetState extends State<MyAudioWidget> {
                       ((duration?.inMilliseconds ?? 1.0) * 1.0);
                   var value = (progress * 100);
                   var per = (value.isNaN ? '0.00' : value.toStringAsFixed(2));
-                  return Column(
+                  return Stack(
+                    fit: StackFit.loose,
                     children: <Widget>[
-                      Container(
-                        child: Text(
-                          '$per%',
-                          style: TextStyle(
-                            color: Colors.grey[500],
-                            fontSize: 12,
+                      Column(
+                        children: <Widget>[
+                          Container(
+                            child: Text(
+                              '$per%',
+                              style: TextStyle(
+                                color: Colors.grey[500],
+                                fontSize: 12,
+                              ),
+                            ),
+                            padding: EdgeInsets.only(
+                              bottom: 5,
+                            ),
                           ),
-                        ),
-                        padding: EdgeInsets.only(
-                          bottom: 5,
-                        ),
-                      ),
 //                      SizedBox(
 //                        height: 1,
 //                        child: LinearProgressIndicator(
@@ -380,14 +410,28 @@ class _MyAudioWidgetState extends State<MyAudioWidget> {
 //                          ),
 //                          backgroundColor: Colors.grey[300],
 //                        ),
-                      SeekBar(
-                        duration: duration,
-                        position: position,
-                        onChangeEnd: (newPosition) {
-                          _player.seek(newPosition);
-                        },
-                      ),
+                          SeekBar(
+                            duration: duration,
+                            position: position,
+                            onChangeEnd: (newPosition) {
+                              _player.seek(newPosition);
+                            },
+                          ),
 //                      ),
+                        ],
+                      ),
+                      if (widget.timeLength != null)
+                        Positioned(
+                          right: 22,
+                          bottom: 8,
+                          child: Text(
+                            '${widget.timeLength}秒',
+                            style: TextStyle(
+                              color: Colors.grey[400],
+                              fontSize: 10,
+                            ),
+                          ),
+                        ),
                     ],
                   );
                 },

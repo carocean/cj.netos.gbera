@@ -51,10 +51,8 @@ class ChannelService implements IChannelService {
             'openLoop',
             null,
             null,
-            null,
             DateTime.now().millisecondsSinceEpoch,
-            DateTime.now().millisecondsSinceEpoch,
-            0,env?.userPrincipal?.person),
+            env?.userPrincipal?.person),
       );
       await pinService.init(_GEO_CHANNEL_CODE);
       await pinService.setOutputGeoSelector(_GEO_CHANNEL_CODE, true);
