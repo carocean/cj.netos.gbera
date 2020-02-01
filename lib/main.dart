@@ -8,7 +8,7 @@ void main() {
       portal: 'gbera',
       title: 'gbera',
       themeUrl: '/grey',
-      welcomeUrl: '/login2',
+      welcomeUrl: '/entrypoint',
     ),
     props: {
       '@.prop.isTest': true,

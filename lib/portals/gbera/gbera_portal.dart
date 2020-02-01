@@ -95,6 +95,7 @@ import 'package:gbera/portals/gbera/pages/wallet/payables.dart';
 import 'package:gbera/portals/gbera/pages/wallet/receivables.dart';
 import 'package:gbera/portals/gbera/pages/wallet/ty.dart';
 import 'package:gbera/portals/gbera/pages/wallet/wy.dart';
+import 'package:gbera/portals/gbera/register.dart';
 import 'package:gbera/portals/gbera/scaffolds.dart';
 import 'package:gbera/portals/gbera/store/dao/database.dart';
 import 'package:gbera/portals/gbera/store/services.dart';
@@ -112,8 +113,10 @@ import 'desklets/chats/friend_page.dart';
 import 'desklets/chats/import_persons.dart';
 import 'desklets/chats/room_settings.dart';
 import 'desklets/desklets.dart';
+import 'entrypoint.dart';
 import 'login.dart';
 import 'login2.dart';
+import 'login3.dart';
 import 'pages/desktop/wallpappers.dart';
 import 'pages/system/gbera_settings.dart';
 import 'pages/users/account_viewer.dart';
@@ -300,6 +303,15 @@ class GberaPortal {
           ),
         ),
         Page(
+          title: '入口检测',
+          subtitle: '',
+          icon: GalleryIcons.shrine,
+          url: '/entrypoint',
+          buildPage: (PageContext pageContext) => EntryPoint(
+            context: pageContext,
+          ),
+        ),
+        Page(
           title: '登录',
           subtitle: '',
           icon: GalleryIcons.shrine,
@@ -314,6 +326,24 @@ class GberaPortal {
           icon: GalleryIcons.shrine,
           url: '/login2',
           buildPage: (PageContext pageContext) => LoginPage2(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '登录3',
+          subtitle: '',
+          icon: GalleryIcons.shrine,
+          url: '/login3',
+          buildPage: (PageContext pageContext) => LoginPage3(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '注册',
+          subtitle: '',
+          icon: GalleryIcons.shrine,
+          url: '/register',
+          buildPage: (PageContext pageContext) => RegisterPage(
             context: pageContext,
           ),
         ),
@@ -479,7 +509,6 @@ class GberaPortal {
             context: pageContext,
           ),
         ),
-
         Page(
           title: '管道活动门户',
           subtitle: '',
