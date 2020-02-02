@@ -148,7 +148,7 @@ class _DesktopState extends State<Desktop> with AutomaticKeepAliveClientMixin {
                           ),
                           child: CircleAvatar(
                             backgroundImage: NetworkImage(
-                                'http://pic-bucket.ws.126.net/photo/0001/2019-08-13/EMENLA1600AN0001NOS.jpg'),
+                                widget.context.userPrincipal.avatar),
                           ),
                         ),
                       ),
@@ -168,7 +168,7 @@ class _DesktopState extends State<Desktop> with AutomaticKeepAliveClientMixin {
                               ),
                             ),
                             Text(
-                              '我回家吃了饭',
+                              '${widget.context.userPrincipal.signature??''}',
                               softWrap: true,
                             ),
                           ],

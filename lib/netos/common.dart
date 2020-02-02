@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:floor/floor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 import 'errors.dart';
 
@@ -195,7 +197,7 @@ class UserPrincipal {
   final String accessToken;
 
   final String avatar;
-
+  final String signature;
   String get person {
     return '$accountName@$appid.$tenantid';
   }
@@ -209,6 +211,7 @@ class UserPrincipal {
     this.appid,
     this.tenantid,
     this.avatar,
+    this.signature,
     this.ucRoles,
     this.tenantRoles,
     this.appRoles,
@@ -448,13 +451,13 @@ mixin StringUtil {
     return qs == null || '' == qs;
   }
 }
-mixin PersonUtil{
-  static String official(accountName,appid,tenantid){
+mixin PersonUtil {
+  static String official(accountName, appid, tenantid) {
     return '$accountName@$appid.$tenantid';
   }
 
   static String officialBy(var person) {
-    if(!StringUtil.isEmpty(person.official)) {
+    if (!StringUtil.isEmpty(person.official)) {
       return person.official;
     }
     return '${person.accountName}@${person.appid}.${person.tenantid}';
@@ -588,7 +591,7 @@ class PageContext {
     }
   }
 
-  ports(
+  Future<void> ports(
     ///请求头，格式，如：get http://localhost:8080/uc/p1.service?name=cj&age=33 http/1.1
     String headline, {
 
@@ -871,6 +874,95 @@ class PageContext {
         'themeUrl': environment.currentThemeUrl,
       },
     ));
+  }
+
+  ///下载文件
+  Future<void> download(
+    String url,
+    String localFile, {
+    void Function(int, int) onReceiveProgress,
+    Map<String, dynamic> queryParameters,
+    CancelToken cancelToken,
+    bool deleteOnError = true,
+    String lengthHeader = Headers.contentLengthHeader,
+    dynamic data,
+    Options options,
+  }) async {
+    Dio dio = site.getService('@.http');
+    await dio.download(
+      url,
+      localFile,
+      onReceiveProgress: onReceiveProgress,
+      queryParameters: queryParameters,
+      cancelToken: cancelToken,
+      data: data,
+      deleteOnError: deleteOnError,
+      lengthHeader: lengthHeader,
+      options: options,
+    );
+  }
+
+  Future<void> deleteRemoteFile(String file) async {
+    Dio dio = site.getService('@.http');
+    var response = await dio.get('http://47.105.165.186:7110/del/file/',
+        queryParameters: {'path': file, 'type': 'f'});
+    if (response.statusCode > 400) {
+      throw FlutterError(
+          '删除失败：${response.statusCode} ${response.statusMessage}');
+    }
+  }
+
+  Future<Map<String,String>> upload(String remoteDir, List<String> localFiles,
+      {String appid,
+      String accessToken,
+      void Function(int, int) onReceiveProgress,
+      void Function(int, int) onSendProgress}) async {
+    if (localFiles == null || localFiles.isEmpty) {
+      return null;
+    }
+    Dio dio = site.getService('@.http');
+
+    var files = <MultipartFile>[];
+    var remoteFiles = <String, String>{};
+    for (var i = 0; i < localFiles.length; i++) {
+      var f = localFiles[i];
+      int pos = f.lastIndexOf('.');
+      var ext = '';
+      var prev = '';
+      if (pos > -1) {
+        ext = f.substring(pos + 1, f.length);
+        prev = f.substring(0, pos);
+      } else {
+        prev = f;
+      }
+      prev = prev.substring(prev.lastIndexOf('/') + 1, prev.length);
+      String fn = "${Uuid().v1()}_$prev.$ext";
+      remoteFiles[f] = 'http://47.105.165.186:7100$remoteDir/$fn';
+      print(remoteFiles[f]);
+      files.add(await MultipartFile.fromFile(
+        f,
+        filename: fn,
+      ));
+    }
+    FormData data = FormData.fromMap({
+      'files': files,
+    });
+    var response = await dio.post(
+      'http://47.105.165.186:7110/upload/uploader.service',
+      data: data,
+      queryParameters: {
+        'App-ID': appid,
+        'Access-Token': accessToken,
+        'dir': remoteDir,
+      },
+      onReceiveProgress: onReceiveProgress,
+      onSendProgress: onSendProgress,
+    );
+    if (response.statusCode > 400) {
+      throw FlutterError(
+          '上传失败：${response.statusCode} ${response.statusMessage}');
+    }
+    return remoteFiles;
   }
 }
 

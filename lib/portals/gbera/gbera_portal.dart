@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/common/avatar.dart';
 import 'package:gbera/portals/common/icons.dart';
 import 'package:gbera/portals/gbera/desklets/chats/avatar.dart';
 import 'package:gbera/portals/gbera/errors/errors.dart';
@@ -257,6 +258,15 @@ class GberaPortal {
       ],
       buildDesklets: buildDesklets,
       buildPages: (Portal portal, IServiceProvider site) => [
+        Page(
+          title: '控件，截取头像',
+          subtitle: '',
+          icon: GalleryIcons.shrine,
+          url: '/widgets/avatar',
+          buildPage: (PageContext pageContext) => GberaAvatar(
+            context: pageContext,
+          ),
+        ),
         Page(
           title: '出错啦',
           subtitle: '',

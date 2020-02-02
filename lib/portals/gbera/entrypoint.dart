@@ -10,6 +10,7 @@ class EntryPoint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //检测到有账号和头像即转入登录页，无论其有没有密钥。比如新注册就没登录过，但可以在登录页显示出已注册的账户和头像
     var body;
     var shared = this.context.sharedPreferences();
     var keyStore = shared.getString('key_store');
@@ -58,6 +59,12 @@ class _EntryPointIndex extends StatelessWidget {
               FlatButton(
                 color: Colors.green,
                 hoverColor: Colors.grey[100],
+                padding: EdgeInsets.only(
+                  left: 45,
+                  right: 45,
+                  top: 12,
+                  bottom: 12,
+                ),
                 child: Text(
                   '登录',
                   style: TextStyle(
@@ -70,6 +77,12 @@ class _EntryPointIndex extends StatelessWidget {
               ),
               FlatButton(
                 color: Colors.white,
+                padding: EdgeInsets.only(
+                  left: 45,
+                  right: 45,
+                  top: 12,
+                  bottom: 12,
+                ),
                 child: Text(
                   '注册',
                   style: TextStyle(
