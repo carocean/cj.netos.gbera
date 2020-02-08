@@ -17,7 +17,7 @@ class ChannelService implements IChannelService {
   IChannelPinService pinService;
   Environment env;
   ChannelService({ServiceSite site}) {
-    site.onready.add(() {
+    site.onready.add(() async{
       AppDatabase db = site.database;
       channelDAO = db.channelDAO;
       messageService = site.getService('/channel/messages');
@@ -41,7 +41,7 @@ class ChannelService implements IChannelService {
   @override
   Future<void> init(UserPrincipal user) async {
     var _GEO_CHANNEL_CODE=_SYSTEM_CHANNELS['geo_channel'];
-    if (await channelDAO.getChannel(env?.userPrincipal?.person,_GEO_CHANNEL_CODE) == null) {
+    if (await channelDAO.getChannel(env?.principal?.person,_GEO_CHANNEL_CODE) == null) {
       await channelDAO.addChannel(
         Channel(
             '${Uuid().v1()}',
@@ -52,7 +52,7 @@ class ChannelService implements IChannelService {
             null,
             null,
             DateTime.now().millisecondsSinceEpoch,
-            env?.userPrincipal?.person),
+            env?.principal?.person),
       );
       await pinService.init(_GEO_CHANNEL_CODE);
       await pinService.setOutputGeoSelector(_GEO_CHANNEL_CODE, true);
@@ -61,27 +61,27 @@ class ChannelService implements IChannelService {
 
   @override
   Future<Function> updateName(String code, String text) async{
-    await this.channelDAO.updateName(text,code,env?.userPrincipal?.person);
+    await this.channelDAO.updateName(text,code,env?.principal?.person);
   }
 
   @override
   Future<void> updateLeading(String path, String channelcode) async {
-    await this.channelDAO.updateLeading(path,env?.userPrincipal?.person, channelcode);
+    await this.channelDAO.updateLeading(path,env?.principal?.person, channelcode);
   }
 
   @override
   Future<void> empty() async {
-    await this.channelDAO.empty(env?.userPrincipal?.person);
+    await this.channelDAO.empty(env?.principal?.person);
   }
 
   @override
   Future<List<Channel>> getChannelsOfPerson(String personid) async {
-    return await this.channelDAO.getChannelsOfPerson(env?.userPrincipal?.person,personid);
+    return await this.channelDAO.getChannelsOfPerson(env?.principal?.person,personid);
   }
 
   @override
   Future<List<Channel>> getAllChannel() async {
-    return await this.channelDAO.getAllChannel(env?.userPrincipal?.person);
+    return await this.channelDAO.getAllChannel(env?.principal?.person);
   }
 
   @override
@@ -94,28 +94,28 @@ class ChannelService implements IChannelService {
   Future<Function> remove(String code) async {
     await messageService.emptyBy(code);
     await this.pinService.removePin(code);
-    await channelDAO.removeChannel(env?.userPrincipal?.person,code);
+    await channelDAO.removeChannel(env?.principal?.person,code);
   }
 
   @override
   Future<Channel> getChannel(String code) async {
-    return await this.channelDAO.getChannel(env?.userPrincipal?.person,code);
+    return await this.channelDAO.getChannel(env?.principal?.person,code);
   }
 
   @override
   Future<bool> existsName(String channelName, String owner) async {
-    var ch = await this.channelDAO.getChannelByName(env?.userPrincipal?.person,channelName, owner);
+    var ch = await this.channelDAO.getChannelByName(env?.principal?.person,channelName, owner);
     return ch == null ? false : true;
   }
 
   @override
   Future<bool> existsChannel(code) async {
-    var ch = await this.channelDAO.getChannel(env?.userPrincipal?.person,code);
+    var ch = await this.channelDAO.getChannel(env?.principal?.person,code);
     return ch == null ? false : true;
   }
 
   @override
   Future<void> emptyOfPerson(String personid) async {
-    await this.channelDAO.emptyOfPerson(env?.userPrincipal?.person,personid);
+    await this.channelDAO.emptyOfPerson(env?.principal?.person,personid);
   }
 }

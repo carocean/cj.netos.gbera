@@ -1,8 +1,11 @@
+import 'dart:io';
+
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/netos/framework.dart' as framework;
 
-void main() {
+void main()  {
   framework.run(
     MyApp(
       portal: 'gbera',
@@ -13,6 +16,11 @@ void main() {
     props: {
       '@.prop.isTest': true,
     },
+    appKeyPair: AppKeyPair(
+      appid: 'gbera.netos',
+      appKey: '92D9F2B8078D039A7405AC0498F71059',
+      appSecret: '9402073ADEF6DEEB35E2FDBAC7051471',
+    ),
   );
 }
 
@@ -44,6 +52,7 @@ class _MyAppState extends State<MyApp> {
 
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     var fullThemeUrl = '${widget.portal}:/${widget.themeUrl}';
@@ -60,5 +69,4 @@ class _MyAppState extends State<MyApp> {
       initialRoute: fullWelcomeUrl,
     );
   }
-
 }

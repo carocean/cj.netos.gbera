@@ -11,20 +11,20 @@ class Roles extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var ucRoles=<Widget>[];
-    for(var role in this.context.userPrincipal.ucRoles) {
-      var role_item = _buildUcRole(role);
-      ucRoles.add(role_item);
-    }
+//    for(var role in this.context.userPrincipal.ucRoles) {
+//      var role_item = _buildUcRole(role);
+//      ucRoles.add(role_item);
+//    }
     var tenantRoles=<Widget>[];
-    for(var role in this.context.userPrincipal.tenantRoles) {
-      var role_item = _buildTenantRole(role);
-      tenantRoles.add(role_item);
-    }
+//    for(var role in this.context.userPrincipal.tenantRoles) {
+//      var role_item = _buildTenantRole(role);
+//      tenantRoles.add(role_item);
+//    }
     var appRoles=<Widget>[];
-    for(var role in this.context.userPrincipal.appRoles) {
-      var role_item = _buildAppRole(role);
-      appRoles.add(role_item);
-    }
+//    for(var role in this.context.userPrincipal.appRoles) {
+//      var role_item = _buildAppRole(role);
+//      appRoles.add(role_item);
+//    }
     var items_platform = Column(
       children: <Widget>[
         Container(
@@ -173,7 +173,7 @@ class Roles extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(),
                     child: Text(
-                      '${this.context.userPrincipal?.appid}',
+                      '${this.context.principal?.appid}',
                       style: TextStyle(
                         color: Colors.grey[500],
                       ),

@@ -26,8 +26,11 @@ part 'database.g.dart';
   RoomMember,
   RoomNick,
   P2PMessage,
+  Principal,
 ])
 abstract class AppDatabase extends FloorDatabase {
+  IPrincipalDAO get principalDAO;
+
   IPersonDAO get upstreamPersonDAO;
 
   IMicroSiteDAO get microSiteDAO;

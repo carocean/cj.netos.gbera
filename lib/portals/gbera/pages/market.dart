@@ -285,7 +285,7 @@ class _MarketState extends State<Market> with AutomaticKeepAliveClientMixin {
                   null,
                   null,
                   null,
-                  widget.context.userPrincipal.person,
+                  widget.context.principal.person,
                 ),
                 Media(
                   null,
@@ -295,7 +295,7 @@ class _MarketState extends State<Market> with AutomaticKeepAliveClientMixin {
                   null,
                   null,
                   null,
-                  widget.context.userPrincipal.person,
+                  widget.context.principal.person,
                 ),
               ],
               Content:
@@ -313,7 +313,7 @@ class _MarketState extends State<Market> with AutomaticKeepAliveClientMixin {
                 null,
                 null,
                 null,
-                widget.context.userPrincipal.person,
+                widget.context.principal.person,
               ),
             ],
           ),

@@ -55,6 +55,7 @@ dependencies:
   flutter_plugin_record: ^0.1.2
   just_audio: ^0.0.6
   flutter_slidable: ^0.5.4
+  device_info: ^0.4.1+4
 dev_dependencies:
   flutter_test:
     sdk: flutter

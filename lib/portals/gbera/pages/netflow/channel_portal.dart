@@ -56,7 +56,7 @@ class _ChannelPortalState extends State<ChannelPortal> {
     var onchannel = _channel?.code;
     IChannelMessageService messageService =
         widget.context.site.getService('/channel/messages');
-    var person = widget.context.userPrincipal.person;
+    var person = widget.context.principal.person;
     var messages =
         await messageService.pageMessageBy(_limit, _offset, onchannel, person);
     if (!messages.isEmpty) {
@@ -174,7 +174,7 @@ class _ChannelPortalState extends State<ChannelPortal> {
                       },
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(4.0),
-                        child: widget.context.userPrincipal.avatar == null
+                        child: widget.context.principal.avatarOnRemote == null
                             ? Image.asset(
                                 'lib/portals/gbera/images/avatar.png',
                                 height: 20,
@@ -182,7 +182,7 @@ class _ChannelPortalState extends State<ChannelPortal> {
                                 fit: BoxFit.cover,
                               )
                             : Image.network(
-                                '${widget.context.userPrincipal.avatar}',
+                                '${widget.context.principal.avatarOnRemote}',
                                 height: 20,
                                 width: 20,
                                 fit: BoxFit.cover,
@@ -194,7 +194,7 @@ class _ChannelPortalState extends State<ChannelPortal> {
                     child: Text.rich(
                       TextSpan(
                         text:
-                            '${widget.context.userPrincipal.nickName ?? widget.context.userPrincipal.accountName}',
+                            '${widget.context.principal.nickName ?? widget.context.principal.accountCode}',
                         style: TextStyle(
                           fontWeight: FontWeight.w800,
                           color: Colors.grey[800],
@@ -496,11 +496,11 @@ class __MessageCardState extends State<_MessageCard> {
                                     TextSpan(text: '\r\n'),
                                     TextSpan(
                                       text:
-                                          '${widget.context.userPrincipal?.uid == snapshot.data.uid ? '创建自 ' : '来自 '}',
+                                          '${widget.context.principal?.uid == snapshot.data.uid ? '创建自 ' : '来自 '}',
                                       children: [
                                         TextSpan(
                                           text:
-                                              '${widget.context.userPrincipal?.uid == snapshot.data.uid ? '我' : snapshot.data.accountName}',
+                                              '${widget.context.principal?.uid == snapshot.data.uid ? '我' : snapshot.data.accountName}',
                                           style: TextStyle(
                                             color: Colors.blueGrey,
                                             fontWeight: FontWeight.w600,
@@ -646,7 +646,7 @@ class __CommentEditorState extends State<_CommentEditor> {
                   color: Colors.black54,
                 ),
                 labelText:
-                    '${widget.context.userPrincipal.nickName ?? widget.context.userPrincipal.accountName}',
+                    '${widget.context.principal.nickName ?? widget.context.principal.accountCode}',
                 labelStyle: TextStyle(
                   fontSize: 18,
                   color: Colors.blueGrey,
@@ -723,7 +723,7 @@ class __MessageOperatesPopupMenuState extends State<_MessageOperatesPopupMenu> {
       'isLiked': isLiked,
       'canComment': true,
       'canDelete':
-          widget.message.creator == widget.context.userPrincipal.person,
+          widget.message.creator == widget.context.principal.person,
     };
   }
 
@@ -731,7 +731,7 @@ class __MessageOperatesPopupMenuState extends State<_MessageOperatesPopupMenu> {
     IChannelLikeService likeService =
         widget.context.site.getService('/channel/messages/likes');
     return await likeService.isLiked(
-        widget.message.id, widget.context.userPrincipal.person);
+        widget.message.id, widget.context.principal.person);
   }
 
   Future<void> _like() async {
@@ -739,14 +739,14 @@ class __MessageOperatesPopupMenuState extends State<_MessageOperatesPopupMenu> {
         widget.context.site.getService('/channel/messages/likes');
     LikePerson likePerson = LikePerson(
       '${Uuid().v1()}',
-      widget.context.userPrincipal.person,
-      widget.context.userPrincipal.avatar,
+      widget.context.principal.person,
+      widget.context.principal.avatarOnRemote,
       widget.message.id,
       DateTime.now().millisecondsSinceEpoch,
-      widget.context.userPrincipal.nickName ??
-          widget.context.userPrincipal.accountName,
+      widget.context.principal.nickName ??
+          widget.context.principal.accountCode,
       widget.message.onChannel,
-      widget.context.userPrincipal.person,
+      widget.context.principal.person,
     );
     await likeService.like(likePerson);
   }
@@ -755,7 +755,7 @@ class __MessageOperatesPopupMenuState extends State<_MessageOperatesPopupMenu> {
     IChannelLikeService likeService =
         widget.context.site.getService('/channel/messages/likes');
     await likeService.unlike(
-        widget.message.id, widget.context.userPrincipal.person);
+        widget.message.id, widget.context.principal.person);
   }
 
   Future<void> _deleteMessage() async {
@@ -1001,7 +1001,7 @@ class __InteractiveRegionState extends State<_InteractiveRegion> {
         }
         var commentListWidgets = <Widget>[];
         for (ChannelComment comment in comments) {
-          bool isMine = comment.person == widget.context.userPrincipal.person;
+          bool isMine = comment.person == widget.context.principal.person;
           commentListWidgets.add(Padding(
             padding: EdgeInsets.only(
               bottom: 5,
@@ -1177,15 +1177,15 @@ class __InteractiveRegionState extends State<_InteractiveRegion> {
     await commentService.addComment(
       ChannelComment(
         '${Uuid().v1()}',
-        widget.context.userPrincipal.person,
-        widget.context.userPrincipal.avatar,
+        widget.context.principal.person,
+        widget.context.principal.avatarOnRemote,
         widget.message.id,
         content,
         DateTime.now().millisecondsSinceEpoch,
-        widget.context.userPrincipal.nickName ??
-            widget.context.userPrincipal.accountName,
+        widget.context.principal.nickName ??
+            widget.context.principal.accountCode,
         widget.message.onChannel,
-        widget.context.userPrincipal.person,
+        widget.context.principal.person,
       ),
     );
   }

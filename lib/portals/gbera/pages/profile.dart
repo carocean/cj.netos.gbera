@@ -51,14 +51,14 @@ class Profile extends StatelessWidget {
                               bottom: 5,
                             ),
                             child: Text(
-                              '${this.context.userPrincipal?.accountName}',
+                              '${this.context.principal?.accountCode}',
                               style: this
                                   .context
                                   .style('/profile/header-face-title.text'),
                             ),
                           ),
                           Text(
-                            '用户号: ${this.context.userPrincipal?.uid}',
+                            '用户号: ${this.context.principal?.uid}',
                             style: this
                                 .context
                                 .style('/profile/header-face-no.text'),

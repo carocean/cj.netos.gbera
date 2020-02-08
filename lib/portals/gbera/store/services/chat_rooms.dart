@@ -12,7 +12,7 @@ class FriendService implements IFriendService{
   Environment env;
   IFriendDAO friendDAO;
   FriendService({ServiceSite site}) {
-    site.onready.add(() {
+    site.onready.add(()async {
       AppDatabase db = site.database;
       env=site.getService('@.environment');
       friendDAO=db.friendDAO;
@@ -21,12 +21,12 @@ class FriendService implements IFriendService{
 
   @override
   Future<Friend> getFriendByOfficial(String official) async{
-    return await friendDAO.getFriendByOfficial(env.userPrincipal.person,official,);
+    return await friendDAO.getFriendByOfficial(env.principal.person,official,);
   }
 
   @override
   Future<bool> exists(String official) async{
-    return await friendDAO.getFriend(official,env.userPrincipal.person)!=null;
+    return await friendDAO.getFriend(official,env.principal.person)!=null;
   }
 
   @override
@@ -37,17 +37,17 @@ class FriendService implements IFriendService{
   @override
   Future<List<Friend>> pageFriendLikeName(
       String name, List<String> officials, int limit, int offset) async{
-    return await friendDAO.pageFriendLikeName(env.userPrincipal.person,name,name,name,officials,limit,offset);
+    return await friendDAO.pageFriendLikeName(env.principal.person,name,name,name,officials,limit,offset);
   }
 
   @override
   Future<List<Friend>> pageFriend(int limit, int offset) async{
-    return await friendDAO.pageFriend(env.userPrincipal.person,limit,offset);
+    return await friendDAO.pageFriend(env.principal.person,limit,offset);
   }
 
   @override
   Future<Function> removeFriendById(String id) async{
-     await friendDAO.removeFriendById(id,env.userPrincipal.person);
+     await friendDAO.removeFriendById(id,env.principal.person);
   }
 }
 
@@ -56,7 +56,7 @@ class ChatRoomService implements IChatRoomService {
   IChatRoomDAO chatRoomDAO;
   IRoomMemberDAO roomMemberDAO;
   ChatRoomService({ServiceSite site}) {
-    site.onready.add(() {
+    site.onready.add(()async {
       AppDatabase db = site.database;
       env = site.getService('@.environment');
       chatRoomDAO = db.chatRoomDAO;
@@ -66,17 +66,17 @@ class ChatRoomService implements IChatRoomService {
 
   @override
   Future<List<RoomMember>> top20Members(String code) async{
-    return chatRoomDAO.top20Members(env.userPrincipal.person,code);
+    return chatRoomDAO.top20Members(env.principal.person,code);
   }
 
   @override
   Future<Function> updateRoomLeading(String roomid, String file) async{
-    await chatRoomDAO.updateRoomLeading(file,env.userPrincipal.person,roomid,);
+    await chatRoomDAO.updateRoomLeading(file,env.principal.person,roomid,);
   }
 
   @override
   Future<List<Friend>> listWhoAddMember(String roomCode,String whoAdd) async{
-    return await roomMemberDAO.listWhoAddMember(env.userPrincipal.person,roomCode,whoAdd);
+    return await roomMemberDAO.listWhoAddMember(env.principal.person,roomCode,whoAdd);
   }
 
   @override
@@ -91,23 +91,23 @@ class ChatRoomService implements IChatRoomService {
 
   @override
   Future<List<ChatRoom>> listChatRoom() async{
-    return await chatRoomDAO.listChatRoom(env.userPrincipal.person);
+    return await chatRoomDAO.listChatRoom(env.principal.person);
   }
 
   @override
   Future<List<RoomMember>> topMember10(String code) async{
-    return await roomMemberDAO.topMember10(env.userPrincipal.person,code);
+    return await roomMemberDAO.topMember10(env.principal.person,code);
   }
 
   @transaction
   @override
   Future<Function> removeChatRoomById(String id) async{
-    var room=await chatRoomDAO.getChatRoomById(id,env.userPrincipal.person);
+    var room=await chatRoomDAO.getChatRoomById(id,env.principal.person);
     if(room==null) {
       return null;
     }
-    await chatRoomDAO.removeChatRoomById(id,env.userPrincipal.person);
-    await roomMemberDAO.removeChatRoomByRoomCode(room.code,env.userPrincipal.person);
+    await chatRoomDAO.removeChatRoomById(id,env.principal.person);
+    await roomMemberDAO.removeChatRoomByRoomCode(room.code,env.principal.person);
   }
 }
 
@@ -115,7 +115,7 @@ class P2PMessageService implements IP2PMessageService{
   Environment env;
   IP2PMessageDAO p2pMessageDAO;
   P2PMessageService({ServiceSite site}) {
-    site.onready.add(() {
+    site.onready.add(() async{
       AppDatabase db = site.database;
       env = site.getService('@.environment');
       p2pMessageDAO = db.p2pMessageDAO;
@@ -128,6 +128,6 @@ class P2PMessageService implements IP2PMessageService{
 
   @override
   Future<List<P2PMessage>> pageMessage(String roomCode,int limit, int offset) {
-    return p2pMessageDAO.pageMessage(env.userPrincipal.person,roomCode,limit,offset);
+    return p2pMessageDAO.pageMessage(env.principal.person,roomCode,limit,offset);
   }
 }

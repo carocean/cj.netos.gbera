@@ -57,6 +57,8 @@ class _$AppDatabase extends AppDatabase {
     changeListener = listener ?? StreamController<String>.broadcast();
   }
 
+  IPrincipalDAO _principalDAOInstance;
+
   IPersonDAO _upstreamPersonDAOInstance;
 
   IMicroSiteDAO _microSiteDAOInstance;
@@ -145,10 +147,17 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `RoomNick` (`id` TEXT, `person` TEXT, `room` TEXT, `nickName` TEXT, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `P2PMessage` (`id` TEXT, `sender` TEXT, `receiver` TEXT, `room` TEXT, `type` TEXT, `content` TEXT, `state` TEXT, `ctime` INTEGER, `atime` INTEGER, `rtime` INTEGER, `dtime` INTEGER, `sandbox` TEXT, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Principal` (`person` TEXT, `uid` TEXT, `accountCode` TEXT, `nickName` TEXT, `appid` TEXT, `roles` TEXT, `accessToken` TEXT, `refreshToken` TEXT, `ravatar` TEXT, `lavatar` TEXT, `signature` TEXT, `ltime` INTEGER, `pubtime` INTEGER, `expiretime` INTEGER, `device` TEXT, PRIMARY KEY (`person`))');
 
         await callback?.onCreate?.call(database, version);
       },
     );
+  }
+
+  @override
+  IPrincipalDAO get principalDAO {
+    return _principalDAOInstance ??= _$IPrincipalDAO(database, changeListener);
   }
 
   @override
@@ -245,6 +254,89 @@ class _$AppDatabase extends AppDatabase {
   IP2PMessageDAO get p2pMessageDAO {
     return _p2pMessageDAOInstance ??=
         _$IP2PMessageDAO(database, changeListener);
+  }
+}
+
+class _$IPrincipalDAO extends IPrincipalDAO {
+  _$IPrincipalDAO(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _principalInsertionAdapter = InsertionAdapter(
+            database,
+            'Principal',
+            (Principal item) => <String, dynamic>{
+                  'person': item.person,
+                  'uid': item.uid,
+                  'accountCode': item.accountCode,
+                  'nickName': item.nickName,
+                  'appid': item.appid,
+                  'roles': item.roles,
+                  'accessToken': item.accessToken,
+                  'refreshToken': item.refreshToken,
+                  'ravatar': item.ravatar,
+                  'lavatar': item.lavatar,
+                  'signature': item.signature,
+                  'ltime': item.ltime,
+                  'pubtime': item.pubtime,
+                  'expiretime': item.expiretime,
+                  'device': item.device
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  static final _principalMapper = (Map<String, dynamic> row) => Principal(
+      row['person'] as String,
+      row['uid'] as String,
+      row['accountCode'] as String,
+      row['nickName'] as String,
+      row['appid'] as String,
+      row['roles'] as String,
+      row['accessToken'] as String,
+      row['refreshToken'] as String,
+      row['ravatar'] as String,
+      row['lavatar'] as String,
+      row['signature'] as String,
+      row['ltime'] as int,
+      row['pubtime'] as int,
+      row['expiretime'] as int,
+      row['device'] as String);
+
+  final InsertionAdapter<Principal> _principalInsertionAdapter;
+
+  @override
+  Future<List<Principal>> getAll() async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Principal ORDER BY ltime DESC',
+        mapper: _principalMapper);
+  }
+
+  @override
+  Future<void> remove(String person) async {
+    await _queryAdapter.queryNoReturn('delete FROM Principal WHERE person = ?',
+        arguments: <dynamic>[person]);
+  }
+
+  @override
+  Future<void> updateToken(
+      String refreshToken, String accessToken, String person) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE Principal SET refreshToken=? , accessToken = ? WHERE person=?',
+        arguments: <dynamic>[refreshToken, accessToken, person]);
+  }
+
+  @override
+  Future<Principal> get(String person) async {
+    return _queryAdapter.query('SELECT * FROM Principal where person=?',
+        arguments: <dynamic>[person], mapper: _principalMapper);
+  }
+
+  @override
+  Future<void> add(Principal principal) async {
+    await _principalInsertionAdapter.insert(
+        principal, sqflite.ConflictAlgorithm.abort);
   }
 }
 

@@ -65,7 +65,7 @@ class _ImportPersonsState extends State<ImportPersons> {
           person.nickName,
           person.signature,
           person.pyname,
-          widget.context.userPrincipal.person,
+          widget.context.principal.person,
         ),
       );
     }

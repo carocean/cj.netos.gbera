@@ -6,6 +6,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/gbera/store/entities.dart';
+import 'package:gbera/portals/gbera/store/services/local_principals.dart';
+import 'package:uuid/uuid.dart';
 
 class RegisterPage extends StatefulWidget {
   PageContext context;
@@ -22,8 +25,10 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController _phoneController;
   TextEditingController _passwordController;
   String _avatarRemoteFile;
+  String _localAvatarFile;
   bool _buttonEnabled = false;
   bool _showPassword = false;
+  String _anonymousAccessToken;
 
   @override
   void initState() {
@@ -31,6 +36,37 @@ class _RegisterPageState extends State<RegisterPage> {
     _nickNameController = TextEditingController();
     _phoneController = TextEditingController();
     _passwordController = TextEditingController();
+    _anonymous();
+  }
+
+  _anonymous() async {
+    AppKeyPair appKeyPair = widget.context.site.getService('@.appKeyPair');
+    var nonce = MD5Util.generateMd5(Uuid().v1()).toUpperCase();
+    String sign = appKeyPair.appSign(nonce);
+    await widget.context.ports(
+      'post http://47.105.165.186/uc/auth.service http/1.1',
+      restCommand: 'auth',
+      headers: {
+        'App-Id': appKeyPair.appid,
+        'App-Key': appKeyPair.appKey,
+        'App-Nonce': nonce,
+        'App-Sign': sign,
+      },
+      parameters: {
+        'device': appKeyPair.device,
+        'password': '*_anonymous',
+        'accountCode': '#_anonymous',
+      },
+      onerror: ({e, stack}) {
+        print('-----$e');
+      },
+      onsucceed: ({rc, response}) {
+        var json = rc['dataText'];
+        Map<String, Object> map = jsonDecode(json);
+        _anonymousAccessToken =
+            (map['token'] as Map<String, dynamic>)['accessToken'];
+      },
+    );
   }
 
   @override
@@ -52,11 +88,18 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _doRegister() async {
+    AppKeyPair appKeyPair = widget.context.site.getService('@.appKeyPair');
+    var nonce = MD5Util.generateMd5(Uuid().v1());
     await widget.context.ports(
-      'post http://47.105.165.186/uc/register/ http/1.1',
+      'post http://47.105.165.186/uc/register.service http/1.1',
       restCommand: 'registerByIphone',
+      headers: {
+        'app-id': appKeyPair.appid,
+        'app-key': appKeyPair.appKey,
+        'app-nonce': nonce,
+        'app-sign': appKeyPair.appSign(nonce),
+      },
       parameters: {
-        'appid': 'gbera',
         'phone': _phoneController.text,
         'password': _passwordController.text,
         'nickName': _nickNameController.text,
@@ -66,10 +109,31 @@ class _RegisterPageState extends State<RegisterPage> {
         widget.context.deleteRemoteFile(_avatarRemoteFile);
         print('-----$e');
       },
-      onsucceed: ({rc, response}) {
+      onsucceed: ({rc, response}) async {
         print('-----$response');
-        widget.context.forward('/login3');
-        _buttonEnabled=false;
+        var json = rc['dataText'];
+        Map<String, dynamic> map = jsonDecode(json);
+        ILocalPrincipalManager manager =
+            widget.context.site.getService('/local/principals');
+        await manager.add(
+          '${_phoneController.text}@${appKeyPair.appid}',
+          uid: map['userId'],
+          accountCode: _phoneController.text,
+          nickName: _nickNameController.text,
+          appid: appKeyPair.appid,
+          roles: <String>[],
+          accessToken: _anonymousAccessToken,
+          refreshToken: null,
+          remoteAvatar:  _avatarRemoteFile,
+          localAvatar: _localAvatarFile,
+          signature: null,
+          ltime: 0,
+          pubtime: 0,
+          expiretime: 0,
+          device: appKeyPair.device,
+        );
+        widget.context.forward('/login');
+        _buttonEnabled = false;
       },
     );
   }
@@ -141,9 +205,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 _AvatarRegion(
                   context: widget.context,
-                  onAfterUpload: (avatarFile) {
-                    _avatarRemoteFile = avatarFile;
+                  onAfterUpload: (removeAvatarFile,localAvatarFile) {
+                    _avatarRemoteFile = removeAvatarFile;
+                    _localAvatarFile=localAvatarFile;
                   },
+                  anonymousAccessToken: _anonymousAccessToken,
                 ),
               ],
             ),
@@ -333,9 +399,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
 class _AvatarRegion extends StatefulWidget {
   PageContext context;
-  Function(String avatarFile) onAfterUpload;
+  String anonymousAccessToken;
+  Function(String removeAvatarFile,String localAvatarFile) onAfterUpload;
 
-  _AvatarRegion({this.onAfterUpload, this.context});
+  _AvatarRegion({this.onAfterUpload, this.context, this.anonymousAccessToken});
 
   @override
   __AvatarRegionState createState() => __AvatarRegionState();
@@ -346,12 +413,9 @@ class __AvatarRegionState extends State<_AvatarRegion> {
   String _per;
 
   Future<String> _doUploadAvatar(String avatarFile) async {
-    var dir = '/public';
+    var dir = '/avatars';
     var map = await widget.context.upload(dir, <String>[avatarFile],
-        appid: 'gbera',
-        accessToken:
-            'eyJhbGciOiJIUzI1NiJ9.eyJhcHAtcm9sZXMiOltdLCJhY2NvdW50aWQiOiIwMDE5MTAxMzEyNDcyNzIxIiwic3ViIjoiMDAxOTA5MjcxNTE3NDI2MCIsInRlbmFudC1yb2xlcyI6W10sImFjY291bnROYW1lIjoic3VwZXJhZG1pbiIsImFwcGlkIjoic3lzdGVtIiwiaXNzIjoidWl0Y2wiLCJ1Yy1yb2xlcyI6W3sicm9sZUlkIjoiYWRtaW5pc3RyYXRvcnMiLCJyb2xlTmFtZSI6Iui2hee6p-euoeeQhuWRmCIsImlzSW5oZXJpdGFibGUiOnRydWV9LHsicm9sZUlkIjoidGVuYW50QWRtaW5pc3RyYXRvcnMiLCJyb2xlTmFtZSI6Iuenn-aIt-euoeeQhuWRmCIsImlzSW5oZXJpdGFibGUiOnRydWV9XSwiZXhwIjoxNTgwNzE4MDU1LCJpYXQiOjE1ODA2MzE2NTUsImp0aSI6ImVjMWI3YThjLTE1ZjUtNGU3OC1hNDlmLTU5YzdmNjM4OTllYSJ9.srnSogouMhoTw3XnA779c7iAraRfvR0SXU5RIBZGBOg',
-        onSendProgress: (i, j) {
+        accessToken: widget.anonymousAccessToken, onSendProgress: (i, j) {
       _per = '${((i * 1.0 / j) * 100.00).toStringAsFixed(0)}%';
       setState(() {});
     });
@@ -393,7 +457,7 @@ class __AvatarRegionState extends State<_AvatarRegion> {
                 setState(() {});
                 var remoteAvatar = await _doUploadAvatar(avatar);
                 if (widget.onAfterUpload != null) {
-                  widget.onAfterUpload(remoteAvatar);
+                  widget.onAfterUpload(remoteAvatar,_avatarFile);
                 }
               });
             },

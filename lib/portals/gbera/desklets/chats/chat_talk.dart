@@ -93,7 +93,7 @@ class _ChatTalkState extends State<ChatTalk> {
         await messageService.addMessage(
           P2PMessage(
             Uuid().v1(),
-            widget.context.userPrincipal.person,
+            widget.context.principal.person,
             null,
             _chatRoom.code,
             'text',
@@ -103,7 +103,7 @@ class _ChatTalkState extends State<ChatTalk> {
             null,
             null,
             null,
-            widget.context.userPrincipal.person,
+            widget.context.principal.person,
           ),
         );
         break;
@@ -114,7 +114,7 @@ class _ChatTalkState extends State<ChatTalk> {
         await messageService.addMessage(
           P2PMessage(
             Uuid().v1(),
-            widget.context.userPrincipal.person,
+            widget.context.principal.person,
             null,
             _chatRoom.code,
             'audio',
@@ -124,7 +124,7 @@ class _ChatTalkState extends State<ChatTalk> {
             null,
             null,
             null,
-            widget.context.userPrincipal.person,
+            widget.context.principal.person,
           ),
         );
         break;
@@ -184,7 +184,7 @@ class _ChatTalkState extends State<ChatTalk> {
                 },
                 slivers: _p2pMessages.reversed.map((msg) {
                   var item;
-                  if (msg.sender == widget.context.userPrincipal.person) {
+                  if (msg.sender == widget.context.principal.person) {
                     item = _SendMessageItem(
                       p2pMessage: msg,
                     );

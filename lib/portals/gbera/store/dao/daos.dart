@@ -70,8 +70,7 @@ abstract class IChannelDAO {
   @Query('SELECT * FROM Channel WHERE sandbox=:sandbox and code = :code')
   Future<Channel> getChannel(String sandbox, String code);
 
-  @Query(
-      'SELECT * FROM Channel where sandbox=:sandbox ORDER BY ctime DESC')
+  @Query('SELECT * FROM Channel where sandbox=:sandbox ORDER BY ctime DESC')
   Future<List<Channel>> getAllChannel(String sandbox);
 
   @Query('delete FROM Channel where sandbox=:sandbox')
@@ -437,9 +436,10 @@ abstract class IChatRoomDAO {
     String sandbox,
     String roomid,
   ) {}
-  @Query('SELECT *  FROM RoomMember where sandbox=:sandbox and room=:room LIMIT 20')
-  Future<List<RoomMember>> top20Members(String sandbox, String room) {}
 
+  @Query(
+      'SELECT *  FROM RoomMember where sandbox=:sandbox and room=:room LIMIT 20')
+  Future<List<RoomMember>> top20Members(String sandbox, String room) {}
 }
 
 @dao
@@ -466,8 +466,27 @@ abstract class IRoomNickDAO {}
 abstract class IP2PMessageDAO {
   @insert
   Future<void> addMessage(P2PMessage message) {}
+
   @Query(
       'SELECT *  FROM P2PMessage where sandbox=:sandbox and room=:roomCode ORDER BY ctime DESC LIMIT :limit OFFSET  :offset')
-  Future<List<P2PMessage>> pageMessage(String sandbox,String roomCode, int limit, int offset) {}
+  Future<List<P2PMessage>> pageMessage(
+      String sandbox, String roomCode, int limit, int offset) {}
+}
 
+@dao
+abstract class IPrincipalDAO {
+  @insert
+  Future<void> add(Principal principal) {}
+
+  @Query('SELECT *  FROM Principal ORDER BY ltime DESC')
+  Future<List<Principal>> getAll();
+
+  @Query('delete FROM Principal WHERE person = :person')
+  Future<void> remove(String person) {}
+
+  @Query('UPDATE Principal SET refreshToken=:refreshToken , accessToken = :accessToken WHERE person=:person')
+  Future<void> updateToken(String refreshToken,String accessToken, String person) {}
+
+  @Query('SELECT *  FROM Principal where person=:person')
+  Future<Principal> get(String person);
 }

@@ -5,9 +5,13 @@ import 'package:dio/dio.dart';
 import 'package:floor/floor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:gbera/portals/gbera/store/entities.dart';
+import 'package:gbera/portals/gbera/store/services.dart';
+import 'package:gbera/portals/gbera/store/services/local_principals.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:convert/convert.dart';
+import 'package:crypto/crypto.dart';
 import 'errors.dart';
 
 final String KEY_THEME_SET = '@.set.theme';
@@ -19,12 +23,12 @@ class Environment {
   String currentThemeUrl = ''; //当前应用的主题路径，是相对于当前portal的路径
   String previousPortal = '';
   String previousThemeUrl = '';
-  UserPrincipal userPrincipal;
+  UserPrincipal principal;
 
   Environment({
     this.currentPortal,
     this.currentThemeUrl,
-    this.userPrincipal,
+    this.principal,
     this.previousPortal,
     this.previousThemeUrl,
   });
@@ -57,7 +61,7 @@ class NetosSharedPreferences {
       portalDir = false;
     }
     Environment environment = _site.getService('@.environment');
-    UserPrincipal _principal = environment?.userPrincipal;
+    UserPrincipal _principal = environment?.principal;
     if ((sharedDir) || _principal == null) {
       return '/Shared/$key';
     }
@@ -68,7 +72,7 @@ class NetosSharedPreferences {
       return "/$theportal/${StringUtil.isEmpty(key) ? '' : key}";
     }
     String thekey =
-        "/$theportal/${_principal.uid}/${_principal.accountName}/${StringUtil.isEmpty(key) ? '' : key}";
+        "/$theportal/${_principal.uid}/${_principal.accountCode}/${StringUtil.isEmpty(key) ? '' : key}";
     return thekey;
   }
 
@@ -184,38 +188,56 @@ class NetosSharedPreferences {
 }
 
 class UserPrincipal {
-  final String uid;
-  final String accountid;
-  final String accountName;
-  final String nickName;
-  final String appid;
-  final String tenantid;
-  final List<Map> ucRoles;
-  final List<Map> tenantRoles;
-  final List<Map> appRoles;
+  final ILocalPrincipalManager manager;
 
-  final String accessToken;
-
-  final String avatar;
-  final String signature;
-  String get person {
-    return '$accountName@$appid.$tenantid';
-  }
-
-  const UserPrincipal({
-    this.uid,
-    this.accountid,
-    this.accountName,
-    this.nickName,
-    this.accessToken,
-    this.appid,
-    this.tenantid,
-    this.avatar,
-    this.signature,
-    this.ucRoles,
-    this.tenantRoles,
-    this.appRoles,
+  UserPrincipal({
+    this.manager,
   });
+
+  String get person => manager.get(manager.current())?.person;
+
+  String get device => manager.get(manager.current())?.device;
+
+  String get uid => manager.get(manager.current())?.uid;
+
+  String get accountCode => manager.get(manager.current())?.accountCode;
+
+  String get nickName => manager.get(manager.current())?.nickName;
+
+  String get appid => manager.get(manager.current())?.appid;
+
+  List<dynamic> get roles =>
+      jsonDecode(manager.get(manager.current())?.roles ?? <dynamic>[]);
+
+  String get accessToken => manager.get(manager.current())?.accessToken;
+
+  String get refreshToken => manager.get(manager.current())?.refreshToken;
+
+  String get avatarOnRemote => manager.get(manager.current())?.ravatar;
+
+  String get avatarOnLocal => manager.get(manager.current())?.lavatar;
+
+  String get avatarOnRemoteWithAccessToken =>
+      '${manager.get(manager.current())?.ravatar}?accessToken=${manager.get(manager.current())?.accessToken}';
+
+  String get signature => manager.get(manager.current())?.signature;
+
+  int get tokenPubTime => manager.get(manager.current())?.pubtime;
+
+  int get tokenExpireTime => manager.get(manager.current())?.expiretime;
+}
+
+class AppKeyPair {
+  String appid;
+  String appKey;
+  String appSecret;
+  String device;
+
+  AppKeyPair({this.appid, this.appKey, this.appSecret, this.device});
+
+  String appSign(String nonce) {
+    return MD5Util.generateMd5('$appKey$nonce$appSecret').toUpperCase();
+  }
 }
 
 class Security {
@@ -256,9 +278,9 @@ class ServiceSite implements IServiceProvider {
     var services = pstore?.services;
     this.services = services ?? {};
     this.database = db;
-    this.onready.forEach((v) {
-      v();
-    });
+    for(Onready ready in this.onready) {
+     await ready();
+    }
   }
 }
 
@@ -451,6 +473,14 @@ mixin StringUtil {
     return qs == null || '' == qs;
   }
 }
+mixin MD5Util {
+  static String generateMd5(String data) {
+    var content = new Utf8Encoder().convert(data);
+    var digest = md5.convert(content);
+    // 这里其实就是 digest.toString()
+    return hex.encode(digest.bytes);
+  }
+}
 mixin PersonUtil {
   static String official(accountName, appid, tenantid) {
     return '$accountName@$appid.$tenantid';
@@ -474,8 +504,7 @@ class PageContext {
 
   const PageContext({this.page, this.site, this.context});
 
-  UserPrincipal get userPrincipal =>
-      site.getService('@.environment')?.userPrincipal;
+  UserPrincipal get principal => site.getService('@.environment')?.principal;
 
   ///真实传过来的参数
   get parameters => ModalRoute.of(context).settings.arguments;
@@ -600,7 +629,7 @@ class PageContext {
     Map<String, String> headers,
     Map<String, String> parameters,
     Map<String, Object> content,
-    void Function({dynamic rc, dynamic response}) onsucceed,
+    void Function({dynamic rc, Response response}) onsucceed,
     void Function({dynamic e, dynamic stack}) onerror,
     void Function(int, int) onReceiveProgress,
     void Function(int, int) onSendProgress,
@@ -644,6 +673,7 @@ class PageContext {
     protocol = hl;
 
     Dio _dio = site.getService("@.http");
+    //dio会自动将头转换为小写
     Options options = Options(
       headers: headers,
     );
@@ -863,9 +893,8 @@ class PageContext {
   }
 
   //设置登录，方法将根据当前登录用户加载个性化配置
-  void setLogin(UserPrincipal userPrincipal) {
+  setLogin() async {
     Environment environment = site.getService('@.environment');
-    environment.userPrincipal = userPrincipal;
     OnFrameworkEvents events = site.getService('@.framework.events');
     events(OnFrameworkEvent(
       cmd: 'switchTheme',
@@ -902,19 +931,28 @@ class PageContext {
     );
   }
 
-  Future<void> deleteRemoteFile(String file) async {
+  Future<void> deleteRemoteFile(
+    String file,
+  ) async {
     Dio dio = site.getService('@.http');
-    var response = await dio.get('http://47.105.165.186:7110/del/file/',
-        queryParameters: {'path': file, 'type': 'f'});
+    var response = await dio.get(
+      'http://47.105.165.186:7110/del/file/',
+      options: Options(
+          //上传的accessToken在header中，为了兼容在参数里也放
+//        headers: {
+//          "Cookie": 'accessToken=$accessToken',
+//        },
+          ),
+      queryParameters: {'path': file, 'type': 'f'},
+    );
     if (response.statusCode > 400) {
       throw FlutterError(
           '删除失败：${response.statusCode} ${response.statusMessage}');
     }
   }
 
-  Future<Map<String,String>> upload(String remoteDir, List<String> localFiles,
-      {String appid,
-      String accessToken,
+  Future<Map<String, String>> upload(String remoteDir, List<String> localFiles,
+      {String accessToken,
       void Function(int, int) onReceiveProgress,
       void Function(int, int) onSendProgress}) async {
     if (localFiles == null || localFiles.isEmpty) {
@@ -950,9 +988,14 @@ class PageContext {
     var response = await dio.post(
       'http://47.105.165.186:7110/upload/uploader.service',
       data: data,
+      options: Options(
+        //上传的accessToken在header中，为了兼容在参数里也放
+        headers: {
+          "Cookie": 'accessToken=$accessToken',
+        },
+      ),
       queryParameters: {
-        'App-ID': appid,
-        'Access-Token': accessToken,
+        'accessToken': accessToken,
         'dir': remoteDir,
       },
       onReceiveProgress: onReceiveProgress,
@@ -1035,4 +1078,4 @@ typedef BuildDesklets = List<Desklet> Function(
     Portal protal, IServiceProvider site);
 typedef BuildDesklet = Widget Function(
     Portlet portlet, Desklet desklet, PageContext desktopContext);
-typedef Onready = Function();
+typedef Onready = Future<void> Function();

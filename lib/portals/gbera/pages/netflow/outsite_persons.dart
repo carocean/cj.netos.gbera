@@ -85,7 +85,7 @@ class _OutsitePersonsState extends State<OutsitePersons> {
                       children: [
                         TextSpan(
                             text:
-                                '${widget.context.userPrincipal.nickName ?? widget.context.userPrincipal.accountName}>'),
+                                '${widget.context.principal.nickName ?? widget.context.principal.accountCode}>'),
                       ],
                     ),
                   ),
@@ -334,7 +334,7 @@ class __PersonListRegionState extends State<_PersonListRegion> {
                   ),
                   onItemTap: () {
                     widget.context.forward('/netflow/channel/pin/see_persons', arguments: {
-                      'person': p,'pinType':'downstream','channel':widget.channel,'direction_tips':'${widget.context.userPrincipal.nickName ?? widget.context.userPrincipal.accountName}>'
+                      'person': p,'pinType':'downstream','channel':widget.channel,'direction_tips':'${widget.context.principal.nickName ?? widget.context.principal.accountCode}>'
                     }).then((obj) {
                       if (widget.resetPersons != null) {
                         widget.resetPersons();
@@ -447,7 +447,7 @@ class __PersonListRegionState extends State<_PersonListRegion> {
             '${Uuid().v1()}',
             widget.channel.code,
             '${person.accountName}@${person.appid}.${person.tenantid}',
-            widget.context.userPrincipal.person,
+            widget.context.principal.person,
           ),
         )
             .whenComplete(() {

@@ -40,7 +40,7 @@ class _TZExchangeState extends State<TZExchange> {
               ),
               height: 30,
               child: Image.network(
-                'http://47.105.165.186:7100/public/market/tz_dfzz_exchange.jpg?App-ID=${widget.context.userPrincipal.appid}&Access-Token=${widget.context.userPrincipal.accessToken}',
+                'http://47.105.165.186:7100/public/market/tz_dfzz_exchange.jpg?App-ID=${widget.context.principal.appid}&Access-Token=${widget.context.principal.accessToken}',
                 fit: BoxFit.fitHeight,
               ),
             ),
@@ -167,7 +167,7 @@ class _TZExchangeState extends State<TZExchange> {
       _LandAgent(
         title: '迅凯电力',
         avatar:
-            'http://47.105.165.186:7100/public/market/timg-2.jpeg?App-ID=${widget.context.userPrincipal.appid}&Access-Token=${widget.context.userPrincipal.accessToken}',
+            'http://47.105.165.186:7100/public/market/timg-2.jpeg?App-ID=${widget.context.principal.appid}&Access-Token=${widget.context.principal.accessToken}',
         subtitle: '广州市',
         zd: 24.12,
         zf: 0.84,
@@ -176,7 +176,7 @@ class _TZExchangeState extends State<TZExchange> {
       _LandAgent(
         title: '德宝科技',
         avatar:
-            'http://47.105.165.186:7100/public/market/timg-3.jpeg?App-ID=${widget.context.userPrincipal.appid}&Access-Token=${widget.context.userPrincipal.accessToken}',
+            'http://47.105.165.186:7100/public/market/timg-3.jpeg?App-ID=${widget.context.principal.appid}&Access-Token=${widget.context.principal.accessToken}',
         subtitle: '东莞市',
         zd: -11.31,
         zf: -0.64,
@@ -185,7 +185,7 @@ class _TZExchangeState extends State<TZExchange> {
       _LandAgent(
         title: '欣网',
         avatar:
-            'http://47.105.165.186:7100/public/market/timg.jpeg?App-ID=${widget.context.userPrincipal.appid}&Access-Token=${widget.context.userPrincipal.accessToken}',
+            'http://47.105.165.186:7100/public/market/timg.jpeg?App-ID=${widget.context.principal.appid}&Access-Token=${widget.context.principal.accessToken}',
         subtitle: '佛山市',
         zd: 2.98,
         zf: 0.37,

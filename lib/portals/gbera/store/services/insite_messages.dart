@@ -9,7 +9,7 @@ class InsiteMessageService implements IInsiteMessageService {
   IInsiteMessageDAO insiteMessageDAO;
   Environment env;
   InsiteMessageService({ServiceSite site}) {
-    site.onready.add(() {
+    site.onready.add(() async{
       AppDatabase db = site.database;
       insiteMessageDAO = db.insiteMessageDAO;
       env=site.getService('@.environment');
@@ -18,24 +18,24 @@ class InsiteMessageService implements IInsiteMessageService {
 
   @override
   Future<Function> empty() async {
-    await insiteMessageDAO.empty(env?.userPrincipal?.person);
+    await insiteMessageDAO.empty(env?.principal?.person);
   }
 
   @override
   Future<List<InsiteMessage>> getAllMessage() async {
-    return await insiteMessageDAO.getAllMessage(env?.userPrincipal?.person);
+    return await insiteMessageDAO.getAllMessage(env?.principal?.person);
   }
 
   @override
   Future<List<InsiteMessage>> pageMessageByChannelVisualable(
       int limit, int offset, String loopType) async {
-    return await insiteMessageDAO.pageMessageByChannelLoopType(loopType,env?.userPrincipal?.person,
+    return await insiteMessageDAO.pageMessageByChannelLoopType(loopType,env?.principal?.person,
         limit, offset);
   }
 
   @override
   Future<List<InsiteMessage>> pageMessage(int pageSize, int currPage) async {
-    return await insiteMessageDAO.pageMessage(env?.userPrincipal?.person,pageSize, currPage);
+    return await insiteMessageDAO.pageMessage(env?.principal?.person,pageSize, currPage);
   }
 
   @override
@@ -45,7 +45,7 @@ class InsiteMessageService implements IInsiteMessageService {
 
   @override
   Future<bool> existsMessage(id) async {
-    var msg = await insiteMessageDAO.getMessage(id,env?.userPrincipal?.person);
+    var msg = await insiteMessageDAO.getMessage(id,env?.principal?.person);
     return msg == null ? false : true;
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -64,7 +66,6 @@ class _DesktopState extends State<Desktop> with AutomaticKeepAliveClientMixin {
               ),
               titleSpacing: 10,
               centerTitle: false,
-
               automaticallyImplyLeading: false,
               elevation: 0,
               actions: <Widget>[
@@ -147,8 +148,9 @@ class _DesktopState extends State<Desktop> with AutomaticKeepAliveClientMixin {
                             right: 10,
                           ),
                           child: CircleAvatar(
-                            backgroundImage: NetworkImage(
-                                widget.context.userPrincipal.avatar),
+                            backgroundImage: FileImage(
+                              File('${widget.context.principal.avatarOnLocal}'),
+                            ),
                           ),
                         ),
                       ),
@@ -163,12 +165,12 @@ class _DesktopState extends State<Desktop> with AutomaticKeepAliveClientMixin {
                                 bottom: 2,
                               ),
                               child: Text(
-                                '${widget.context.userPrincipal?.accountName}',
+                                '${widget.context.principal?.nickName}',
                                 softWrap: true,
                               ),
                             ),
                             Text(
-                              '${widget.context.userPrincipal.signature??''}',
+                              '${widget.context.principal.signature ?? ''}',
                               softWrap: true,
                             ),
                           ],

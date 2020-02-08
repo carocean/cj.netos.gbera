@@ -69,16 +69,8 @@ class Channel {
   int ctime = DateTime.now().millisecondsSinceEpoch;
   final String sandbox;
 
-  Channel(
-      this.id,
-      this.code,
-      this.name,
-      this.owner,
-      this.loopType,
-      this.leading,
-      this.site,
-      this.ctime,
-      this.sandbox);
+  Channel(this.id, this.code, this.name, this.owner, this.loopType,
+      this.leading, this.site, this.ctime, this.sandbox);
 }
 
 @entity
@@ -384,4 +376,41 @@ class P2PMessage {
       this.rtime,
       this.dtime,
       this.sandbox);
+}
+
+@entity
+class Principal {
+  @primaryKey
+  final String person;
+  final String uid;
+  final String accountCode;
+  final String nickName;
+  final String appid;
+  final String roles;
+  final String accessToken;
+  final String refreshToken;
+  final String ravatar;
+  final String lavatar;
+  final String signature;
+  final int ltime;
+  final int pubtime;
+  final int expiretime;
+  final String device;
+
+  Principal(
+      this.person,
+      this.uid,
+      this.accountCode,
+      this.nickName,
+      this.appid,
+      this.roles,
+      this.accessToken,
+      this.refreshToken,
+      this.ravatar,
+      this.lavatar,
+      this.signature,
+      this.ltime,
+      this.pubtime,
+      this.expiretime,
+      this.device);
 }

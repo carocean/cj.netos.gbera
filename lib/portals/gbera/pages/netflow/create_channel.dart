@@ -59,7 +59,7 @@ class _CreateChannelState extends State<CreateChannel> {
             onPressed: () async {
               IChannelService channelService =
                   widget.context.site.getService('/netflow/channels');
-              UserPrincipal user = widget.context.userPrincipal;
+              UserPrincipal user = widget.context.principal;
               var channelName = _channel_name_value.text;
               if (await channelService.existsName(channelName, user.person)) {
                 _globalKey.currentState.showSnackBar(SnackBar(
@@ -81,7 +81,7 @@ class _CreateChannelState extends State<CreateChannel> {
                 null,
                 null,
                 DateTime.now().millisecondsSinceEpoch,
-                widget.context.userPrincipal.person,
+                widget.context.principal.person,
               );
               await channelService.addChannel(channel);
               widget.context.backward();

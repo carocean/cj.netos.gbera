@@ -34,13 +34,13 @@ class _ChatRoomsPortletState extends State<ChatRoomsPortlet> {
         roomCode,
         null,
         null,
-        widget.context.userPrincipal.person,
+        widget.context.principal.person,
         0,
         null,
         null,
         'false',
         null,
-        widget.context.userPrincipal.person,
+        widget.context.principal.person,
       ),
     );
     for (var official in members) {
@@ -49,8 +49,8 @@ class _ChatRoomsPortletState extends State<ChatRoomsPortlet> {
           Uuid().v1(),
           roomCode,
           official,
-          widget.context.userPrincipal.person,
-          widget.context.userPrincipal.person,
+          widget.context.principal.person,
+          widget.context.principal.person,
         ),
       );
     }

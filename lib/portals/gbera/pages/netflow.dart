@@ -512,7 +512,7 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
         widget.context.site.getService('/netflow/channels');
     List<Channel> list = await channelService.getAllChannel();
     if (list.isEmpty) {
-      await channelService.init(widget.context.userPrincipal);
+      await channelService.init(widget.context.principal);
       list = await channelService.getAllChannel();
     }
     var items = List<_ChannelItem>();
@@ -535,7 +535,7 @@ class _NetflowState extends State<Netflow> with AutomaticKeepAliveClientMixin {
           loopType: ch.loopType,
           openAvatar: () {
             //如果不是自己的管道则不能改图标
-            if (widget.context.userPrincipal.person != ch.owner) {
+            if (widget.context.principal.person != ch.owner) {
               Scaffold.of(context).showSnackBar(
                 SnackBar(
                   content: Text('不可修改图标！原因：不是您创建的管道'),

@@ -167,7 +167,7 @@ class _TYExchangeState extends State<TYExchange> {
       _LandAgent(
         title: '晶贵',
         avatar:
-            'http://47.105.165.186:7100/public/market/timg-2.jpeg?App-ID=${widget.context.userPrincipal.appid}&Access-Token=${widget.context.userPrincipal.accessToken}',
+            'http://47.105.165.186:7100/public/market/timg-2.jpeg?App-ID=${widget.context.principal.appid}&Access-Token=${widget.context.principal.accessToken}',
         subtitle: '广州市',
         zd: 24.12,
         zf: 0.84,
@@ -176,7 +176,7 @@ class _TYExchangeState extends State<TYExchange> {
       _LandAgent(
         title: '中凯',
         avatar:
-            'http://47.105.165.186:7100/public/market/timg-3.jpeg?App-ID=${widget.context.userPrincipal.appid}&Access-Token=${widget.context.userPrincipal.accessToken}',
+            'http://47.105.165.186:7100/public/market/timg-3.jpeg?App-ID=${widget.context.principal.appid}&Access-Token=${widget.context.principal.accessToken}',
         subtitle: '东莞市',
         zd: -11.31,
         zf: -0.64,
@@ -185,7 +185,7 @@ class _TYExchangeState extends State<TYExchange> {
       _LandAgent(
         title: '亨同',
         avatar:
-            'http://47.105.165.186:7100/public/market/timg.jpeg?App-ID=${widget.context.userPrincipal.appid}&Access-Token=${widget.context.userPrincipal.accessToken}',
+            'http://47.105.165.186:7100/public/market/timg.jpeg?App-ID=${widget.context.principal.appid}&Access-Token=${widget.context.principal.accessToken}',
         subtitle: '佛山市',
         zd: 2.98,
         zf: 0.37,

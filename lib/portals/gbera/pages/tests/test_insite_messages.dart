@@ -62,7 +62,7 @@ class _TestInsiteMessagesState extends State<TestInsiteMessages> {
                       obj['digests'],
                       obj['wy'],
                       obj['location'],
-                      widget.context.userPrincipal.person,
+                      widget.context.principal.person,
                     );
                     msgService.addMessage(message);
                   }

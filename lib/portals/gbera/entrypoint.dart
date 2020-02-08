@@ -1,32 +1,66 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/gbera/login.dart';
+import 'package:gbera/portals/gbera/store/services/local_principals.dart';
+import 'package:gbera/portals/gbera/store/entities.dart';
 
 class EntryPoint extends StatelessWidget {
   PageContext context;
-
-  EntryPoint({this.context});
+  ILocalPrincipalManager _localPrincipalManager;
+  EntryPoint({this.context}){
+    _localPrincipalManager=context.site.getService('/local/principals');
+  }
 
   @override
   Widget build(BuildContext context) {
-    //检测到有账号和头像即转入登录页，无论其有没有密钥。比如新注册就没登录过，但可以在登录页显示出已注册的账户和头像
     var body;
-    var shared = this.context.sharedPreferences();
-    var keyStore = shared.getString('key_store');
-    if (keyStore == null) {
+
+    //没有本地登录历史则进去入口索引页
+    if (_localPrincipalManager.isEmpty()) {
       //加载主入口部件（有登录和注册选项）
       body = _EntryPointIndex(
         context: this.context,
       );
+      return body;
     }
-    //检查过期否（令牌为空也视为过期），如果过期则加载有账号但必须输入密码的界面
-    //如果不过期，则直接跳转到桌面
-//    var map=jsonDecode(keyStore);
-//    if(map['official'])
-    return Scaffold(
-      body: body,
+    _localPrincipalManager.setCurrent(_localPrincipalManager.list()[0]);
+    var localPrincipal =
+        _localPrincipalManager.get(_localPrincipalManager.current()); //以此作为登录用户
+    //如果刷新令牌为空则必须登录
+    if (localPrincipal.refreshToken == null) {
+      body = LoginPage(
+        context: this.context,
+      );
+      return body;
+    }
+    //有刷新令牌自动登录
+    return FutureBuilder(
+      future: _refreshToken(),
+      builder: (ctx, snapshot) {
+        return Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: AssetImage('lib/portals/gbera/images/entrypoint_bk.jpg'),
+            ),
+          ),
+        );
+      },
     );
+  }
+
+  Future<void> _refreshToken() async {
+    await _localPrincipalManager.doRefreshToken();
+    Future.delayed(
+        Duration(
+          milliseconds: 300,
+        ), () {
+      this.context.forward("gbera://scaffold/withbottombar",
+          clearHistoryPageUrl: '/');
+    });
   }
 }
 
@@ -72,7 +106,7 @@ class _EntryPointIndex extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  this.context.forward('/login3');
+                  this.context.forward('/login');
                 },
               ),
               FlatButton(

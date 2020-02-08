@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,13 +19,14 @@ Map<String, ThemeStyle> _allThemes = Map(); //key是全路径
 Map<String, Style> _allStyles = Map(); //key是全路径
 Map<String, Desklet> _allDesklets = Map(); //桌面栏目,key是全路径
 NetosSharedPreferences _sharedPreferences = null; //本地存储
+AppKeyPair _appKeyPair;
 Map<String, dynamic> _props;
 IServiceProvider _site = GberaServiceProvider();
 
 ///上下文环境
 Environment _environment = Environment();
 
-run(Widget app, {Map<String, dynamic> props}) async {
+run(Widget app, {Map<String, dynamic> props, AppKeyPair appKeyPair}) async {
   if (props == null) {
     props = {};
   }
@@ -38,6 +40,18 @@ run(Widget app, {Map<String, dynamic> props}) async {
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
 
+  WidgetsFlutterBinding.ensureInitialized();
+
+  _sharedPreferences = await NetosSharedPreferences().init(_site);
+
+  if (appKeyPair == null) {
+    appKeyPair = AppKeyPair();
+  }
+  _appKeyPair = appKeyPair;
+
+  await _fillDevice(appKeyPair);
+
+
   await _init();
 
   runApp(app);
@@ -47,10 +61,23 @@ run(Widget app, {Map<String, dynamic> props}) async {
   };
 }
 
+_fillDevice(AppKeyPair appKeyPair) async {
+  var device = '';
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  if (Platform.isAndroid) {
+    var android = await deviceInfo.androidInfo;
+    device =
+        '${android.device}${android.type}${android.model}${android.product}';
+  } else if (Platform.isIOS) {
+    var ios = await deviceInfo.iosInfo;
+    device = '${ios.name}${ios.model}${ios.identifierForVendor}';
+  }
+  device = MD5Util.generateMd5(device);
+  appKeyPair.device = device;
+}
+
 ///仅加载一次，不受hot reload影响，所以不支持热部署，如添加页面等资源时可使用hot restart快速重启应用
 _init() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  _sharedPreferences = await NetosSharedPreferences().init(_site);
   _allPortals.clear();
   _allServiceSites.clear();
   _allPortalStores.clear();
@@ -155,6 +182,7 @@ _init() async {
       _allDesklets[deskleturl] = desklet;
     }
   }
+
 }
 
 //主题是第一个响应，次是初始化路由表
@@ -167,7 +195,7 @@ ThemeData onGenerateThemeStyle(String themeUrl, BuildContext context) {
         exception: Exception('非法地址请求:$fullUrl。正确格式为：portal://relativeUrl'));
   }
   var portal = fullUrl.substring(0, pos);
-  if (_environment.userPrincipal != null) {
+  if (_environment.principal != null) {
     //加载用户个性化主题
     var _storedThemeUrl =
         _sharedPreferences.getString(KEY_THEME_SET, portal: portal);
@@ -291,6 +319,9 @@ class GberaServiceProvider implements IServiceProvider {
     }
     if ('@.sharedPreferences' == name) {
       return _sharedPreferences;
+    }
+    if ('@.appKeyPair' == name) {
+      return _appKeyPair;
     }
     if (name.startsWith('@.prop.')) {
       return _props[name];

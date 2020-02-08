@@ -15,7 +15,7 @@ class ChannelMessageService implements IChannelMessageService {
   IChannelLikeService likeService;
   Environment env;
   ChannelMessageService({ServiceSite site}) {
-    site.onready.add(() {
+    site.onready.add(() async{
       AppDatabase db = site.database;
       channelMessageDAO = db.channelMessageDAO;
       mediaService = site.getService('/channel/messages/medias');
@@ -28,13 +28,13 @@ class ChannelMessageService implements IChannelMessageService {
   @override
   Future<List<ChannelMessage>> pageMessageBy(
       int limit, int offset, String onchannel, String person) async{
-    return await channelMessageDAO.pageMessageBy(onchannel,person,env?.userPrincipal?.person,limit,offset,);
+    return await channelMessageDAO.pageMessageBy(onchannel,person,env?.principal?.person,limit,offset,);
   }
 
   @transaction
   @override
   Future<Function> removeMessage(String id) async {
-    await channelMessageDAO.removeMessage(id,env?.userPrincipal?.person);
+    await channelMessageDAO.removeMessage(id,env?.principal?.person);
     List<Media> medias = await mediaService.getMedias(id);
     for (var m in medias) {
       mediaService.remove(m.id);
@@ -57,7 +57,7 @@ class ChannelMessageService implements IChannelMessageService {
     await mediaService.removeBy(channelcode);
     await likeService.removeBy(channelcode);
     await commentService.removeBy(channelcode);
-    await channelMessageDAO.removeMessagesBy(channelcode,env?.userPrincipal?.person);
+    await channelMessageDAO.removeMessagesBy(channelcode,env?.principal?.person);
 
   }
 
@@ -67,7 +67,7 @@ class ChannelMessageService implements IChannelMessageService {
   @override
   Future<List<ChannelMessage>> pageMessage(
       int pageSize, int currPage, String onChannel) async {
-    return await channelMessageDAO.pageMessage(onChannel,env?.userPrincipal?.person, pageSize, currPage);
+    return await channelMessageDAO.pageMessage(onChannel,env?.principal?.person, pageSize, currPage);
   }
 
   @override

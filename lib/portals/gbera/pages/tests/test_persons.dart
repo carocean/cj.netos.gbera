@@ -68,7 +68,7 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
                       obj['nickName'],
                       obj['signature'],
                       StringUtil.isEmpty(obj['nickName'])?null:PinyinHelper.getPinyin(obj['nickName']),
-                      widget.context.userPrincipal.person,
+                      widget.context.principal.person,
                     );
                     await personService.addPerson(person);
                     var objchs = obj['channels'];
@@ -77,7 +77,7 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
                     }
 
                     await channelService.emptyOfPerson(person.official);
-                    await channelService.init(widget.context.userPrincipal);
+                    await channelService.init(widget.context.principal);
                     for (var och in objchs) {
                       if (await channelService.existsChannel(och['code'])) {
                         continue;
@@ -95,7 +95,7 @@ class _TestUpstreamPersonServiceState extends State<TestUpstreamPersonService> {
                         leading,
                         och['site'],
                         DateTime.now().millisecondsSinceEpoch,
-                        widget.context.userPrincipal.person,
+                        widget.context.principal.person,
                       );
                       channelService.addChannel(ch);
                     }

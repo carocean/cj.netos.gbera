@@ -253,7 +253,7 @@ class __MessageCardState extends State<_MessageCard> {
         null,
         null,
         null,
-        widget.context.userPrincipal.person,
+        widget.context.principal.person,
       ),
     ];
     return Card(

@@ -60,7 +60,7 @@ class _GeospherePublishArticleState extends State<GeospherePublishArticle> {
         actions: <Widget>[
           FlatButton(
             onPressed: () async {
-              UserPrincipal user = widget.context.userPrincipal;
+              UserPrincipal user = widget.context.principal;
               var content = _contentController.text;
 
               ///纹银价格从app的更新管理中心或消息中心获取
@@ -84,7 +84,7 @@ class _GeospherePublishArticleState extends State<GeospherePublishArticle> {
                   content,
                   wy,
                   location,
-                  widget.context.userPrincipal.person,
+                  widget.context.principal.person,
                 ),
               );
               for (MediaFile file in images) {
@@ -108,7 +108,7 @@ class _GeospherePublishArticleState extends State<GeospherePublishArticle> {
                     msgid,
                     null,
                     geo_sphere_channel_code,
-                    widget.context.userPrincipal.person,
+                    widget.context.principal.person,
                   ),
                 );
               }

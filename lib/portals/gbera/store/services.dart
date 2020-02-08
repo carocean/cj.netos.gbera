@@ -202,10 +202,22 @@ mixin IChatRoomService {
   Future<void> updateRoomLeading(String roomid, String file) {}
 
   Future<List<RoomMember>> top20Members(String code) {}
-
 }
 mixin IP2PMessageService {
   Future<void> addMessage(P2PMessage message);
 
-  Future<List<P2PMessage>> pageMessage(String roomCode,int limit, int offset) {}
+  Future<List<P2PMessage>> pageMessage(
+      String roomCode, int limit, int offset) {}
+}
+mixin IPrincipalService {
+  Future<void> add(Principal principal);
+
+  Future<List<Principal>> getAll();
+
+  Future<void> remove(String person);
+
+  Future<void> updateToken(String refreshToken,String accessToken, String person);
+
+  Future<Principal> get(String person);
+
 }

@@ -11,7 +11,7 @@ class ChannelMediaService implements IChannelMediaService {
   IChannelMediaDAO channelMediaDAO;
   Environment env;
   ChannelMediaService({ServiceSite site}) {
-    site.onready.add(() {
+    site.onready.add(() async{
       AppDatabase db = site.database;
       channelMediaDAO = db.channelMediaDAO;
       env=site.getService('@.environment');
@@ -20,12 +20,12 @@ class ChannelMediaService implements IChannelMediaService {
 
   @override
   Future<void> remove(String id) async {
-    var m = await channelMediaDAO.getMedia(id,env?.userPrincipal?.person);
+    var m = await channelMediaDAO.getMedia(id,env?.principal?.person);
     if (m == null) {
       return;
     }
     _deleteFile(m);
-    await channelMediaDAO.removeMedia(id,env?.userPrincipal?.person);
+    await channelMediaDAO.removeMedia(id,env?.principal?.person);
   }
 
   _deleteFile(media) {
@@ -48,7 +48,7 @@ class ChannelMediaService implements IChannelMediaService {
     for (var m in list) {
       _deleteFile(m);
     }
-    await channelMediaDAO.removeMedia(channelid,env?.userPrincipal?.person);
+    await channelMediaDAO.removeMedia(channelid,env?.principal?.person);
   }
 
   @override
@@ -58,11 +58,11 @@ class ChannelMediaService implements IChannelMediaService {
 
   @override
   Future<List<Media>> getMedias(String messageid) async {
-    return await channelMediaDAO.getMediaByMsgId(messageid,env?.userPrincipal?.person);
+    return await channelMediaDAO.getMediaByMsgId(messageid,env?.principal?.person);
   }
   @override
   Future<List<Media>> getMediasBy(String channelcode)async {
-    return await channelMediaDAO.getMediaBychannelcode(channelcode,env?.userPrincipal?.person);
+    return await channelMediaDAO.getMediaBychannelcode(channelcode,env?.principal?.person);
   }
 
 }
@@ -71,7 +71,7 @@ class ChannelLikeService implements IChannelLikeService {
   IChannelLikePersonDAO channelLikeDAO;
   Environment env;
   ChannelLikeService({ServiceSite site}) {
-    site.onready.add(() {
+    site.onready.add(() async{
       AppDatabase db = site.database;
       channelLikeDAO = db.channelLikeDAO;
       env=site.getService('@.environment');
@@ -80,29 +80,29 @@ class ChannelLikeService implements IChannelLikeService {
 
   @override
   Future<Function> removeBy(String channelcode) async{
-   await channelLikeDAO.removeLikePersonByChannel(channelcode,env?.userPrincipal?.person);
+   await channelLikeDAO.removeLikePersonByChannel(channelcode,env?.principal?.person);
   }
 
   @override
   Future<Function> remove(String id) async {
-    await channelLikeDAO.removeLikePerson(id,env?.userPrincipal?.person);
+    await channelLikeDAO.removeLikePerson(id,env?.principal?.person);
   }
 
   @override
   Future<List<LikePerson>> pageLikePersons(
       String msgid, int pageSize, int offset) async {
-    return await channelLikeDAO.pageLikePersonBy(msgid,env?.userPrincipal?.person, pageSize, offset);
+    return await channelLikeDAO.pageLikePersonBy(msgid,env?.principal?.person, pageSize, offset);
   }
 
   @override
   Future<bool> isLiked(String msgid, String person) async {
-    var likes = await channelLikeDAO.getLikePersonBy(msgid, person,env?.userPrincipal?.person);
+    var likes = await channelLikeDAO.getLikePersonBy(msgid, person,env?.principal?.person);
     return likes.isEmpty ? false : true;
   }
 
   @override
   Future<Function> unlike(String msgid, String person) async {
-    await channelLikeDAO.removeLikePersonBy(msgid, person,env?.userPrincipal?.person);
+    await channelLikeDAO.removeLikePersonBy(msgid, person,env?.principal?.person);
   }
 
   @override
@@ -115,7 +115,7 @@ class ChannelCommentService implements IChannelCommentService {
   IChannelCommentDAO channelCommentDAO;
 Environment env;
   ChannelCommentService({ServiceSite site}) {
-    site.onready.add(() {
+    site.onready.add(() async{
       AppDatabase db = site.database;
       channelCommentDAO = db.channelCommentDAO;
       env=site.getService('@.environment');
@@ -124,7 +124,7 @@ Environment env;
 
   @override
   Future<Function> removeBy(String channelcode) async{
-    await channelCommentDAO.removeCommentBy(channelcode,env?.userPrincipal?.person);
+    await channelCommentDAO.removeCommentBy(channelcode,env?.principal?.person);
 
   }
 
@@ -136,11 +136,11 @@ Environment env;
   @override
   Future<List<ChannelComment>> pageComments(
       String msgid, int pageSize, int offset) async {
-    return await channelCommentDAO.pageLikeCommentBy(msgid,env?.userPrincipal?.person, pageSize, offset);
+    return await channelCommentDAO.pageLikeCommentBy(msgid,env?.principal?.person, pageSize, offset);
   }
 
   @override
   Future<Function> removeComment(String id) async {
-    await channelCommentDAO.removeComment(id,env?.userPrincipal?.person);
+    await channelCommentDAO.removeComment(id,env?.principal?.person);
   }
 }

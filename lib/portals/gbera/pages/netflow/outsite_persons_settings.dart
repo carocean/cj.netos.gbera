@@ -331,7 +331,7 @@ class __SelectPersonState extends State<_SelectPerson> {
               '${Uuid().v1()}',
               widget.channel.code,
               official,
-              widget.pageContext.userPrincipal.person,
+              widget.pageContext.principal.person,
             ),
           );
         }
@@ -343,7 +343,7 @@ class __SelectPersonState extends State<_SelectPerson> {
               '${Uuid().v1()}',
               widget.channel.code,
               official,
-              widget.pageContext.userPrincipal.person,
+              widget.pageContext.principal.person,
             ),
           );
         } else {

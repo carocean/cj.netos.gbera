@@ -106,7 +106,9 @@ import 'package:gbera/portals/gbera/store/services/channel_pin.dart';
 import 'package:gbera/portals/gbera/store/services/channels.dart';
 import 'package:gbera/portals/gbera/store/services/chat_rooms.dart';
 import 'package:gbera/portals/gbera/store/services/insite_messages.dart';
+import 'package:gbera/portals/gbera/store/services/local_principals.dart';
 import 'package:gbera/portals/gbera/store/services/persons.dart';
+import 'package:gbera/portals/gbera/store/services/principals.dart';
 
 import 'desklets/chats/add_friend.dart';
 import 'desklets/chats/chat_talk.dart';
@@ -116,8 +118,6 @@ import 'desklets/chats/room_settings.dart';
 import 'desklets/desklets.dart';
 import 'entrypoint.dart';
 import 'login.dart';
-import 'login2.dart';
-import 'login3.dart';
 import 'pages/desktop/wallpappers.dart';
 import 'pages/system/gbera_settings.dart';
 import 'pages/users/account_viewer.dart';
@@ -134,6 +134,8 @@ class GberaPortal {
       name: '金证时代官方框架',
       buildPortalStore: (Portal portal, IServiceProvider site) => PortalStore(
         services: {
+          "/principals": PrincipalService(site: site),
+          "/local/principals":DefaultLocalPrincipalManager(site:site),
           "/gbera/persons": PersonService(site: site),
           "/gbera/friends": FriendService(site: site),
           '/netflow/channels': ChannelService(site: site),
@@ -321,30 +323,13 @@ class GberaPortal {
             context: pageContext,
           ),
         ),
+
         Page(
           title: '登录',
           subtitle: '',
           icon: GalleryIcons.shrine,
           url: '/login',
           buildPage: (PageContext pageContext) => LoginPage(
-            context: pageContext,
-          ),
-        ),
-        Page(
-          title: '登录2',
-          subtitle: '',
-          icon: GalleryIcons.shrine,
-          url: '/login2',
-          buildPage: (PageContext pageContext) => LoginPage2(
-            context: pageContext,
-          ),
-        ),
-        Page(
-          title: '登录3',
-          subtitle: '',
-          icon: GalleryIcons.shrine,
-          url: '/login3',
-          buildPage: (PageContext pageContext) => LoginPage3(
             context: pageContext,
           ),
         ),

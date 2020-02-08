@@ -74,7 +74,7 @@ class _LandAgentFutrueState extends State<LandAgentFutrue>
                   ),
                   height: 30,
                   child: Image.network(
-                    'http://47.105.165.186:7100/public/market/timg-3.jpeg?App-ID=${widget.context.userPrincipal.appid}&Access-Token=${widget.context.userPrincipal.accessToken}',
+                    'http://47.105.165.186:7100/public/market/timg-3.jpeg?App-ID=${widget.context.principal.appid}&Access-Token=${widget.context.principal.accessToken}',
                     fit: BoxFit.fitHeight,
                   ),
                 ),
