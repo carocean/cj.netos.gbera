@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -7,9 +9,9 @@ class Qrcode extends StatelessWidget {
   var qrcodeKey = GlobalKey();
 
   Qrcode({this.context});
+
   @override
   Widget build(BuildContext context) {
-
     var bb = this.context.parameters['back_button'];
     return Scaffold(
       appBar: AppBar(
@@ -27,12 +29,15 @@ class Qrcode extends StatelessWidget {
           key: qrcodeKey,
           child: QrImage(
             ///二维码数据
-            data: "1234567890",
+            data: "{'data':'${this.context.principal.person}','type':'person'}",
             version: QrVersions.auto,
             size: 200.0,
             gapless: false,
-            embeddedImage: NetworkImage(
-                'http://pic-bucket.ws.126.net/photo/0001/2019-08-13/EMENLA1600AN0001NOS.jpg'),
+            embeddedImage: FileImage(
+              File(
+                this.context.principal.avatarOnLocal,
+              ),
+            ),
             embeddedImageStyle: QrEmbeddedImageStyle(
               size: Size(40, 40),
             ),

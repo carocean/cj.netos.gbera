@@ -2,26 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gbera/netos/common.dart';
 
-class AccountLogin extends StatelessWidget {
+class AccountLogin extends StatefulWidget {
   PageContext context;
 
   AccountLogin({this.context});
 
   @override
+  _AccountLoginState createState() => _AccountLoginState();
+}
+
+class _AccountLoginState extends State<AccountLogin> {
+
+  @override
   Widget build(BuildContext context) {
+    var account = widget.context.parameters['account'];
+    print(account);
+    var avatar =
+        '${account['avatar']}?accessToken=${widget.context.principal.accessToken}';
     var card_face = Container(
       child: Column(
         children: <Widget>[
           Padding(
             padding: EdgeInsets.all(10),
             child: Image.network(
-              'http://www.xcg.roboo.com/upload/2013-07-10/1373446849106-21510.jpg',
+              avatar,
               fit: BoxFit.contain,
               width: 70,
               height: 70,
             ),
           ),
-          Text('cj'),
+          Text(account['accountCode']),
         ],
       ),
     );
@@ -40,7 +50,7 @@ class AccountLogin extends StatelessWidget {
           width: double.maxFinite,
         ),
         child: Text(
-          '应用:gbera  租户:netos',
+          '用户号:${account['uid']}',
           style: TextStyle(
             color: Colors.grey[500],
             fontWeight: FontWeight.w500,
@@ -88,11 +98,11 @@ class AccountLogin extends StatelessWidget {
         ),
       ),
     );
-    var bb = this.context.parameters['back_button'];
+    var bb = widget.context.parameters['back_button'];
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          this.context.page?.title,
+          widget.context.page?.title,
         ),
         titleSpacing: 0,
         elevation: 0,
@@ -111,7 +121,7 @@ class AccountLogin extends StatelessWidget {
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
-                    this.context.forward('/users/accounts/editPassword');
+                    widget.context.forward('/users/accounts/editPassword');
                   },
                   child: item_appid,
                 ),
@@ -121,7 +131,7 @@ class AccountLogin extends StatelessWidget {
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
-                    this.context.forward('/users/accounts/login');
+                    widget.context.forward('/users/accounts/login');
                   },
                   child: item_pwd,
                 ),
@@ -138,7 +148,7 @@ class AccountLogin extends StatelessWidget {
     if (bb == null) return null;
     return IconButton(
       onPressed: () {
-        this.context.backward();
+        widget.context.backward();
       },
       icon: Icon(
         Icons.clear,
@@ -147,3 +157,4 @@ class AccountLogin extends StatelessWidget {
     );
   }
 }
+

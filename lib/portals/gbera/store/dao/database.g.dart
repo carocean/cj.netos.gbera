@@ -334,6 +334,13 @@ class _$IPrincipalDAO extends IPrincipalDAO {
   }
 
   @override
+  Future<void> emptyRefreshToken(String person) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE Principal SET refreshToken=NULL WHERE person=?',
+        arguments: <dynamic>[person]);
+  }
+
+  @override
   Future<void> add(Principal principal) async {
     await _principalInsertionAdapter.insert(
         principal, sqflite.ConflictAlgorithm.abort);

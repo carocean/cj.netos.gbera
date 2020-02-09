@@ -484,9 +484,14 @@ abstract class IPrincipalDAO {
   @Query('delete FROM Principal WHERE person = :person')
   Future<void> remove(String person) {}
 
-  @Query('UPDATE Principal SET refreshToken=:refreshToken , accessToken = :accessToken WHERE person=:person')
-  Future<void> updateToken(String refreshToken,String accessToken, String person) {}
+  @Query(
+      'UPDATE Principal SET refreshToken=:refreshToken , accessToken = :accessToken WHERE person=:person')
+  Future<void> updateToken(
+      String refreshToken, String accessToken, String person) {}
 
   @Query('SELECT *  FROM Principal where person=:person')
   Future<Principal> get(String person);
+
+  @Query('UPDATE Principal SET refreshToken=NULL WHERE person=:person')
+  Future<void> emptyRefreshToken(String person) {}
 }

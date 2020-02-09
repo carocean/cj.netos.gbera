@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
 
-class AccountViewer extends StatelessWidget {
+class AccountViewer extends StatefulWidget {
   PageContext context;
 
   AccountViewer({this.context});
 
   @override
+  _AccountViewerState createState() => _AccountViewerState();
+}
+
+class _AccountViewerState extends State<AccountViewer> {
+  @override
   Widget build(BuildContext context) {
+    var account = widget.context.parameters['account'];
+    print(account);
+    var avatar =
+        '${account['avatar']}?accessToken=${widget.context.principal.accessToken}';
     var card_face = Container(
       child: Column(
         children: <Widget>[
           Padding(
             padding: EdgeInsets.all(10),
             child: Image.network(
-              'http://www.xcg.roboo.com/upload/2013-07-10/1373446849106-21510.jpg',
+              avatar,
               fit: BoxFit.contain,
               width: 70,
               height: 70,
@@ -51,6 +60,52 @@ class AccountViewer extends StatelessWidget {
             Icons.arrow_forward_ios,
             color: Colors.grey[400],
             size: 16,
+          ),
+        ],
+      ),
+    );
+    var item_change_nickname = Container(
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: 20,
+        bottom: 20,
+      ),
+      color: Colors.white,
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(
+              right: 10,
+            ),
+            child: Text(
+              '修改昵称',
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          Row(
+            children: <Widget>[
+              Text(
+                account['nickName'],
+                style: TextStyle(
+                  color: Colors.black54,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: 5,
+                ),
+                child: Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.grey[400],
+                  size: 16,
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -103,11 +158,11 @@ class AccountViewer extends StatelessWidget {
         ),
       ),
     );
-    var bb = this.context.parameters['back_button'];
+    var bb = widget.context.parameters['back_button'];
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          this.context.page?.title,
+          widget.context.page?.title,
         ),
         titleSpacing: 0,
         elevation: 0,
@@ -126,7 +181,17 @@ class AccountViewer extends StatelessWidget {
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
-                    this.context.forward('/users/accounts/editPassword');
+                    widget.context.forward('/users/accounts/editNickName',arguments: {'account':account});
+                  },
+                  child: item_change_nickname,
+                ),
+                Divider(
+                  height: 1,
+                ),
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    widget.context.forward('/users/accounts/editPassword',arguments: {'account':account});
                   },
                   child: item_change_pwd,
                 ),
@@ -136,7 +201,7 @@ class AccountViewer extends StatelessWidget {
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
-                    this.context.forward('/users/accounts/login');
+                    widget.context.forward('/users/accounts/login',arguments: {'account':account});
                   },
                   child: item_switch_login,
                 ),
@@ -153,7 +218,7 @@ class AccountViewer extends StatelessWidget {
     if (bb == null) return null;
     return IconButton(
       onPressed: () {
-        this.context.backward();
+        widget.context.backward();
       },
       icon: Icon(
         Icons.clear,

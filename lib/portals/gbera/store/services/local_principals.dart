@@ -21,7 +21,7 @@ mixin ILocalPrincipalManager {
   bool isEmpty();
 
   //请求远程刷新token并存储
-  Future<void> doRefreshToken();
+  Future<void> doRefreshToken([error,susseed]);
 
   //刷入信息到本地
   void add(
@@ -41,6 +41,9 @@ mixin ILocalPrincipalManager {
     final int expiretime,
     final String device,
   }) {}
+
+  Future<void> emptyRefreshToken() ;
+
 }
 
 class DefaultLocalPrincipalManager implements ILocalPrincipalManager {
@@ -72,16 +75,31 @@ class DefaultLocalPrincipalManager implements ILocalPrincipalManager {
   }
 
   @override
-  Future<void> doRefreshToken() async {
+  Future<void> emptyRefreshToken() async{
+    Principal principal=get(_current);
+   await _principalService.emptyRefreshToken(_current);
+    _cached[_current]=await _principalService.get(_current);
+  }
+
+  @override
+  Future<void> doRefreshToken([error,susseed]) async {
+    String person = _current;
+    Principal principal = await _principalService.get(person);
+    //如果令牌还能用半个小时就不刷新，半个小时会导致用户在使用中间令牌失效
+    //非常操蛋，entrypoint会一次性调用两次doRefreshToken，而且第二次传入的是旧的refreshToken，因此第二次会验证失败，故计是一次进入该方法两个处理，都拿的是旧的。之后再找原因
+    if(principal?.pubtime+principal?.expiretime>DateTime.now().millisecondsSinceEpoch-1800000){
+      if(susseed!=null) {
+        susseed(principal);
+      }
+      return;
+    }
     Dio dio = _site.getService('@.http');
     AppKeyPair appKeyPair = _site.getService('@.appKeyPair');
     //强制刷新所有账户的访问令牌
-    String person = _current;
-    Principal principal = await _principalService.get(person);
     var appNonce = MD5Util.generateMd5(Uuid().v1()).toUpperCase();
     var response = await dio
         .post(
-      'http://47.105.165.186/uc/auth.service',
+      _site.getService('@.prop.ports.uc.auth'),
       queryParameters: {
         'refreshToken': principal.refreshToken,
       },
@@ -106,6 +124,9 @@ class DefaultLocalPrincipalManager implements ILocalPrincipalManager {
     var map = jsonDecode(data);
     if (map['status'] as int >= 400) {
       print('刷新失败：${map['status']} ${map['message']}');
+      if(error!=null) {
+        error(map);
+      }
       return;
     }
     var json = map['dataText'];
@@ -114,25 +135,11 @@ class DefaultLocalPrincipalManager implements ILocalPrincipalManager {
     String refreshToken = result['refreshToken'];
     await _principalService.updateToken(refreshToken, accessToken, person);
     //更新缓冲
-    Principal exists = _cached[person];
-    var createone = Principal(
-      exists.person,
-      exists.uid,
-      exists.accountCode,
-      exists.nickName,
-      exists.appid,
-      exists.roles,
-      accessToken,
-      refreshToken,
-      exists.ravatar,
-      exists.lavatar,
-      exists.signature,
-      exists.ltime,
-      exists.pubtime,
-      exists.expiretime,
-      exists.device,
-    );
-    _cached[createone.person] = createone;
+    Principal one = await _principalService.get(person);
+    _cached[person] = one;
+    if(susseed!=null) {
+      susseed(one);
+    }
   }
 
   @override

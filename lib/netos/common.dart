@@ -481,6 +481,14 @@ mixin MD5Util {
     return hex.encode(digest.bytes);
   }
 }
+mixin Sha1Util {
+  static String generateSha1(String data) {
+    var content = new Utf8Encoder().convert(data);
+    var digest = sha1.convert(content);
+    // 这里其实就是 digest.toString()
+    return hex.encode(digest.bytes);
+  }
+}
 mixin PersonUtil {
   static String official(accountName, appid, tenantid) {
     return '$accountName@$appid.$tenantid';
@@ -936,7 +944,7 @@ class PageContext {
   ) async {
     Dio dio = site.getService('@.http');
     var response = await dio.get(
-      'http://47.105.165.186:7110/del/file/',
+      site.getService('@.prop.fs.delfile'),
       options: Options(
           //上传的accessToken在header中，为了兼容在参数里也放
 //        headers: {
@@ -975,7 +983,7 @@ class PageContext {
       }
       prev = prev.substring(prev.lastIndexOf('/') + 1, prev.length);
       String fn = "${Uuid().v1()}_$prev.$ext";
-      remoteFiles[f] = 'http://47.105.165.186:7100$remoteDir/$fn';
+      remoteFiles[f] = '${site.getService('@.prop.fs.reader')}$remoteDir/$fn';
       print(remoteFiles[f]);
       files.add(await MultipartFile.fromFile(
         f,
@@ -986,7 +994,7 @@ class PageContext {
       'files': files,
     });
     var response = await dio.post(
-      'http://47.105.165.186:7110/upload/uploader.service',
+      site.getService('@.prop.fs.uploader'),
       data: data,
       options: Options(
         //上传的accessToken在header中，为了兼容在参数里也放

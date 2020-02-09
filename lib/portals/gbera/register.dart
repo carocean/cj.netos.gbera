@@ -29,6 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _buttonEnabled = false;
   bool _showPassword = false;
   String _anonymousAccessToken;
+  String _registerLabel = '注册';
 
   @override
   void initState() {
@@ -44,7 +45,7 @@ class _RegisterPageState extends State<RegisterPage> {
     var nonce = MD5Util.generateMd5(Uuid().v1()).toUpperCase();
     String sign = appKeyPair.appSign(nonce);
     await widget.context.ports(
-      'post http://47.105.165.186/uc/auth.service http/1.1',
+      'post ${widget.context.site.getService('@.prop.ports.uc.auth')} http/1.1',
       restCommand: 'auth',
       headers: {
         'App-Id': appKeyPair.appid,
@@ -88,10 +89,14 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _doRegister() async {
+    setState(() {
+      _buttonEnabled = false;
+      _registerLabel = '注册中...';
+    });
     AppKeyPair appKeyPair = widget.context.site.getService('@.appKeyPair');
     var nonce = MD5Util.generateMd5(Uuid().v1());
     await widget.context.ports(
-      'post http://47.105.165.186/uc/register.service http/1.1',
+      'post ${widget.context.site.getService('@.prop.ports.uc.register')} http/1.1',
       restCommand: 'registerByIphone',
       headers: {
         'app-id': appKeyPair.appid,
@@ -108,6 +113,9 @@ class _RegisterPageState extends State<RegisterPage> {
       onerror: ({e, stack}) {
         widget.context.deleteRemoteFile(_avatarRemoteFile);
         print('-----$e');
+        _buttonEnabled = true;
+        _registerLabel = '注册';
+        setState(() {});
       },
       onsucceed: ({rc, response}) async {
         print('-----$response');
@@ -124,7 +132,7 @@ class _RegisterPageState extends State<RegisterPage> {
           roles: <String>[],
           accessToken: _anonymousAccessToken,
           refreshToken: null,
-          remoteAvatar:  _avatarRemoteFile,
+          remoteAvatar: _avatarRemoteFile,
           localAvatar: _localAvatarFile,
           signature: null,
           ltime: 0,
@@ -205,9 +213,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 _AvatarRegion(
                   context: widget.context,
-                  onAfterUpload: (removeAvatarFile,localAvatarFile) {
+                  onAfterUpload: (removeAvatarFile, localAvatarFile) {
                     _avatarRemoteFile = removeAvatarFile;
-                    _localAvatarFile=localAvatarFile;
+                    _localAvatarFile = localAvatarFile;
                   },
                   anonymousAccessToken: _anonymousAccessToken,
                 ),
@@ -383,7 +391,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               child: Text(
-                '注册',
+                _registerLabel,
                 style: TextStyle(
                   fontSize: 18,
                   color: _buttonEnabled ? Colors.white : Colors.grey[500],
@@ -400,7 +408,7 @@ class _RegisterPageState extends State<RegisterPage> {
 class _AvatarRegion extends StatefulWidget {
   PageContext context;
   String anonymousAccessToken;
-  Function(String removeAvatarFile,String localAvatarFile) onAfterUpload;
+  Function(String removeAvatarFile, String localAvatarFile) onAfterUpload;
 
   _AvatarRegion({this.onAfterUpload, this.context, this.anonymousAccessToken});
 
@@ -457,7 +465,7 @@ class __AvatarRegionState extends State<_AvatarRegion> {
                 setState(() {});
                 var remoteAvatar = await _doUploadAvatar(avatar);
                 if (widget.onAfterUpload != null) {
-                  widget.onAfterUpload(remoteAvatar,_avatarFile);
+                  widget.onAfterUpload(remoteAvatar, _avatarFile);
                 }
               });
             },

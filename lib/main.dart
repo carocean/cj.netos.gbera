@@ -15,6 +15,17 @@ void main()  {
     ),
     props: {
       '@.prop.isTest': true,
+      '@.prop.ports.uc.auth':'http://47.105.165.186/uc/auth.service',
+      '@.prop.ports.uc.register':'http://47.105.165.186/uc/register.service',
+      '@.prop.ports.uc.person':'http://47.105.165.186/uc/person/self.service',
+      '@.prop.fs.delfile':'http://47.105.165.186:7110/del/file/',
+      '@.prop.fs.uploader':'http://47.105.165.186:7110/upload/uploader.service',
+      '@.prop.fs.reader':'http://47.105.165.186:7100',
+      //网易云短信接口应在uc中心注册
+//      '@.prop.api.netease.im.url.sendcode':'https://api.netease.im/sms/sendcode.action',
+//      '@.prop.api.netease.im.url.verifycode':'https://api.netease.im/sms/verifycode.action',
+//      '@.prop.api.netease.im.appKey':'f54c7223b49c68b8d2af7b7f2ecb834e',
+//      '@.prop.api.netease.im.appSecret':'fec5cc11d9e4',
     },
     appKeyPair: AppKeyPair(
       appid: 'gbera.netos',

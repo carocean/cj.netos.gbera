@@ -220,4 +220,7 @@ mixin IPrincipalService {
 
   Future<Principal> get(String person);
 
+  Future<void> emptyRefreshToken(String current) {}
+
+
 }

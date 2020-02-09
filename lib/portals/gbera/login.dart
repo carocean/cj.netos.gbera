@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -11,6 +12,7 @@ import 'package:gbera/portals/gbera/store/entities.dart';
 import 'package:gbera/portals/gbera/store/pics/downloads.dart';
 import 'package:gbera/portals/gbera/store/services/local_principals.dart';
 import 'package:uuid/uuid.dart';
+import 'package:crypto/crypto.dart';
 
 class LoginPage extends StatefulWidget {
   PageContext context;
@@ -169,6 +171,7 @@ class __PasswordPanelState extends State<_PasswordPanel> {
   TextEditingController _passwordController;
   bool _buttonEnabled = false;
   bool _showPassword = false;
+  String _loginLabel = '登录';
 
   @override
   void initState() {
@@ -191,11 +194,18 @@ class __PasswordPanelState extends State<_PasswordPanel> {
   }
 
   _doLogin() {
+    _loginLabel = '登录中...';
+    _buttonEnabled = false;
+    setState(() {});
     var login = PasswordLoginAction(
         context: widget.context,
         pwd: _passwordController.text,
         user: _accountController.text);
-    login.login();
+    login.login(() {
+      _loginLabel = '登录';
+      _buttonEnabled = true;
+      setState(() {});
+    });
   }
 
   @override
@@ -367,7 +377,7 @@ class __PasswordPanelState extends State<_PasswordPanel> {
               ),
             ),
             child: Text(
-              '登录',
+              _loginLabel,
               style: TextStyle(
                 fontSize: 18,
                 color: _buttonEnabled ? Colors.white : Colors.grey[500],
@@ -391,6 +401,49 @@ class _VerifyCodePanel extends StatefulWidget {
 }
 
 class __VerifyCodePanelState extends State<_VerifyCodePanel> {
+  TextEditingController _phoneController;
+  TextEditingController _codeController;
+  bool _buttonEnabel = false;
+  String _loginLabel = '登录';
+  bool sendOk = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _phoneController = TextEditingController();
+    _codeController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _phoneController.dispose();
+    _codeController.dispose();
+    _buttonEnabel = false;
+    super.dispose();
+  }
+
+  bool _checkButtonEnabel() {
+    return !StringUtil.isEmpty(_codeController.text) &&
+        !StringUtil.isEmpty(_phoneController.text) &&
+        _codeController.text.length == 6 &&
+        sendOk;
+  }
+
+  _doLogin() {
+    _loginLabel = '登录中...';
+    _buttonEnabel = false;
+    setState(() {});
+    PasswordLoginAction(
+        context: widget.context,
+        pwd: _codeController.text,
+        user: _phoneController.text)
+      ..login(() {
+        _loginLabel = '登录中...';
+        _buttonEnabel = false;
+        setState(() {});
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -431,6 +484,11 @@ class __VerifyCodePanelState extends State<_VerifyCodePanel> {
               ),
               Expanded(
                 child: TextField(
+                  controller: _phoneController,
+                  onChanged: (v) {
+                    _buttonEnabel = _checkButtonEnabel();
+                    setState(() {});
+                  },
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: '请填写手机号',
@@ -470,6 +528,11 @@ class __VerifyCodePanelState extends State<_VerifyCodePanel> {
                     ),
                     Expanded(
                       child: TextField(
+                        controller: _codeController,
+                        onChanged: (v) {
+                          _buttonEnabel = _checkButtonEnabel();
+                          setState(() {});
+                        },
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: '请填写短信验证码',
@@ -483,31 +546,19 @@ class __VerifyCodePanelState extends State<_VerifyCodePanel> {
                   ],
                 ),
               ),
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {},
-                child: Container(
-                  padding: EdgeInsets.only(
-                    left: 20,
-                    right: 20,
-                    top: 7,
-                    bottom: 7,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(8),
-                    ),
-                  ),
-                  child: Text(
-                    '获取验证码',
-                    style: TextStyle(
-                      color: Colors.green,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
+              _VerifyCodeButton(
+                context: widget.context,
+                phoneController: _phoneController,
+                onerror: () {
+                  sendOk = false;
+                  _buttonEnabel = _checkButtonEnabel();
+                  setState(() {});
+                },
+                onsussed: () {
+                  sendOk = true;
+                  _buttonEnabel = _checkButtonEnabel();
+                  setState(() {});
+                },
               ),
             ],
           ),
@@ -548,7 +599,7 @@ class __VerifyCodePanelState extends State<_VerifyCodePanel> {
         ),
         GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () {},
+          onTap: _doLogin,
           child: Container(
             margin: EdgeInsets.only(
               left: 20,
@@ -557,16 +608,16 @@ class __VerifyCodePanelState extends State<_VerifyCodePanel> {
             height: 45,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: _buttonEnabel ? Colors.green : Colors.grey[300],
               borderRadius: BorderRadius.all(
                 Radius.circular(4),
               ),
             ),
             child: Text(
-              '登录',
+              _loginLabel,
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.grey[500],
+                color: _buttonEnabel ? Colors.white : Colors.grey[500],
               ),
             ),
           ),
@@ -592,6 +643,7 @@ class __ExistsAccountPanelState extends State<_ExistsAccountPanel> {
   TextEditingController _passwordController;
   bool _buttonEnabled = false;
   bool _showPassword = false;
+  String _loginLabel = '登录';
 
   @override
   void initState() {
@@ -754,7 +806,7 @@ class __ExistsAccountPanelState extends State<_ExistsAccountPanel> {
               ),
             ),
             child: Text(
-              '登录',
+              _loginLabel,
               style: TextStyle(
                 fontSize: 18,
                 color: _buttonEnabled ? Colors.white : Colors.grey[500],
@@ -767,12 +819,19 @@ class __ExistsAccountPanelState extends State<_ExistsAccountPanel> {
   }
 
   void _doLogin(Principal principal) async {
+    _loginLabel = '登录中...';
+    _buttonEnabled = false;
+    setState(() {});
     var login = PasswordLoginAction(
       context: widget.context,
       pwd: _passwordController.text,
       user: principal.accountCode,
     );
-    login.login();
+    login.login(() {
+      _loginLabel = '登录';
+      _buttonEnabled = true;
+      setState(() {});
+    });
   }
 }
 
@@ -783,7 +842,7 @@ class PasswordLoginAction {
 
   const PasswordLoginAction({this.user, this.pwd, this.context});
 
-  login() {
+  login([callback]) {
     int pos = user.lastIndexOf("@");
     var account = '';
     if (pos < 0) {
@@ -794,7 +853,7 @@ class PasswordLoginAction {
     AppKeyPair appKeyPair = this.context.site.getService('@.appKeyPair');
     var nonce = MD5Util.generateMd5(Uuid().v1());
     context.ports(
-      'get http://47.105.165.186/uc/auth.service http/1.1',
+      'get ${context.site.getService('@.prop.ports.uc.auth')} http/1.1',
       restCommand: 'auth',
       headers: {
         'app-id': appKeyPair.appid,
@@ -811,6 +870,9 @@ class PasswordLoginAction {
         forwardOK(rc);
       },
       onerror: ({e, stack}) {
+        if (callback != null) {
+          callback();
+        }
         forwardError(e);
       },
       onReceiveProgress: (i, j) {
@@ -834,7 +896,8 @@ class PasswordLoginAction {
     }
     Dio dio = context.site.getService('@.http');
     String localAvatarFile = await Downloads.downloadPersonAvatar(
-        dio: dio, avatarUrl: '${subject['avatar']}?accessToken=${token['accessToken']}');
+        dio: dio,
+        avatarUrl: '${subject['avatar']}?accessToken=${token['accessToken']}');
     manager.add(
       subject['person'],
       ltime: DateTime.now().millisecondsSinceEpoch,
@@ -864,5 +927,124 @@ class PasswordLoginAction {
       },
     );
 //    context.forward("gbera://error.page", arguments: {"error": '$e'});
+  }
+}
+
+class _VerifyCodeButton extends StatefulWidget {
+  PageContext context;
+  TextEditingController phoneController;
+  Function() onsussed;
+  Function onerror;
+
+  _VerifyCodeButton(
+      {this.context, this.phoneController, this.onerror, this.onsussed});
+
+  @override
+  __VerifyCodeButtonState createState() => __VerifyCodeButtonState();
+}
+
+class __VerifyCodeButtonState extends State<_VerifyCodeButton> {
+  String _fetchCodeLabel = '获取验证码';
+  bool _fetchButtonEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.phoneController.addListener(() {
+      _fetchButtonEnabled = !StringUtil.isEmpty(widget.phoneController.text);
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  _requestCode() async {
+    _fetchCodeLabel = '获取中...';
+    _fetchButtonEnabled = false;
+    setState(() {});
+    AppKeyPair appKeyPair = widget.context.site.getService('@.appKeyPair');
+    var nonce = MD5Util.generateMd5(Uuid().v1());
+    await widget.context.ports(
+      'get ${widget.context.site.getService('@.prop.ports.uc.auth')} http/1.1',
+      restCommand: 'sendVerifyCode',
+      headers: {
+        'app-id': appKeyPair.appid,
+        'app-key': appKeyPair.appKey,
+        'app-nonce': nonce,
+        'app-sign': appKeyPair.appSign(nonce),
+      },
+      parameters: {
+        "phone": widget.phoneController.text,
+      },
+      onsucceed: ({dynamic rc, dynamic response}) {
+        print(rc);
+        _fetchCodeLabel = '获取成功';
+        if (widget.onsussed != null) {
+          widget.onsussed();
+        }
+        var times = 60;
+        Timer.periodic(Duration(milliseconds: 1000), (t) {
+          if (times == 0) {
+            t.cancel();
+            _fetchCodeLabel = '重新获取';
+            _fetchButtonEnabled = true;
+            if(super.mounted) {
+              setState(() {});
+            }
+            return;
+          }
+          _fetchCodeLabel = '等待..${times}s';
+          times--;
+          if(super.mounted) {
+            setState(() {});
+          }
+        });
+      },
+      onerror: ({e, stack}) {
+        print(e);
+        _fetchCodeLabel = '重新获取';
+        _fetchButtonEnabled = true;
+        if (widget.onerror != null) {
+          widget.onerror();
+        }
+        setState(() {});
+      },
+      onReceiveProgress: (i, j) {
+        print('$i-$j');
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: !_fetchButtonEnabled ? null : _requestCode,
+      child: Container(
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: 7,
+          bottom: 7,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.all(
+            Radius.circular(8),
+          ),
+        ),
+        child: Text(
+          _fetchCodeLabel,
+          style: TextStyle(
+            color: !_fetchButtonEnabled ? Colors.grey[400] : Colors.green,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/gbera/store/services/local_principals.dart';
 
 class UserAndAccountList extends StatelessWidget {
   PageContext context;
@@ -27,16 +30,18 @@ class UserAndAccountList extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.only(
                     right: 10,
                   ),
-                  child: Image.network(
-                    'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1571635906558&di=6caea35e3b313143fb2879288dbc6084&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201803%2F15%2F20180315202601_wnwme.jpg',
-                    width: 35,
-                    height: 35,
+                  child: Image.file(
+                    File(
+                      this.context.principal.avatarOnLocal,
+                    ),
+                    width: 60,
+                    height: 60,
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -56,13 +61,32 @@ class UserAndAccountList extends StatelessWidget {
                               TextSpan(
                                 children: [
                                   TextSpan(
+                                    text: '${this.context.principal.nickName}',
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                              bottom: 5,
+                            ),
+                            child: Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(
                                     style: TextStyle(
                                       color: Colors.grey[700],
                                     ),
                                     text: '用户号:',
                                   ),
                                   TextSpan(
-                                    text: '00028383873773737',
+                                    text: '${this.context.principal.uid}',
                                     style: TextStyle(
                                       color: Colors.blueGrey,
                                     ),
@@ -86,7 +110,8 @@ class UserAndAccountList extends StatelessWidget {
                                     text: '登录账号:',
                                   ),
                                   TextSpan(
-                                    text: 'cj',
+                                    text:
+                                        '${this.context.principal.accountCode}',
                                     style: TextStyle(
                                       color: Colors.blueGrey,
                                     ),
@@ -197,16 +222,26 @@ class UserAndAccountList extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(
-              left: 10,
-            ),
-            child: Text(
-              '退出系统',
-              style: TextStyle(
-                color: Colors.blueGrey,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: (){
+              ILocalPrincipalManager manager=this.context.site.getService('/local/principals');
+              manager.emptyRefreshToken().then((v){
+                this.context.forward('/entrypoint');
+              });
+
+            },
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 10,
+              ),
+              child: Text(
+                '退出登录',
+                style: TextStyle(
+                  color: Colors.blueGrey,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ),
@@ -271,9 +306,7 @@ class UserAndAccountList extends StatelessWidget {
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 child: card_exitapp,
-                onTap: () {
-
-                },
+                onTap: () {},
               ),
             ),
           ],

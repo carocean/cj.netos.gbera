@@ -1,17 +1,36 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
 import 'package:gbera/portals/gbera/login.dart';
 import 'package:gbera/portals/gbera/store/services/local_principals.dart';
-import 'package:gbera/portals/gbera/store/entities.dart';
 
-class EntryPoint extends StatelessWidget {
+class EntryPoint extends StatefulWidget {
   PageContext context;
+
+  EntryPoint({this.context});
+
+  @override
+  _EntryPointState createState() => _EntryPointState();
+}
+
+class _EntryPointState extends State<EntryPoint> {
   ILocalPrincipalManager _localPrincipalManager;
-  EntryPoint({this.context}){
-    _localPrincipalManager=context.site.getService('/local/principals');
+
+  @override
+  void initState() {
+    super.initState();
+    _localPrincipalManager =
+        widget.context.site.getService('/local/principals');
+    if(!_localPrincipalManager.isEmpty()) {
+      _localPrincipalManager.setCurrent(_localPrincipalManager.list()[0]);
+    }
+  }
+
+  @override
+  void dispose() {
+    _localPrincipalManager=null;
+    super.dispose();
   }
 
   @override
@@ -22,17 +41,18 @@ class EntryPoint extends StatelessWidget {
     if (_localPrincipalManager.isEmpty()) {
       //加载主入口部件（有登录和注册选项）
       body = _EntryPointIndex(
-        context: this.context,
+        context: widget.context,
       );
       return body;
     }
-    _localPrincipalManager.setCurrent(_localPrincipalManager.list()[0]);
+//    _localPrincipalManager.setCurrent(_localPrincipalManager.list()[0]);
+
     var localPrincipal =
         _localPrincipalManager.get(_localPrincipalManager.current()); //以此作为登录用户
     //如果刷新令牌为空则必须登录
     if (localPrincipal.refreshToken == null) {
       body = LoginPage(
-        context: this.context,
+        context: widget.context,
       );
       return body;
     }
@@ -53,13 +73,24 @@ class EntryPoint extends StatelessWidget {
   }
 
   Future<void> _refreshToken() async {
-    await _localPrincipalManager.doRefreshToken();
-    Future.delayed(
-        Duration(
-          milliseconds: 300,
-        ), () {
-      this.context.forward("gbera://scaffold/withbottombar",
-          clearHistoryPageUrl: '/');
+    await _localPrincipalManager.doRefreshToken((map) async {
+      //失败则重新登录
+      await _localPrincipalManager.emptyRefreshToken();
+//      Future.delayed(
+//          Duration(
+//            milliseconds: 300,
+//          ), () {
+//        widget.context.forward('/entrypoint');
+//      });
+    }, (v) {
+      //成功则到桌面
+      Future.delayed(
+          Duration(
+            milliseconds: 300,
+          ), () {
+        widget.context.forward("gbera://scaffold/withbottombar",
+            clearHistoryPageUrl: '/');
+      });
     });
   }
 }

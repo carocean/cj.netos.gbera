@@ -160,19 +160,30 @@ class _DesktopState extends State<Desktop> with AutomaticKeepAliveClientMixin {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(
-                                bottom: 2,
-                              ),
-                              child: Text(
-                                '${widget.context.principal?.nickName}',
-                                softWrap: true,
-                              ),
-                            ),
                             Text(
-                              '${widget.context.principal.signature ?? ''}',
+                              '${widget.context.principal?.nickName}',
                               softWrap: true,
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
+                            if (!StringUtil.isEmpty(
+                                widget.context.principal.signature))
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  top: 3,
+                                ),
+                                child: Text(
+                                  '${widget.context.principal.signature}',
+                                  softWrap: true,
+                                  style: TextStyle(
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
                           ],
                         ),
                       ),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
@@ -33,8 +35,11 @@ class Profile extends StatelessWidget {
                       child: Padding(
                         padding: EdgeInsets.all(4),
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage(
-                              'http://pic-bucket.ws.126.net/photo/0001/2019-08-13/EMENLA1600AN0001NOS.jpg'),
+                          backgroundImage: FileImage(
+                            File(
+                              this.context.principal.avatarOnLocal,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -51,7 +56,7 @@ class Profile extends StatelessWidget {
                               bottom: 5,
                             ),
                             child: Text(
-                              '${this.context.principal?.accountCode}',
+                              '${this.context.principal.nickName} ${this.context.principal?.accountCode}',
                               style: this
                                   .context
                                   .style('/profile/header-face-title.text'),
@@ -227,9 +232,7 @@ class Profile extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-
-        ],
+        children: <Widget>[],
       ),
     );
     //设置
@@ -268,7 +271,7 @@ class Profile extends StatelessWidget {
                       this.context.findPage('/users/list')?.icon,
                       size: 30,
                       color:
-                      this.context.style('/profile/list/item-icon.color'),
+                          this.context.style('/profile/list/item-icon.color'),
                     ),
                   ),
                   Expanded(

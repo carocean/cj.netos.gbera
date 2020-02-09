@@ -18,6 +18,11 @@ class PrincipalService implements IPrincipalService {
   }
 
   @override
+  Future<Function> emptyRefreshToken(String person) async{
+    await principalDAO.emptyRefreshToken(person);
+  }
+
+  @override
   Future<List<Principal>> getAll() async {
     return await principalDAO.getAll();
   }

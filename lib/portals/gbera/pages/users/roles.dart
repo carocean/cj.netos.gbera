@@ -10,21 +10,21 @@ class Roles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var ucRoles=<Widget>[];
-//    for(var role in this.context.userPrincipal.ucRoles) {
-//      var role_item = _buildUcRole(role);
-//      ucRoles.add(role_item);
-//    }
-    var tenantRoles=<Widget>[];
-//    for(var role in this.context.userPrincipal.tenantRoles) {
-//      var role_item = _buildTenantRole(role);
-//      tenantRoles.add(role_item);
-//    }
-    var appRoles=<Widget>[];
-//    for(var role in this.context.userPrincipal.appRoles) {
-//      var role_item = _buildAppRole(role);
-//      appRoles.add(role_item);
-//    }
+    var ucRoles = <Widget>[];
+    var tenantRoles = <Widget>[];
+    var appRoles = <Widget>[];
+    var roles=this.context.principal.roles;
+    for(String role in roles) {
+      if(role.startsWith('platform:')){
+        ucRoles.add(_buildUcRole(role));
+      }
+      if(role.startsWith('tenant:')){
+        tenantRoles.add(_buildTenantRole(role));
+      }
+      if(role.startsWith('app:')){
+        appRoles.add(_buildAppRole(role));
+      }
+    }
     var items_platform = Column(
       children: <Widget>[
         Container(
@@ -57,7 +57,7 @@ class Roles extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(),
                     child: Text(
-                      '点背科技',
+                      '金证时代中国公司',
                       style: TextStyle(
                         color: Colors.grey[500],
                       ),
@@ -78,7 +78,7 @@ class Roles extends StatelessWidget {
             top: 10,
           ),
           child: Column(
-            children:ucRoles,
+            children: ucRoles,
           ),
         ),
       ],
@@ -115,7 +115,9 @@ class Roles extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(),
                     child: Text(
-                      'netos',
+                      this.context.principal.appid.substring(
+                            this.context.principal.appid.indexOf('.') + 1,
+                          ),
                       style: TextStyle(
                         color: Colors.grey[500],
                       ),
@@ -288,7 +290,7 @@ class Roles extends StatelessWidget {
     );
   }
 
-  _buildUcRole(Map role) {
+  _buildUcRole(String role) {
     return Padding(
       padding: EdgeInsets.only(
         bottom: 5,
@@ -306,13 +308,14 @@ class Roles extends StatelessWidget {
             padding: EdgeInsets.only(
               right: 5,
             ),
-            child: Text('${role['roleName']}'),
+            child: Text(role),
           ),
         ],
       ),
     );
   }
-  _buildTenantRole(Map role) {
+
+  _buildTenantRole(String role) {
     return Padding(
       padding: EdgeInsets.only(
         bottom: 5,
@@ -330,13 +333,14 @@ class Roles extends StatelessWidget {
             padding: EdgeInsets.only(
               right: 5,
             ),
-            child: Text('${role['roleName']}'),
+            child: Text(role),
           ),
         ],
       ),
     );
   }
-  _buildAppRole(Map role) {
+
+  _buildAppRole(String role) {
     return Padding(
       padding: EdgeInsets.only(
         bottom: 5,
@@ -354,7 +358,7 @@ class Roles extends StatelessWidget {
             padding: EdgeInsets.only(
               right: 5,
             ),
-            child: Text('${role['roleName']}'),
+            child: Text(role),
           ),
         ],
       ),
