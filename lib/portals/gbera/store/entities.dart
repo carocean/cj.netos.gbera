@@ -381,21 +381,21 @@ class P2PMessage {
 @entity
 class Principal {
   @primaryKey
-  final String person;
-  final String uid;
-  final String accountCode;
-  final String nickName;
-  final String appid;
-  final String roles;
-  final String accessToken;
-  final String refreshToken;
-  final String ravatar;
-  final String lavatar;
-  final String signature;
-  final int ltime;
-  final int pubtime;
-  final int expiretime;
-  final String device;
+   String person;
+   String uid;
+   String accountCode;
+   String nickName;
+   String appid;
+   String roles;
+   String accessToken;
+   String refreshToken;
+   String ravatar;
+   String lavatar;
+   String signature;
+   int ltime;
+   int pubtime;
+   int expiretime;
+   String device;
 
   Principal(
       this.person,

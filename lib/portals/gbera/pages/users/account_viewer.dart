@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:gbera/netos/common.dart';
+import 'package:gbera/portals/gbera/store/services/local_principals.dart';
 
 class AccountViewer extends StatefulWidget {
   PageContext context;
@@ -11,6 +14,34 @@ class AccountViewer extends StatefulWidget {
 }
 
 class _AccountViewerState extends State<AccountViewer> {
+  String _buttonLabel = '删除账户';
+
+  Future<void> _doDelete() async {
+    _buttonLabel = '删除中...';
+    setState(() {});
+    String headline =
+        'get ${widget.context.site.getService('@.prop.ports.uc.person')} http/1.1';
+    await widget.context.ports(
+      headline,
+      restCommand: 'removePerson',
+      headers: {
+        'cjtoken': widget.context.principal.accessToken,
+      },
+      onsucceed: ({rc, response}) {},
+      onerror: ({e, stack}) {
+        print(e);
+        _buttonLabel = '删除账户';
+        setState(() {});
+      },
+    );
+    //删除本地历史
+    ILocalPrincipalManager manager =
+        widget.context.site.getService('/local/principals');
+    var account = widget.context.parameters['account'];
+    await manager.remove(account['person']);
+    widget.context.forward('/entrypoint');
+  }
+
   @override
   Widget build(BuildContext context) {
     var account = widget.context.parameters['account'];
@@ -29,7 +60,7 @@ class _AccountViewerState extends State<AccountViewer> {
               height: 70,
             ),
           ),
-          Text('cj'),
+          Text(account['accountCode']),
         ],
       ),
     );
@@ -64,53 +95,6 @@ class _AccountViewerState extends State<AccountViewer> {
         ],
       ),
     );
-    var item_change_nickname = Container(
-      padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 20,
-        bottom: 20,
-      ),
-      color: Colors.white,
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(
-              right: 10,
-            ),
-            child: Text(
-              '修改昵称',
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          Row(
-            children: <Widget>[
-              Text(
-                account['nickName'],
-                style: TextStyle(
-                  color: Colors.black54,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  left: 5,
-                ),
-                child: Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.grey[400],
-                  size: 16,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-
     var item_switch_login = Container(
       padding: EdgeInsets.only(
         left: 20,
@@ -151,7 +135,7 @@ class _AccountViewerState extends State<AccountViewer> {
         bottom: 20,
       ),
       child: Text(
-        '删除账户',
+        _buttonLabel,
         style: TextStyle(
           fontWeight: FontWeight.w500,
           color: Colors.blueGrey,
@@ -178,36 +162,37 @@ class _AccountViewerState extends State<AccountViewer> {
             ListView(
               shrinkWrap: true,
               children: <Widget>[
+                if (account['person'] == widget.context.principal.person)
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      widget.context.forward('/users/accounts/editPassword',
+                          arguments: {'account': account});
+                    },
+                    child: item_change_pwd,
+                  ),
+                if (account['person'] == widget.context.principal.person)
+                  Divider(
+                    height: 1,
+                    indent: 20,
+                  ),
+                if (account['person'] != widget.context.principal.person)
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
-                    widget.context.forward('/users/accounts/editNickName',arguments: {'account':account});
-                  },
-                  child: item_change_nickname,
-                ),
-                Divider(
-                  height: 1,
-                ),
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    widget.context.forward('/users/accounts/editPassword',arguments: {'account':account});
-                  },
-                  child: item_change_pwd,
-                ),
-                Divider(
-                  height: 1,
-                ),
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    widget.context.forward('/users/accounts/login',arguments: {'account':account});
+                    widget.context.forward('/users/accounts/login',
+                        arguments: {'account': account});
                   },
                   child: item_switch_login,
                 ),
               ],
             ),
-            item_del,
+            if (account['person'] == widget.context.principal.person)
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: _doDelete,
+                child: item_del,
+              ),
           ],
         ),
       ),

@@ -4,10 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gbera/netos/common.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   PageContext context;
 
   Profile({this.context});
+
+  @override
+  _ProfileState createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
@@ -30,14 +36,16 @@ class Profile extends StatelessWidget {
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        this.context.forward('/profile/editor');
+                        widget.context.forward('/profile/editor').then((v){
+
+                        });
                       },
                       child: Padding(
                         padding: EdgeInsets.all(4),
                         child: CircleAvatar(
                           backgroundImage: FileImage(
                             File(
-                              this.context.principal.avatarOnLocal,
+                              widget.context.principal.avatarOnLocal,
                             ),
                           ),
                         ),
@@ -46,7 +54,7 @@ class Profile extends StatelessWidget {
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        this.context.forward('/profile/editor');
+                        widget.context.forward('/profile/editor');
                       },
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,15 +64,15 @@ class Profile extends StatelessWidget {
                               bottom: 5,
                             ),
                             child: Text(
-                              '${this.context.principal.nickName} ${this.context.principal?.accountCode}',
-                              style: this
+                              '${widget.context.principal.nickName}',
+                              style: widget
                                   .context
                                   .style('/profile/header-face-title.text'),
                             ),
                           ),
                           Text(
-                            '用户号: ${this.context.principal?.uid}',
-                            style: this
+                            '${widget.context.principal?.person}',
+                            style: widget
                                 .context
                                 .style('/profile/header-face-no.text'),
                           ),
@@ -84,17 +92,17 @@ class Profile extends StatelessWidget {
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
-                  this.context.forward('/profile/qrcode');
+                  widget.context.forward('/profile/qrcode');
                 },
                 child: Padding(
                   padding: EdgeInsets.only(
                     right: 8,
                   ),
                   child:
-                      this.context.style('/profile/header-right-qrcode.icon'),
+                  widget.context.style('/profile/header-right-qrcode.icon'),
                 ),
               ),
-              this.context.style('/profile/header-right-arrow.icon'),
+              widget.context.style('/profile/header-right-arrow.icon'),
             ],
           ),
         ],
@@ -120,7 +128,7 @@ class Profile extends StatelessWidget {
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {
-                this.context.forward('/wallet');
+                widget.context.forward('/wallet');
               },
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -132,10 +140,10 @@ class Profile extends StatelessWidget {
                       right: 10,
                     ),
                     child: Icon(
-                      this.context.findPage('/wallet').icon,
+                      widget.context.findPage('/wallet').icon,
                       size: 30,
                       color:
-                          this.context.style('/profile/list/item-icon.color'),
+                      widget.context.style('/profile/list/item-icon.color'),
                     ),
                   ),
                   Expanded(
@@ -145,8 +153,8 @@ class Profile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          this.context.findPage('/wallet').title,
-                          style: this
+                          widget.context.findPage('/wallet').title,
+                          style: widget
                               .context
                               .style('/profile/list/item-title.text'),
                         ),
@@ -174,7 +182,7 @@ class Profile extends StatelessWidget {
             ),
             child: GestureDetector(
               onTap: () {
-                this.context.forward('mybusiness://scaffolds/mybusiness',
+                widget.context.forward('mybusiness://scaffolds/mybusiness',
                     themeUrl: '/blue');
               },
               behavior: HitTestBehavior.opaque,
@@ -191,7 +199,7 @@ class Profile extends StatelessWidget {
                       Icons.business,
                       size: 30,
                       color:
-                          this.context.style('/profile/list/item-icon.color'),
+                      widget.context.style('/profile/list/item-icon.color'),
                     ),
                   ),
                   Expanded(
@@ -203,7 +211,7 @@ class Profile extends StatelessWidget {
                         ///是用户的经营管理后台，如我有店铺就经营店铺，我有xx
                         Text(
                           '我的生意',
-                          style: this
+                          style: widget
                               .context
                               .style('/profile/list/item-title.text'),
                         ),
@@ -256,7 +264,7 @@ class Profile extends StatelessWidget {
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {
-                this.context.forward('/users/list');
+                widget.context.forward('/users/list');
               },
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -268,10 +276,10 @@ class Profile extends StatelessWidget {
                       right: 10,
                     ),
                     child: Icon(
-                      this.context.findPage('/users/list')?.icon,
+                      widget.context.findPage('/users/list')?.icon,
                       size: 30,
                       color:
-                          this.context.style('/profile/list/item-icon.color'),
+                      widget.context.style('/profile/list/item-icon.color'),
                     ),
                   ),
                   Expanded(
@@ -281,8 +289,8 @@ class Profile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          this.context.findPage('/users/list')?.title,
-                          style: this
+                          widget.context.findPage('/users/list')?.title,
+                          style: widget
                               .context
                               .style('/profile/list/item-title.text'),
                         ),
@@ -307,7 +315,7 @@ class Profile extends StatelessWidget {
           GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              this.context.forward('/desktop/settings');
+              widget.context.forward('/desktop/settings');
             },
             child: Container(
               padding: EdgeInsets.only(
@@ -324,10 +332,10 @@ class Profile extends StatelessWidget {
                       right: 10,
                     ),
                     child: Icon(
-                      this.context.findPage('/desktop/settings')?.icon,
+                      widget.context.findPage('/desktop/settings')?.icon,
                       size: 30,
                       color:
-                          this.context.style('/profile/list/item-icon.color'),
+                      widget.context.style('/profile/list/item-icon.color'),
                     ),
                   ),
                   Expanded(
@@ -337,8 +345,8 @@ class Profile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          this.context.findPage('/desktop/settings')?.title,
-                          style: this
+                          widget.context.findPage('/desktop/settings')?.title,
+                          style: widget
                               .context
                               .style('/profile/list/item-title.text'),
                         ),
@@ -368,7 +376,7 @@ class Profile extends StatelessWidget {
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {
-                this.context.forward('/system/settings');
+                widget.context.forward('/system/settings');
               },
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -380,10 +388,10 @@ class Profile extends StatelessWidget {
                       right: 10,
                     ),
                     child: Icon(
-                      this.context.findPage('/system/settings').icon,
+                      widget.context.findPage('/system/settings').icon,
                       size: 30,
                       color:
-                          this.context.style('/profile/list/item-icon.color'),
+                      widget.context.style('/profile/list/item-icon.color'),
                     ),
                   ),
                   Expanded(
@@ -394,7 +402,7 @@ class Profile extends StatelessWidget {
                       children: <Widget>[
                         Text(
                           '系统设置',
-                          style: this
+                          style: widget
                               .context
                               .style('/profile/list/item-title.text'),
                         ),
@@ -418,10 +426,10 @@ class Profile extends StatelessWidget {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(150),
         child: AppBar(
-//          title: Text(this.context.page?.title,),
+//          title: Text(widget.context.page?.title,),
 //          titleSpacing: 0,
 //          centerTitle: false,
-          backgroundColor: this.context.style('/profile/header-bg.color'),
+          backgroundColor: widget.context.style('/profile/header-bg.color'),
           elevation: 0.0,
           flexibleSpace: header,
           automaticallyImplyLeading: true,
@@ -463,3 +471,4 @@ class Profile extends StatelessWidget {
     );
   }
 }
+

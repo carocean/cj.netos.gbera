@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gbera/netos/common.dart';
 
+import '../../login.dart';
+
 class AccountLogin extends StatefulWidget {
   PageContext context;
 
@@ -12,6 +14,37 @@ class AccountLogin extends StatefulWidget {
 }
 
 class _AccountLoginState extends State<AccountLogin> {
+  bool _buttonEnable = false;
+  String _buttonLabel = '登录';
+  TextEditingController _passwordController;
+
+  @override
+  void initState() {
+    _passwordController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    _buttonEnable = false;
+    _buttonLabel = '登录';
+    super.dispose();
+  }
+
+  Future<void> _doLogin(account) async {
+    _buttonLabel = '登录中...';
+    setState(() {});
+    PasswordLoginAction(
+      user: account['accountCode'],
+      pwd: _passwordController.text,
+      context: widget.context,
+    ).login(() {
+      _buttonLabel = '登录失败，请重新登录';
+      _buttonEnable = true;
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,10 +105,16 @@ class _AccountLoginState extends State<AccountLogin> {
           width: double.maxFinite,
         ),
         child: TextField(
+          controller: _passwordController,
           keyboardType: TextInputType.text,
           autofocus: true,
           obscureText: true,
+          onChanged: (v) {
+            _buttonEnable = !StringUtil.isEmpty(_passwordController.text);
+            setState(() {});
+          },
           decoration: InputDecoration(
+            border: InputBorder.none,
             labelText: '密码',
             hintText: '输入密码',
           ),
@@ -84,17 +123,18 @@ class _AccountLoginState extends State<AccountLogin> {
     );
     var item_ok = Container(
       alignment: Alignment.center,
+      color: _buttonEnable ? Colors.green : Colors.grey[300],
       padding: EdgeInsets.only(
         left: 20,
         right: 20,
-        top: 20,
-        bottom: 20,
+        top: 15,
+        bottom: 15,
       ),
       child: Text(
-        '登录',
+        _buttonLabel,
         style: TextStyle(
           fontWeight: FontWeight.w500,
-          color: Colors.blueGrey,
+          color: _buttonEnable ? Colors.white : Colors.grey[400],
         ),
       ),
     );
@@ -137,7 +177,13 @@ class _AccountLoginState extends State<AccountLogin> {
                 ),
               ],
             ),
-            item_ok,
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                _doLogin(account);
+              },
+              child: item_ok,
+            ),
           ],
         ),
       ),
@@ -157,4 +203,3 @@ class _AccountLoginState extends State<AccountLogin> {
     );
   }
 }
-

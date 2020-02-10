@@ -180,7 +180,8 @@ class __CurrentAppCardState extends State<_CurrentAppCard> {
         GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {
-            widget.context.forward('/users/accounts/viewer',arguments: {'account':account});
+            widget.context.forward('/users/accounts/viewer',
+                arguments: {'account': account});
           },
           child: Row(
             mainAxisSize: MainAxisSize.max,
@@ -343,7 +344,7 @@ class __CurrentAppCardState extends State<_CurrentAppCard> {
                 text: '当前应用:',
                 children: [
                   TextSpan(
-                    text: widget.context.principal.appid,
+                    text: widget.app['appid'],
                     style: TextStyle(
                       color: Colors.blueGrey,
                     ),
@@ -433,68 +434,76 @@ class __OtherAppCardState extends State<_OtherAppCard> {
   Widget build(BuildContext context) {
     var items = <Widget>[];
     for (var app in _applist) {
+      if(widget.context.principal.appid==app['appid']) {
+        continue;
+      }
       var appLogoUrl =
           '${app['appLogo']}?accessToken=${widget.context.principal.accessToken}';
       items.add(
-        Padding(
-          padding: EdgeInsets.only(
-            bottom: 15,
-            top: 15,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Expanded(
-                child: Row(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(
-                        right: 5,
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            widget.context.forward('/users/accounts/app',arguments: {'app':app});
+          },
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom: 15,
+              top: 15,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: 5,
+                        ),
+                        child: StringUtil.isEmpty(app['appLogo'])
+                            ? Image.asset(
+                                'lib/portals/gbera/images/gbera.png',
+                                width: 40,
+                                height: 40,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.network(
+                                appLogoUrl,
+                                width: 40,
+                                height: 40,
+                                fit: BoxFit.cover,
+                              ),
                       ),
-                      child: StringUtil.isEmpty(app['appLogo'])
-                          ? Image.asset(
-                              'lib/portals/gbera/images/gbera.png',
-                              width: 40,
-                              height: 40,
-                              fit: BoxFit.cover,
-                            )
-                          : Image.network(
-                              appLogoUrl,
-                              width: 40,
-                              height: 40,
-                              fit: BoxFit.cover,
-                            ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                              bottom: 5,
-                            ),
-                            child: Text(
-                              app['appName'],
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                bottom: 5,
+                              ),
+                              child: Text(
+                                app['appName'],
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  right: 5,
-                                ),
-                                child: Text(
-                                  '${app['appid']}',
-                                  style: TextStyle(
-                                    color: Colors.grey[500],
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    right: 5,
+                                  ),
+                                  child: Text(
+                                    '${app['appid']}',
+                                    style: TextStyle(
+                                      color: Colors.grey[500],
+                                    ),
                                   ),
                                 ),
-                              ),
 //                              Expanded(
 //                                child: Padding(
 //                                  padding: EdgeInsets.only(
@@ -511,20 +520,21 @@ class __OtherAppCardState extends State<_OtherAppCard> {
 //                                  ),
 //                                ),
 //                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-                color: Colors.grey[400],
-              ),
-            ],
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: Colors.grey[400],
+                ),
+              ],
+            ),
           ),
         ),
       );

@@ -42,18 +42,25 @@ class _AddAccountState extends State<AddAccount> {
 
   _doAddAccount() async {
     _addActionLabel = '添加中...';
+    _buttonEnabled=false;
     setState(() {});
     var accountCode = _accountController.text;
     var password = _passwordController.text;
     var avatar = widget.context.principal.avatarOnRemote;
     var signture = widget.context.principal.signature;
     var nickName = widget.context.principal.nickName;
+    var appid=widget.context.principal.appid;
+    var app=widget.context.parameters['app'];
+    if(app!=null) {
+      appid=app['appid'];
+    }
     var restcmd;
     dynamic params = {
       'password': password,
       'nickName': nickName,
       'avatar': avatar,
       'signature': signture,
+      'appid':appid,
     };
     String headline =
         'get ${widget.context.site.getService('@.prop.ports.uc.person')} http/1.1';
@@ -79,14 +86,14 @@ class _AddAccountState extends State<AddAccount> {
       },
       parameters: params,
       onsucceed: ({rc, response}) {
-        String json = rc['dataText'];
-        print(json);
+        _addActionLabel = '确定';
+        _buttonEnabled = false;
         widget.context.backward();
       },
       onerror: ({e, stack}) {
         print(e);
-        _addActionLabel = '确定';
-        _buttonEnabled = false;
+        _addActionLabel = '添加失败，请重试';
+        _buttonEnabled = true;
         setState(() {});
       },
     );

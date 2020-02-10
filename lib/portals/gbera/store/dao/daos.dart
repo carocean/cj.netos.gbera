@@ -494,4 +494,14 @@ abstract class IPrincipalDAO {
 
   @Query('UPDATE Principal SET refreshToken=NULL WHERE person=:person')
   Future<void> emptyRefreshToken(String person) {}
+
+  @Query(
+      'UPDATE Principal SET lavatar=:localAvatar , ravatar=:remoteAvatar WHERE person=:person')
+  Future<void> updateAvatar(localAvatar, String remoteAvatar, String person) {}
+
+  @Query('UPDATE Principal SET nickName=:nickName WHERE person=:person')
+  Future<void> updateNickname(String nickName, String person) {}
+
+  @Query('UPDATE Principal SET signature=:signature WHERE person=:person')
+  Future<void> updateSignature(String signature, String person) {}
 }

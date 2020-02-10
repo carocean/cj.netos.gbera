@@ -18,6 +18,7 @@ void main()  {
       '@.prop.ports.uc.auth':'http://47.105.165.186/uc/auth.service',
       '@.prop.ports.uc.register':'http://47.105.165.186/uc/register.service',
       '@.prop.ports.uc.person':'http://47.105.165.186/uc/person/self.service',
+      '@.prop.ports.uc.platform':'http://47.105.165.186/uc/platform/self.service',
       '@.prop.fs.delfile':'http://47.105.165.186:7110/del/file/',
       '@.prop.fs.uploader':'http://47.105.165.186:7110/upload/uploader.service',
       '@.prop.fs.reader':'http://47.105.165.186:7100',

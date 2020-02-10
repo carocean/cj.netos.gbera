@@ -341,6 +341,28 @@ class _$IPrincipalDAO extends IPrincipalDAO {
   }
 
   @override
+  Future<void> updateAvatar(
+      dynamic localAvatar, String remoteAvatar, String person) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE Principal SET lavatar=? , ravatar=? WHERE person=?',
+        arguments: <dynamic>[localAvatar, remoteAvatar, person]);
+  }
+
+  @override
+  Future<void> updateNickname(String nickName, String person) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE Principal SET nickName=? WHERE person=?',
+        arguments: <dynamic>[nickName, person]);
+  }
+
+  @override
+  Future<void> updateSignature(String signature, String person) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE Principal SET signature=? WHERE person=?',
+        arguments: <dynamic>[signature, person]);
+  }
+
+  @override
   Future<void> add(Principal principal) async {
     await _principalInsertionAdapter.insert(
         principal, sqflite.ConflictAlgorithm.abort);

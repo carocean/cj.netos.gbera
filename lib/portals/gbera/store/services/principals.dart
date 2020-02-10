@@ -18,6 +18,12 @@ class PrincipalService implements IPrincipalService {
   }
 
   @override
+  Future<Function> updateAvatar(
+      String person, localAvatar, String remoteAvatar) async{
+   await principalDAO.updateAvatar(localAvatar,remoteAvatar,person);
+  }
+
+  @override
   Future<Function> emptyRefreshToken(String person) async{
     await principalDAO.emptyRefreshToken(person);
   }
@@ -35,6 +41,16 @@ class PrincipalService implements IPrincipalService {
   @override
   Future<Function> updateToken(String refreshToken, String accessToken, String person) async {
     await principalDAO.updateToken(refreshToken,accessToken, person);
+  }
+
+  @override
+  Future<Function> updateNickName(String person, nickName) async{
+    await principalDAO.updateNickname(nickName, person);
+  }
+
+  @override
+  Future<Function> updateSignature(String person, String signature) async{
+    await principalDAO.updateSignature(signature, person);
   }
 
   @override

@@ -222,5 +222,10 @@ mixin IPrincipalService {
 
   Future<void> emptyRefreshToken(String current) {}
 
+  Future<void> updateAvatar(String person, localAvatar, String remoteAvatar) {}
+
+  Future<void> updateNickName(String person, nickName) {}
+
+  Future<void> updateSignature(String person, String signature) {}
 
 }

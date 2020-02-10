@@ -10,7 +10,7 @@ mixin ILocalPrincipalManager {
   //在IPrincipalService的构造中初始化
   Principal get(String person);
 
-  void remove(String person);
+  Future<void> remove(String person);
 
   List<String> list();
 
@@ -21,7 +21,7 @@ mixin ILocalPrincipalManager {
   bool isEmpty();
 
   //请求远程刷新token并存储
-  Future<void> doRefreshToken([error,susseed]);
+  Future<void> doRefreshToken([error, susseed]);
 
   //刷入信息到本地
   void add(
@@ -42,7 +42,13 @@ mixin ILocalPrincipalManager {
     final String device,
   }) {}
 
-  Future<void> emptyRefreshToken() ;
+  Future<void> emptyRefreshToken();
+
+  Future<void> updateAvatar(String person, localAvatar, String remoteAvatar) {}
+
+  Future<void> updateNickName(String person, String nickName) {}
+
+  Future<void>  updateSignature(String person, String text) {}
 
 }
 
@@ -75,20 +81,52 @@ class DefaultLocalPrincipalManager implements ILocalPrincipalManager {
   }
 
   @override
-  Future<void> emptyRefreshToken() async{
-    Principal principal=get(_current);
-   await _principalService.emptyRefreshToken(_current);
-    _cached[_current]=await _principalService.get(_current);
+  Future<void> emptyRefreshToken() async {
+    await _principalService.emptyRefreshToken(_current);
+    _cached[_current] = await _principalService.get(_current);
   }
 
   @override
-  Future<void> doRefreshToken([error,susseed]) async {
+  Future<Function> updateAvatar(
+      String person, localAvatar, String remoteAvatar) async {
+    Principal principal = get(person);
+    if (principal == null) {
+      return null;
+    }
+    await _principalService.updateAvatar(person, localAvatar, remoteAvatar);
+    principal.lavatar = localAvatar;
+    principal.ravatar = remoteAvatar;
+  }
+
+  @override
+  Future<Function> updateSignature(String person, String signature) async{
+    Principal principal = get(person);
+    if (principal == null) {
+      return null;
+    }
+    await _principalService.updateSignature(person, signature);
+    principal.signature = signature;
+  }
+
+  @override
+  Future<Function> updateNickName(String person, String nickName) async {
+    Principal principal = get(person);
+    if (principal == null) {
+      return null;
+    }
+    await _principalService.updateNickName(person, nickName);
+    principal.nickName = nickName;
+  }
+
+  @override
+  Future<void> doRefreshToken([error, susseed]) async {
     String person = _current;
     Principal principal = await _principalService.get(person);
     //如果令牌还能用半个小时就不刷新，半个小时会导致用户在使用中间令牌失效
     //非常操蛋，entrypoint会一次性调用两次doRefreshToken，而且第二次传入的是旧的refreshToken，因此第二次会验证失败，故计是一次进入该方法两个处理，都拿的是旧的。之后再找原因
-    if(principal?.pubtime+principal?.expiretime>DateTime.now().millisecondsSinceEpoch-1800000){
-      if(susseed!=null) {
+    if (principal?.pubtime + principal?.expiretime >
+        DateTime.now().millisecondsSinceEpoch - 1800000) {
+      if (susseed != null) {
         susseed(principal);
       }
       return;
@@ -124,7 +162,7 @@ class DefaultLocalPrincipalManager implements ILocalPrincipalManager {
     var map = jsonDecode(data);
     if (map['status'] as int >= 400) {
       print('刷新失败：${map['status']} ${map['message']}');
-      if(error!=null) {
+      if (error != null) {
         error(map);
       }
       return;
@@ -137,7 +175,7 @@ class DefaultLocalPrincipalManager implements ILocalPrincipalManager {
     //更新缓冲
     Principal one = await _principalService.get(person);
     _cached[person] = one;
-    if(susseed!=null) {
+    if (susseed != null) {
       susseed(one);
     }
   }
@@ -198,12 +236,13 @@ class DefaultLocalPrincipalManager implements ILocalPrincipalManager {
   }
 
   @override
-  void remove(String person) {
+  Future<void> remove(String person) async {
     _cached.remove(person);
     _indexed.remove(person);
     if (_current == person) {
       _current = null;
     }
+    await _principalService.remove(person);
   }
 
   @override

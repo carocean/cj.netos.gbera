@@ -57,10 +57,11 @@ import 'package:gbera/portals/gbera/pages/netflow/service_menu.dart';
 import 'package:gbera/portals/gbera/pages/netflow/settings_main.dart';
 import 'package:gbera/portals/gbera/pages/netflow/settings_persons.dart';
 import 'package:gbera/portals/gbera/pages/profile.dart';
+import 'package:gbera/portals/gbera/pages/profile/edit_realname.dart';
 import 'package:gbera/portals/gbera/pages/profile/edit_sex.dart';
-import 'package:gbera/portals/gbera/pages/profile/edit_username.dart';
+import 'package:gbera/portals/gbera/pages/profile/edit_nickname.dart';
+import 'package:gbera/portals/gbera/pages/profile/edit_signature.dart';
 import 'package:gbera/portals/gbera/pages/profile/editor.dart';
-import 'package:gbera/portals/gbera/pages/profile/face.dart';
 import 'package:gbera/portals/gbera/pages/profile/more.dart';
 import 'package:gbera/portals/gbera/pages/profile/qrcode.dart';
 import 'package:gbera/portals/gbera/pages/site/friend_site.dart';
@@ -78,6 +79,7 @@ import 'package:gbera/portals/gbera/pages/tests/test_services.dart';
 import 'package:gbera/portals/gbera/pages/users/account_login.dart';
 import 'package:gbera/portals/gbera/pages/users/accounts.dart';
 import 'package:gbera/portals/gbera/pages/users/add_account.dart';
+import 'package:gbera/portals/gbera/pages/users/app_accounts.dart';
 import 'package:gbera/portals/gbera/pages/users/edit_password.dart';
 import 'package:gbera/portals/gbera/pages/users/roles.dart';
 import 'package:gbera/portals/gbera/pages/users/user_list.dart';
@@ -827,20 +829,29 @@ class GberaPortal {
           ),
         ),
         Page(
-          title: '个人头像',
+          title: '修改昵称',
           subtitle: '',
           icon: FontAwesomeIcons.edit,
-          url: '/profile/editor/face',
-          buildPage: (PageContext pageContext) => ProfileFace(
+          url: '/profile/editor/nickname',
+          buildPage: (PageContext pageContext) => EditNickName(
             context: pageContext,
           ),
         ),
         Page(
-          title: '修改姓名',
+          title: '修改实名',
           subtitle: '',
           icon: FontAwesomeIcons.edit,
-          url: '/profile/editor/username',
-          buildPage: (PageContext pageContext) => EditUserName(
+          url: '/profile/editor/realname',
+          buildPage: (PageContext pageContext) => EditRealName(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '修改个人签名',
+          subtitle: '',
+          icon: FontAwesomeIcons.edit,
+          url: '/profile/editor/signature',
+          buildPage: (PageContext pageContext) => EditSignature(
             context: pageContext,
           ),
         ),
@@ -1069,6 +1080,15 @@ class GberaPortal {
           icon: Icons.person_outline,
           url: '/users/accounts/viewer',
           buildPage: (PageContext pageContext) => AccountViewer(
+            context: pageContext,
+          ),
+        ),
+        Page(
+          title: '应用账号列表',
+          subtitle: '',
+          icon: Icons.person_outline,
+          url: '/users/accounts/app',
+          buildPage: (PageContext pageContext) => AppAccounts(
             context: pageContext,
           ),
         ),

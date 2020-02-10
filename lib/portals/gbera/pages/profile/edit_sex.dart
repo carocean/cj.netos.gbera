@@ -13,6 +13,8 @@ class EditSex extends StatefulWidget {
 class _EditSexState extends State<EditSex> {
   @override
   Widget build(BuildContext context) {
+    var personInfo =
+        widget.context.page.parameters['personInfo'] as Map<String, dynamic>;
     var bb = widget.context.page.parameters['back_button'];
     return Scaffold(
       appBar: AppBar(
@@ -38,40 +40,97 @@ class _EditSexState extends State<EditSex> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(
-                      bottom: 10,
-                      top: 10,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text('男'),
-                        Icon(
-                          Icons.arrow_forward_ios,
-                          size: 16,
-                          color: Colors.grey[400],
-                        ),
-                      ],
+                  GestureDetector(
+                    onTap: () {
+                      widget.context.backward(result: {'sex':'male'});
+                    },
+                    behavior: HitTestBehavior.opaque,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        top: 15,
+                        bottom: 15,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            '男',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Row(
+                            children: <Widget>[
+                              if ('male' == personInfo['sex'])
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    right: 5,
+                                  ),
+                                  child: Icon(
+                                    Icons.check,
+                                    color: Colors.red,
+                                    size: 16,
+                                  ),
+                                ),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                size: 16,
+                                color: Colors.grey[400],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Divider(
                     indent: 1,
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10, top: 10),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text('女'),
-                        Icon(
-                          Icons.arrow_forward_ios,
-                          size: 16,
-                          color: Colors.grey[400],
-                        ),
-                      ],
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      widget.context.backward(result: {'sex':'female'});
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        top: 15,
+                        bottom: 15,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            '女',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Row(
+                            children: <Widget>[
+                              if ('female' == personInfo['sex'])
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  right: 5,
+                                ),
+                                child: Icon(
+                                  Icons.check,
+                                  color: Colors.red,
+                                  size: 16,
+                                ),
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                size: 16,
+                                color: Colors.grey[400],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
