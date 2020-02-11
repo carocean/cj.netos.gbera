@@ -386,6 +386,7 @@ class Principal {
    String accountCode;
    String nickName;
    String appid;
+   String portal;
    String roles;
    String accessToken;
    String refreshToken;
@@ -403,6 +404,7 @@ class Principal {
       this.accountCode,
       this.nickName,
       this.appid,
+      this.portal,
       this.roles,
       this.accessToken,
       this.refreshToken,

@@ -148,7 +148,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `P2PMessage` (`id` TEXT, `sender` TEXT, `receiver` TEXT, `room` TEXT, `type` TEXT, `content` TEXT, `state` TEXT, `ctime` INTEGER, `atime` INTEGER, `rtime` INTEGER, `dtime` INTEGER, `sandbox` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Principal` (`person` TEXT, `uid` TEXT, `accountCode` TEXT, `nickName` TEXT, `appid` TEXT, `roles` TEXT, `accessToken` TEXT, `refreshToken` TEXT, `ravatar` TEXT, `lavatar` TEXT, `signature` TEXT, `ltime` INTEGER, `pubtime` INTEGER, `expiretime` INTEGER, `device` TEXT, PRIMARY KEY (`person`))');
+            'CREATE TABLE IF NOT EXISTS `Principal` (`person` TEXT, `uid` TEXT, `accountCode` TEXT, `nickName` TEXT, `appid` TEXT, `portal` TEXT, `roles` TEXT, `accessToken` TEXT, `refreshToken` TEXT, `ravatar` TEXT, `lavatar` TEXT, `signature` TEXT, `ltime` INTEGER, `pubtime` INTEGER, `expiretime` INTEGER, `device` TEXT, PRIMARY KEY (`person`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -269,6 +269,7 @@ class _$IPrincipalDAO extends IPrincipalDAO {
                   'accountCode': item.accountCode,
                   'nickName': item.nickName,
                   'appid': item.appid,
+                  'portal': item.portal,
                   'roles': item.roles,
                   'accessToken': item.accessToken,
                   'refreshToken': item.refreshToken,
@@ -293,6 +294,7 @@ class _$IPrincipalDAO extends IPrincipalDAO {
       row['accountCode'] as String,
       row['nickName'] as String,
       row['appid'] as String,
+      row['portal'] as String,
       row['roles'] as String,
       row['accessToken'] as String,
       row['refreshToken'] as String,

@@ -15,6 +15,8 @@ void main()  {
     ),
     props: {
       '@.prop.isTest': true,
+      ///默认应用，即终端未指定应用号时登录或注册的目标应用
+      '@.prop.entrypoint.app':'gbera.netos',
       '@.prop.ports.uc.auth':'http://47.105.165.186/uc/auth.service',
       '@.prop.ports.uc.register':'http://47.105.165.186/uc/register.service',
       '@.prop.ports.uc.person':'http://47.105.165.186/uc/person/self.service',
@@ -22,16 +24,11 @@ void main()  {
       '@.prop.fs.delfile':'http://47.105.165.186:7110/del/file/',
       '@.prop.fs.uploader':'http://47.105.165.186:7110/upload/uploader.service',
       '@.prop.fs.reader':'http://47.105.165.186:7100',
-      //网易云短信接口应在uc中心注册
-//      '@.prop.api.netease.im.url.sendcode':'https://api.netease.im/sms/sendcode.action',
-//      '@.prop.api.netease.im.url.verifycode':'https://api.netease.im/sms/verifycode.action',
-//      '@.prop.api.netease.im.appKey':'f54c7223b49c68b8d2af7b7f2ecb834e',
-//      '@.prop.api.netease.im.appSecret':'fec5cc11d9e4',
     },
     appKeyPair: AppKeyPair(
-      appid: 'gbera.netos',
-      appKey: '92D9F2B8078D039A7405AC0498F71059',
-      appSecret: '9402073ADEF6DEEB35E2FDBAC7051471',
+      appid: 'system.netos',
+      appKey: '995C2A861BE8064A1F8A022B5C0D2E36',
+      appSecret: '6EA4774EE78DCDF0768CA18ECF3AD1DB',
     ),
   );
 }

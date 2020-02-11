@@ -201,7 +201,7 @@ class __PasswordPanelState extends State<_PasswordPanel> {
         context: widget.context,
         pwd: _passwordController.text,
         user: _accountController.text);
-    login.login(() {
+    login.login(null,() {
       _loginLabel = '登录';
       _buttonEnabled = true;
       setState(() {});
@@ -437,7 +437,7 @@ class __VerifyCodePanelState extends State<_VerifyCodePanel> {
         context: widget.context,
         pwd: _codeController.text,
         user: _phoneController.text)
-      ..login(() {
+      ..login(null,() {
         _loginLabel = '登录中...';
         _buttonEnabel = false;
         setState(() {});
@@ -827,7 +827,7 @@ class __ExistsAccountPanelState extends State<_ExistsAccountPanel> {
       pwd: _passwordController.text,
       user: principal.accountCode,
     );
-    login.login(() {
+    login.login(principal.appid,() {
       _loginLabel = '登录';
       _buttonEnabled = true;
       setState(() {});
@@ -842,7 +842,7 @@ class PasswordLoginAction {
 
   const PasswordLoginAction({this.user, this.pwd, this.context});
 
-  login([callback]) {
+  login(String appid,[callback]) async {
     int pos = user.lastIndexOf("@");
     var account = '';
     if (pos < 0) {
@@ -851,8 +851,14 @@ class PasswordLoginAction {
       account = user.substring(0, pos);
     }
     AppKeyPair appKeyPair = this.context.site.getService('@.appKeyPair');
-    var nonce = MD5Util.generateMd5(Uuid().v1());
-    context.ports(
+    var _appid=appid;
+    if(StringUtil.isEmpty(_appid)) {
+      _appid=this.context.site.getService('@.prop.entrypoint.app');
+    }
+    appKeyPair = await appKeyPair.getAppKeyPair(_appid, this.context.site);
+    var nonce = MD5Util.generateMd5(
+        '${Uuid().v1()}${DateTime.now().millisecondsSinceEpoch}');
+    await context.ports(
       'get ${context.site.getService('@.prop.ports.uc.auth')} http/1.1',
       restCommand: 'auth',
       headers: {
@@ -913,6 +919,8 @@ class PasswordLoginAction {
       nickName: subject['nickName'],
       accountCode: subject['accountCode'],
       uid: subject['uid'],
+      portal: map['portal'],
+      device: subject['device'],
     );
     manager.setCurrent(subject['person']);
     context.setLogin();
@@ -991,14 +999,14 @@ class __VerifyCodeButtonState extends State<_VerifyCodeButton> {
             t.cancel();
             _fetchCodeLabel = '重新获取';
             _fetchButtonEnabled = true;
-            if(super.mounted) {
+            if (super.mounted) {
               setState(() {});
             }
             return;
           }
           _fetchCodeLabel = '等待..${times}s';
           times--;
-          if(super.mounted) {
+          if (super.mounted) {
             setState(() {});
           }
         });

@@ -39,7 +39,7 @@ class _AccountLoginState extends State<AccountLogin> {
       user: account['accountCode'],
       pwd: _passwordController.text,
       context: widget.context,
-    ).login(() {
+    ).login(account['appId'],() {
       _buttonLabel = '登录失败，请重新登录';
       _buttonEnable = true;
       setState(() {});

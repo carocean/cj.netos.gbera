@@ -341,15 +341,14 @@ class __CurrentAppCardState extends State<_CurrentAppCard> {
             ),
             child: Text.rich(
               TextSpan(
-                text: '当前应用:',
+                text: '当前应用 ',
                 children: [
                   TextSpan(
-                    text: widget.app['appid'],
+                    text: widget.app['appName'],
                     style: TextStyle(
                       color: Colors.blueGrey,
                     ),
                   ),
-                  TextSpan(text: '下的账号'),
                 ],
               ),
               style: TextStyle(

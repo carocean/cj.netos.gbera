@@ -94,7 +94,9 @@ class _RegisterPageState extends State<RegisterPage> {
       _registerLabel = '注册中...';
     });
     AppKeyPair appKeyPair = widget.context.site.getService('@.appKeyPair');
-    var nonce = MD5Util.generateMd5(Uuid().v1());
+    var defaultApp = widget.context.site.getService('@.prop.entrypoint.app');
+    appKeyPair = await appKeyPair.getAppKeyPair(defaultApp, widget.context.site);
+    var nonce = MD5Util.generateMd5('${Uuid().v1()}${DateTime.now().millisecondsSinceEpoch}');
     await widget.context.ports(
       'post ${widget.context.site.getService('@.prop.ports.uc.register')} http/1.1',
       restCommand: 'registerByIphone',
